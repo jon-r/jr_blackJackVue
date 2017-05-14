@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>VueJS BlackJack Testing</title>
+
+  <meta name="description" content="">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="assets/style.css" rel="stylesheet" media="all">
+
+</head>
+  <body>
+
+
+    <main id="v-blackJack" >
+      <form id="v-options" class="intro-form" @submit.prevent="newGame" >
+
+        <span >
+          <label for="deckInput" >Decks</label>
+          <input v-model.lazy="form.deckInput" type="text" id="deckInput" />
+        </span>
+
+        <span v-for="playerInput in form.playerInput" :key="playerInput.id" >
+          <label :for="playerInput.id" >{{playerInput.label}}</label>
+          <input v-model.lazy="playerInput.name" type="text" :id="playerInput.id" />
+        </span>
+
+        <input type="submit" val="Update"  />
+      </form>
+
+      <section id="v-table" class="table" >
+
+        <player-base
+          v-for="player in shared.players"
+          :key="player.id"
+          :idx="player.id"
+          :name="player.name" >
+        </player-base>
+
+      </section>
+
+
+
+    </main>
+
+
+    <script src="dist/bundle.js"></script>
+  </body>
+</html>
