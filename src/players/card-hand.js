@@ -38,7 +38,7 @@ export default {
     },
     autoDraw() {
       this.drawCard();
-      setTimeout(gamePlay.nextPlayer, 500);
+      setTimeout(() => gamePlay.nextPlayer(), 500);
     },
 
   },
@@ -48,8 +48,8 @@ export default {
         return false;
       }
       if (this.stage === 1 || this.stage === 2) {
-        return this.drawCard();
-          // return this.autoDraw();
+        // return this.drawCard();
+        return this.autoDraw();
       }
       return false;
     },

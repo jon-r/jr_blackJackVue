@@ -48,24 +48,7 @@ export default class Deck {
    */
   deal() {
     const rng = getRandom(this.cards.length);
-    const cardArr = this.cards.splice(rng, 1)[0];
-    // const faceValue = cardArr[0];
-    // const suitValue = cardArr[1];
-    // const suits = ['diamonds', 'hearts', 'spades', 'clubs'];
-    // const faces = {
-    //   1: ['A', 11],
-    //   11: ['J', 10],
-    //   12: ['Q', 10],
-    //   13: ['K', 10],
-    // };
-    // const isfaceCard = cardArr[0] in faces;
-    // const card = {
-    //   suit: suits[suitValue],
-    //   face: isfaceCard ? faces[faceValue][0] : faceValue,
-    //   score: isfaceCard ? faces[faceValue][1] : faceValue,
-    // };
-    console.log(this.cards);
-    return cardArr;
+    return this.cards.splice(rng, 1)[0];
   }
 
 }
