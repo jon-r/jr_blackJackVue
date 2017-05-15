@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="assets/style.css" rel="stylesheet" media="all">
+  <link href="assets/style-lite.css" rel="stylesheet" media="all">
 
 </head>
   <body>
@@ -20,10 +20,10 @@
 
         <span >
           <label for="deckInput" >Decks</label>
-          <input v-model.lazy="form.deckInput" type="text" id="deckInput" />
+          <input v-model.lazy="config.deckInput" type="text" id="deckInput" />
         </span>
 
-        <span v-for="playerInput in form.playerInput" :key="playerInput.id" >
+        <span v-for="playerInput in config.playerInput" :key="playerInput.id" >
           <label :for="playerInput.id" >{{playerInput.label}}</label>
           <input v-model.lazy="playerInput.name" type="text" :id="playerInput.id" />
         </span>
@@ -34,10 +34,12 @@
       <section id="v-table" class="table" >
 
         <player-base
-          v-for="player in shared.players"
-          :key="player.id"
-          :idx="player.id"
-          :name="player.name" >
+          v-for="(player, idx) in game.players"
+          :game="game"
+          :key="idx"
+          :idx="idx"
+          :name="player.name"
+          @end-turn="nextPlayer" >
         </player-base>
 
       </section>

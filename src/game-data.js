@@ -4,7 +4,7 @@ export default {
 
   debug: true,
   state: {
-    activePlayer: 1,
+    activePlayer: 0,
     deck: [],
     players: [],
     roundStage: 0,
@@ -25,7 +25,7 @@ Round stages:
     const players = [{ id: 0, label: 'Dealer', name: 'Dealer' }];
 
     data.deck = new Deck(deckCount);
-    data.roundStage = 0;
+    data.roundStage = 1;
 
     data.players = players.concat(config.playerInput);
   },
@@ -40,6 +40,7 @@ Round stages:
       this.completeRound,
     ];
 
+    data.activePlayer = 0;
     data.roundStage += 1;
 
     return roundHooks[data.roundStage]();
@@ -47,13 +48,15 @@ Round stages:
 
   nextPlayer() {
     const data = this.state;
-    const active = (data.activePlayer + 1) % data.players.length;
+    const count = data.players.length;
+    const active = data.activePlayer + 1;
+
+
+    if (active === count - 1) {
+      return this.nextRoundStage();
+    }
 
     data.activePlayer = active;
-
-    if (active === 0) {
-      this.nextRoundStage();
-    }
 
     return true;
   },

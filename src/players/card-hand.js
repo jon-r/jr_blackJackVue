@@ -2,7 +2,7 @@ import PlayingCard from './playing-card';
 import gamePlay from '../game-data';
 
 export default {
-  props: ['turn', 'stage'],
+  props: ['turn', 'game', 'dealer'],
   template: `
   <div class="player-hand"  >
     <div v-for="hand in hands" >
@@ -11,10 +11,12 @@ export default {
         :key="idx"
         :card="card" >
       </playing-card>
-      <span class="hand-score">{{hand.score}}</span>
+      <div class="hand-score" >
+        <span>Score: {{hand.score}}</span>
+      </div>
     </div>
 
-    <div class="player-ctrl" v-if="turn && shared.roundStage === 3" >
+    <div class="player-ctrl" v-if="canCtrl" >
     stage 3 controls
     </div>
   </div>
@@ -24,30 +26,38 @@ export default {
   },
   data() {
     return {
-      shared: gamePlay.state,
+//       shared: gamePlay.state,
       hands: [{ cards: [], score: 0 }],
       activeHand: 0,
       // playerScore: 0,
     };
   },
   methods: {
-    drawCard() {
-      const newCard = this.shared.deck.deal();
+    revealCard() {
+      return this.game.deck.deal();
+    },
+    draw() {
 
-      this.hands[this.activeHand].cards.push(newCard);
     },
     autoDraw() {
-      this.drawCard();
-      setTimeout(() => gamePlay.nextPlayer(), 500);
-    },
+      let card = [];
+      const lastCard = this.dealer && this.game.roundStage === 2;
 
+      if (!lastCard) {
+        card = this.revealCard();
+      }
+
+      this.hands[0].cards.push(card);
+
+      setTimeout(() => this.$emit('end-turn'), 500);
+    },
   },
   watch: {
     turn() {
       if (!this.turn) {
         return false;
       }
-      if (this.stage === 1 || this.stage === 2) {
+      if (this.game.roundStage === 1 || this.game.roundStage === 2) {
         // return this.drawCard();
         return this.autoDraw();
       }
@@ -55,26 +65,9 @@ export default {
     },
   },
   computed: {
-    // canDraw() {
-    //   console.log(this.stage);
-    //   return ;
-    // },
-
-    // playerActive() {
-    //   const stage = this.stage;
-    //   const active = (stage > 0) && this.turn;
-    //
-    //   console.log(stage);
-    //
-    //   if (!active) {
-    //     return false;
-    //   }
-    //
-    //   if (stage === 1 || stage === 2) {
-    //     return this.autoDraw();
-    //   }
-    //
-    // },
+    canCtrl() {
+      return (this.turn && this.game.roundStage === 3);
+    },
   },
 
 };

@@ -1,20 +1,17 @@
 import Vue from 'vue';
-import gamePlay from '../game-data';
+// import gamePlay from '../game-data';
 import CardHand from './card-hand';
 import BetFrame from './bet-frame';
 
 export default {
-  props: ['name', 'idx'],
+  props: ['name', 'idx', 'game'],
   template: `
   <section :class="playerClass" >
     <h3 class="player-name" :class="{active: playerTurn}" >{{name}}</h3>
-    <card-hand :turn="playerTurn" :stage="shared.roundStage" >
-    </card-hand>
 
-    <div v-if="!isDealer" >
-      <bet-frame :turn="playerTurn" ></bet-frame>
-    </div>
+    <card-hand :dealer="isDealer" :turn="playerTurn" :game="game" @end-turn="endTurn" ></card-hand>
 
+    <bet-frame v-if="!isDealer" :turn="playerTurn" :game="game" @end-turn="endTurn" ></bet-frame>
   </section>`,
   components: {
     'card-hand': CardHand,
@@ -22,17 +19,30 @@ export default {
   },
   data() {
     return {
-      shared: gamePlay.state,
+//      shared: gamePlay.state,
       canPlay: true,
       hands: [],
       score: 0,
       playerClass: `player-frame player-${this.idx}`,
-      isDealer: +this.idx === 0,
+      isDealer: +this.idx === this.game.players.length - 1,
     };
+  },
+  watch: {
+    playerTurn() {
+      if (this.isDealer && this.game.roundStage === 0) {
+        return this.endTurn();
+      }
+      return false;
+    },
   },
   computed: {
     playerTurn() {
-      return this.shared.activePlayer === this.idx;
+      return this.game.activePlayer === this.idx;
+    },
+  },
+  methods: {
+    endTurn() {
+      return this.$emit('end-turn');
     },
   },
 };

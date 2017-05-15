@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import PlayerBase from './players/players';
-import gamePlay from './game-data';
+// import gamePlay from './game-data';
+import Deck from './deck';
 
 const app = new Vue({
   el: '#v-blackJack',
@@ -9,24 +10,58 @@ const app = new Vue({
   },
 
   data: {
-    shared: gamePlay.state,
-    form: {
+    config: {
       playerInput: [
-        { id: 1, label: 'Player 1', name: 'Aaron' },
-        { id: 2, label: 'Player 2', name: 'Beth' },
-        { id: 3, label: 'Player 3', name: 'Chris' },
-        { id: 4, label: 'Player 4', name: 'Denise' },
-        { id: 5, label: 'Player 5', name: 'Ethan' },
+        { label: 'Player 1', name: 'Aaron' },
+        { label: 'Player 2', name: 'Beth' },
+        { label: 'Player 3', name: 'Chris' },
+        { label: 'Player 4', name: 'Denise' },
+        { label: 'Player 5', name: 'Ethan' },
       ],
       deckInput: 6,
     },
-  },
-  created() {
-
+    game: {
+      activePlayer: 0,
+      roundStage: 0,
+      deck: [],
+      players: [],
+    },
   },
   methods: {
     newGame() {
-      gamePlay.newGame(this.form);
+      const config = this.config;
+      const game = this.game;
+
+      game.deck = new Deck(config.deckInput);
+
+      game.players = config.playerInput
+        .concat([{ label: 'Dealer', name: 'Dealer' }]);
+    },
+    nextPlayer() {
+      const game = this.game;
+
+      game.activePlayer += 1;
+
+      if (game.activePlayer === game.players.length) {
+        return this.nextRoundStage();
+      }
+
+      return true;
+    },
+    nextRoundStage() {
+      const game = this.game;
+      const roundHooks = [
+        'place bids',
+        'deal first card',
+        'deal second card',
+        'player turns',
+        'end round',
+      ];
+
+      game.activePlayer = 0;
+      game.roundStage += 1;
+
+      console.log(roundHooks[game.roundStage]);
     },
   },
 });
