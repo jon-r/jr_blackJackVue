@@ -1,5 +1,3 @@
-// import gamePlay from '../game-data';
-
 // TODO: set bids at chips instead of numbers
 export default {
   props: ['game', 'turn'],
@@ -13,9 +11,8 @@ export default {
     <div v-if="canBid" class="player-bet" >
       <input type="number" v-model.lazy="bidStart"
         :min="minVal" :max="money" />
-      <input type="button" @click="pushBet" value="Place Bet" />
+      <input v-if="validBid" type="button" @click="pushBet" value="Place Bet" />
     </div>
-    <span>{{errorStr}}</span>
     <h4 class="player-bet" v-if="bet > 0" >
       Bet: £{{bet}}
     </h4>
@@ -23,9 +20,7 @@ export default {
   `,
   data() {
     return {
-//      shared: gamePlay.state,
       oldMoney: 0,
-      errorStr: '',
       bet: 0,
       bidStart: 500,
       money: 1000,
@@ -48,7 +43,7 @@ export default {
       return (this.game.roundStage === 0) && this.turn;
     },
     validBid() {
-      return (this.bidStart < this.minVal) && (this.bidStart > this.money);
+      return (this.bidStart > this.minVal) && (this.bidStart < this.money);
     },
   },
   methods: {
@@ -61,6 +56,14 @@ export default {
       return this.$emit('end-turn');
 //      return this.nextPlayer();
     },
-
+    newGameReset() {
+      this.oldMoney = 0;
+      this.bet = 0;
+      this.bidStart = 500;
+      this.money = 1000;
+    },
+  },
+  watch: {
+    'game.UID': 'newGameReset',
   },
 };

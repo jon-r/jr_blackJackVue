@@ -1,5 +1,3 @@
-import Vue from 'vue';
-// import gamePlay from '../game-data';
 import CardHand from './card-hand';
 import BetFrame from './bet-frame';
 
@@ -19,21 +17,9 @@ export default {
   },
   data() {
     return {
-//      shared: gamePlay.state,
-      canPlay: true,
-      hands: [],
-      score: 0,
       playerClass: `player-frame player-${this.idx}`,
-      isDealer: +this.idx === this.game.players.length - 1,
+      isDealer: +this.idx === this.game.dealerID,
     };
-  },
-  watch: {
-    playerTurn() {
-      if (this.isDealer && this.game.roundStage === 0) {
-        return this.endTurn();
-      }
-      return false;
-    },
   },
   computed: {
     playerTurn() {

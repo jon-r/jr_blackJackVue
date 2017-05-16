@@ -1,6 +1,6 @@
 import Vue from 'vue';
+
 import PlayerBase from './players/players';
-// import gamePlay from './game-data';
 import Deck from './deck';
 
 const app = new Vue({
@@ -21,26 +21,32 @@ const app = new Vue({
       deckInput: 6,
     },
     game: {
-      activePlayer: 0,
-      roundStage: 0,
-      deck: [],
-      players: [],
+      UID: 0,
     },
   },
   methods: {
     newGame() {
       const config = this.config;
-      const game = this.game;
-
-      game.deck = new Deck(config.deckInput);
-
-      game.players = config.playerInput
+      const players = config.playerInput
         .concat([{ label: 'Dealer', name: 'Dealer' }]);
+      const newGameID = this.game.UID + 1;
+
+      this.game = {
+        UID: newGameID,
+        activePlayer: 0,
+        roundStage: 0,
+        deck: new Deck(config.deckInput),
+        dealerID: players.length - 1,
+        players,
+      };
     },
     nextPlayer() {
       const game = this.game;
 
       game.activePlayer += 1;
+      if (game.roundStage === 0 && game.activePlayer === game.dealerID) {
+        return this.nextPlayer();
+      }
 
       if (game.activePlayer === game.players.length) {
         return this.nextRoundStage();

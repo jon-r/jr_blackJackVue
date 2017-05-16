@@ -1,6 +1,3 @@
-import { getRandom } from './utils';
-
-
 /**
  * Builds a deck of cards for the dealer to use.
  * Iterates through n = [this.count] decks, 4 suits and 14 cards per suit.
@@ -20,6 +17,25 @@ function build(decks) {
   });
 
   return cards;
+}
+
+function getRandom(range) {
+  return Math.floor(Math.random() * range);
+}
+
+function faceCards(cardValue) {
+  const faces = {
+    1: 'A',
+    11: 'J',
+    12: 'Q',
+    13: 'K',
+  };
+  return (cardValue in faces) ? faces[cardValue] : cardValue;
+}
+
+function suitCards(cardSuit) {
+  const suits = ['hearts', 'diamonds', 'spades', 'clubs'];
+  return suits[cardSuit];
 }
 
 
@@ -48,7 +64,12 @@ export default class Deck {
    */
   deal() {
     const rng = getRandom(this.cards.length);
-    return this.cards.splice(rng, 1)[0];
-  }
+    const cardArr = this.cards.splice(rng, 1)[0];
 
+    return {
+      face: faceCards(cardArr[0]),
+      score: Math.min(10, cardArr[0]),
+      suit: suitCards(cardArr[1]),
+    };
+  }
 }
