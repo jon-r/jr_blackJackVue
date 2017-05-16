@@ -69,6 +69,12 @@ const app = new Vue({
 
       console.log(roundHooks[game.roundStage]);
     },
+    skipBets() {
+      this.newGame();
+      this.nextPlayer();
+      Vue.nextTick(() => this.nextRoundStage());
+
+    },
   },
 });
 

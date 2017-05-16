@@ -13,7 +13,7 @@ export default {
     </div>
 
     <div class="player-ctrl" v-if="canCtrl" >
-    stage 3 controls
+      <button v-for="ctrl in ctrls" class="ctrl-btn" :class="'ctrl-' + ctrl" @click="doCtrl(ctrl)" >{{ctrl}}</button>
     </div>
   </div>
   `,
@@ -21,16 +21,32 @@ export default {
     return {
       hands: [{ cards: [], score: 0, scoreStr: '', hardAce: true }],
       activeHand: 0,
+      ctrls: ['hit', 'stand', 'split', 'forfeit', 'double'],
     };
   },
   methods: {
     revealCard() {
       return this.game.deck.deal();
     },
-    draw() {
-
+    doCtrl(ctrl) {
+      return this[ctrl]();
     },
-    autoDraw() {
+    hit() {
+      console.log('player-hit');
+    },
+    stand() {
+      console.log('player-stand');
+    },
+    split() {
+      console.log('player-split');
+    },
+    double() {
+      console.log('player-double');
+    },
+    forfeit() {
+      console.log('player-forfeit');
+    },
+    dealOut() {
       let card = { face: 'x', score: 0, suit: 'blank' };
       const lastCard = this.dealer && this.game.roundStage === 2;
 
@@ -79,7 +95,7 @@ export default {
       if (newScore < 21 && hasAce) {
         hand.hardAce = false;
         hand.score = newScore + 10;
-        hand.scoreStr = `Soft ${newScore}`;
+        hand.scoreStr = `Soft ${newScore + 10}`;
         return true;
       }
 
@@ -110,7 +126,7 @@ export default {
 
       if (stage === 1 || stage === 2) {
         // return this.drawCard();
-        return this.autoDraw();
+        return this.dealOut();
       }
       if (stage === 3 && this.dealer) {
         console.log('dealer draw');
