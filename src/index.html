@@ -37,9 +37,8 @@
       <section id="v-table" class="table" >
 
         <player-base
-          v-for="(player, idx) in game.players"
+          v-for="(player, idx) in game.players" :key="idx"
           :game="game"
-          :key="idx"
           :idx="idx"
           :name="player.name"
           @end-turn="nextPlayer" >
