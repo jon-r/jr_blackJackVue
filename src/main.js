@@ -1,7 +1,8 @@
 import Vue from 'vue';
 
 import PlayerBase from './players/players';
-import Deck from './deck';
+import OptionsForm from './options-form';
+// import Deck from './deck';
 
 const app = new Vue({
   el: '#v-blackJack',
@@ -10,7 +11,7 @@ const app = new Vue({
   },
 
   data: {
-    config: {
+/*    config: {
       playerInput: [
         { label: 'Player 1', name: 'Aaron' },
         { label: 'Player 2', name: 'Beth' },
@@ -19,25 +20,24 @@ const app = new Vue({
         { label: 'Player 5', name: 'Ethan' },
       ],
       deckInput: 6,
-    },
+    },*/
     game: {
       UID: 0,
     },
+    players: [],
   },
   methods: {
-    newGame() {
-      const config = this.config;
-      const players = config.playerInput
-        .concat([{ label: 'Dealer', name: 'Dealer' }]);
+    newGame(config) {
       const newGameID = this.game.UID + 1;
+
+      this.players = config.players;
 
       this.game = {
         UID: newGameID,
         activePlayer: 0,
         roundStage: 0,
-        deck: new Deck(config.deckInput),
-        dealerID: players.length - 1,
-        players,
+        deck: config.decks,
+        dealerID: this.players.length - 1,
       };
     },
     nextPlayer() {
@@ -73,7 +73,6 @@ const app = new Vue({
       this.newGame();
       this.nextPlayer();
       Vue.nextTick(() => this.nextRoundStage());
-
     },
   },
 });

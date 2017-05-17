@@ -18,7 +18,10 @@
 
 
     <main id="v-blackJack" >
-      <form id="v-options" class="intro-form" @submit.prevent="newGame" >
+
+      <options-form @submit-options="setOptions" ></options-form>
+
+<!--      <form id="v-options" class="intro-form" @submit.prevent="newGame" >
 
         <span >
           <label for="deckInput" >Decks</label>
@@ -31,13 +34,13 @@
         </span>
 
         <input type="submit" val="Update"  />
-      </form>
+      </form>-->
       <button @click="skipBets" >Skip Bets</button>
 
       <section id="v-table" class="table" >
 
         <player-base
-          v-for="(player, idx) in game.players"
+          v-for="(player, idx) in players"
           :game="game"
           :key="idx"
           :idx="idx"
