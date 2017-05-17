@@ -38,6 +38,10 @@ function suitCards(cardSuit) {
   return suits[cardSuit];
 }
 
+function faceValue(cardValue) {
+  return cardValue === 1 ? 11 : Math.min(10, cardValue);
+}
+
 
 /** class Deck represents the deck of cards */
 export default class Deck {
@@ -68,7 +72,7 @@ export default class Deck {
 
     return {
       face: faceCards(cardArr[0]),
-      score: Math.min(10, cardArr[0]),
+      score: faceValue(cardArr[0]),
       suit: suitCards(cardArr[1]),
     };
   }

@@ -42,7 +42,6 @@
         <player-base
           v-for="(player, idx) in players"
           :game="game"
-          :key="idx"
           :idx="idx"
           :name="player.name"
           @end-turn="nextPlayer" >

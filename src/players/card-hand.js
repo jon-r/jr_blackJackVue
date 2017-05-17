@@ -1,41 +1,84 @@
+import CardsHeld from './cards-held';
+
 export default {
   props: ['turn', 'game', 'dealer'],
   template: `
   <div class="player-hand"  >
-    <div v-for="hand in hands" >
-      <div v-for="(card, idx) in hand.cards" class="card" :class="card.suit" >
-        {{card.face}}
-      </div>
-
-      <div class="hand-score" >
-        <span>{{hand.scoreStr}}</span>
-      </div>
-    </div>
+    <cards-held
+      v-for="(hand, idx) in hands" :key="idx"
+      :cards="hand.cards"
+      :value="cardValue"
+      :game="game"
+      @cardResult="checkScore" >
+    </cards-held>
 
     <div class="player-ctrl" v-if="canCtrl" >
-      <button v-for="ctrl in ctrls" class="ctrl-btn" :class="'ctrl-' + ctrl" @click="doCtrl(ctrl)" >{{ctrl}}</button>
+      <button
+        v-for="ctrl in ctrls"
+        class="ctrl-btn" :class="'ctrl-' + ctrl"
+        @click="doCtrl(ctrl)" >
+        {{ctrl}}
+      </button>
     </div>
   </div>
   `,
+  components: {
+    'cards-held': CardsHeld,
+  },
   data() {
     return {
-      hands: [{ cards: [], score: 0, scoreStr: '', hardAce: true }],
+      hands: [{ cards: [], score: 0 }],
       activeHand: 0,
       ctrls: ['hit', 'stand', 'split', 'forfeit', 'double'],
+      dealt: {},
+      cardValue: 0,
     };
   },
   methods: {
-    revealCard() {
-      return this.game.deck.deal();
+    drawCard(isBlank = false) {
+      return isBlank
+        ? { face: 'x', score: 0, suit: 'blank' }
+        : this.game.deck.deal();
+    },
+    dealOut() {
+      // let card = ;
+      const isLastCard = this.dealer && this.game.roundStage === 2;
+
+      const newCard = this.drawCard(isLastCard);
+      this.pushToHand(newCard);
+
+      setTimeout(() => this.$emit('end-turn'), 500);
+    },
+    pushToHand(newCard) {
+      this.cardValue = newCard.score;
+      this.hands[this.activeHand].cards.push(newCard);
+    },
+    checkScore(score, skip) {
+      this.score = score;
+      if (skip) this.nextHand();
+    },
+    nextHand() {
+      if (this.hands.length > this.activeHand + 1) {
+        this.activeHand += 1;
+        return true;
+      }
+      return this.$emit('end-turn');
+    },
+    newGameReset() {
+      this.hands = [{ cards: [], score: 0 }];
+      this.activeHand = 0;
     },
     doCtrl(ctrl) {
       return this[ctrl]();
     },
     hit() {
       console.log('player-hit');
+      const newCard = this.drawCard();
+      this.pushToHand(newCard);
     },
     stand() {
       console.log('player-stand');
+      this.nextHand();
     },
     split() {
       console.log('player-split');
@@ -45,74 +88,6 @@ export default {
     },
     forfeit() {
       console.log('player-forfeit');
-    },
-    dealOut() {
-      let card = { face: 'x', score: 0, suit: 'blank' };
-      const lastCard = this.dealer && this.game.roundStage === 2;
-
-      if (!lastCard) {
-        card = this.revealCard();
-      }
-
-      this.pushToHand(card);
-
-      setTimeout(() => this.$emit('end-turn'), 500);
-    },
-    pushToHand(newCard) {
-      const hand = this.hands[this.activeHand];
-      const cards = hand.cards;
-
-      cards.push(newCard);
-
-      const firstCards = cards.length < 3;
-      const hasAce = firstCards && cards.some(card => card.face === 'A');
-
-//      const newCardScore = (hasAce && !hand.hardAce && (newCard.face === 'A'))
-//        ? 11
-//        : newCard.score;
-
-      const newScore = hand.score + newCard.score;
-
-      if (newScore > 21 && hand.hardAce) {
-        hand.score = newScore;
-        hand.scoreStr = `Bust ${newScore}`;
-        return this.endTurn();
-      }
-
-      if (newScore === 21 && firstCards) {
-        hand.score = newScore;
-        hand.scoreStr = `BlackJack ${newScore}`;
-        return true;
-      }
-
-      if (newScore > 21 && !hand.hardAce) {
-        hand.hardAce = true;
-        hand.score = newScore;
-        hand.scoreStr = newScore;
-        return true;
-      }
-
-      if (newScore < 21 && hasAce) {
-        hand.hardAce = false;
-        hand.score = newScore + 10;
-        hand.scoreStr = `Soft ${newScore + 10}`;
-        return true;
-      }
-
-      hand.score = newScore;
-      hand.scoreStr = newScore;
-
-      return true;
-    },
-    endTurn() {
-      if (this.game.roundStage > 2) {
-        return this.$emit('end-turn');
-      }
-      return false;
-    },
-    newGameReset() {
-      this.hands = [{ cards: [], score: 0, scoreStr: '', hardAce: true }];
-      this.activeHand = 0;
     },
   },
   watch: {
