@@ -1,16 +1,16 @@
-import CardsHeld from './cards-held';
+import game from '../game-play';
+import PlayerCards from './player-cards';
 
 export default {
-  props: ['turn', 'game', 'dealer'],
+  props: ['turn', 'dealer'],
   template: `
-  <div class="player-hand"  >
-    <cards-held
+  <div class="player-hand" >
+    <player-cards
       v-for="(hand, idx) in hands" :key="idx"
       :cards="hand.cards"
       :value="cardValue"
-      :game="game"
       @cardResult="checkScore" >
-    </cards-held>
+    </player-cards>
 
     <div class="player-ctrl" v-if="canCtrl" >
       <button
@@ -23,10 +23,11 @@ export default {
   </div>
   `,
   components: {
-    'cards-held': CardsHeld,
+    'player-cards': PlayerCards,
   },
   data() {
     return {
+      game,
       hands: [{ cards: [], score: 0 }],
       activeHand: 0,
       ctrls: ['hit', 'stand', 'split', 'forfeit', 'double'],
@@ -42,12 +43,13 @@ export default {
     },
     dealOut() {
       // let card = ;
-      const isLastCard = this.dealer && this.game.roundStage === 2;
+      const isLastCard = this.dealer && this.game.state.stage === 2;
 
       const newCard = this.drawCard(isLastCard);
       this.pushToHand(newCard);
 
-      setTimeout(() => this.$emit('end-turn'), 500);
+
+      setTimeout(() => this.game.endTurn(), 500);
     },
     pushToHand(newCard) {
       this.cardValue = newCard.score;
@@ -62,7 +64,7 @@ export default {
         this.activeHand += 1;
         return true;
       }
-      return this.$emit('end-turn');
+      return this.game.endTurn();
     },
     newGameReset() {
       this.hands = [{ cards: [], score: 0 }];
@@ -91,16 +93,19 @@ export default {
     },
   },
   watch: {
-    'game.UID': 'newGameReset',
+    'game.state.roundID': 'newGameReset',
     turn() {
       if (!this.turn) {
         return false;
       }
 
-      const stage = this.game.roundStage;
+      const stage = this.game.state.stage;
+
+      console.log(stage);
+
 
       if (stage === 1 || stage === 2) {
-        // return this.drawCard();
+        console.log('dealing out');
         return this.dealOut();
       }
       if (stage === 3 && this.dealer) {
@@ -111,7 +116,7 @@ export default {
   },
   computed: {
     canCtrl() {
-      return (this.turn && this.game.roundStage === 3);
+      return (this.turn && this.game.state.stage === 3);
     },
   },
 };

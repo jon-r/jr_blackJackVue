@@ -1,4 +1,5 @@
-import Deck from './deck';
+import Vue from 'vue';
+import game from './game-play';
 
 export default {
   template: `
@@ -9,34 +10,50 @@ export default {
       <input v-model.lazy="deckInput" type="text" id="deckInput" />
     </span>
 
-    <span v-for="player in playerInput" :key="playerInput.id" >
-      <label :for="playerInput.id" >{{playerInput.label}}</label>
-      <input v-model.lazy="playerInput.name" type="text" :id="playerInput.id" />
+    <span v-for="(player,idx) in playerInput" :key="idx" >
+      <label :for="player.label" >{{player.label}}</label>
+      <input v-model.lazy="player.name" type="text" :id="player.label" />
     </span>
 
     <input type="submit" val="Update" />
+
+    <button @click="skipBets" >Skip Bets</button>
   </form>`,
 
   data() {
-    return {
-      playerInput: [
-        { label: 'Player 1', name: 'Aaron' },
-        { label: 'Player 2', name: 'Beth' },
-        { label: 'Player 3', name: 'Chris' },
-        { label: 'Player 4', name: 'Denise' },
-        { label: 'Player 5', name: 'Ethan' },
-      ],
-      deckInput: 6,
-    };
+    return { game };
+  },
+  computed: {
+    deckInput() {
+      return this.game.defaults.deckInput;
+    },
+    playerInput() {
+      return this.game.defaults.playerInput;
+    },
   },
 
   methods: {
-    setOptions() {
-      const output = {
-        players: this.playerInput.concat([{ label: 'Dealer', name: 'Dealer' }]),
-        deck: new Deck(this.deckInput),
+    getOptions() {
+      const playerNames = this.playerInput.map(player => player.name);
+      playerNames.push('Dealer');
+
+      return {
+        players: playerNames,
+        deckcount: this.deckInput,
       };
-      return this.$emit('submit-options', output);
     },
+    setOptions() {
+      const options = this.getOptions();
+      this.game.newGame(options);
+    },
+    skipBets() {
+      const options = this.getOptions();
+      this.game.newGame(options);
+      Vue.nextTick(() => {
+        this.game.endStage();
+      });
+//       this.game.endTurn();
+    },
+
   },
 };

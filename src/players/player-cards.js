@@ -1,7 +1,7 @@
-
+import game from '../game-play';
 
 export default {
-  props: { cards: Array, value: Number, game: Object },
+  props: { cards: Array, value: Number },
   template: `
   <div class="held-cards" >
     <div v-for="card in this.cards" class="card" :class="card.suit" >
@@ -15,6 +15,7 @@ export default {
   `,
   data() {
     return {
+      game,
       scoreStr: '',
       hardAce: true,
       score: 0,
@@ -60,7 +61,7 @@ export default {
       this.$emit('cardResult', this.score, end);
     },
     newRoundReset() {
-      if (this.game.roundStage === 0) {
+      if (this.game.state.round === 0) {
         this.scoreStr = '';
         this.hardAce = true;
         this.score = 0;
@@ -69,6 +70,6 @@ export default {
   },
   watch: {
     cards: 'updateCards',
-    'game.roundStage': 'newRoundReset',
+    'game.state.round': 'newRoundReset',
   },
 };
