@@ -26,9 +26,6 @@ const app = new Vue({
 
   },
   methods: {
-    gameMsg(message) {
-      return this[message]();
-    },
 
     newGame(config, skipBets = false) {
       const newRoundID = this.shared.roundID + 1;

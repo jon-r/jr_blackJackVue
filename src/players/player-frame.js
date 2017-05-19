@@ -5,11 +5,25 @@ export default {
   props: ['shared', 'player'],
   template: `
   <section class="player-frame" :class="playerClass" >
+
     <h3 class="player-name" :class="{active: isPlayerTurn}" >{{player.name}}</h3>
 
-    <player-hand :player="player" :shared="shared" :turn="isPlayerTurn" @game-msg="gameMsg" ></player-hand>
+    <player-hand
+      :player="player"
+      :shared="shared"
+      :turn="isPlayerTurn"
+      @bid-change="updateBid"
+      @end-turn="endTurn" >
+    </player-hand>
 
-    <player-bet v-if="!player.isDealer" :shared="shared" :turn="isPlayerTurn" @game-msg="gameMsg" ></player-bet>
+    <player-bet
+      v-if="!player.isDealer"
+      :shared="shared"
+      :turn="isPlayerTurn"
+      :wins="wins"
+      @end-turn="endTurn" >
+    </player-bet>
+
   </section>`,
   components: {
     'player-hand': PlayerHand,
@@ -18,6 +32,7 @@ export default {
   data() {
     return {
       playerClass: `player-${this.player.index}`,
+      wins: 0,
     };
   },
 
@@ -28,8 +43,11 @@ export default {
   },
 
   methods: {
-    gameMsg(message) {
-      return this.$emit('game-msg', message);
+    endTurn() {
+      this.$emit('end-turn');
+    },
+    updateBid(value) {
+      this.playerWins += value;
     },
   },
 };

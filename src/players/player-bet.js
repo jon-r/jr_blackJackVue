@@ -1,6 +1,6 @@
 // TODO: set bids at chips instead of numbers
 export default {
-  props: ['turn', 'shared'],
+  props: ['turn', 'shared', 'wins'],
   template: `
   <div>
     <h5  class="player-money" >
@@ -13,6 +13,7 @@ export default {
         :min="minVal" :max="money" />
       <input v-if="validBid" type="button" @click="pushBet" value="Place Bet" />
     </div>
+
     <h4 class="player-bet" v-if="bet > 0" >
       Bet: £{{bet}}
     </h4>
@@ -53,7 +54,9 @@ export default {
       this.money -= bid;
       this.bet = bid;
 
-      this.$emit('game-msg', 'endTurn');
+      this.validBid = false;
+
+      this.$emit('end-turn');
     },
     newGameReset() {
       this.oldMoney = 0;

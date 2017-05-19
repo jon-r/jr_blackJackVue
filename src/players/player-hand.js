@@ -45,13 +45,14 @@ export default {
       const newCard = this.drawCard(isLastCard);
       this.pushToHand(newCard);
 
-      setTimeout(() => this.$emit('game-msg', 'endTurn'), 500);
+      setTimeout(() => this.$emit('end-turn'), 500);
     },
     pushToHand(newCard) {
       this.cardValue = newCard.score;
       this.hands[this.activeHand].cards.push(newCard);
     },
     checkScore(score, skip) {
+      // TODO set score to be max from all hands
       this.player.score = score;
       if (skip) this.nextHand();
     },
@@ -62,7 +63,7 @@ export default {
         return true;
       }
 
-      return this.$emit('game-msg', 'endTurn');
+      return this.$emit('end-turn');
     },
     newGameReset() {
       this.hands = [{ cards: [], score: 0 }];
@@ -80,13 +81,19 @@ export default {
       this.nextHand();
     },
     split() {
-      console.log('player-split');
+      this.$emit('bid-change', 'split');
+
+      const newCard = this.hands[this.activeHand].cards.splice(1);
+      this.hands.push({ cards: [newCard], score: newCard.score);
     },
     double() {
-      console.log('player-double');
+      this.$emit('bid-change', 'double');
+      this.hit();
+      return this.emit('end-turn');
     },
     forfeit() {
-      console.log('player-forfeit');
+      this.$emit('bid-change', 'forfeit');
+      return this.$emit('end-turn');
     },
   },
   watch: {

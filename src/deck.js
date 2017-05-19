@@ -16,8 +16,6 @@ function build(decks) {
     });
   });
 
-  console.log(`decks: ${decks}`);
-
   return cards;
 }
 

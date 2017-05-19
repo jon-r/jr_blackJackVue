@@ -14,9 +14,6 @@
 </head>
   <body>
 
-
-
-
     <main id="v-blackJack" >
 
       <options-form @new-game="newGame" ></options-form>
@@ -29,15 +26,12 @@
           :key="player.index"
           :shared="shared"
           :player="player"
-          @game-msg="gameMsg" >
+          @end-turn="endTurn" >
         </player-frame>
 
       </section>
 
-
-
     </main>
-
 
     <script src="dist/bundle.js"></script>
   </body>
