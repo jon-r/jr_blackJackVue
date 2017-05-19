@@ -4,17 +4,19 @@
  */
 function build(decks) {
   const cards = [];
-  const nDeck = new Array(decks).fill();
+  const nDecks = new Array(decks).fill();
   const nSuits = new Array(4).fill();
   const nFaces = new Array(13).fill();
 
-  nDeck.forEach((x, i) => {
+  nDecks.forEach((x, i) => {
     nSuits.forEach((y, j) => {
       nFaces.forEach((z, k) => {
         cards.push([k + 1, j]);
       });
     });
   });
+
+  console.log(`decks: ${decks}`);
 
   return cards;
 }

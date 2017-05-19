@@ -53,7 +53,7 @@ export default {
 
       return {
         players,
-        deckcount: this.deckInput,
+        deckCount: this.deckInput,
       };
     },
     setOptions() {
