@@ -57,8 +57,8 @@ export default {
     cardResult(end = false) {
       this.$emit('cardResult', this.score, end);
     },
-    newRoundReset() {
-      if (this.game.state.round === 0) {
+    newGameReset() {
+      if (this.shared.stage === 0) {
         this.scoreStr = '';
         this.hardAce = true;
         this.score = 0;
@@ -67,6 +67,6 @@ export default {
   },
   watch: {
     cards: 'updateCards',
-    'shared.round': 'newRoundReset',
+    'shared.roundID': 'newGameReset',
   },
 };

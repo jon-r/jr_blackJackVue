@@ -8,6 +8,7 @@ export default {
       v-for="(hand, idx) in hands" :key="idx"
       :cards="hand.cards"
       :value="cardValue"
+      :shared="shared"
       @cardResult="checkScore" >
     </player-cards>
 
@@ -51,7 +52,7 @@ export default {
       this.hands[this.activeHand].cards.push(newCard);
     },
     checkScore(score, skip) {
-      this.score = score;
+      this.player.score = score;
       if (skip) this.nextHand();
     },
     nextHand() {
@@ -66,6 +67,7 @@ export default {
     newGameReset() {
       this.hands = [{ cards: [], score: 0 }];
       this.activeHand = 0;
+      this.cardValue = 0;
     },
     doCtrl(ctrl) {
       return this[ctrl]();
