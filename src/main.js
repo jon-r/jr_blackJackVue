@@ -1,9 +1,9 @@
 import Vue from 'vue';
 
-import game from './game-play';
+// import game from './game-play';
 import PlayerFrame from './players/player-frame';
 import OptionsForm from './options-form';
-// import Deck from './deck';
+import Deck from './deck';
 
 const app = new Vue({
   el: '#v-blackJack',
@@ -12,38 +12,58 @@ const app = new Vue({
     'options-form': OptionsForm,
   },
   data: {
-    game,
+
+    shared: {
+      roundID: 0,
+      stage: 0,
+      player: 0,
+      deck: [],
+    },
+
+    players: [],
   },
   computed: {
-    players() {
-      return this.game.players;
-    },
+
   },
-//  watch: {
-//    players() {
-//      return gamePlay.players;
-//    }
-//  },
-//  methods: {
-//    setOptions(config) {
-//      return this.game.newGame(config);
-//    },
-//    nextPlayer() {
-//      const game = this.game;
-//
-//      game.activePlayer += 1;
-//      if (game.roundStage === 0 && game.activePlayer === game.dealerID) {
-//        return this.nextPlayer();
-//      }
-//
-//      if (game.activePlayer === this.players.length) {
-//        return this.nextRoundStage();
-//      }
-//
-//      return true;
-//    },
-//    nextRoundStage() {
-//      const game = this.game;
+  methods: {
+    gameMsg(message) {
+      return this[message]();
+    },
+
+    newGame(config, skipBets = false) {
+      const newRoundID = this.shared.roundID + 1;
+
+      this.players = config.players;
+
+      this.shared = {
+        roundID: newRoundID,
+        activePlayer: 0,
+        stage: 0,
+        deck: new Deck(config.deckCount),
+      };
+
+      if (skipBets) {
+        this.shared.activePlayer = 10;
+        Vue.nextTick(() => this.endStage());
+      }
+    },
+    endTurn() {
+      const shared = this.shared;
+      shared.activePlayer += 1;
+
+      if (shared.stage === 0 && this.players[shared.activePlayer].isDealer) {
+        return this.endStage();
+      }
+
+      if (shared.activePlayer === this.players.length) {
+        return this.endStage();
+      }
+
+      return shared.activePlayer;
+    },
+
+    endStage() {
+      const shared = this.shared;
 //      const roundHooks = [
 //        'place bids',
 //        'deal first card',
@@ -51,19 +71,13 @@ const app = new Vue({
 //        'player turns',
 //        'end round',
 //      ];
-//
-//      game.activePlayer = 0;
-//      game.roundStage += 1;
-//
-//      console.log(roundHooks[game.roundStage]);
-//    },
-//    skipBets() {
-//      this.newGame();
-//      this.nextPlayer();
-//      Vue.nextTick(() => this.nextRoundStage());
-//    },
-//  },
+
+      shared.activePlayer = 0;
+      shared.stage += 1;
+//      console.log(roundHooks[shared.stage]);
+    },
+  },
 });
 
 // just here to skip the 'unused' error
-export { app };
+export default app;

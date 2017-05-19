@@ -19,31 +19,17 @@
 
     <main id="v-blackJack" >
 
-      <options-form ></options-form>
-
-<!--      <form id="v-options" class="intro-form" @submit.prevent="newGame" >
-
-        <span >
-          <label for="deckInput" >Decks</label>
-          <input v-model.lazy="config.deckInput" type="text" id="deckInput" />
-        </span>
-
-        <span v-for="playerInput in config.playerInput" :key="playerInput.id" >
-          <label :for="playerInput.id" >{{playerInput.label}}</label>
-          <input v-model.lazy="playerInput.name" type="text" :id="playerInput.id" />
-        </span>
-
-        <input type="submit" val="Update"  />
-      </form>-->
+      <options-form @new-game="newGame" ></options-form>
 
 
       <section class="table" >
 
         <player-frame
-          v-for="(player, idx) in players"
-          :key="idx"
-          :idx="idx"
-          :name="player" >
+          v-for="player in players"
+          :key="player.index"
+          :shared="shared"
+          :player="player"
+          @game-msg="gameMsg" >
         </player-frame>
 
       </section>

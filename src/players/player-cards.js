@@ -1,7 +1,5 @@
-import game from '../game-play';
-
 export default {
-  props: { cards: Array, value: Number },
+  props: ['cards', 'value', 'shared'],
   template: `
   <div class="held-cards" >
     <div v-for="card in this.cards" class="card" :class="card.suit" >
@@ -15,7 +13,6 @@ export default {
   `,
   data() {
     return {
-      game,
       scoreStr: '',
       hardAce: true,
       score: 0,
@@ -70,6 +67,6 @@ export default {
   },
   watch: {
     cards: 'updateCards',
-    'game.state.round': 'newRoundReset',
+    'shared.round': 'newRoundReset',
   },
 };

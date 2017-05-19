@@ -1,17 +1,15 @@
-import game from '../game-play';
-
 import PlayerHand from './player-hand';
 import PlayerBet from './player-bet';
 
 export default {
-  props: ['name', 'idx'],
+  props: ['shared', 'player'],
   template: `
   <section class="player-frame" :class="playerClass" >
-    <h3 class="player-name" :class="{active: playerTurn}" >{{name}}</h3>
+    <h3 class="player-name" :class="{active: isPlayerTurn}" >{{player.name}}</h3>
 
-    <player-hand :dealer="isDealer" :turn="playerTurn" ></player-hand>
+    <player-hand :player="player" :shared="shared" :turn="isPlayerTurn" @game-msg="gameMsg" ></player-hand>
 
-    <player-bet v-if="!isDealer" :turn="playerTurn" ></player-bet>
+    <player-bet v-if="!player.isDealer" :shared="shared" :turn="isPlayerTurn" @game-msg="gameMsg" ></player-bet>
   </section>`,
   components: {
     'player-hand': PlayerHand,
@@ -19,33 +17,19 @@ export default {
   },
   data() {
     return {
-      game,
-      playerClass: `player-${this.idx}`,
-//      playerTurn: gamePlay.state.turn === this.idx,
+      playerClass: `player-${this.player.index}`,
     };
   },
 
-//  watch: {
-//    'gameState': {
-//      handler: function updateTurn() {
-//        console.log('turn updated watch');
-//        this.playerTurn = this.gameState.turn === this.idx;
-//      },
-//      deep: true,
-//    },
-//
-//  },
   computed: {
-    isDealer() {
-      return this.game.dealerID === this.idx;
-    },
-    playerTurn() {
-      return this.game.state.turn === this.idx;
+    isPlayerTurn() {
+      return this.shared.activePlayer === this.player.index;
     },
   },
-//  methods: {
-//    endTurn() {
-//      return this.$emit('end-turn');
-//    },
-//  },
+
+  methods: {
+    gameMsg(message) {
+      return this.$emit('game-msg', message);
+    },
+  },
 };

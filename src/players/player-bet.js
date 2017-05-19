@@ -1,8 +1,6 @@
-import game from '../game-play';
-
 // TODO: set bids at chips instead of numbers
 export default {
-  props: ['turn'],
+  props: ['turn', 'shared'],
   template: `
   <div>
     <h5  class="player-money" >
@@ -22,7 +20,6 @@ export default {
   `,
   data() {
     return {
-      game,
       oldMoney: 0,
       bet: 0,
       bidStart: 500,
@@ -43,7 +40,7 @@ export default {
       return Math.min(100, this.money);
     },
     canBid() {
-      return (this.game.state.stage === 0) && this.turn;
+      return (this.shared.stage === 0) && this.turn;
     },
     validBid() {
       return (this.bidStart > this.minVal) && (this.bidStart < this.money);
@@ -56,7 +53,7 @@ export default {
       this.money -= bid;
       this.bet = bid;
 
-      this.game.endTurn();
+      this.$emit('game-msg', 'endTurn');
     },
     newGameReset() {
       this.oldMoney = 0;
@@ -66,6 +63,6 @@ export default {
     },
   },
   watch: {
-    'game.state.roundID': 'newGameReset',
+    'shared.roundID': 'newGameReset',
   },
 };

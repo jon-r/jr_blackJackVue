@@ -23,7 +23,7 @@
     <use xlink:href="#a" filter="url(#c)" fill="#2a5a30"/>
     <use xlink:href="#a" filter="url(#d)" fill="none"/>
   </g>
-  <g font-family="Georgia" filter="url(#e)" opacity=".7" letter-spacing=".8">
+  <g filter="url(#e)" opacity=".7" >
     <g stroke="#e2c213" fill="none">
       <path d="M112.6 92.43c35.18 0 65.25-21.88 77.34-52.78.4-1.05-.13-2.22-1.18-2.6l-11.7-4.26c-1.02-.4-2.14.1-2.54 1.1-9.77 24.64-33.8 42.1-61.92 42.1S60.44 58.53 50.68 33.9c-.4-1-1.52-1.5-2.54-1.14L36.44 37c-1.05.4-1.6 1.56-1.18 2.6 12.1 30.9 42.16 52.8 77.34 52.8z"/>
       <circle cx="112.5" cy="116.11" r="8"/>
@@ -32,7 +32,7 @@
       <circle cx="157.65" cy="106.15" r="8"/>
       <circle cx="194.35" cy="78.04" r="8"/>
     </g>
-    <g fill="#e2c213" text-anchor="middle">
+    <g fill="#e2c213" text-anchor="middle" font-family="Georgia" letter-spacing=".8" >
       <text>
         <textPath xlink:href="#f" startOffset="25%" font-size="10">BLACKJACK PAYS 3 TO 2</textPath>
       </text>
