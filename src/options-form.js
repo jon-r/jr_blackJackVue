@@ -38,7 +38,6 @@ export default {
       const players = this.playerInput.map((player, index) => ({
         index,
         name: player.name,
-        score: 0,
         isDealer: false,
       }));
 
@@ -47,7 +46,6 @@ export default {
       players.push({
         index: dealerIdx,
         name: 'Dealer',
-        score: 0,
         isDealer: true,
       });
 

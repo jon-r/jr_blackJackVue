@@ -1,3 +1,5 @@
+// import Vue from 'vue';
+
 import PlayerHand from './player-hand';
 import PlayerBet from './player-bet';
 
@@ -20,9 +22,13 @@ export default {
       v-if="!player.isDealer"
       :shared="shared"
       :turn="isPlayerTurn"
-      :wins="wins"
-      @end-turn="endTurn" >
+      :cost="cost"
+      @push-bet="setBid" >
     </player-bet>
+
+    <h4 class="player-bet" v-if="bet > 0" >
+      Bet: £{{bet}}
+    </h4>
 
   </section>`,
   components: {
@@ -33,6 +39,8 @@ export default {
     return {
       playerClass: `player-${this.player.index}`,
       wins: 0,
+      bet: 0,
+      cost: 0,
     };
   },
 
@@ -46,8 +54,27 @@ export default {
     endTurn() {
       this.$emit('end-turn');
     },
+    setBid(bet) {
+      this.bet = bet;
+      this.endTurn();
+    },
     updateBid(value) {
-      this.playerWins += value;
+      const bet = this.bet;
+      const multipliers = {
+        double: { cost: -1, wins: 2 },
+        split: { cost: -1, wins: 2 },
+        forfeit: { cost: 0.5, wins: 0 },
+        blackJack: { cost: 0, wins: 2.5 },
+        lose: { cost: 0, wins: 0 },
+        push: { cost: 0, wins: 1 },
+        win: { cost: 0, wins: 2 },
+      };
+
+      const scoring = multipliers[value];
+      this.cost = scoring.cost * bet;
+      this.bet *= scoring.wins;
+      console.log(`cost: ${this.cost}, bet: ${this.bet}`);
+      this.$nextTick(() => { this.cost = 0; });
     },
   },
 };

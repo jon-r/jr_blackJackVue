@@ -1,15 +1,22 @@
+/* TODO: the cards need to update when a card is revealed. NOT when the card is dealt
+  1) reset the reveal timout (it was working)
+  2) set to be a pinging new card (see the money change ping/reset)
+  3) since pinging new card, screokeeping can be optimised to only add a new card?
+  4) also perhaps this ping change could be used elsewhere to (eg new round/game);
+*/
+
+
 import PlayerCards from './player-cards';
 
 export default {
   props: ['turn', 'player', 'shared'],
   template: `
   <div class="player-hand" >
+
     <player-cards
       v-for="(hand, idx) in hands" :key="idx"
       :cards="hand.cards"
-      :value="cardValue"
-      :shared="shared"
-      @cardResult="checkScore" >
+      @score-update="checkScore" >
     </player-cards>
 
     <div class="player-ctrl" v-if="canCtrl" >
@@ -30,70 +37,106 @@ export default {
       hands: [{ cards: [], score: 0 }],
       activeHand: 0,
       ctrls: ['hit', 'stand', 'split', 'forfeit', 'double'],
-      cardValue: 0,
+      autoTime: 500,
     };
   },
-  methods: {
-    drawCard(isBlank = false) {
-      return isBlank
-        ? { face: 'x', score: 0, suit: 'blank' }
-        : this.shared.deck.deal();
+  computed: {
+    canCtrl() {
+      return (this.turn && this.shared.stage === 3);
     },
+  },
+  methods: {
     dealOut() {
       const isLastCard = this.player.isDealer && this.shared.stage === 2;
 
-      const newCard = this.drawCard(isLastCard);
-      this.pushToHand(newCard);
+      this.deal();
+      if (!isLastCard) this.reveal();
 
-      setTimeout(() => this.$emit('end-turn'), 500);
+      setTimeout(() => this.endTurn(), this.autoTime);
     },
-    pushToHand(newCard) {
-      this.cardValue = newCard.score;
-      this.hands[this.activeHand].cards.push(newCard);
-    },
-    checkScore(score, skip) {
-      // TODO set score to be max from all hands
-      this.player.score = score;
-      if (skip) this.nextHand();
-    },
-    nextHand() {
-      this.activeHand += 1;
 
-      if (this.hands.length > this.activeHand) {
-        return true;
+    deal() {
+      const activeCards = this.hands[this.activeHand].cards;
+      activeCards.push({ face: 'x', score: 0, suit: 'blank' });
+
+      return this;
+    },
+
+    reveal() {
+      newCard = this.shared.deck.deal();
+      this.$nextTick(() => {
+        const activeCards = this.hands[this.activeHand].cards;
+        const i = activeCards.findIndex(card => card.face === 'x');
+
+        return this;
+      });
+    },
+
+    checkScore(score) {
+      if (!this.turn) {
+        return false;
       }
 
-      return this.$emit('end-turn');
+      this.hands[this.activeHand].score = score;
+      if (score > 20 && this.shared.stage === 3) this.nextHand();
+      return score;
+      // TODO set score to be max from all hands
     },
+
+    nextHand() {
+      this.activeHand += 1;
+      if (this.hands.length === this.activeHand) this.$emit('end-turn');
+    },
+
     newGameReset() {
       this.hands = [{ cards: [], score: 0 }];
       this.activeHand = 0;
-      this.cardValue = 0;
     },
+
     doCtrl(ctrl) {
       return this[ctrl]();
     },
+
     hit() {
-      const newCard = this.drawCard();
-      this.pushToHand(newCard);
+      this.deal().reveal();
     },
+
     stand() {
       this.nextHand();
     },
-    split() {
-      this.$emit('bid-change', 'split');
 
-      const newCard = this.hands[this.activeHand].cards.splice(1);
-      this.hands.push({ cards: [newCard], score: newCard.score);
+    split() {
+      this.bidChange('split');
+      const splitCard = this.hands[this.activeHand].cards.splice(1)[0];
+      this.hands.push({ cards: [splitCard], score: splitCard.score });
     },
+
     double() {
-      this.$emit('bid-change', 'double');
-      this.hit();
-      return this.emit('end-turn');
+      this.bidChange('double')
+        .deal()
+        .endTurn();
     },
+
     forfeit() {
-      this.$emit('bid-change', 'forfeit');
-      return this.$emit('end-turn');
+      this.bidChange('forfeit')
+        .endTurn();
+    },
+
+    dealerDraw() {
+      if (this.hands[0].score > 20) {
+        return this.endTurn();
+      }
+      setTimeout(() => this.hit().dealerDraw(), this.autoTime);
+      return true;
+    },
+
+    bidChange(str) {
+      this.$emit('bid-change', str);
+      return this;
+    },
+
+    endTurn() {
+      this.$emit('end-turn');
     },
   },
   watch: {
@@ -109,14 +152,9 @@ export default {
         return this.dealOut();
       }
       if (stage === 3 && this.player.isDealer) {
-        console.log('dealer draw');
+        return this.dealerDraw();
       }
       return false;
-    },
-  },
-  computed: {
-    canCtrl() {
-      return (this.turn && this.shared.stage === 3);
     },
   },
 };

@@ -16,15 +16,13 @@ const app = new Vue({
     shared: {
       roundID: 0,
       stage: 0,
-      player: 0,
+      activePlayer: 0,
       deck: [],
     },
 
     players: [],
   },
-  computed: {
 
-  },
   methods: {
 
     newGame(config, skipBets = false) {
@@ -41,7 +39,7 @@ const app = new Vue({
 
       if (skipBets) {
         this.shared.activePlayer = 10;
-        Vue.nextTick(() => this.endStage());
+        this.$nextTick(() => this.endStage());
       }
     },
     endTurn() {

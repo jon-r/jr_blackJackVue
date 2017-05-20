@@ -1,6 +1,6 @@
 // TODO: set bids at chips instead of numbers
 export default {
-  props: ['turn', 'shared', 'wins'],
+  props: ['turn', 'shared', 'cost'],
   template: `
   <div>
     <h5  class="player-money" >
@@ -14,15 +14,12 @@ export default {
       <input v-if="validBid" type="button" @click="pushBet" value="Place Bet" />
     </div>
 
-    <h4 class="player-bet" v-if="bet > 0" >
-      Bet: £{{bet}}
-    </h4>
+
   </div>
   `,
   data() {
     return {
       oldMoney: 0,
-      bet: 0,
       bidStart: 500,
       money: 1000,
     };
@@ -52,11 +49,22 @@ export default {
       const bid = this.bidStart;
 
       this.money -= bid;
-      this.bet = bid;
+      // this.bet = bid;
 
       this.validBid = false;
 
-      this.$emit('end-turn');
+      this.$emit('push-bet', bid);
+    },
+    changeMoney() {
+      console.log('updating money');
+      const moneyChange = this.cost;
+      if (moneyChange === 0) {
+        return false;
+      }
+
+      this.money += moneyChange;
+
+      return this;
     },
     newGameReset() {
       this.oldMoney = 0;
@@ -67,5 +75,6 @@ export default {
   },
   watch: {
     'shared.roundID': 'newGameReset',
+    cost: 'changeMoney',
   },
 };

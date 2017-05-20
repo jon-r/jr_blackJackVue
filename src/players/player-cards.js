@@ -1,72 +1,71 @@
 export default {
-  props: ['cards', 'value', 'shared'],
+  props: ['cards'],
   template: `
   <div class="held-cards" >
     <div v-for="card in this.cards" class="card" :class="card.suit" >
       {{card.face}}
     </div>
-
     <div class="hand-score" >
-      <span>{{this.scoreStr}} {{this.score}}</span>
+      {{this.scoreStr}} {{this.score}}
     </div>
   </div>
   `,
   data() {
     return {
-      scoreStr: '',
       hardAce: true,
-      score: 0,
+      scoreStr: '',
     };
   },
+  computed: {
+    score() {
+      if (!this.cards.length) {
+        return 0;
+      }
+      const score = this.setScore(this.cards);
+      this.$emit('score-update', score);
+      return score;
+    },
+
+  },
   methods: {
-    updateCards() {
-      const cards = this.cards;
+    setScore(cards) {
       const firstCards = cards.length < 3;
       const hasSoftAce = firstCards && cards.some(card => card.face === 'A');
 
-      const newScore = this.score + this.value;
-
-      this.score = newScore;
+      const newScore = cards.reduce((score, card) => score + card.score, 0);
 
       if (newScore > 21 && this.hardAce) {
         this.scoreStr = 'Bust';
-        this.skip = true;
-        return this.cardResult(true);
-      }
-
-      if (newScore === 21 && firstCards) {
-        this.scoreStr = 'BlackJack';
-        return this.cardResult();
+        return newScore;
       }
 
       if (newScore > 21 && !this.hardAce) {
         this.hardAce = true;
-        this.score -= 10;
         this.scoreStr = '';
-        return this.cardResult();
+        const aceFix = newScore - 10;
+
+        return aceFix;
+      }
+
+      if (newScore === 21 && firstCards) {
+        this.scoreStr = 'BlackJack';
+        return newScore;
       }
 
       if (newScore < 21 && hasSoftAce) {
         this.hardAce = false;
         this.scoreStr = 'Soft';
-        return this.cardResult();
       }
-
-      return this.cardResult();
-    },
-    cardResult(end = false) {
-      this.$emit('cardResult', this.score, end);
+      return newScore;
     },
     newGameReset() {
-      if (this.shared.stage === 0) {
+      if (this.score === 0) {
         this.scoreStr = '';
         this.hardAce = true;
-        this.score = 0;
       }
     },
   },
   watch: {
-    cards: 'updateCards',
-    'shared.roundID': 'newGameReset',
+    score: 'newGameReset',
   },
 };
