@@ -2,8 +2,8 @@
 export default {
   props: ['turn', 'shared', 'cost'],
   template: `
-  <div>
-    <h5  class="player-money" >
+  <div class="player-money" >
+    <h5>
       Money: £{{money}}
       <span :class="diffClass" >£{{moneyDiff}}</span>
     </h5>
@@ -13,8 +13,6 @@ export default {
         :min="minVal" :max="money" />
       <input v-if="validBid" type="button" @click="pushBet" value="Place Bet" />
     </div>
-
-
   </div>
   `,
   data() {

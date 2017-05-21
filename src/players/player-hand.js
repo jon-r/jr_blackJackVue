@@ -5,7 +5,6 @@
   4) also perhaps this ping change could be used elsewhere to (eg new round/game);
 */
 
-
 import PlayerCards from './player-cards';
 
 export default {
@@ -22,6 +21,7 @@ export default {
     <div class="player-ctrl" v-if="canCtrl" >
       <button
         v-for="ctrl in ctrls"
+        v-if="canDo[ctrl]"
         class="ctrl-btn" :class="'ctrl-' + ctrl"
         @click="doCtrl(ctrl)" >
         {{ctrl}}
@@ -34,42 +34,58 @@ export default {
   },
   data() {
     return {
-      hands: [{ cards: [], score: 0 }],
+      hands: this.getBlank(),
+      firstCtrl: true,
       activeHand: 0,
-      ctrls: ['hit', 'stand', 'split', 'forfeit', 'double'],
-      autoTime: 500,
+      ctrls: ['hit', 'stand', 'split', 'surrender', 'double'],
+      autoTime: 200,
     };
   },
   computed: {
     canCtrl() {
       return (this.turn && this.shared.stage === 3);
     },
+    canDo() {
+      const firstCards = this.hands[0].cards;
+      return {
+        hit: true,
+        stand: true,
+        split: this.firstCtrl && this.canSplit(),
+        surrender: this.firstCtrl,
+        double: this.firstCtrl,
+      };
+    },
   },
   methods: {
+    getBlank() {
+      return [{ cards: [], score: 0 }];
+    },
+
     dealOut() {
       const isLastCard = this.player.isDealer && this.shared.stage === 2;
 
-      this.deal();
-      if (!isLastCard) this.reveal();
+      this.deal(!isLastCard);
 
       setTimeout(() => this.endTurn(), this.autoTime);
     },
 
-    deal() {
-      const activeCards = this.hands[this.activeHand].cards;
-      activeCards.push({ face: 'x', score: 0, suit: 'blank' });
+    deal(showCard = false) {
+      const active = this.hands[this.activeHand];
+
+      const newCard = showCard
+        ? this.shared.deck.deal()
+        : { face: 'x', score: 0, suit: 'blank' };
+
+      const firstBlank = active.cards.findIndex(card => card.face === 'x');
+
+      if (newCard.face === 'x' || firstBlank === -1) {
+        active.cards.push(newCard);
+        return this;
+      }
+
+      active.cards[firstBlank] = newCard;
 
       return this;
-    },
-
-    reveal() {
-      newCard = this.shared.deck.deal();
-      this.$nextTick(() => {
-        const activeCards = this.hands[this.activeHand].cards;
-        const i = activeCards.findIndex(card => card.face === 'x');
-
-        return this;
-      });
     },
 
     checkScore(score) {
@@ -89,16 +105,19 @@ export default {
     },
 
     newGameReset() {
-      this.hands = [{ cards: [], score: 0 }];
+      this.hands = this.getBlank();
       this.activeHand = 0;
+      this.firstCtrl = true;
     },
 
     doCtrl(ctrl) {
+      this.firstCtrl = false;
       return this[ctrl]();
     },
 
     hit() {
-      this.deal().reveal();
+      this.deal(true);
+      return this;
     },
 
     stand() {
@@ -107,19 +126,23 @@ export default {
 
     split() {
       this.bidChange('split');
-      const splitCard = this.hands[this.activeHand].cards.splice(1)[0];
+      const splitCard = this.hands[0].cards.splice(1)[0];
       this.hands.push({ cards: [splitCard], score: splitCard.score });
     },
 
-    double() {
-      this.bidChange('double')
-        .deal()
-        .endTurn();
+    canSplit() {
+      const cards = this.hands[0].cards;
+      const firstCardFace = cards[0].face;
+
+      return cards.every(card => card.face === firstCardFace);
     },
 
-    forfeit() {
-      this.bidChange('forfeit')
-        .endTurn();
+    double() {
+      this.bidChange('double').deal().endTurn();
+    },
+
+    surrender() {
+      this.bidChange('forfeit').endTurn();
     },
 
     dealerDraw() {

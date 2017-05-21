@@ -18,17 +18,18 @@ export default {
       @end-turn="endTurn" >
     </player-hand>
 
-    <player-bet
-      v-if="!player.isDealer"
-      :shared="shared"
-      :turn="isPlayerTurn"
-      :cost="cost"
-      @push-bet="setBid" >
-    </player-bet>
+    <template v-if="!player.isDealer" >
+      <player-bet      
+        :shared="shared"
+        :turn="isPlayerTurn"
+        :cost="cost"
+        @push-bet="setBid" >
+      </player-bet>
 
-    <h4 class="player-bet" v-if="bet > 0" >
-      Bet: £{{bet}}
-    </h4>
+      <h4 class="player-bet" v-if="bet > 0" >
+        Bet: £{{bet}}
+      </h4>
+    </template>
 
   </section>`,
   components: {

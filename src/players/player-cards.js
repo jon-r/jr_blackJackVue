@@ -14,23 +14,21 @@ export default {
     return {
       hardAce: true,
       scoreStr: '',
+      score: this.scoreCheck(this.cards),
     };
   },
-  computed: {
-    score() {
-      if (!this.cards.length) {
-        return 0;
-      }
-      const score = this.setScore(this.cards);
-      this.$emit('score-update', score);
-      return score;
+  computed: {},
+  methods: {
+
+    setScore() {
+      const revealedCards = this.cards.filter(card => card.face !== 'x');
+
+      this.score = this.scoreCheck(revealedCards);
+      this.$emit('score-update', this.score);
     },
 
-  },
-  methods: {
-    setScore(cards) {
-      const firstCards = cards.length < 3;
-      const hasSoftAce = firstCards && cards.some(card => card.face === 'A');
+    scoreCheck(cards) {
+      if (cards.length === 0) return 0;
 
       const newScore = cards.reduce((score, card) => score + card.score, 0);
 
@@ -47,10 +45,14 @@ export default {
         return aceFix;
       }
 
+      const firstCards = cards.length < 3;
+
       if (newScore === 21 && firstCards) {
         this.scoreStr = 'BlackJack';
         return newScore;
       }
+
+      const hasSoftAce = firstCards && cards.some(card => card.face === 'A');
 
       if (newScore < 21 && hasSoftAce) {
         this.hardAce = false;
@@ -62,10 +64,13 @@ export default {
       if (this.score === 0) {
         this.scoreStr = '';
         this.hardAce = true;
+        this.cards = [];
       }
     },
   },
   watch: {
     score: 'newGameReset',
+    cards: 'setScore',
+    // new: 'addCard',
   },
 };
