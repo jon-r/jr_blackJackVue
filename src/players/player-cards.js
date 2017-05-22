@@ -11,66 +11,39 @@ export default {
   </div>
   `,
   data() {
-    return {
-      hardAce: true,
-      scoreStr: '',
-      score: this.scoreCheck(this.cards),
-    };
+    return { aces: 0 };
   },
-  computed: {},
-  methods: {
-
-    setScore() {
+  computed: {
+    score() {
       const revealedCards = this.cards.filter(card => card.face !== 'x');
 
-      this.score = this.scoreCheck(revealedCards);
-      this.$emit('score-update', this.score);
-    },
+      if (revealedCards.length === 0) return 0;
 
-    scoreCheck(cards) {
-      if (cards.length === 0) return 0;
+      this.aces = revealedCards.reduce((count, card) => count + (card.face === 'A'), 0);
 
-      const newScore = cards.reduce((score, card) => score + card.score, 0);
+      let newScore = revealedCards.reduce((score, card) => score + card.score, 0);
 
-      if (newScore > 21 && this.hardAce) {
-        this.scoreStr = 'Bust';
-        return newScore;
+      // reduces as many aces as needed (if possible) to keep the score down
+      while (newScore > 21 && this.aces > 0) {
+        this.aces -= 1;
+        newScore -= 10;
       }
-
-      if (newScore > 21 && !this.hardAce) {
-        this.hardAce = true;
-        this.scoreStr = '';
-        const aceFix = newScore - 10;
-
-        return aceFix;
-      }
-
-      const firstCards = cards.length < 3;
-
-      if (newScore === 21 && firstCards) {
-        this.scoreStr = 'BlackJack';
-        return newScore;
-      }
-
-      const hasSoftAce = firstCards && cards.some(card => card.face === 'A');
-
-      if (newScore < 21 && hasSoftAce) {
-        this.hardAce = false;
-        this.scoreStr = 'Soft';
-      }
+      this.$emit('input', newScore);
       return newScore;
     },
-    newGameReset() {
-      if (this.score === 0) {
-        this.scoreStr = '';
-        this.hardAce = true;
-        this.cards = [];
-      }
+
+    scoreStr() {
+      const score = this.score;
+
+      if (score > 21) return 'Bust';
+
+      if (score === 21 && this.cards.length < 3) return 'BlackJack';
+
+      if (this.aces > 0) return 'Soft';
+
+      return '';
     },
   },
-  watch: {
-    score: 'newGameReset',
-    cards: 'setScore',
-    // new: 'addCard',
-  },
+  methods: {},
+  watch: {},
 };
