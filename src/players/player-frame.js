@@ -15,7 +15,8 @@ export default {
       :shared="shared"
       :turn="isPlayerTurn"
       @bid-change="updateBid"
-      @end-turn="endTurn" >
+      @end-turn="endTurn"
+      v-model="player.score" >
     </player-hand>
 
     <template v-if="!player.isDealer" >

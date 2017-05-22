@@ -44,6 +44,12 @@ export default {
       return '';
     },
   },
-  methods: {},
-  watch: {},
+  methods: {
+    logScore() {
+      console.log(this.cards);
+    }
+  },
+  watch: {
+    cards: 'logScore',
+  },
 };

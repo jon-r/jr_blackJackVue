@@ -15,8 +15,9 @@ export default {
     <player-cards
       v-for="(hand, idx) in hands" :key="idx"
       :cards="hand.cards"
-      @score-update="checkScore" >
+      v-model="hand.score" >
     </player-cards>
+    activeHand {{activeHand}}
 
     <div class="player-ctrl" v-if="canCtrl" >
       <button
@@ -34,7 +35,7 @@ export default {
   },
   data() {
     return {
-      hands: this.getBlank(),
+      hands: this.setBlankCard(),
       firstCtrl: true,
       activeHand: 0,
       ctrls: ['hit', 'stand', 'split', 'surrender', 'double'],
@@ -43,7 +44,11 @@ export default {
   },
   computed: {
     canCtrl() {
-      return (this.turn && this.shared.stage === 3);
+      if (!this.turn) return false;
+
+      const stage = this.shared.stage;
+
+      return this.startTurn(stage);
     },
     canDo() {
       const firstCards = this.hands[0].cards;
@@ -57,8 +62,30 @@ export default {
     },
   },
   methods: {
-    getBlank() {
-      return [{ cards: [], score: 0 }];
+
+    startTurn(stage) {
+      // dealing out all cards
+      if (stage === 1 || stage === 2) {
+        this.dealOut();
+        return false;
+      }
+
+      if (stage === 3 && this.player.isDealer) {
+        this.dealerDraw();
+        return false;
+      }
+
+      if (stage === 3) {
+        this.forceNextHand();
+        return true;
+      }
+
+      if (stage === 4) {
+        this.submitScore();
+        return false;
+      }
+
+      return false;
     },
 
     dealOut() {
@@ -70,33 +97,22 @@ export default {
     },
 
     deal(showCard = false) {
-      const active = this.hands[this.activeHand];
+      const activeCards = this.hands[this.activeHand].cards;
 
       const newCard = showCard
         ? this.shared.deck.deal()
         : { face: 'x', score: 0, suit: 'blank' };
 
-      const firstBlank = active.cards.findIndex(card => card.face === 'x');
+      const firstBlank = activeCards.findIndex(card => card.face === 'x');
 
       if (newCard.face === 'x' || firstBlank === -1) {
-        active.cards.push(newCard);
+        activeCards.push(newCard);
         return this;
       }
 
-      active.cards[firstBlank] = newCard;
+      this.$set(activeCards, firstBlank, newCard);
 
       return this;
-    },
-
-    checkScore(score) {
-      if (!this.turn) {
-        return false;
-      }
-
-      this.hands[this.activeHand].score = score;
-      if (score > 20 && this.shared.stage === 3) this.nextHand();
-      return score;
-      // TODO set score to be max from all hands
     },
 
     nextHand() {
@@ -104,8 +120,14 @@ export default {
       if (this.hands.length === this.activeHand) this.$emit('end-turn');
     },
 
+    forceNextHand() {
+      if (this.hands[this.activeHand].score > 20) {
+        this.nextHand();
+      }
+    },
+
     newGameReset() {
-      this.hands = this.getBlank();
+      this.hands = this.setBlankCard();
       this.activeHand = 0;
       this.firstCtrl = true;
     },
@@ -132,8 +154,9 @@ export default {
 
     canSplit() {
       const cards = this.hands[0].cards;
-      const firstCardFace = cards[0].face;
+      if (cards.length === 0) return false;
 
+      const firstCardFace = cards[0].face;
       return cards.every(card => card.face === firstCardFace);
     },
 
@@ -145,39 +168,42 @@ export default {
       this.bidChange('forfeit').endTurn();
     },
 
-    dealerDraw() {
-      if (this.hands[0].score > 20) {
-        return this.endTurn();
-      }
-      setTimeout(() => this.hit().dealerDraw(), this.autoTime);
-      return true;
-    },
-
     bidChange(str) {
       this.$emit('bid-change', str);
       return this;
     },
 
+    dealerDraw() {
+      this.hit();
+
+      setTimeout(() => {
+        if (this.hands[0].score < 17) {
+          this.dealerDraw();
+        } else {
+          this.endTurn();
+        }
+      }, 1000);
+    },
+
     endTurn() {
       this.$emit('end-turn');
+    },
+
+    setBlankCard() {
+      return [{ cards: [], score: 0 }];
+    },
+
+    submitScore() {
+      // also filtering out any bust scores
+      const allScores = this.hands.map(hand => (hand.score > 21 ? 0 : hand.score));
+
+      const bestScore = Math.max(...allScores);
+
+      this.$emit('input', bestScore);
     },
   },
   watch: {
     'shared.roundID': 'newGameReset',
-    turn() {
-      if (!this.turn) {
-        return false;
-      }
-
-      const stage = this.shared.stage;
-
-      if (stage === 1 || stage === 2) {
-        return this.dealOut();
-      }
-      if (stage === 3 && this.player.isDealer) {
-        return this.dealerDraw();
-      }
-      return false;
-    },
+    hands: { handler: 'forceNextHand', deep: true },
   },
 };
