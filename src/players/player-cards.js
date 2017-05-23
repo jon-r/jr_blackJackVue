@@ -45,11 +45,9 @@ export default {
     },
   },
   methods: {
-    logScore() {
-      console.log(this.cards);
-    }
+
   },
   watch: {
-    cards: 'logScore',
+
   },
 };

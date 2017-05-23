@@ -103,7 +103,7 @@ export default {
         ? this.shared.deck.deal()
         : { face: 'x', score: 0, suit: 'blank' };
 
-      const firstBlank = activeCards.findIndex(card => card.face === 'x');
+      const firstBlank = this.findFirstBlank(activeCards);
 
       if (newCard.face === 'x' || firstBlank === -1) {
         activeCards.push(newCard);
@@ -113,6 +113,10 @@ export default {
       this.$set(activeCards, firstBlank, newCard);
 
       return this;
+    },
+
+    findFirstBlank(activeCards) {
+      return activeCards.findIndex(card => card.face === 'x');
     },
 
     nextHand() {
@@ -194,16 +198,28 @@ export default {
     },
 
     submitScore() {
+      const hands = this.hands;
+
+//      hands.forEach(hand => {
+//        const blank = this.findFirstBlank(hand.cards);
+//        if (blank === -1) return false;
+//
+//
+//      })
+
+
       // also filtering out any bust scores
       const allScores = this.hands.map(hand => (hand.score > 21 ? 0 : hand.score));
 
       const bestScore = Math.max(...allScores);
 
       this.$emit('input', bestScore);
+
+      this.endTurn();
     },
   },
   watch: {
     'shared.roundID': 'newGameReset',
-    hands: { handler: 'forceNextHand', deep: true },
+//    hands: { handler: 'forceNextHand', deep: true },
   },
 };
