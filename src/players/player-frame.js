@@ -78,5 +78,15 @@ export default {
       console.log(`cost: ${this.cost}, bet: ${this.bet}`);
       this.$nextTick(() => { this.cost = 0; });
     },
+    endRound() {
+      const dealerScore = this.shared.dealerScore;
+      if (dealerScore === 0) return false;
+
+      const playerScore = this.player.score;
+//      if (dealerScore === 21 ||)
+    }
   },
+  watch: {
+    'shared.dealerScore': 'endRound',
+  }
 };

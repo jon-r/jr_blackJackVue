@@ -17,6 +17,7 @@ const app = new Vue({
       roundID: 0,
       stage: 0,
       activePlayer: 0,
+      dealerScore: 0,
       deck: [],
     },
 
@@ -33,6 +34,7 @@ const app = new Vue({
       this.shared = {
         roundID: newRoundID,
         activePlayer: 0,
+        dealerScore: 0,
         stage: 0,
         deck: new Deck(config.deckCount),
       };
@@ -59,17 +61,16 @@ const app = new Vue({
 
     endStage() {
       const shared = this.shared;
-//      const roundHooks = [
-//        'place bids',
-//        'deal first card',
-//        'deal second card',
-//        'player turns',
-//        'end round',
-//      ];
 
       shared.activePlayer = 0;
       shared.stage += 1;
-//      console.log(roundHooks[shared.stage]);
+
+      if (shared.stage === 6) this.endRound();
+    },
+
+    endRound() {
+      this.shared.dealerScore = this.players.slice(-1)[0].score;
+      this.$nextTick(() => { this.shared.dealerScore = 0; });
     },
   },
 });

@@ -17,15 +17,14 @@ export default {
       :cards="hand.cards"
       v-model="hand.score" >
     </player-cards>
-    activeHand {{activeHand}}
 
     <div class="player-ctrl" v-if="canCtrl" >
       <button
         v-for="ctrl in ctrls"
-        v-if="canDo[ctrl]"
-        class="ctrl-btn" :class="'ctrl-' + ctrl"
-        @click="doCtrl(ctrl)" >
-        {{ctrl}}
+        v-if="ctrl.canUse"
+        class="ctrl-btn" :class="'ctrl-' + ctrl.name"
+        @click="ctrl.onClick" >
+        {{ctrl.name}}
       </button>
     </div>
   </div>
@@ -38,7 +37,6 @@ export default {
       hands: this.setBlankCard(),
       firstCtrl: true,
       activeHand: 0,
-      ctrls: ['hit', 'stand', 'split', 'surrender', 'double'],
       autoTime: 200,
     };
   },
@@ -46,64 +44,74 @@ export default {
     canCtrl() {
       if (!this.turn) return false;
 
-      const stage = this.shared.stage;
-
-      return this.startTurn(stage);
+      return this.startTurn();
     },
-    canDo() {
-      const firstCards = this.hands[0].cards;
-      return {
-        hit: true,
-        stand: true,
-        split: this.firstCtrl && this.canSplit(),
-        surrender: this.firstCtrl,
-        double: this.firstCtrl,
-      };
+    ctrls() {
+      if (this.player.isDealer) return false;
+
+      const firstCtrlOnly = this.firstCtrl;
+      const canSplit = this.canSplit();
+
+      return [
+        { name: 'hit', canUse: true, onClick: this.hit },
+        { name: 'stand', canUse: true, onClick: this.stand },
+        { name: 'split', canUse: canSplit, onClick: this.split },
+        { name: 'surrender', canUse: firstCtrlOnly, onClick: this.surrender },
+        { name: 'double', canUse: firstCtrlOnly, onClick: this.double },
+      ];
     },
   },
   methods: {
 
-    startTurn(stage) {
-      // dealing out all cards
-      if (stage === 1 || stage === 2) {
-        this.dealOut();
-        return false;
-      }
+    setBlankCard() {
+      return [{ cards: [], score: 0 }];
+    },
 
-      if (stage === 3 && this.player.isDealer) {
-        this.dealerDraw();
-        return false;
+    setGame() {
+      this.hands = this.setBlankCard();
+      this.activeHand = 0;
+      this.firstCtrl = true;
+    },
+
+    startTurn() {
+      // dealing out all cards
+      const stage = this.shared.stage;
+
+      if (stage === 1 || stage === 2) {
+        this.dealOutFirst();
       }
 
       if (stage === 3) {
-        this.forceNextHand();
+        if (this.player.isDealer) {
+          this.dealDealer();
+          return false;
+        }
+
+        this.autoSkip();
         return true;
       }
 
       if (stage === 4) {
-        this.submitScore();
-        return false;
+        this.dealOutLast();
+      }
+
+      if (stage === 5) {
+        this.getFinalScores();
       }
 
       return false;
     },
 
-    dealOut() {
-      const isLastCard = this.player.isDealer && this.shared.stage === 2;
-
-      this.deal(!isLastCard);
-
-      setTimeout(() => this.endTurn(), this.autoTime);
-    },
-
     deal(showCard = false) {
-      const activeCards = this.hands[this.activeHand].cards;
+      const deck = this.shared.deck;
 
       const newCard = showCard
-        ? this.shared.deck.deal()
-        : { face: 'x', score: 0, suit: 'blank' };
+        ? deck.deal()
+        : deck.dealBlank();
 
-      const firstBlank = this.findFirstBlank(activeCards);
+      const activeCards = this.getActiveHand().cards;
+
+      const firstBlank = this.getFirstBlank(activeCards);
 
       if (newCard.face === 'x' || firstBlank === -1) {
         activeCards.push(newCard);
@@ -115,8 +123,72 @@ export default {
       return this;
     },
 
-    findFirstBlank(activeCards) {
+    dealOutFirst() {
+      const isLastCard = this.player.isDealer && this.shared.stage === 2;
+
+      if (isLastCard) return this.dealerPeek();
+
+      this.deal(true);
+
+      setTimeout(() => this.emitEndTurn(), this.autoTime);
+
+      return false;
+    },
+
+    dealOutLast() {
+      console.log('end game');
+
+      const activeCards = this.getActiveHand(true).cards;
+
+      let delay = 0;
+
+      if (this.getFirstBlank(activeCards) > -1) {
+        this.deal(true);
+        delay = this.autoTime;
+      }
+
+      setTimeout(() => this.emitEndTurn(), delay);
+      return false;
+    },
+
+    dealDealer() {
+      const score = this.getActiveHand().score;
+
+      setTimeout(() => {
+        if (this.getActiveHand().score < 17) {
+          this.deal(true).dealDealer();
+        } else {
+          this.emitEndTurn();
+        }
+      }, this.autoTime);
+
+      return false;
+    },
+
+    dealerPeek() {
+      console.log('peek');
+      const activeHand = this.getActiveHand();
+      const score = activeHand.score;
+
+      if (score !== 10 && score !== 11) return this.deal();
+      console.log(`peeking with ${score}`);
+
+      const newCard = this.shared.deck.peek(score);
+
+      activeHand.cards.push(newCard);
+
+      setTimeout(() => this.emitEndTurn(), this.autoTime);
+
+      return false;
+    },
+
+    getFirstBlank(activeCards) {
       return activeCards.findIndex(card => card.face === 'x');
+    },
+
+    getActiveHand(forceFirst = false) {
+      const hand = forceFirst ? 0 : this.activeHand;
+      return this.hands[hand];
     },
 
     nextHand() {
@@ -124,21 +196,13 @@ export default {
       if (this.hands.length === this.activeHand) this.$emit('end-turn');
     },
 
-    forceNextHand() {
-      if (this.hands[this.activeHand].score > 20) {
+    autoSkip() {
+      if (this.getActiveHand().score > 20) {
+        console.log('skipped');
         this.nextHand();
+        return false;
       }
-    },
-
-    newGameReset() {
-      this.hands = this.setBlankCard();
-      this.activeHand = 0;
-      this.firstCtrl = true;
-    },
-
-    doCtrl(ctrl) {
-      this.firstCtrl = false;
-      return this[ctrl]();
+      return true;
     },
 
     hit() {
@@ -151,75 +215,55 @@ export default {
     },
 
     split() {
-      this.bidChange('split');
-      const splitCard = this.hands[0].cards.splice(1)[0];
+      this.emitBidChange('split');
+      const splitCard = this.getActiveHand().cards.splice(1)[0];
       this.hands.push({ cards: [splitCard], score: splitCard.score });
     },
 
     canSplit() {
-      const cards = this.hands[0].cards;
-      if (cards.length === 0) return false;
+      const cards = this.getActiveHand().cards;
+      if (cards.length !== 2) return false;
 
-      const firstCardFace = cards[0].face;
-      return cards.every(card => card.face === firstCardFace);
+      return (cards[0].face === cards[1].face);
     },
 
     double() {
-      this.bidChange('double').deal().endTurn();
+      this.emitBidChange('double').deal().emitEndTurn();
     },
 
     surrender() {
-      this.bidChange('forfeit').endTurn();
+      this.emitBidChange('forfeit').emitEndTurn();
     },
 
-    bidChange(str) {
+    getFinalScores() {
+      const hands = this.hands;
+      // also filtering out any bust scores
+      const bestScore = this.hands
+        .map(hand => hand.score)
+        .reduce((max, cur) => (cur > 21 ? max : Math.max(max, cur)), -Infinity);
+
+      this.emitFinalScore(bestScore).emitEndTurn();
+
+      return false;
+    },
+
+    emitBidChange(str) {
       this.$emit('bid-change', str);
       return this;
     },
 
-    dealerDraw() {
-      this.hit();
-
-      setTimeout(() => {
-        if (this.hands[0].score < 17) {
-          this.dealerDraw();
-        } else {
-          this.endTurn();
-        }
-      }, 1000);
-    },
-
-    endTurn() {
+    emitEndTurn() {
       this.$emit('end-turn');
     },
 
-    setBlankCard() {
-      return [{ cards: [], score: 0 }];
-    },
-
-    submitScore() {
-      const hands = this.hands;
-
-//      hands.forEach(hand => {
-//        const blank = this.findFirstBlank(hand.cards);
-//        if (blank === -1) return false;
-//
-//
-//      })
-
-
-      // also filtering out any bust scores
-      const allScores = this.hands.map(hand => (hand.score > 21 ? 0 : hand.score));
-
-      const bestScore = Math.max(...allScores);
-
+    emitFinalScore(bestScore) {
       this.$emit('input', bestScore);
-
-      this.endTurn();
+      return this;
     },
+
   },
   watch: {
-    'shared.roundID': 'newGameReset',
-//    hands: { handler: 'forceNextHand', deep: true },
+    'shared.roundID': 'setGame',
+
   },
 };

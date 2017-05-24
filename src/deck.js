@@ -53,6 +53,8 @@ export default class Deck {
     this.count = deckCount;
 
     this.cards = build(deckCount);
+
+    this.blank = { face: 'x', score: 0, suit: 'blank' };
   }
 
   /**
@@ -68,7 +70,21 @@ export default class Deck {
    */
   deal() {
     const rng = getRandom(this.cards.length);
-    const cardArr = this.cards.splice(rng, 1)[0];
+    return this.takeCard(rng);
+  }
+
+  peek(toMatch) {
+    console.log('dealer checks card');
+//    const rng = getRandom(this.cards.length);
+    const rng = 0; // TEMP
+    const isBlackJack = faceValue(this.cards[rng][0]) + toMatch === 21;
+    console.log(isBlackJack, this.cards[rng][0]);
+
+    return isBlackJack ? this.takeCard(rng) : this.dealBlank();
+  }
+
+  takeCard(nth) {
+    const cardArr = this.cards.splice(nth, 1)[0];
 
     return {
       face: faceCards(cardArr[0]),
@@ -76,4 +92,9 @@ export default class Deck {
       suit: suitCards(cardArr[1]),
     };
   }
+
+  dealBlank() {
+    return this.blank;
+  }
+
 }
