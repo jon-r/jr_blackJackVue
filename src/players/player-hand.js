@@ -104,16 +104,12 @@ export default {
 
     deal(showCard = false) {
       const deck = this.shared.deck;
-
-      const newCard = showCard
-        ? deck.deal()
-        : deck.dealBlank();
+      const newCard = showCard ? deck.deal() : deck.dealBlank();
 
       const activeCards = this.getActiveHand().cards;
-
       const firstBlank = this.getFirstBlank(activeCards);
 
-      if (newCard.face === 'x' || firstBlank === -1) {
+      if (!showCard || firstBlank === -1) {
         activeCards.push(newCard);
         return this;
       }
@@ -126,13 +122,27 @@ export default {
     dealOutFirst() {
       const isLastCard = this.player.isDealer && this.shared.stage === 2;
 
-      if (isLastCard) return this.dealerPeek();
+      this.deal(isLastCard);
 
-      this.deal(true);
+      if (isLastCard) this.dealerPeek();
 
       setTimeout(() => this.emitEndTurn(), this.autoTime);
 
       return false;
+    },
+
+    dealerPeek() {
+      console.log('peek');
+      const activeHand = this.getActiveHand();
+      const score = activeHand.score;
+
+      if (score !== 10 && score !== 11) return false;
+      console.log(`peeking with ${score}`);
+
+      const newCard = this.shared.deck.peek(score);
+      this.$set(activeHand.cards, 1, newCard);
+
+      return true;
     },
 
     dealOutLast() {
@@ -161,23 +171,6 @@ export default {
           this.emitEndTurn();
         }
       }, this.autoTime);
-
-      return false;
-    },
-
-    dealerPeek() {
-      console.log('peek');
-      const activeHand = this.getActiveHand();
-      const score = activeHand.score;
-
-      if (score !== 10 && score !== 11) return this.deal();
-      console.log(`peeking with ${score}`);
-
-      const newCard = this.shared.deck.peek(score);
-
-      activeHand.cards.push(newCard);
-
-      setTimeout(() => this.emitEndTurn(), this.autoTime);
 
       return false;
     },
