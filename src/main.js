@@ -65,7 +65,7 @@ const app = new Vue({
       shared.activePlayer = 0;
       shared.stage += 1;
 
-      if (shared.stage < 5) this.endRound();
+      if (shared.stage > 5) this.endRound();
     },
 
     endRound() {

@@ -72,7 +72,8 @@ export default {
 
     // generic
     startTurn() {
-      if (!this.turn) return false;
+      const stage = this.shared.stage;
+      if (!this.turn || stage > 5) return false;
 
       const actions = new Map([
         [1, this.dealOutFirst],
@@ -82,7 +83,7 @@ export default {
         [5, this.getFinalScores],
       ]);
 
-      return actions.get(this.shared.stage)();
+      return actions.get(stage)();
     },
 
     drawCard() {
