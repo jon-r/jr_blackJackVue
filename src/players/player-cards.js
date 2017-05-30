@@ -14,14 +14,15 @@ export default {
     return { aces: 0 };
   },
   computed: {
+
     score() {
-      const revealedCards = this.cards.filter(card => card.face !== 'x');
+      const cards = this.cards;
 
-      if (revealedCards.length === 0) return 0;
+      if (cards.length === 0) return 0;
 
-      this.aces = revealedCards.reduce((count, card) => count + (card.face === 'A'), 0);
+      this.aces = cards.reduce((count, card) => count + (card.face === 'A'), 0);
 
-      let newScore = revealedCards.reduce((score, card) => score + card.score, 0);
+      let newScore = cards.reduce((score, card) => score + card.score, 0);
 
       // reduces as many aces as needed (if possible) to keep the score down
       while (newScore > 21 && this.aces > 0) {
@@ -29,6 +30,7 @@ export default {
         newScore -= 10;
       }
       this.$emit('input', newScore);
+
       return newScore;
     },
 

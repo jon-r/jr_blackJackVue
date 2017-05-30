@@ -52,7 +52,7 @@ const app = new Vue({
         return this.endStage();
       }
 
-      if (shared.activePlayer === this.players.length) {
+      if (shared.activePlayer > this.players.length - 1) {
         return this.endStage();
       }
 
