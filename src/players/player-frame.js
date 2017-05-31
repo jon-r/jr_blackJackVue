@@ -66,27 +66,45 @@ export default {
         double: { cost: -1, wins: 2 },
         split: { cost: -1, wins: 2 },
         forfeit: { cost: 0.5, wins: 0 },
+        // may clash with 'win'
         blackJack: { cost: 0, wins: 2.5 },
         lose: { cost: 0, wins: 0 },
         push: { cost: 0, wins: 1 },
         win: { cost: 0, wins: 2 },
       };
 
+      if (this.shared.dealerScore === 21) {
+        multipliers.blackJack = multipliers.push;
+        // Todo: insta wins/losses ??
+      }
+
       const scoring = multipliers[value];
       this.cost = scoring.cost * bet;
       this.bet *= scoring.wins;
-      console.log(`cost: ${this.cost}, bet: ${this.bet}`);
+      console.log(`${value} cost: ${this.cost}, bet: ${this.bet}`);
       this.$nextTick(() => { this.cost = 0; });
     },
     endRound() {
       const dealerScore = this.shared.dealerScore;
       if (dealerScore === 0) return false;
 
+      if (this.bet === 0) return false; // already bust/forfeit
+
       const playerScore = this.player.score;
-//      if (dealerScore === 21 ||)
-    }
+      if (dealerScore === playerScore) {
+        this.updateBid('push');
+      } else if (playerScore > 21 || dealerScore === 21) {
+        this.updateBid('lose');
+      } else if (dealerScore > 21 || playerScore > dealerScore) {
+        this.updateBid('win');
+      } else if (dealerScore > playerScore) {
+        this.updateBid('lose');
+      }
+
+      return true; // Todo: give winnings back to player
+    },
   },
   watch: {
     'shared.dealerScore': 'endRound',
-  }
+  },
 };
