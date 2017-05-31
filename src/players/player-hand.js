@@ -55,17 +55,15 @@ export default {
     },
 
     firstCtrl() {
-      return this.hands[0].cards.length < 3;
+      return this.hands[0].revealed < 3;
     },
 
     canSplit() {
-      const cards = this.hands[0].cards;
-      if (cards.length !== 2) return false;
+      const hand = this.hands[0];
+      const cards = hand.cards;
+      if (hand.revealed !== 2) return false;
 
-      const equalCards = cards[0].face === cards[1].face;
-      const twoFace = cards[0].face > 10 && cards[1].face > 10;
-
-      return equalCards || twoFace;
+      return cards[0].face === cards[1].face;
     },
   },
   methods: {
@@ -102,6 +100,8 @@ export default {
       setTimeout(() => {
         this.$set(activeHand.cards, activeHand.revealed, newCard);
         activeHand.revealed += 1;
+
+        if (this.canCtrl) this.$nextTick(this.scoreCheck);
       }, 200);
 
       return this;
@@ -113,7 +113,7 @@ export default {
 
     nextHand() {
       if (this.hands.length - 1 === this.activeHand) {
-        this.$emit('end-turn');
+        this.emitEndTurn();
       } else {
         this.activeHand += 1;
       }
@@ -158,6 +158,10 @@ export default {
 
       this.revealCard(newCard);
 
+      if (newCard.score > 0) this.$nextTick(() => {
+        this.emitFinalScore();
+      })
+
       return true;
     },
 
@@ -165,7 +169,7 @@ export default {
       if (this.player.isDealer) {
         this.dealDealer();
       } else {
-        this.autoSkipCheck();
+        this.scoreCheck();
       }
     },
 
@@ -179,10 +183,16 @@ export default {
       }, this.autoTime);
     },
 
-    autoSkipCheck() {
-      if (this.getActiveHand().score > 20) {
-        this.nextHand();
-      }
+    scoreCheck() {
+      const hand = this.getActiveHand();
+
+      console.log('checking score', hand.score);
+
+      if (hand.revealed === 2 && hand.score === 21) this.emitBidChange('blackJack');
+
+      if (hand.score > 21) this.emitBidChange('bust');
+
+      if (hand.score > 20) this.nextHand();
     },
 
     hit() {
@@ -199,12 +209,18 @@ export default {
       const splitCard = this.getActiveHand().cards.splice(1)[0];
       this.getActiveHand().revealed = 1;
 
+      this.revealCard();
+
       this.hands.push(this.setBlankCard());
+
       this.activeHand = 1;
       this.revealCard(splitCard);
-
-      this.activeHand = 0;
+      setTimeout(() => {
+        this.revealCard();
+        this.activeHand = 0;
+      }, this.autoTime);
     },
+
 
     double() {
       this.emitBidChange('double').drawCard().emitEndTurn(this.autoTime);
@@ -226,7 +242,7 @@ export default {
 
       let delay = 0;
 
-      if (activeHand.cards.length - 1 > activeHand.revealed) {
+      if (activeHand.cards.length > activeHand.revealed) {
         this.revealCard();
         delay = this.autoTime;
       }

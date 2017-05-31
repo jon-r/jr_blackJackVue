@@ -41,7 +41,7 @@ const app = new Vue({
 
       if (skipBets) {
         this.shared.activePlayer = 10;
-        this.$nextTick(() => this.endStage());
+        this.$nextTick(this.endStage);
       }
     },
     endTurn() {
