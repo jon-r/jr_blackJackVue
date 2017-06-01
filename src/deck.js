@@ -74,7 +74,8 @@ export default class Deck {
   }
 
   peek(toMatch) {
-    const rng = getRandom(this.cards.length);
+    //const rng = getRandom(this.cards.length);
+    const rng = 0;
     const isBlackJack = (faceValue(this.cards[rng][0]) + toMatch === 21);
 
     return isBlackJack ? this.takeCard(rng) : this.dealBlank();

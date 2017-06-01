@@ -92,22 +92,26 @@ export default {
     },
     endRound() {
       const dealerScore = this.shared.dealerScore;
-      if (dealerScore === 0) return false;
+      if (dealerScore === 0 || this.wins === 0) return false;
 
-      if (this.wins === 0) return false; // already bust/forfeit
+      const result = this.getScores(this.player.score, dealerScore);
 
-      const playerScore = this.player.score;
-      if (dealerScore === playerScore) {
-        this.setWins('push');
-      } else if (playerScore > 21 || dealerScore === 21) {
-        this.setWins('lose');
-      } else if (dealerScore > 21 || playerScore > dealerScore) {
-        this.setWins('win');
-      } else if (dealerScore > playerScore) {
-        this.setWins('lose');
-      }
+      this.setWins(result);
 
       return true;
+    },
+    getScores(playerScore, dealerScore) {
+      if (dealerScore === playerScore) {
+        return 'push';
+      }
+      if (playerScore > 21 || dealerScore === 21) {
+        return 'lose';
+      }
+      if (dealerScore > 21 || playerScore > dealerScore) {
+        return 'win';
+      }
+  //    if (dealerScore > playerScore) {
+      return 'lose';
     },
     cashIn() {
       this.cost = this.wins;

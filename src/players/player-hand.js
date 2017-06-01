@@ -168,7 +168,7 @@ export default {
 
       if (newCard.score > 0) {
         this.$nextTick(() => {
-          this.emitFinalScore();
+          this.emitFinalScore(21);
         });
       }
 
