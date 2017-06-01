@@ -14,8 +14,8 @@ export default {
       :player="player"
       :shared="shared"
       :turn="isPlayerTurn"
-      @bid-change="updateBid"
-      @end-turn="endTurn"
+      @bid-change="setWins"
+      @end-turn="emitEndTurn"
       v-model="player.score" >
     </player-hand>
 
@@ -24,11 +24,11 @@ export default {
         :shared="shared"
         :turn="isPlayerTurn"
         :cost="cost"
-        @push-bet="setBid" >
+        @push-bet="setFirstBet" >
       </player-bet>
 
       <h4 class="player-bet" v-if="bet > 0" >
-        Bet: £{{bet}}
+        Bet: £{{wins}}
       </h4>
     </template>
 
@@ -43,6 +43,7 @@ export default {
       wins: 0,
       bet: 0,
       cost: 0,
+      skip: false,
     };
   },
 
@@ -53,55 +54,70 @@ export default {
   },
 
   methods: {
-    endTurn() {
+    emitEndTurn() {
       this.$emit('end-turn');
     },
-    setBid(bet) {
+    setFirstBet(bet) {
       this.bet = bet;
-      this.endTurn();
+      this.wins = bet;
+      this.emitEndTurn();
     },
-    updateBid(value) {
+    setWins(value) {
       const bet = this.bet;
       const multipliers = {
-        double: { cost: -1, wins: 2 },
-        split: { cost: -1, wins: 2 },
-        forfeit: { cost: 0.5, wins: 0 },
-        // may clash with 'win'
-        blackJack: { cost: 0, wins: 2.5 },
-        lose: { cost: 0, wins: 0 },
-        push: { cost: 0, wins: 1 },
-        win: { cost: 0, wins: 2 },
+        // Todo: better split results
+        doubleBet: { cost: -1, wins: 1, end: false },
+        forfeit: { cost: 0.5, wins: -1, end: true },
+        lose: { cost: 0, wins: -1, end: true },
+        push: { cost: 0, wins: 0, end: true },
+        win: { cost: 0, wins: 1, end: true },
+        blackJack: { cost: 0, wins: 1.5, end: true },
       };
 
       if (this.shared.dealerScore === 21) {
         multipliers.blackJack = multipliers.push;
-        // Todo: insta wins/losses ??
       }
 
       const scoring = multipliers[value];
       this.cost = scoring.cost * bet;
-      this.bet *= scoring.wins;
-      console.log(`${value} cost: ${this.cost}, bet: ${this.bet}`);
-      this.$nextTick(() => { this.cost = 0; });
+      this.wins += scoring.wins * bet;
+      console.log(`${value} cost: ${this.cost}, wins: ${this.wins}`);
+      this.$nextTick(() => {
+        if (scoring.end) {
+          this.cashIn();
+        } else {
+          this.cost = 0;
+        }
+      });
     },
     endRound() {
       const dealerScore = this.shared.dealerScore;
       if (dealerScore === 0) return false;
 
-      if (this.bet === 0) return false; // already bust/forfeit
+      if (this.wins === 0) return false; // already bust/forfeit
 
       const playerScore = this.player.score;
       if (dealerScore === playerScore) {
-        this.updateBid('push');
+        this.setWins('push');
       } else if (playerScore > 21 || dealerScore === 21) {
-        this.updateBid('lose');
+        this.setWins('lose');
       } else if (dealerScore > 21 || playerScore > dealerScore) {
-        this.updateBid('win');
+        this.setWins('win');
       } else if (dealerScore > playerScore) {
-        this.updateBid('lose');
+        this.setWins('lose');
       }
 
-      return true; // Todo: give winnings back to player
+      return true;
+    },
+    cashIn() {
+      this.cost = this.wins;
+      this.$nextTick(() => {
+        this.cost = 0;
+        this.wins = 0;
+        this.bet = 0;
+        this.skip = true;
+        this.emitEndTurn();
+      });
     },
   },
   watch: {

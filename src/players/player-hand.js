@@ -71,7 +71,7 @@ export default {
     // generic
     startTurn() {
       const stage = this.shared.stage;
-      if (!this.turn || stage > 5) return false;
+      if (!this.turn) return false;
 
       const actions = new Map([
         [1, this.dealOutFirst],
@@ -81,7 +81,11 @@ export default {
         [5, this.getFinalScores],
       ]);
 
-      return actions.get(stage)();
+      if (actions.has(stage)) {
+        return actions.get(stage)();
+      }
+
+      return false;
     },
 
     drawCard() {
@@ -101,7 +105,11 @@ export default {
         this.$set(activeHand.cards, activeHand.revealed, newCard);
         activeHand.revealed += 1;
 
-        if (this.canCtrl) this.$nextTick(this.scoreCheck);
+        if (this.canCtrl) {
+          this.$nextTick(() => {
+            this.scoreCheck();
+          });
+        }
       }, 200);
 
       return this;
@@ -158,12 +166,16 @@ export default {
 
       this.revealCard(newCard);
 
-      if (newCard.score > 0) this.$nextTick(() => {
-        this.emitFinalScore();
-      })
+      if (newCard.score > 0) {
+        this.$nextTick(() => {
+          this.emitFinalScore();
+        });
+      }
 
       return true;
     },
+
+    // stage 3
 
     playerActions() {
       if (this.player.isDealer) {
@@ -185,14 +197,23 @@ export default {
 
     scoreCheck() {
       const hand = this.getActiveHand();
+      const score = hand.score;
 
       console.log('checking score', hand.score);
 
-      if (hand.revealed === 2 && hand.score === 21) this.emitBidChange('blackJack');
-
-      if (hand.score > 21) this.emitBidChange('bust');
-
-      if (hand.score > 20) this.nextHand();
+      switch (true) {
+      case score > 21:
+        this.emitBidChange('lose');
+        break;
+      case score === 21 && hand.revealed === 2:
+        this.emitBidChange('blackJack');
+        break;
+      case score === 21:
+        this.nextHand();
+        break;
+      default:
+        // score ok, carry on
+      }
     },
 
     hit() {
@@ -205,7 +226,7 @@ export default {
     },
 
     split() {
-      this.emitBidChange('split');
+      this.emitBidChange('doubleBet');
       const splitCard = this.getActiveHand().cards.splice(1)[0];
       this.getActiveHand().revealed = 1;
 
@@ -223,11 +244,11 @@ export default {
 
 
     double() {
-      this.emitBidChange('double').drawCard().emitEndTurn(this.autoTime);
+      this.emitBidChange('doubleBet').drawCard().emitEndTurn(this.autoTime);
     },
 
     surrender() {
-      this.emitBidChange('forfeit').emitEndTurn();
+      this.emitBidChange('forfeit');
     },
 
     emitBidChange(str) {
@@ -235,7 +256,7 @@ export default {
       return this;
     },
 
-    // stage 3
+    // stage 4
 
     dealOutLast() {
       const activeHand = this.getActiveHand();

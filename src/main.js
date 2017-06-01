@@ -24,6 +24,22 @@ const app = new Vue({
     players: [],
   },
 
+  computed: {
+    debugStage() {
+      const stage = this.shared.stage;
+      const out = new Map([
+        [0, 'bid'],
+        [1, 'dealing cards 1'],
+        [2, 'dealing cards 2'],
+        [3, 'player turns'],
+        [4, 'filling blanks'],
+        [5, 'player scores'],
+      ]);
+
+      return out.has(stage) ? out.get(stage) : 'no stage';
+    },
+  },
+
   methods: {
 
     newGame(config, skipBets = false) {
@@ -41,7 +57,9 @@ const app = new Vue({
 
       if (skipBets) {
         this.shared.activePlayer = 10;
-        this.$nextTick(this.endStage);
+        this.$nextTick(() => {
+          this.endStage();
+        });
       }
     },
     endTurn() {
@@ -70,7 +88,9 @@ const app = new Vue({
 
     endRound() {
       this.shared.dealerScore = this.players.slice(-1)[0].score;
-      this.$nextTick(() => { this.shared.dealerScore = 0; });
+      this.$nextTick(() => {
+        this.shared.dealerScore = 0;
+      });
     },
   },
 });
