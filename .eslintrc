@@ -23,6 +23,8 @@
       "error",
       { "skipBlankLines": true }
     ],
+    // allow vuex
+    "no-param-reassign": ["error", { 'props': false }],
 
   }
 }
