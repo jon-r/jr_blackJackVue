@@ -1,4 +1,8 @@
+import { mapGetters } from 'vuex';
+
 import Vue from 'vue';
+
+import Store from './store';
 
 // import game from './game-play';
 import PlayerFrame from './players/player-frame';
@@ -24,7 +28,16 @@ const app = new Vue({
     players: [],
   },
 
+  // VUEX link to store (only need once)
+  store: Store,
+
   computed: {
+
+    // VUEX get value. look into mapGetters to do multiple??
+    gameStage() {
+      return this.$store.getters.gameStage;
+    },
+
     debugStage() {
       const stage = this.shared.stage;
       const out = new Map([
@@ -82,6 +95,9 @@ const app = new Vue({
 
       shared.activePlayer = 0;
       shared.stage += 1;
+
+      // VUEX do action
+      this.$store.dispatch('nextStage');
 
       if (shared.stage > 5) this.endRound();
     },
