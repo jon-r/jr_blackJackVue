@@ -5,6 +5,8 @@
   4) also perhaps this ping change could be used elsewhere to (eg new round/game);
 */
 
+import { mapGetters } from 'vuex';
+
 import PlayerCards from './player-cards';
 
 export default {
@@ -40,8 +42,12 @@ export default {
     };
   },
   computed: {
+    ...mapGetters([
+      'gameStage',
+    ]),
+
     canCtrl() {
-      return !this.player.isDealer && this.turn && this.shared.stage === 3;
+      return !this.player.isDealer && this.turn && this.gameStage === 3;
     },
 
     ctrls() {
@@ -70,7 +76,7 @@ export default {
 
     // generic
     startTurn() {
-      const stage = this.shared.stage;
+      const stage = this.gameStage;
       if (!this.turn) return false;
 
       const actions = new Map([
@@ -128,7 +134,8 @@ export default {
     },
 
     emitEndTurn(delay = 0) {
-      setTimeout(() => this.$emit('end-turn'), delay);
+      setTimeout(() => this.$store.dispatch('playerEndTurn'), delay);
+      // setTimeout(() => this.$emit('end-turn'), delay);
     },
 
     // stage 0
@@ -145,7 +152,7 @@ export default {
     // stage 1 - 2
 
     dealOutFirst() {
-      const isLastCard = this.player.isDealer && this.shared.stage === 2;
+      const isLastCard = this.player.isDealer && this.gameStage === 2;
 
       if (isLastCard) {
         this.drawCard().dealerPeekCheck();

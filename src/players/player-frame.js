@@ -1,4 +1,5 @@
 // import Vue from 'vue';
+import { mapGetters } from 'vuex';
 
 import PlayerHand from './player-hand';
 import PlayerBet from './player-bet';
@@ -20,7 +21,7 @@ export default {
     </player-hand>
 
     <template v-if="!player.isDealer" >
-      <player-bet      
+      <player-bet
         :shared="shared"
         :turn="isPlayerTurn"
         :cost="cost"
@@ -48,8 +49,12 @@ export default {
   },
 
   computed: {
+    ...mapGetters([
+      'gameActivePlayer',
+    ]),
+
     isPlayerTurn() {
-      return this.shared.activePlayer === this.player.index;
+      return this.gameActivePlayer === this.player.index;
     },
   },
 

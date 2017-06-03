@@ -34,23 +34,23 @@ export default {
   },
 
   methods: {
-    getOptions() {
-
-      const players = this.playerInput.map((player, index) => ({
+    setNewPlayer(name, index, isDealer = false) {
+      return {
         index,
+        name,
+        isDealer,
+        bid: 0,
         score: 0,
-        name: player.name,
-        isDealer: false,
-      }));
+      };
+    },
+    getOptions() {
+      const players = this.playerInput
+        .map((player, index) => this.setNewPlayer(player.name, index));
 
-      const dealerIdx = players.length;
+      const dealer = this.setNewPlayer('Dealer', players.length, true);
 
-      players.push({
-        index: dealerIdx,
-        score: 0,
-        name: 'Dealer',
-        isDealer: true,
-      });
+      players.push(dealer);
+      this.$store.dispatch('setPlayers', players);
 
       return {
         players,
@@ -63,7 +63,9 @@ export default {
     },
     skipBets() {
       const options = this.getOptions();
-      this.$emit('new-game', options, true);
+      this.$emit('new-game', options);
+      this.$store.dispatch('nextPlayer')
+        .then(() => this.$store.dispatch('nextStage'));
 //       this.game.endTurn();
     },
 

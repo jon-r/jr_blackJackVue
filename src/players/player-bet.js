@@ -1,3 +1,5 @@
+import { mapGetters } from 'vuex';
+
 // TODO: set bids at chips instead of numbers
 export default {
   props: ['turn', 'shared', 'cost'],
@@ -23,6 +25,10 @@ export default {
     };
   },
   computed: {
+    ...mapGetters([
+      'gameStage',
+    ]),
+
     moneyDiff() {
       const out = this.money - this.oldMoney;
       this.oldMoney = this.money;
@@ -36,7 +42,7 @@ export default {
       return Math.min(100, this.money);
     },
     canBid() {
-      return (this.shared.stage === 0) && this.turn;
+      return (this.gameStage === 0) && this.turn;
     },
     validBid() {
       return (this.bidStart > this.minVal) && (this.bidStart < this.money);
@@ -50,6 +56,7 @@ export default {
       // this.bet = bid;
 
       this.validBid = false;
+      this.$store.dispatch('playerEndTurn');
 
       this.$emit('push-bet', bid);
     },

@@ -19,27 +19,26 @@ const app = new Vue({
 
     shared: {
       roundID: 0,
-      stage: 0,
-      activePlayer: 0,
+      // stage: 0,
+      // activePlayer: 0,
       dealerScore: 0,
       deck: [],
     },
 
-    players: [],
+//    players: [],
   },
 
   // VUEX link to store (only need once)
   store: Store,
 
   computed: {
-
-    // VUEX get value. look into mapGetters to do multiple??
-    gameStage() {
-      return this.$store.getters.gameStage;
-    },
+    ...mapGetters([
+      'gameStage', // only here for debug purposes atm
+      'players',
+    ]),
 
     debugStage() {
-      const stage = this.shared.stage;
+      const stage = this.gameStage;
       const out = new Map([
         [0, 'bid'],
         [1, 'dealing cards 1'],
@@ -58,49 +57,47 @@ const app = new Vue({
     newGame(config, skipBets = false) {
       const newRoundID = this.shared.roundID + 1;
 
-      this.players = config.players;
+//      this.players = config.players;
 
       this.shared = {
         roundID: newRoundID,
-        activePlayer: 0,
+        // activePlayer: 0,
         dealerScore: 0,
-        stage: 0,
+        // stage: 0,
         deck: new Deck(config.deckCount),
       };
 
-      if (skipBets) {
-        this.shared.activePlayer = 10;
-        this.$nextTick(() => {
-          this.endStage();
-        });
-      }
+      // if (skipBets) {
+      //   this.$store.dispatch('nextPlayer')
+      //     .then(() => this.$store.dispatch('nextStage'));
+      // }
     },
-    endTurn() {
-      const shared = this.shared;
-      shared.activePlayer += 1;
-
-      if (shared.stage === 0 && this.players[shared.activePlayer].isDealer) {
-        return this.endStage();
-      }
-
-      if (shared.activePlayer > this.players.length - 1) {
-        return this.endStage();
-      }
-
-      return shared.activePlayer;
-    },
-
-    endStage() {
-      const shared = this.shared;
-
-      shared.activePlayer = 0;
-      shared.stage += 1;
-
-      // VUEX do action
-      this.$store.dispatch('nextStage');
-
-      if (shared.stage > 5) this.endRound();
-    },
+    // endTurn() {
+    //   const shared = this.shared;
+    //   shared.activePlayer += 1;
+    //
+    //   if (this.gameStage === 0 && this.players[shared.activePlayer].isDealer) {
+    //     return this.endStage();
+    //   }
+    //
+    //   // if (shared.activePlayer > this.players.length - 1) {
+    //   //   return this.endStage();
+    //   // }
+    //
+    //   return shared.activePlayer;
+    // },
+    //
+    // endStage() {
+    //   const shared = this.shared;
+    //
+    //   shared.activePlayer = 0;
+    //   this.gameStage += 1;
+    //
+    //   // VUEX do action
+    //   this.$store.dispatch('nextStage');
+    //
+    //   if (this.gameStage > 5) this.endRound();
+    // },
 
     endRound() {
       this.shared.dealerScore = this.players.slice(-1)[0].score;
