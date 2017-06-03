@@ -44,27 +44,25 @@ export default {
       };
     },
     getOptions() {
+      const deckCount = this.deckInput;
       const players = this.playerInput
         .map((player, index) => this.setNewPlayer(player.name, index));
 
       const dealer = this.setNewPlayer('Dealer', players.length, true);
 
       players.push(dealer);
-      this.$store.dispatch('setPlayers', players);
 
-      return {
-        players,
-        deckCount: this.deckInput,
-      };
+      return { players, deckCount };
     },
     setOptions() {
       const options = this.getOptions();
-      this.$emit('new-game', options);
+      this.$store.dispatch('newGame', options);
     },
     skipBets() {
       const options = this.getOptions();
-      this.$emit('new-game', options);
-      this.$store.dispatch('nextPlayer')
+      this.$store.dispatch('newGame', options);
+
+      this.$store.dispatch('nextPlayerPromise')
         .then(() => this.$store.dispatch('nextStage'));
 //       this.game.endTurn();
     },

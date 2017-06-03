@@ -62,7 +62,7 @@ const app = new Vue({
       this.shared = {
         roundID: newRoundID,
         // activePlayer: 0,
-        dealerScore: 0,
+        // dealerScore: 0,
         // stage: 0,
         deck: new Deck(config.deckCount),
       };

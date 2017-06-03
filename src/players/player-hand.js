@@ -95,14 +95,16 @@ export default {
     },
 
     drawCard() {
-      this.getActiveHand().cards.push(this.shared.deck.dealBlank());
+      this.getActiveHand().cards.push({ face: 'x', score: 0, suit: 'blank' });
 
       return this;
     },
 
     revealCard(card = false) {
-      const newCard = card || this.shared.deck.deal();
+      // const newCard = card || this.shared.deck.deal();
+      const newCard = this.$store.dispatch('deckDrawRandom');
 
+      /*
       const activeHand = this.getActiveHand();
       if (activeHand.cards.length - 1 < activeHand.revealed) {
         this.drawCard();
@@ -118,7 +120,7 @@ export default {
         }
       }, 200);
 
-      return this;
+      return this; */
     },
 
     getActiveHand() {

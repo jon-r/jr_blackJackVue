@@ -16,7 +16,6 @@ export default {
       :shared="shared"
       :turn="isPlayerTurn"
       @bid-change="setWins"
-      @end-turn="emitEndTurn"
       v-model="player.score" >
     </player-hand>
 
@@ -60,7 +59,7 @@ export default {
 
   methods: {
     emitEndTurn() {
-      this.$emit('end-turn');
+      // this.$emit('end-turn');
     },
     setFirstBet(bet) {
       this.bet = bet;
