@@ -10,7 +10,7 @@ import { mapGetters } from 'vuex';
 import PlayerCards from './player-cards';
 
 export default {
-  props: ['turn', 'player', 'shared'],
+  props: ['turn', 'player'],
   template: `
   <div class="player-hand" >
 
@@ -36,15 +36,20 @@ export default {
   },
   data() {
     return {
-      hands: [this.setBlankCard()],
+      hands: [this.setEmptyHand()],
       activeHand: 0,
       autoTime: 250,
     };
   },
   computed: {
     ...mapGetters([
+      'gameRound',
       'gameStage',
     ]),
+
+    getActiveHand() {
+      return this.hands[this.activeHand];
+    },
 
     canCtrl() {
       return !this.player.isDealer && this.turn && this.gameStage === 3;
@@ -73,7 +78,6 @@ export default {
     },
   },
   methods: {
-
     // generic
     startTurn() {
       const stage = this.gameStage;
@@ -95,37 +99,59 @@ export default {
     },
 
     drawCard() {
-      this.getActiveHand().cards.push({ face: 'x', score: 0, suit: 'blank' });
-
+      this.getActiveHand.cards.push(this.setEmptyCard());
       return this;
     },
 
-    revealCard(card = false) {
-      // const newCard = card || this.shared.deck.deal();
-      const newCard = this.$store.dispatch('deckDrawRandom');
+    valueCard(cardRaw) {
+      const suits = ['hearts', 'diamonds', 'spades', 'clubs'];
+      const faces = { 1: 'A', 11: 'J', 12: 'Q', 13: 'K' };
+      const value = cardRaw[0];
+      const suit = cardRaw[1];
 
-      /*
-      const activeHand = this.getActiveHand();
+      return {
+        face: (value in faces) ? faces[value] : value,
+        score: value === 1 ? 11 : Math.min(10, value),
+        suit: suits[suit],
+      };
+    },
+
+    revealCard(card = false) {
+      const activeHand = this.getActiveHand;
       if (activeHand.cards.length - 1 < activeHand.revealed) {
         this.drawCard();
       }
       setTimeout(() => {
-        this.$set(activeHand.cards, activeHand.revealed, newCard);
-        activeHand.revealed += 1;
+        if (card) return this.setCard(card);
 
-        if (this.canCtrl) {
-          this.$nextTick(() => {
-            this.scoreCheck();
-          });
-        }
-      }, 200);
-
-      return this; */
+        return this.$store.dispatch('deckDrawRandom')
+        .then(drawn => this.setCard(drawn));
+      }, this.autoTime / 2);
     },
 
-    getActiveHand() {
-      return this.hands[this.activeHand];
+    setCard(cardRaw) {
+      console.log(cardRaw);
+
+      if (!cardRaw) return this;
+
+      const newCard = this.valueCard(cardRaw);
+
+      const activeHand = this.getActiveHand;
+
+
+      this.$set(activeHand.cards, activeHand.revealed, newCard);
+      activeHand.revealed += 1;
+
+      if (this.canCtrl) {
+        this.$nextTick(() => {
+          this.scoreCheck();
+        });
+      }
+
+
+      return this;
     },
+
 
     nextHand() {
       if (this.hands.length - 1 === this.activeHand) {
@@ -142,12 +168,12 @@ export default {
 
     // stage 0
 
-    setBlankCard() {
-      return { cards: [], score: 0, revealed: 0 };
-    },
+    setEmptyHand: () => ({ cards: [], score: 0, revealed: 0 }),
+    setEmptyCard: () => ({ face: 'x', score: 0, suit: 'blank' }),
+
 
     setGame() {
-      this.hands = [this.setBlankCard()];
+      this.hands = [this.setEmptyHand()];
       this.activeHand = 0;
     },
 
@@ -155,6 +181,7 @@ export default {
 
     dealOutFirst() {
       const isLastCard = this.player.isDealer && this.gameStage === 2;
+
 
       if (isLastCard) {
         this.drawCard().dealerPeekCheck();
@@ -166,22 +193,21 @@ export default {
     },
 
     dealerPeekCheck() {
-      const activeHand = this.getActiveHand();
-      const score = activeHand.score;
+      const score = this.getActiveHand.score;
 
       if (score !== 10 && score !== 11) return false;
 
-      const newCard = this.shared.deck.peek(score);
+      return this.$store.dispatch('deckDrawPeek', score)
+      .then(drawn => this.setCard(drawn).emitFinalScore(21));
 
-      this.revealCard(newCard);
 
-      if (newCard.score > 0) {
-        this.$nextTick(() => {
-          this.emitFinalScore(21);
-        });
-      }
+      // if (newCard.score > 0) {
+      //   this.$nextTick(() => {
+      //     this.emitFinalScore(21);
+      //   });
+      // }
 
-      return true;
+      // return true;
     },
 
     // stage 3
@@ -196,7 +222,7 @@ export default {
 
     dealDealer() {
       setTimeout(() => {
-        if (this.getActiveHand().score < 17) {
+        if (this.getActiveHand.score < 17) {
           this.revealCard().dealDealer();
         } else {
           this.emitEndTurn();
@@ -205,7 +231,7 @@ export default {
     },
 
     scoreCheck() {
-      const hand = this.getActiveHand();
+      const hand = this.getActiveHand;
       const score = hand.score;
 
       console.log('checking score', hand.score);
@@ -236,12 +262,12 @@ export default {
 
     split() {
       this.emitBidChange('doubleBet');
-      const splitCard = this.getActiveHand().cards.splice(1)[0];
-      this.getActiveHand().revealed = 1;
+      const splitCard = this.getActiveHand.cards.splice(1)[0];
+      this.getActiveHand.revealed = 1;
 
       this.revealCard();
 
-      this.hands.push(this.setBlankCard());
+      this.hands.push(this.setEmptyHand());
 
       this.activeHand = 1;
       this.revealCard(splitCard);
@@ -268,7 +294,7 @@ export default {
     // stage 4
 
     dealOutLast() {
-      const activeHand = this.getActiveHand();
+      const activeHand = this.getActiveHand;
 
       let delay = 0;
 
@@ -296,13 +322,13 @@ export default {
     },
 
     emitFinalScore(bestScore) {
-      this.$emit('input', bestScore);
+      this.$store.dispatch('setActiveScore', bestScore);
       return this;
     },
 
   },
   watch: {
-    'shared.roundID': 'setGame',
+    gameRound: 'setGame',
 
     turn: 'startTurn',
   },

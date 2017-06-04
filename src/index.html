@@ -16,7 +16,7 @@
 
     <main id="v-blackJack" >
 
-      <options-form @new-game="newGame" ></options-form>
+      <options-form ></options-form>
 
 
       <section class="table" >
@@ -24,7 +24,6 @@
         <player-frame
           v-for="player in players"
           :key="player.index"
-          :shared="shared"
           :player="player" >
         </player-frame>
 

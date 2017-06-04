@@ -5,7 +5,7 @@ import PlayerHand from './player-hand';
 import PlayerBet from './player-bet';
 
 export default {
-  props: ['shared', 'player'],
+  props: ['player'],
   template: `
   <section class="player-frame" :class="playerClass" >
 
@@ -13,7 +13,6 @@ export default {
 
     <player-hand
       :player="player"
-      :shared="shared"
       :turn="isPlayerTurn"
       @bid-change="setWins"
       v-model="player.score" >
@@ -21,7 +20,6 @@ export default {
 
     <template v-if="!player.isDealer" >
       <player-bet
-        :shared="shared"
         :turn="isPlayerTurn"
         :cost="cost"
         @push-bet="setFirstBet" >
@@ -50,6 +48,7 @@ export default {
   computed: {
     ...mapGetters([
       'gameActivePlayer',
+      'dealerScore',
     ]),
 
     isPlayerTurn() {
@@ -78,7 +77,7 @@ export default {
         blackJack: { cost: 0, wins: 1.5, end: true },
       };
 
-      if (this.shared.dealerScore === 21) {
+      if (this.dealerScore === 21) {
         multipliers.blackJack = multipliers.push;
       }
 
@@ -95,7 +94,7 @@ export default {
       });
     },
     endRound() {
-      const dealerScore = this.shared.dealerScore;
+      const dealerScore = this.dealerScore;
       if (dealerScore === 0 || this.wins === 0) return false;
 
       const result = this.getScores(this.player.score, dealerScore);
@@ -129,6 +128,6 @@ export default {
     },
   },
   watch: {
-    'shared.dealerScore': 'endRound',
+    dealerScore: 'endRound',
   },
 };

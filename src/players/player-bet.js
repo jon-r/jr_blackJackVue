@@ -2,7 +2,7 @@ import { mapGetters } from 'vuex';
 
 // TODO: set bids at chips instead of numbers
 export default {
-  props: ['turn', 'shared', 'cost'],
+  props: ['turn', 'cost'],
   template: `
   <div class="player-money" >
     <h5>
@@ -26,7 +26,9 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'gameRound',
       'gameStage',
+      'dealerScore',
     ]),
 
     moneyDiff() {
@@ -79,7 +81,7 @@ export default {
     },
   },
   watch: {
-    'shared.roundID': 'newGameReset',
+    gameRound: 'newGameReset',
     cost: 'changeMoney',
   },
 };

@@ -37,19 +37,16 @@ export default {
     scoreStr() {
       const score = this.score;
 
-      if (score > 21) return 'Bust';
-
-      if (score === 21 && this.cards.length < 3) return 'BlackJack';
-
-      if (this.aces > 0) return 'Soft';
-
-      return '';
+      switch (true) {
+      case (score > 21):
+        return 'Bust';
+      case (score === 21 && this.cards.length < 3):
+        return 'BlackJack';
+      case (this.aces > 0):
+        return 'Soft';
+      default:
+        return '';
+      }
     },
-  },
-  methods: {
-
-  },
-  watch: {
-
   },
 };
