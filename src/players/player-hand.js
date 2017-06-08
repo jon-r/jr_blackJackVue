@@ -36,7 +36,7 @@ export default {
   },
   data() {
     return {
-      hands: [this.setEmptyHand()],
+      hands: [this.emptyHand()],
       activeHand: 0,
       autoTime: 250,
     };
@@ -71,9 +71,9 @@ export default {
 
     canSplit() {
       const hand = this.hands[0];
-      const cards = hand.cards;
       if (hand.revealed !== 2) return false;
 
+      const cards = hand.cards;
       return cards[0].face === cards[1].face;
     },
   },
@@ -98,8 +98,16 @@ export default {
       return false;
     },
 
+    emptyHand() {
+      return { cards: [], score: 0, revealed: 0 };
+    },
+
+    emptyCard() {
+      return { face: 'x', score: 0, suit: 'blank' };
+    },
+
     drawCard() {
-      this.getActiveHand.cards.push(this.setEmptyCard());
+      this.getActiveHand.cards.push(this.emptyCard());
       return this;
     },
 
@@ -118,6 +126,7 @@ export default {
 
     revealCard(card = false) {
       const activeHand = this.getActiveHand;
+
       if (activeHand.cards.length - 1 < activeHand.revealed) {
         this.drawCard();
       }
@@ -130,14 +139,10 @@ export default {
     },
 
     setCard(cardRaw) {
-      console.log(cardRaw);
-
       if (!cardRaw) return this;
 
       const newCard = this.valueCard(cardRaw);
-
       const activeHand = this.getActiveHand;
-
 
       this.$set(activeHand.cards, activeHand.revealed, newCard);
       activeHand.revealed += 1;
@@ -147,7 +152,6 @@ export default {
           this.scoreCheck();
         });
       }
-
 
       return this;
     },
@@ -163,17 +167,12 @@ export default {
 
     emitEndTurn(delay = 0) {
       setTimeout(() => this.$store.dispatch('playerEndTurn'), delay);
-      // setTimeout(() => this.$emit('end-turn'), delay);
     },
 
     // stage 0
 
-    setEmptyHand: () => ({ cards: [], score: 0, revealed: 0 }),
-    setEmptyCard: () => ({ face: 'x', score: 0, suit: 'blank' }),
-
-
     setGame() {
-      this.hands = [this.setEmptyHand()];
+      this.hands = [this.emptyHand()];
       this.activeHand = 0;
     },
 
@@ -199,15 +198,6 @@ export default {
 
       return this.$store.dispatch('deckDrawPeek', score)
       .then(drawn => this.setCard(drawn).emitFinalScore(21));
-
-
-      // if (newCard.score > 0) {
-      //   this.$nextTick(() => {
-      //     this.emitFinalScore(21);
-      //   });
-      // }
-
-      // return true;
     },
 
     // stage 3
@@ -261,13 +251,13 @@ export default {
     },
 
     split() {
-      this.emitBidChange('doubleBet');
+      this.emitBidChange('addBet');
       const splitCard = this.getActiveHand.cards.splice(1)[0];
       this.getActiveHand.revealed = 1;
 
       this.revealCard();
 
-      this.hands.push(this.setEmptyHand());
+      this.hands.push(this.emptyHand());
 
       this.activeHand = 1;
       this.revealCard(splitCard);
@@ -279,15 +269,16 @@ export default {
 
 
     double() {
-      this.emitBidChange('doubleBet').drawCard().emitEndTurn(this.autoTime);
+      this.emitBidChange('addBet').drawCard().emitEndTurn(this.autoTime);
     },
 
     surrender() {
       this.emitBidChange('forfeit');
     },
 
-    emitBidChange(str) {
-      this.$emit('bid-change', str);
+    emitBidChange(event) {
+      // this.$emit('bid-change', str);
+      this.$store.dispatch('playerBidEvent', { player: this.player, event });
       return this;
     },
 
@@ -321,8 +312,9 @@ export default {
       return false;
     },
 
-    emitFinalScore(bestScore) {
-      this.$store.dispatch('setActiveScore', bestScore);
+    emitFinalScore(score) {
+      const player = this.player;
+      this.$store.dispatch('playerSetScore', { player, score });
       return this;
     },
 

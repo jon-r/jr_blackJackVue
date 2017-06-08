@@ -76,8 +76,17 @@ export default new Vuex.Store({
     NEXT_ACTIVE_PLAYER(state) {
       state.gameActivePlayer += 1;
     },
-    SET_ACTIVE_SCORE(state, score) {
-      state.players[state.gameActivePlayer].score = score;
+    PLAYER_SET_SCORE(state, { player, score }) {
+      state.players[player.index].score = score;
+    },
+    PLAYER_UPDATE_MONEY(state, { player, money }) {
+      state.players[player.index].money += money;
+    },
+    PLAYER_SET_BID_EVENT(state, { player, event }) {
+      state.players[player.index].bidEvent = event;
+    },
+    PLAYER_CLEAR_BID_EVENT(state, { player, event }) {
+      state.players[player.index].bidEvent = '';
     },
     // deck and cards
     SET_DECK(state, deckCount) {
@@ -92,19 +101,6 @@ export default new Vuex.Store({
   actions: {
     // game stage ids
     // setRound: ({ commit }, newRound) => commit('SET_ROUND', newRound),  ??
-    nextRound: ({ commit }) => commit('NEXT_ROUND'),
-    setStage: ({ commit }, newStage) => commit('SET_STAGE', newStage),
-    nextStage: ({ commit }) => commit('NEXT_STAGE'),
-    nextPlayerPromise: ({ commit }) => new Promise((resolve, reject) => {
-      commit('NEXT_ACTIVE_PLAYER');
-      resolve();
-    }),
-
-    // players & dealer
-    playerEndTurn: ({ state, dispatch }) => dispatch('nextPlayerPromise')
-    .then(() => {
-      if (state.gameActivePlayer > state.players.length - 1) dispatch('nextStage');
-    }),
     newGame: ({ commit }, options) => {
       commit('SET_ROUND', 0);
       commit('SET_DECK', options.deckCount);
@@ -112,7 +108,27 @@ export default new Vuex.Store({
       const dealer = options.players.find(player => player.isDealer);
       commit('SET_DEALER', dealer);
     },
-    setActiveScore: ({ commit }, score) => commit('SET_ACTIVE_SCORE', score),
+    nextRound: ({ commit }) => commit('NEXT_ROUND'),
+    setStage: ({ commit }, newStage) => commit('SET_STAGE', newStage),
+    nextStage: ({ commit }) => commit('NEXT_STAGE'),
+    nextPlayerPromise: ({ commit }) => new Promise((resolve, reject) => {
+      commit('NEXT_ACTIVE_PLAYER');
+      resolve();
+    }),
+    playerEndTurn: ({ state, dispatch }) => dispatch('nextPlayerPromise')
+    .then(() => {
+      if (state.gameActivePlayer > state.players.length - 1) dispatch('nextStage');
+    }),
+
+    // players & dealer
+    playerSetScore: ({ commit }, values) => commit('PLAYER_SET_SCORE', values),
+    playerUpdateMoney: ({ commit }, values) => commit('PLAYER_UPDATE_MONEY', values),
+    bidPromise: ({ commit }, values) => new Promise((resolve, reject) => {
+      commit('PLAYER_SET_BID_EVENT', values);
+      resolve();
+    }),
+    playerBidEvent: ({ dispatch, commit }, values) => dispatch('bidPromise', values)
+    .then(() => commit('PLAYER_CLEAR_BID_EVENT', values)),
 
     // deck and cards
     deckDrawPromise: ({ state, commit }, idx) => new Promise((resolve, reject) => {

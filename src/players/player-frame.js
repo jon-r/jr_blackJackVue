@@ -13,22 +13,15 @@ export default {
 
     <player-hand
       :player="player"
-      :turn="isPlayerTurn"
-      @bid-change="setWins"
-      v-model="player.score" >
+      :turn="isPlayerTurn" >
     </player-hand>
 
-    <template v-if="!player.isDealer" >
-      <player-bet
-        :turn="isPlayerTurn"
-        :cost="cost"
-        @push-bet="setFirstBet" >
-      </player-bet>
 
-      <h4 class="player-bet" v-if="bet > 0" >
-        Bet: £{{wins}}
-      </h4>
-    </template>
+    <player-bet
+      v-if="!player.isDealer"
+      :player="player"
+      :turn="isPlayerTurn" >
+    </player-bet>
 
   </section>`,
   components: {
@@ -38,9 +31,6 @@ export default {
   data() {
     return {
       playerClass: `player-${this.player.index}`,
-      wins: 0,
-      bet: 0,
-      cost: 0,
       skip: false,
     };
   },
@@ -49,6 +39,7 @@ export default {
     ...mapGetters([
       'gameActivePlayer',
       'dealerScore',
+      'gameStage',
     ]),
 
     isPlayerTurn() {
@@ -57,42 +48,49 @@ export default {
   },
 
   methods: {
-    emitEndTurn() {
-      // this.$emit('end-turn');
-    },
-    setFirstBet(bet) {
-      this.bet = bet;
-      this.wins = bet;
-      this.emitEndTurn();
-    },
-    setWins(value) {
-      const bet = this.bet;
-      const multipliers = {
-        // Todo: better split results
-        doubleBet: { cost: -1, wins: 1, end: false },
-        forfeit: { cost: 0.5, wins: -1, end: true },
-        lose: { cost: 0, wins: -1, end: true },
-        push: { cost: 0, wins: 0, end: true },
-        win: { cost: 0, wins: 1, end: true },
-        blackJack: { cost: 0, wins: 1.5, end: true },
-      };
 
-      if (this.dealerScore === 21) {
-        multipliers.blackJack = multipliers.push;
+    turnCheck() {
+      if (this.gameStage === 0 && this.player.isDealer && this.isPlayerTurn) {
+        this.emitEndTurn();
       }
-
-      const scoring = multipliers[value];
-      this.cost = scoring.cost * bet;
-      this.wins += scoring.wins * bet;
-      console.log(`${value} cost: ${this.cost}, wins: ${this.wins}`);
-      this.$nextTick(() => {
-        if (scoring.end) {
-          this.cashIn();
-        } else {
-          this.cost = 0;
-        }
-      });
     },
+
+    emitEndTurn() {
+      this.$store.dispatch('playerEndTurn');
+    },
+//    setFirstBet(bet) {
+//      this.bet = bet;
+//      this.wins = bet;
+//      this.emitEndTurn();
+//    },
+//    setWins(value) {
+//      const bet = this.bet;
+//      const multipliers = {
+//        // Todo: better split results
+//        doubleBet: { cost: -1, wins: 1, end: false },
+//        forfeit: { cost: 0.5, wins: -1, end: true },
+//        lose: { cost: 0, wins: -1, end: true },
+//        push: { cost: 0, wins: 0, end: true },
+//        win: { cost: 0, wins: 1, end: true },
+//        blackJack: { cost: 0, wins: 1.5, end: true },
+//      };
+//
+//      if (this.dealerScore === 21) {
+//        multipliers.blackJack = multipliers.push;
+//      }
+//
+//      const scoring = multipliers[value];
+//      this.cost = scoring.cost * bet;
+//      this.wins += scoring.wins * bet;
+//      console.log(`${value} cost: ${this.cost}, wins: ${this.wins}`);
+//      this.$nextTick(() => {
+//        if (scoring.end) {
+//          this.cashIn();
+//        } else {
+//          this.cost = 0;
+//        }
+//      });
+//    },
     endRound() {
       const dealerScore = this.dealerScore;
       if (dealerScore === 0 || this.wins === 0) return false;
@@ -116,18 +114,19 @@ export default {
   //    if (dealerScore > playerScore) {
       return 'lose';
     },
-    cashIn() {
-      this.cost = this.wins;
-      this.$nextTick(() => {
-        this.cost = 0;
-        this.wins = 0;
-        this.bet = 0;
-        this.skip = true;
-        this.emitEndTurn();
-      });
-    },
+//    cashIn() {
+//      this.cost = this.wins;
+//      this.$nextTick(() => {
+//        this.cost = 0;
+//        this.wins = 0;
+//        this.bet = 0;
+//        this.skip = true;
+//        this.emitEndTurn();
+//      });
+//    },
   },
   watch: {
-    dealerScore: 'endRound',
+//    dealerScore: 'endRound',
+    isPlayerTurn: 'turnCheck',
   },
 };

@@ -39,7 +39,8 @@ export default {
         index,
         name,
         isDealer,
-        bid: 0,
+        money: 1000,
+        bidEvent: '',
         score: 0,
       };
     },
