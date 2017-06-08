@@ -141,15 +141,13 @@ export default new Vuex.Store({
       return dispatch('deckDrawPromise', rng);
     },
     deckDrawPeek: ({ state, dispatch }, toMatch) => {
-      // const rng = getRandom(state.deck.length);
-      const rng = 0; // temp, to increase the odds of dealer blackjack
+      const rng = getRandom(state.deck.length);
+//      const rng = 0; // temp, to increase the odds of dealer blackjack
 
       const rngCard = state.deck[rng];
       const rngCardValue = rngCard[0] === 1 ? 11 : Math.min(10, rngCard[0]);
 
-      return (rngCardValue + toMatch === 21)
-      ? dispatch('deckDrawPromise', rng)
-      : false;
+      return (rngCardValue + toMatch === 21) ? dispatch('deckDrawPromise', rng) : Promise.reject('not blackJack');
     },
 
   },

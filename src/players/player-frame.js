@@ -58,75 +58,37 @@ export default {
     emitEndTurn() {
       this.$store.dispatch('playerEndTurn');
     },
-//    setFirstBet(bet) {
-//      this.bet = bet;
-//      this.wins = bet;
-//      this.emitEndTurn();
-//    },
-//    setWins(value) {
-//      const bet = this.bet;
-//      const multipliers = {
-//        // Todo: better split results
-//        doubleBet: { cost: -1, wins: 1, end: false },
-//        forfeit: { cost: 0.5, wins: -1, end: true },
-//        lose: { cost: 0, wins: -1, end: true },
-//        push: { cost: 0, wins: 0, end: true },
-//        win: { cost: 0, wins: 1, end: true },
-//        blackJack: { cost: 0, wins: 1.5, end: true },
-//      };
-//
-//      if (this.dealerScore === 21) {
-//        multipliers.blackJack = multipliers.push;
-//      }
-//
-//      const scoring = multipliers[value];
-//      this.cost = scoring.cost * bet;
-//      this.wins += scoring.wins * bet;
-//      console.log(`${value} cost: ${this.cost}, wins: ${this.wins}`);
-//      this.$nextTick(() => {
-//        if (scoring.end) {
-//          this.cashIn();
-//        } else {
-//          this.cost = 0;
-//        }
-//      });
-//    },
+
     endRound() {
       const dealerScore = this.dealerScore;
       if (dealerScore === 0 || this.wins === 0) return false;
 
       const result = this.getScores(this.player.score, dealerScore);
 
-      this.setWins(result);
+      this.emitBidChange(result);
 
       return true;
     },
+    emitBidChange(event) {
+      const player = this.player;
+      this.$store.dispatch('playerBidEvent', { player, event });
+    },
+
     getScores(playerScore, dealerScore) {
-      if (dealerScore === playerScore) {
+      switch (true) {
+      case dealerScore === playerScore:
         return 'push';
-      }
-      if (playerScore > 21 || dealerScore === 21) {
+      case playerScore > 21 || dealerScore === 21:
+        return 'lose';
+      case dealerScore > 21 || playerScore > dealerScore:
+        return 'win';
+      default: // dealerScore > playerScore
         return 'lose';
       }
-      if (dealerScore > 21 || playerScore > dealerScore) {
-        return 'win';
-      }
-  //    if (dealerScore > playerScore) {
-      return 'lose';
     },
-//    cashIn() {
-//      this.cost = this.wins;
-//      this.$nextTick(() => {
-//        this.cost = 0;
-//        this.wins = 0;
-//        this.bet = 0;
-//        this.skip = true;
-//        this.emitEndTurn();
-//      });
-//    },
   },
   watch: {
-//    dealerScore: 'endRound',
+    dealerScore: 'endRound',
     isPlayerTurn: 'turnCheck',
   },
 };

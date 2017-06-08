@@ -58,7 +58,8 @@ export default {
   methods: {
     setFirstBet() {
       this.validBid = false;
-      this.adjustBet('addBet').emitEndTurn();
+      this.adjustBet('addBet');
+      this.$store.dispatch('playerEndTurn');
     },
     adjustBet(bidEvent) {
       if (!bidEvent) return this;
@@ -76,8 +77,6 @@ export default {
 
       const scoring = multipliers[bidEvent];
 
-      console.log(scoring, bidEvent);
-
       const money = betStart * scoring.cost;
       const bet = betStart * scoring.wins;
 
@@ -90,7 +89,7 @@ export default {
     },
 
     cashIn() {
-      this.updateMonies({ money: this.bet, bet: -this.bet }).emitEndTurn();
+      this.updateMonies({ money: this.bet, bet: -this.bet });
     },
 
     updateMonies({ money, bet }) {
@@ -99,11 +98,6 @@ export default {
 
       this.bet += bet;
       return this;
-    },
-
-
-    emitEndTurn() {
-      this.$store.dispatch('playerEndTurn');
     },
 
   },
