@@ -4,6 +4,12 @@
     margin-left: 20px;
 }
 
+.options-group {
+ display: inline-block;
+  width: 33%;
+  max-width: 200px;
+}
+
 .card {
   display: inline-block;
   margin-left: 5px;

@@ -3,15 +3,15 @@ export default {
   <div class="intro-form" >
     <form id="v-options" class="intro-form" @submit.prevent="setOptions" >
 
-      <span >
+      <div class="options-group" >
         <label for="input-deck" >Decks</label>
         <input v-model.lazy="deckInput" type="text" id="input-deck" />
-      </span>
+      </div>
 
-      <span v-for="(player,idx) in playerInput" :key="idx" >
+      <div class="options-group" v-for="(player,idx) in playerInput" :key="idx" >
         <label :for="'input-' + idx" >Player {{idx}}:</label>
         <input v-model.lazy="player.name" type="text" :id="'input-' + idx" />
-      </span>
+      </div>
 
       <input type="submit" val="Update" />
 
