@@ -10,7 +10,7 @@ import { mapGetters } from 'vuex';
 import PlayerCards from './player-cards';
 
 export default {
-  props: ['turn', 'player'],
+  props: ['turn', 'player', 'action'],
   template: `
   <div class="player-hand" >
 
@@ -36,17 +36,12 @@ export default {
   },
   data() {
     return {
-      hands: [this.emptyHand()],
+      hands: [],
       activeHand: 0,
       autoTime: 250,
     };
   },
   computed: {
-    ...mapGetters([
-      'gameRound',
-      'gameStage',
-    ]),
-
     getActiveHand() {
       return this.hands[this.activeHand];
     },
@@ -76,35 +71,42 @@ export default {
       const cards = hand.cards;
       return cards[0].face === cards[1].face;
     },
+
+    ...mapGetters([
+      'gameRound',
+      'gameStage',
+    ]),
   },
   methods: {
-    // generic
-    startTurn() {
-      const stage = this.gameStage;
-      if (!this.turn) return false;
 
-      const actions = new Map([
-        [1, this.dealOutFirst],
-        [2, this.dealOutFirst],
-        [3, this.playerActions],
-        [4, this.dealOutLast],
-      ]);
 
-      if (actions.has(stage)) {
-        return actions.get(stage)();
-      }
-
-      return false;
-    },
-
-    emptyHand: () => ({ cards: [], score: 0, revealed: 0 }),
-
-    emptyCard: () => ({ face: 'x', score: 0, suit: 'blank' }),
-
-    drawBlank() {
-      this.getActiveHand.cards.push(this.emptyCard());
+    /* hand methods */
+    addHand() {
+      this.hands.push({ cards: [], score: 0, revealed: 0 });
       return this;
     },
+
+    addSplitHand(splitCard) {
+      this.addHand().nextHand().setCard(splitCard);
+      return this;
+    },
+
+    nextHand() {
+      if (this.hands.length - 1 === this.activeHand) {
+        this.emitEndTurn();
+      } else {
+        this.activeHand += 1;
+      }
+      return this;
+    },
+
+    prevHand() {
+      this.activeHand -= 1;
+      return this;
+    },
+
+
+    /* card methods */
 
     valueCard(cardRaw) {
       const suits = ['hearts', 'diamonds', 'spades', 'clubs'];
@@ -119,179 +121,137 @@ export default {
       };
     },
 
-    drawAndReveal(card = false) {
-
-      this.drawBlank();
-
-      setTimeout(() => (
-        card ? this.setCard(card) : this.getRandomCard().then(drawn => this.setCard(drawn))
-      ), this.autoTime / 2);
+    addBlankCard() {
+      const hand = this.getActiveHand;
+      hand.cards.push({ face: 'x', score: 0, suit: 'blank' });
+      return this;
     },
 
-    getRandomCard() {
-      return this.$store.dispatch('deckDrawRandom');
+    revealCard(mayPeek = false) {
+      const drawType = mayPeek ? 'deckDrawPeek' : 'deckDrawRandom';
+      return this.$store.dispatch(drawType, this.getActiveHand.score);
     },
 
-    setCard(cardRaw) {
-      if (!cardRaw) return this;
+    setCard(card) {
+      if (!card) return this;
 
-      console.log(cardRaw);
-
-      const newCard = this.valueCard(cardRaw);
+      const newCard = this.valueCard(card);
       const activeHand = this.getActiveHand;
+
+      console.log('adding to hand', this.activeHand);
 
       this.$set(activeHand.cards, activeHand.revealed, newCard);
       activeHand.revealed += 1;
 
-      if (this.canCtrl) {
-        this.$nextTick(() => this.scoreCheck());
-      }
-
       return this;
     },
 
-    nextHand() {
-      if (this.hands.length - 1 === this.activeHand) {
-        this.emitEndTurn();
-      } else {
-        this.activeHand += 1;
-      }
+    dealRevealSet(mayPeek = false) {
+      return new Promise(resolve =>
+        this.addBlankCard().revealCard(mayPeek)
+        .then((card) => {
+          this.setCard(card);
+          resolve();
+        }),
+      );
     },
 
-    emitEndTurn(delay = 0) {
-      setTimeout(() => this.$store.dispatch('playerEndTurn'), delay);
-    },
-
-    // stage 0
-
-    setGame() {
-      this.hands = [this.emptyHand()];
-      this.activeHand = 0;
-    },
-
-    // stage 1 - 2
-
-    dealOutFirst() {
-      const isLastCard = this.player.isDealer && this.gameStage === 2;
-
-      if (isLastCard) {
-        this.dealerPeekCheck();
-      } else {
-        this.drawAndReveal();
-      }
-
-      this.emitEndTurn(this.autoTime);
-    },
-
-    dealerPeekCheck() {
+    scoreCheck() {
       const score = this.getActiveHand.score;
 
-      this.drawBlank();
+      console.log('checking score', score);
 
-      if (score !== 10 && score !== 11) return false;
-
-      return this.$store.dispatch('deckDrawPeek', score)
-      .then(drawn => this.setCard(drawn).emitFinalScore(21), err => false);
-      // TODO: alert if the peek found nothing??
-    },
-
-    // stage 3
-
-    playerActions() {
-      if (this.player.isDealer) {
-        this.dealDealer();
-      } else {
-        this.scoreCheck();
+      switch (true) {
+      case score > 21:
+        return this.emitBidChange('lose').nextHand();
+      case score === 21 && this.getActiveHand.revealed === 2:
+        return this.emitBidChange('blackJack').nextHand();
+      case score === 21:
+        return this.nextHand();
+      default:
+        return this;
+        // score ok, carry on
       }
     },
 
-    dealDealer() {
+    /* turn setting -------------- */
+    startTurn() {
+      if (!this.turn) return false;
+
+      const actions = new Map([
+        [1, this.dealOutFirst],
+        [2, this.dealOutFirst],
+        [3, this.playerActions],
+        [4, this.dealOutLast],
+      ]);
+
+      const fn = actions.get(this.gameStage);
+
+      return fn ? fn() : false;
+    },
+
+    /* TURN 1 + 2 ------------------ */
+
+    dealOutFirst() {
+      if (this.gameStage === 1) this.addHand();
+
+      const isDealerSecond = this.player.isDealer && this.gameStage === 2;
+
+      this.dealRevealSet(isDealerSecond).then(() => this.nextHand());
+    },
+
+    /* TURN 3 -------------------- */
+
+    playerActions() {
+      const turnFn = this.player.isDealer ? this.autoHit : this.scoreCheck;
+      turnFn();
+    },
+
+    hit() {
+      this.dealRevealSet().then(() => this.scoreCheck());
+    },
+    autoHit() {
       setTimeout(() => {
         if (this.getActiveHand.score < 17) {
-          this.drawAndReveal().dealDealer();
+          this.dealRevealSet().then(() => this.autoHit());
         } else {
           this.emitEndTurn();
         }
       }, this.autoTime);
     },
-
-    scoreCheck() {
-      const hand = this.getActiveHand;
-      const score = hand.score;
-
-      console.log('checking score', hand.score);
-
-      switch (true) {
-      case score > 21:
-        return this.emitBidChange('lose').nextHand();
-      case score === 21 && hand.revealed === 2:
-        return this.emitBidChange('blackJack').nextHand();
-      case score === 21:
-        return this.nextHand();
-      default:
-        // score ok, carry on
-        return true;
-      }
-    },
-
-    hit() {
-      this.drawAndReveal();
-      return this;
-    },
-
     stand() {
       this.nextHand();
     },
-
     split() {
-      this.emitBidChange('addBet');
-      const splitCard = this.getActiveHand.cards.splice(1)[0];
+      const hand = this.getActiveHand;
+      const splitCard = hand.cards.splice(1)[0];
+      hand.revealed -= 1;
 
-      this.getActiveHand.revealed = 1;
-
-      this.drawAndReveal();
-
-      this.hands.push(this.emptyHand());
-
-      this.activeHand = 1;
-
-      console.log('split card', splitCard);
-
-      this.drawAndReveal(splitCard);
-      setTimeout(() => {
-        this.drawAndReveal();
-        this.activeHand = 0;
-      }, this.autoTime);
+      this.emitBidChange('addBet').dealRevealSet()
+        .then(() => this.addSplitHand(splitCard).dealRevealSet())
+        .then(() => this.prevHand().scoreCheck());
     },
-
-    double() {
-      this.emitBidChange('addBet').drawBlank().emitEndTurn(this.autoTime);
-    },
-
     surrender() {
       this.emitBidChange('forfeit').emitEndTurn();
     },
-
-    emitBidChange(event) {
-      // this.$emit('bid-change', str);
-      const player = this.player;
-      this.$store.dispatch('playerBidEvent', { player, event });
-      return this;
+    double() {
+      this.emitBidChange('addBet').addBlankCard().emitEndTurn();
     },
 
-    // stage 4
+    /* TURN 4 ------------------------- */
 
     dealOutLast() {
+      this.fillBlanks().then(() => this.setFinalScores().emitEndTurn());
+    },
+
+    fillBlanks() {
       const activeHand = this.getActiveHand;
+      const hasBlank = (activeHand.cards.length > activeHand.revealed);
 
-      let delay = 0;
-
-      if (activeHand.cards.length > activeHand.revealed) {
-        this.drawAndReveal();
-        delay = this.autoTime;
-      }
-
-      this.setFinalScores().emitEndTurn(delay);
+      return new Promise((resolve) => {
+        if (hasBlank) this.revealCard().then(card => this.setCard(card));
+        resolve();
+      });
     },
 
     setFinalScores() {
@@ -303,6 +263,18 @@ export default {
 
       this.emitFinalScore(bestScore);
 
+      return this;
+    },
+
+    /* emits -------------*/
+
+    emitEndTurn() {
+      setTimeout(() => this.$store.dispatch('playerEndTurn'), this.autoTime);
+    },
+
+    emitBidChange(event) {
+      const player = this.player;
+      this.$store.dispatch('playerBidEvent', { player, event });
       return this;
     },
 
