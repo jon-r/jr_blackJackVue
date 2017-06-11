@@ -16,22 +16,6 @@ function getRandom(range) {
   return Math.floor(Math.random() * range);
 }
 
-function buildDeck(deckCount) {
-  const out = [];
-  const nDecks = new Array(deckCount).fill();
-  const nSuits = new Array(4).fill();
-  const nFaces = new Array(13).fill();
-
-  nDecks.forEach((x, i) => {
-    nSuits.forEach((y, j) => {
-      nFaces.forEach((z, k) => {
-        out.push([k + 1, j]);
-      });
-    });
-  });
-  return out;
-}
-
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -45,7 +29,10 @@ export default new Vuex.Store({
     gameActivePlayer: 0,
 
     // players & dealer
-    dealer: {},
+    dealer: {
+      score: 0,
+      peeked: null,
+    },
     players: [],
     // deck and cards
     deck: [],
@@ -71,7 +58,7 @@ export default new Vuex.Store({
       state.players = playerArr;
     },
     SET_DEALER(state, player) {
-      state.dealer = player;
+      Object.assign(state.dealer, player);
     },
     NEXT_ACTIVE_PLAYER(state) {
       state.gameActivePlayer += 1;
@@ -88,8 +75,27 @@ export default new Vuex.Store({
     PLAYER_CLEAR_BID_EVENT(state, { player, event }) {
       state.players[player.index].bidEvent = '';
     },
+    DEALER_SET_PEEKED(state, card) {
+      state.dealer.peeked = card;
+    },
     // deck and cards
     SET_DECK(state, deckCount) {
+      function buildDeck(n) {
+        const out = [];
+        const nDecks = new Array(n).fill();
+        const nSuits = new Array(4).fill();
+        const nFaces = new Array(13).fill();
+
+        nDecks.forEach((x, i) => {
+          nSuits.forEach((y, j) => {
+            nFaces.forEach((z, k) => {
+              out.push([k + 1, j]);
+            });
+          });
+        });
+        return out;
+      }
+
       state.deck = buildDeck(deckCount);
     },
     SPLICE_CARD(state, cardIdx) {
@@ -129,6 +135,7 @@ export default new Vuex.Store({
     }),
     playerBidEvent: ({ dispatch, commit }, values) => dispatch('bidPromise', values)
     .then(() => commit('PLAYER_CLEAR_BID_EVENT', values)),
+    dealerCard: ({ commit }, card) => commit('DEALER_SET_PEEKED', card),
 
     // deck and cards
     deckDrawPromise: ({ state, commit }, idx) => new Promise((resolve, reject) => {
@@ -141,18 +148,20 @@ export default new Vuex.Store({
       return dispatch('deckDrawPromise', rng);
     },
     deckDrawPeek: ({ state, dispatch }, toMatch) => {
-
       if (toMatch !== 10 && toMatch !== 11) return Promise.resolve(false);
 
-//      const rng = getRandom(state.deck.length);
-      const rng = 0; // temp, to increase the odds of dealer blackjack
+      const rng = getRandom(state.deck.length);
+      // const rng = 0; // temp, to increase the odds of dealer blackjack
 
       const rngCard = state.deck[rng];
       const rngCardValue = rngCard[0] === 1 ? 11 : Math.min(10, rngCard[0]);
 
+      if (rngCardValue + toMatch === 21) {
+        return dispatch('deckDrawPromise', rng);
+      }
 
-
-      return (rngCardValue + toMatch === 21) ? dispatch('deckDrawPromise', rng) : Promise.resolve(false);
+      dispatch('deckDrawPromise', rng).then(card => dispatch('dealerCard', card));
+      return Promise.resolve(false);
     },
 
   },
@@ -166,6 +175,7 @@ export default new Vuex.Store({
     // players & dealer
     players: state => state.players,
     dealerScore: state => state.dealer.score,
+    dealerPeek: state => state.dealer.peeked,
 
     // deck and cards
     // getCard: state => idx => state.deck.idx;

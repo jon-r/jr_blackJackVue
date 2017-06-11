@@ -2,12 +2,16 @@ export default {
   props: ['cards'],
   template: `
   <div class="held-cards" >
-    <div v-for="card in this.cards" class="card" :class="card.suit" >
-      {{card.face}}
-    </div>
     <div class="hand-score" >
       {{this.scoreStr}} {{this.score}}
     </div>
+
+    <transition-group enter name="cards" tag="div" >
+      <div v-for="(card, idx) in this.cards" :key="idx" class="card" :class="card.suit" >
+        {{card.face}}
+      </div>
+    </transition-group>
+
   </div>
   `,
   data() {
