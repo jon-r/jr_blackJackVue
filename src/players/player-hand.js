@@ -1,13 +1,7 @@
-/* TODO: the cards need to update when a card is revealed. NOT when the card is dealt
-  1) reset the reveal timout (it was working)
-  2) set to be a pinging new card (see the money change ping/reset)
-  3) since pinging new card, screokeeping can be optimised to only add a new card?
-  4) also perhaps this ping change could be used elsewhere to (eg new round/game);
-*/
-
 import { mapGetters } from 'vuex';
 
 import PlayerCards from './player-cards';
+import PlayerCtrl from './player-ctrl';
 
 export default {
   props: ['turn', 'player', 'action'],
@@ -15,30 +9,27 @@ export default {
   <div class="player-hand" >
 
     <player-cards
-      v-for="(hand, idx) in hands" :key="idx"
+      v-for="(hand, idx) in hands"
+      :key="idx"
       :cards="hand.cards"
       v-model="hand.score" >
     </player-cards>
 
-    <div class="player-ctrl" v-if="canCtrl" >
-      <button
-        v-for="ctrl in ctrls"
-        v-if="ctrl.canUse"
-        class="ctrl-btn" :class="'ctrl-' + ctrl.name"
-        @click="ctrl.onClick" >
-        {{ctrl.name}}
-      </button>
-    </div>
+    <player-ctrl
+      v-if="canCtrl"
+      :hand="hands[0]"
+      @ctrl="doCtrl">
+    </player-ctrl>
   </div>
   `,
   components: {
     'player-cards': PlayerCards,
+    'player-ctrl': PlayerCtrl,
   },
   data() {
     return {
       hands: [],
       activeHand: 0,
-      autoTime: 100,
     };
   },
   computed: {
@@ -50,31 +41,24 @@ export default {
       return !this.player.isDealer && this.turn && this.gameStage === 3;
     },
 
-    ctrls() {
-      return [
-        { name: 'hit', canUse: true, onClick: this.hit },
-        { name: 'stand', canUse: true, onClick: this.stand },
-        { name: 'split', canUse: this.canSplit, onClick: this.split },
-        { name: 'surrender', canUse: this.firstCtrl, onClick: this.surrender },
-        { name: 'double', canUse: this.firstCtrl, onClick: this.double },
-      ];
-    },
+    allowPlay() {
+      const score = this.getActiveHand.score;
+      const max = this.player.isDealer ? 17 : 21;
 
-    firstCtrl() {
-      return this.hands[0].revealed < 3;
-    },
+      if (score > 21) {
+        this.emitBidChange('lose');
+      } else if (score === 21 && this.getActiveHand.revealed === 2) {
+        this.emitBidChange('blackJack');
+      }
 
-    canSplit() {
-      const hand = this.hands[0];
-      if (hand.revealed !== 2) return false;
-
-      const cards = hand.cards;
-      return cards[0].face === cards[1].face;
+      return score < max;
     },
 
     ...mapGetters([
       'gameRound',
       'gameStage',
+      'dealerPeek',
+      'autoTime',
     ]),
   },
   methods: {
@@ -84,7 +68,6 @@ export default {
         setTimeout(() => resolve(resolved), time),
       );
     },
-
 
     /* hand methods */
     addHand() {
@@ -110,7 +93,6 @@ export default {
       this.activeHand -= 1;
       return this;
     },
-
 
     /* card methods */
 
@@ -168,24 +150,6 @@ export default {
         .then(rawCard => this.setCard(rawCard));
     },
 
-    scoreCheck() {
-      const score = this.getActiveHand.score;
-
-      console.log('checking score', score);
-
-      switch (true) {
-      case score > 21:
-        return this.emitBidChange('lose').nextHand();
-      case score === 21 && this.getActiveHand.revealed === 2:
-        return this.emitBidChange('blackJack').nextHand();
-      case score === 21:
-        return this.nextHand();
-      default:
-        return this;
-        // score ok, carry on
-      }
-    },
-
     /* turn setting -------------- */
     startTurn() {
       if (!this.turn) return false;
@@ -200,6 +164,13 @@ export default {
       const fn = actions.get(this.gameStage);
 
       return fn ? fn() : false;
+    },
+
+    /* TURN 0 ------------------ */
+
+    clearCards() {
+      this.hands = [];
+      this.activeHand = 0;
     },
 
     /* TURN 1 ------------------ */
@@ -219,17 +190,25 @@ export default {
 
     /* TURN 3 -------------------- */
 
+    scoreCheck() {
+      if (!this.allowPlay) this.nextHand();
+    },
+
+
     playerActions() {
       if (!this.player.isDealer) {
         return this.scoreCheck();
       }
 
-      const peeked = this.$store.getters.dealerPeek;
-      if (peeked) {
-        return this.setCard(peeked).autoHit();
+      if (this.dealerPeek) {
+        return this.setCard(this.dealerPeek).autoHit();
       }
 
       return this.fillBlanks().then(() => this.autoHit());
+    },
+
+    doCtrl(ctrl) {
+      this[ctrl]();
     },
 
     hit() {
@@ -237,12 +216,7 @@ export default {
     },
 
     autoHit() {
-      if (this.getActiveHand.score > 16) {
-        return this.emitEndTurn();
-      }
-
-      return this.dealRevealSet()
-        .then(() => this.autoHit());
+      return this.allowPlay ? this.dealRevealSet().then(() => this.autoHit()) : this.emitEndTurn();
     },
 
     stand() {
@@ -291,7 +265,7 @@ export default {
     /* emits -------------*/
 
     emitEndTurn() {
-      setTimeout(() => this.$store.dispatch('playerEndTurn'), this.autoTime);
+      this.$store.dispatch('nextPlayer');
     },
 
     emitBidChange(event) {
@@ -307,7 +281,7 @@ export default {
 
   },
   watch: {
-    gameRound: 'setGame',
+    gameRound: 'clearCards',
     turn: 'startTurn',
   },
 };

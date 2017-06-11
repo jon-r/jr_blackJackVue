@@ -16,7 +16,7 @@ export default {
       <input v-if="validBet" type="button" @click="setFirstBet" value="Place Bet" />
     </div>
 
-    <h4 class="player-bet" v-if="bet > 0" >
+    <h4 class="player-bet" v-show="bet > 0" >
       Bet: £{{bet}}
     </h4>
   </div>
@@ -33,6 +33,7 @@ export default {
       'gameRound',
       'gameStage',
       'dealerScore',
+      'minBid',
     ]),
 
     diffClass() {
@@ -46,20 +47,25 @@ export default {
     },
 
     minVal() {
-      return Math.min(100, this.player.money);
+      return Math.min(this.minBid, this.player.money);
     },
     canBid() {
       return (this.gameStage === 0) && this.turn;
     },
     validBet() {
-      return (this.betStart > this.minVal) && (this.betStart < this.player.money);
+      return (this.betStart > this.minVal) && (this.betStart <= this.player.money);
     },
   },
   methods: {
+    setBaseBet() {
+      const money = this.player.money;
+      this.betStart = (money < this.minBid) ? 0 : Math.max(this.minBid, this.player.money / 2);
+    },
+
     setFirstBet() {
       this.validBid = false;
       this.adjustBet('addBet');
-      this.$store.dispatch('playerEndTurn');
+      this.$store.dispatch('nextPlayer');
     },
     adjustBet(bidEvent) {
       if (!bidEvent) return this;
@@ -103,5 +109,6 @@ export default {
   },
   watch: {
     'player.bidEvent': 'adjustBet',
+    gameRound: 'setBaseBet',
   },
 };

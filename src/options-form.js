@@ -5,7 +5,12 @@ export default {
 
       <div class="options-group" >
         <label for="input-deck" >Decks</label>
-        <input v-model.lazy="deckInput" type="text" id="input-deck" />
+        <input v-model.lazy="deckInput" type="number" id="input-deck" />
+      </div>
+
+      <div class="options-group" >
+        <label for="input-bid" >Min Bid</label>
+        <input v-model.lazy="minBid" type="number" min="0" id="input-deck" />
       </div>
 
       <div class="options-group" v-for="(player,idx) in playerInput" :key="idx" >
@@ -30,6 +35,7 @@ export default {
         { name: 'Ethan' },
       ],
       deckInput: 6,
+      minBid: 100,
     };
   },
 
@@ -45,6 +51,7 @@ export default {
       };
     },
     getOptions() {
+      const minBid = this.minBid;
       const deckCount = this.deckInput;
       const players = this.playerInput
         .map((player, index) => this.setNewPlayer(player.name, index));
@@ -53,7 +60,7 @@ export default {
 
       players.push(dealer);
 
-      return { players, deckCount };
+      return { players, deckCount, minBid };
     },
     setOptions() {
       const options = this.getOptions();
@@ -65,7 +72,6 @@ export default {
 
       this.$store.dispatch('nextPlayerPromise')
         .then(() => this.$store.dispatch('nextStage'));
-//       this.game.endTurn();
     },
 
   },

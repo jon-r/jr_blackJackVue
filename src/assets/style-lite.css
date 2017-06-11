@@ -7,7 +7,10 @@
 .options-group {
  display: inline-block;
   width: 33%;
-  max-width: 200px;
+  max-width: 100px;
+}
+.options-group input {
+  max-width: 100%;
 }
 
 .card {

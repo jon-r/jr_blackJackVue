@@ -16,7 +16,6 @@ export default {
       :turn="isPlayerTurn" >
     </player-hand>
 
-
     <player-bet
       v-if="!player.isDealer"
       :player="player"
@@ -40,6 +39,7 @@ export default {
       'gameActivePlayer',
       'dealerScore',
       'gameStage',
+      'minBid',
     ]),
 
     isPlayerTurn() {
@@ -49,14 +49,20 @@ export default {
 
   methods: {
 
+    // TODO: need to skip players with no money
+    // rehuffle deck with each new round.
+    // check for any other things that need reseting? scores etc
+
     turnCheck() {
-      if (this.gameStage === 0 && this.player.isDealer && this.isPlayerTurn) {
+      const wontBid = this.player.isDealer;
+      const cantBid = this.player.money < this.minBid && this.player.bid;
+      if (this.isPlayerTurn && this.gameStage === 0 && (cantBid || wontBid)) {
         this.emitEndTurn();
       }
     },
 
     emitEndTurn() {
-      this.$store.dispatch('playerEndTurn');
+      this.$store.dispatch('nextPlayer');
     },
 
     endRound() {
