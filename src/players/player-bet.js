@@ -29,13 +29,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'gameRound',
-      'gameStage',
-      'dealerScore',
-      'minBid',
-    ]),
-
     diffClass() {
       return (this.moneyDiff > 0) ? 'money-plus' : 'money-minus';
     },
@@ -55,6 +48,12 @@ export default {
     validBet() {
       return (this.betStart > this.minVal) && (this.betStart <= this.player.money);
     },
+
+    ...mapGetters([
+      'gameRound',
+      'gameStage',
+      'minBid',
+    ]),
   },
   methods: {
     setBaseBet() {
@@ -68,7 +67,8 @@ export default {
       this.$store.dispatch('nextPlayer');
     },
     adjustBet(bidEvent) {
-      if (!bidEvent) return this;
+      const hasEnded = (this.bet === 0 && bidEvent !== 'addBet');
+      if (!bidEvent || hasEnded) return this;
 
       const betStart = this.betStart;
       const multipliers = {
