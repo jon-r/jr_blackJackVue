@@ -46,7 +46,7 @@ export default {
       return (this.gameStage === 0) && this.turn;
     },
     validBet() {
-      return (this.betStart > this.minVal) && (this.betStart <= this.player.money);
+      return (this.betStart >= this.minVal) && (this.betStart <= this.player.money);
     },
 
     ...mapGetters([
@@ -58,7 +58,7 @@ export default {
   methods: {
     setBaseBet() {
       const money = this.player.money;
-      this.betStart = (money < this.minBid) ? 0 : Math.max(this.minBid, this.player.money / 2);
+      this.betStart = (money < this.minBid) ? 0 : Math.max(this.minBid, Math.ceil(money / 2));
     },
 
     setFirstBet() {
@@ -88,14 +88,17 @@ export default {
 
       this.updateMonies({ money, bet });
 
-      this.$nextTick(() => {
-        if (scoring.end) this.cashIn();
-      });
+      if (scoring.end) this.cashIn();
+
       return this;
     },
 
     cashIn() {
       this.updateMonies({ money: this.bet, bet: -this.bet });
+      if (this.player.money < this.minBid) {
+        console.log(this.player);
+        this.$store.dispatch('playerEndGame', this.player);
+      }
     },
 
     updateMonies({ money, bet }) {

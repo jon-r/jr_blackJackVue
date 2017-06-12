@@ -35,28 +35,29 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
-      'gameActivePlayer',
-      'dealerScore',
-      'gameStage',
-      'minBid',
-    ]),
-
     isPlayerTurn() {
       return this.gameActivePlayer === this.player.index;
     },
+
+    ...mapGetters([
+      'gameActivePlayer',
+      'dealer',
+      'gameStage',
+      'minBid',
+    ]),
   },
 
   methods: {
 
-    // TODO: need to skip players with no money
+    // TODO:
     // rehuffle deck with each new round.
     // check for any other things that need reseting? scores etc
 
     turnCheck() {
-      const wontBid = this.player.isDealer;
-      const cantBid = this.player.money < this.minBid && this.player.bid;
-      if (this.isPlayerTurn && this.gameStage === 0 && (cantBid || wontBid)) {
+      const cantBid = !this.player.inGame;
+      const wontBid = this.isPlayerTurn && this.gameStage === 0 && this.player.isDealer;
+
+      if (cantBid || wontBid) {
         this.emitEndTurn();
       }
     },
@@ -66,10 +67,10 @@ export default {
     },
 
     endRound() {
-      const dealerScore = this.dealerScore;
-      if (dealerScore === 0 || this.wins === 0) return false;
+      const dealerScore = this.dealer.score;
+      if (dealerScore === 0) return false;
 
-      const result = this.getScores(this.player.score, dealerScore);
+      const result = this.getScores(dealerScore);
 
       this.emitBidChange(result);
 
@@ -80,7 +81,8 @@ export default {
       this.$store.dispatch('playerBidEvent', { player, event });
     },
 
-    getScores(playerScore, dealerScore) {
+    getScores(dealerScore) {
+      const playerScore = this.player.score;
       switch (true) {
       case dealerScore === playerScore:
         return 'push';
@@ -94,7 +96,7 @@ export default {
     },
   },
   watch: {
-    dealerScore: 'endRound',
+    'dealer.score': 'endRound',
     isPlayerTurn: 'turnCheck',
   },
 };

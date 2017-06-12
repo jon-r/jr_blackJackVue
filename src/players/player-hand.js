@@ -18,6 +18,7 @@ export default {
     <player-ctrl
       v-if="canCtrl"
       :hand="hands[0]"
+      :money="player.money"
       @ctrl="doCtrl">
     </player-ctrl>
   </div>
@@ -42,8 +43,11 @@ export default {
     },
 
     allowPlay() {
+      if (!this.getActiveHand) return false;
+
+      const isDealer = this.player.isDealer;
       const score = this.getActiveHand.score;
-      const max = this.player.isDealer ? 17 : 21;
+      const max = isDealer ? 17 : 21;
 
       if (score > 21) {
         this.emitBidChange('lose');
@@ -57,7 +61,7 @@ export default {
     ...mapGetters([
       'gameRound',
       'gameStage',
-      'dealerPeek',
+      'dealer',
       'autoTime',
     ]),
   },
@@ -129,7 +133,6 @@ export default {
 
       this.$set(activeHand.cards, activeHand.revealed, newCard);
       activeHand.revealed += 1;
-
       return this;
     },
 
@@ -178,14 +181,22 @@ export default {
     dealOutFirst() {
       this.addHand().wait(0)
         .then(() => this.dealRevealSet())
-        .then(() => this.nextHand());
+        .then(() => this.emitEndTurn());
     },
 
     /* TURN 2 ------------------ */
 
     dealOutSecond() {
-      this.dealRevealSet(this.player.isDealer)
-        .then(() => this.nextHand());
+      const isDealer = this.player.isDealer;
+      this.dealRevealSet(isDealer)
+      .then(() => {
+        const endImmediately = (isDealer && this.getActiveHand.score === 21);
+        if (endImmediately) {
+          this.emitEndRound();
+        } else {
+          this.emitEndTurn();
+        }
+      });
     },
 
     /* TURN 3 -------------------- */
@@ -200,8 +211,8 @@ export default {
         return this.scoreCheck();
       }
 
-      if (this.dealerPeek) {
-        return this.setCard(this.dealerPeek).autoHit();
+      if (this.dealer.peeked) {
+        return this.setCard(this.dealer.peeked).autoHit();
       }
 
       return this.fillBlanks().then(() => this.autoHit());
@@ -246,16 +257,16 @@ export default {
     /* TURN 4 ------------------------- */
 
     dealOutLast() {
+      console.log('dealing out last cards and setting score')
       this.fillBlanks()
         .then(() => this.setFinalScores().emitEndTurn());
     },
 
     setFinalScores() {
-      const hands = this.hands;
       // also filtering out any bust scores
       const bestScore = this.hands
         .map(hand => hand.score)
-        .reduce((max, cur) => (cur > 21 ? max : Math.max(max, cur)), -Infinity);
+        .reduce((max, cur) => (cur > 21 ? max : Math.max(max, cur)), -1);
 
       this.emitFinalScore(bestScore);
 
@@ -266,6 +277,10 @@ export default {
 
     emitEndTurn() {
       this.$store.dispatch('nextPlayer');
+    },
+
+    emitEndRound() {
+      this.$store.dispatch('setStage', 4);
     },
 
     emitBidChange(event) {

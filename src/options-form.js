@@ -48,6 +48,7 @@ export default {
         money: 1000,
         bidEvent: '',
         score: 0,
+        inGame: true,
       };
     },
     getOptions() {
