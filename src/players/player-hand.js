@@ -18,7 +18,7 @@ export default {
     <player-ctrl
       v-if="canCtrl"
       :hand="hands[0]"
-      :money="player.money"
+      :player="player"
       @ctrl="doCtrl">
     </player-ctrl>
   </div>

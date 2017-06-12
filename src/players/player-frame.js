@@ -50,8 +50,7 @@ export default {
   methods: {
 
     // TODO:
-    // rehuffle deck with each new round.
-    // check for any other things that need reseting? scores etc
+    // fix the skipping of players when out of money.
 
     turnCheck() {
       const cantBid = !this.player.inGame;

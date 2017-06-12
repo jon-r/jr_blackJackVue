@@ -103,7 +103,7 @@ export default {
 
     updateMonies({ money, bet }) {
       const player = this.player;
-      this.$store.dispatch('playerUpdateMoney', { player, money });
+      this.$store.dispatch('playerUpdateMoney', { player, money, bet });
 
       this.bet += bet;
       return this;

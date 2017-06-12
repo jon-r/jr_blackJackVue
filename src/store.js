@@ -92,8 +92,10 @@ export default new Vuex.Store({
     PLAYER_SET_SCORE(state, { player, score }) {
       state.players[player.index].score = score;
     },
-    PLAYER_UPDATE_MONEY(state, { player, money }) {
-      state.players[player.index].money += money;
+    PLAYER_UPDATE_MONEY(state, { player, money, bet }) {
+      const thisPlayer = state.players[player.index];
+      thisPlayer.money += money;
+      thisPlayer.startBid = bet;
     },
     PLAYER_SET_BID_EVENT(state, { player, event }) {
       state.players[player.index].bidEvent = event;

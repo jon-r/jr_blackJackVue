@@ -46,6 +46,7 @@ export default {
         name,
         isDealer,
         money: 1000,
+        startBid: 0,
         bidEvent: '',
         score: 0,
         inGame: true,

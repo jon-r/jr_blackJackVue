@@ -1,7 +1,7 @@
 
 
 export default {
-  props: ['hand'],
+  props: ['hand', 'player'],
   template: `
   <div class="player-ctrl" >
     <button class="ctrl-btn"
@@ -19,14 +19,18 @@ export default {
       return [
         { name: 'hit', canUse: true, onClick: this.hit },
         { name: 'stand', canUse: true, onClick: this.stand },
-        { name: 'split', canUse: this.canSplit, onClick: this.split },
+        { name: 'split', canUse: this.canSplit && this.canAfford, onClick: this.split },
         { name: 'surrender', canUse: this.firstCtrl, onClick: this.surrender },
-        { name: 'double', canUse: this.firstCtrl, onClick: this.double },
+        { name: 'double', canUse: this.firstCtrl && this.canAfford, onClick: this.double },
       ];
     },
 
     firstCtrl() {
       return this.hand.revealed < 3;
+    },
+
+    canAfford() {
+      return this.player.money > this.player.startBid;
     },
 
     canSplit() {
