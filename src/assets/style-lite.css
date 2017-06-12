@@ -21,6 +21,9 @@
 .player-name.active {
   color: green;
 }
+.player-name.inactive {
+  color: red;
+}
 
 .money-plus, .money-minus {
   opacity: 0.5;

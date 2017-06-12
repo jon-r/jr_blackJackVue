@@ -257,7 +257,7 @@ export default {
     /* TURN 4 ------------------------- */
 
     dealOutLast() {
-      console.log('dealing out last cards and setting score')
+      console.log('dealing out last cards and setting score');
       this.fillBlanks()
         .then(() => this.setFinalScores().emitEndTurn());
     },

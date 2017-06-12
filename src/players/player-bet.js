@@ -11,7 +11,7 @@ export default {
     </h5>
 
     <div v-if="canBid" class="player-bet" >
-      <input type="number" v-model.lazy="betStart"
+      <input type="number" v-model="betStart"
         :min="minVal" :max="player.money" />
       <input v-if="validBet" type="button" @click="setFirstBet" value="Place Bet" />
     </div>
@@ -96,7 +96,6 @@ export default {
     cashIn() {
       this.updateMonies({ money: this.bet, bet: -this.bet });
       if (this.player.money < this.minBid) {
-        console.log(this.player);
         this.$store.dispatch('playerEndGame', this.player);
       }
     },

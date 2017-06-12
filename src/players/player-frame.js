@@ -9,7 +9,7 @@ export default {
   template: `
   <section class="player-frame" :class="playerClass" >
 
-    <h3 class="player-name" :class="{active: isPlayerTurn}" >{{player.name}}</h3>
+    <h3 class="player-name" :class="{active: isPlayerTurn, inactive: isPlayerInactive }" >{{player.name}}</h3>
 
     <player-hand
       :player="player"
@@ -39,6 +39,10 @@ export default {
       return this.gameActivePlayer === this.player.index;
     },
 
+    isPlayerInactive() {
+      return !this.player.inGame;
+    },
+
     ...mapGetters([
       'gameActivePlayer',
       'dealer',
@@ -54,9 +58,9 @@ export default {
 
     turnCheck() {
       const cantBid = !this.player.inGame;
-      const wontBid = this.isPlayerTurn && this.gameStage === 0 && this.player.isDealer;
+      const wontBid = this.gameStage === 0 && this.player.isDealer;
 
-      if (cantBid || wontBid) {
+      if (this.isPlayerTurn && (cantBid || wontBid)) {
         this.emitEndTurn();
       }
     },

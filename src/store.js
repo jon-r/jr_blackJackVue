@@ -42,11 +42,12 @@ export default new Vuex.Store({
     // game stage ids
     gameRound: 0,
     gameStage: 0,
-    gameActivePlayer: 0,
+    gameActivePlayer: -1,
 
     // players & dealer
     dealer: {},
     players: [],
+    activePlayerCount: 0,
 
     // deck and cards
     deck: [],
@@ -81,6 +82,7 @@ export default new Vuex.Store({
     // players & dealer
     SET_PLAYERS(state, playerArr) {
       state.players = playerArr;
+      state.activePlayerCount = playerArr.length - 1;
     },
     SET_DEALER(state, dealer) {
       state.dealer = dealer;
@@ -136,7 +138,7 @@ export default new Vuex.Store({
 
       const dealer = options.players.find(player => player.isDealer);
       const deck = buildDeck(options.deckCount);
-
+      commit('NEXT_ACTIVE_PLAYER');
       commit('SET_MIN_BID', options.minBid);
       commit('SET_ROUND', 0);
       commit('SET_DECK', deck);
@@ -146,11 +148,16 @@ export default new Vuex.Store({
 
     nextRound: ({ state, commit }) => {
       console.log('new round');
+      if (state.activePlayerCount < 1) {
+        console.log('GAME OVER');
+        return false;
+      }
       const deck = buildDeck(state.config.deckCount);
 
       commit('PLAYER_RESET_SCORES');
       commit('NEXT_ROUND');
       commit('SET_DECK', deck);
+      return true;
     },
 
     nextStagePromise: ({ commit }) => new Promise((resolve) => {
