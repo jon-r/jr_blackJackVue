@@ -1,5 +1,7 @@
 import { mapGetters } from 'vuex';
 
+import BetCtrl from './bet-ctrl';
+
 // TODO: set bids at chips instead of numbers
 export default {
   props: ['turn', 'player'],
@@ -10,7 +12,13 @@ export default {
       <span :class="diffClass" >£{{moneyDiff}}</span>
     </h5>
 
-    <div v-if="canBid" class="player-bet" >
+    <bet-ctrl
+      v-if="canBid"
+      :money="player.money"
+      v-model="betStart" >
+    </bet-ctrl>
+
+    <div v-if="false" class="player-bet" >
       <input type="number" v-model="betStart"
         :min="minVal" :max="player.money" />
       <input v-if="validBet" type="button" @click="setFirstBet" value="Place Bet" />
@@ -21,6 +29,9 @@ export default {
     </h4>
   </div>
   `,
+  components: {
+    'bet-ctrl': BetCtrl,
+  },
   data() {
     return {
       oldMoney: 0,
@@ -52,7 +63,6 @@ export default {
     ...mapGetters([
       'gameRound',
       'gameStage',
-      'minBid',
     ]),
   },
   methods: {

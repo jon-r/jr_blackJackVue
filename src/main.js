@@ -4,28 +4,22 @@ import Vue from 'vue';
 
 import store from './store';
 
-// import game from './game-play';
 import PlayerFrame from './players/player-frame';
 import OptionsForm from './options-form';
-// import Deck from './deck';
+import SVGElements from './svg-static';
 
 const app = new Vue({
   el: '#v-blackJack',
   components: {
     'player-frame': PlayerFrame,
     'options-form': OptionsForm,
+    'svg-static': SVGElements,
   },
-  data: { },
 
   // VUEX link to store (only need once)
   store,
 
   computed: {
-    ...mapGetters([
-      'gameStage', // only here for debug purposes atm
-      'players',
-    ]),
-
     debugStage() {
       const stage = this.gameStage;
       const out = new Map([
@@ -39,6 +33,11 @@ const app = new Vue({
 
       return out.has(stage) ? out.get(stage) : 'no stage';
     },
+
+    ...mapGetters([
+      'gameStage', // only here for debug purposes atm
+      'players',
+    ]),
   },
 
   methods: {},

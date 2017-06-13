@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 
-import PlayerCards from './player-cards';
-import PlayerCtrl from './player-ctrl';
+import PlayerCards from './cards';
+import PlayerCtrl from './hand-ctrl';
 
 export default {
   props: ['turn', 'player', 'action'],

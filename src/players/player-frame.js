@@ -1,8 +1,8 @@
 // import Vue from 'vue';
 import { mapGetters } from 'vuex';
 
-import PlayerHand from './player-hand';
-import PlayerBet from './player-bet';
+import PlayerHand from './hand';
+import PlayerBet from './bet';
 
 export default {
   props: ['player'],
