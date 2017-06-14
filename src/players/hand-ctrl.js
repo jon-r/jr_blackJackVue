@@ -30,7 +30,7 @@ export default {
     },
 
     canAfford() {
-      return this.player.money > this.player.startBid;
+      return this.player.money >= this.player.startBid;
     },
 
     canSplit() {

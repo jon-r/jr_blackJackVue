@@ -15,18 +15,15 @@ export default {
     <bet-ctrl
       v-if="canBid"
       :money="player.money"
-      v-model="betStart" >
+      @pushBet="setFirstBet" >
     </bet-ctrl>
 
-    <div v-if="false" class="player-bet" >
-      <input type="number" v-model="betStart"
-        :min="minVal" :max="player.money" />
-      <input v-if="validBet" type="button" @click="setFirstBet" value="Place Bet" />
-    </div>
-
-    <h4 class="player-bet" v-show="bet > 0" >
+    <div class="player-bet" v-show="bet > 0" >
       Bet: £{{bet}}
-    </h4>
+      <ul v-if="activeChips" >
+        <li v-for="chip in activeChips" >{{ chip }}</li>
+      </ul>
+    </div>
   </div>
   `,
   components: {
@@ -37,6 +34,8 @@ export default {
       oldMoney: 0,
       bet: 0,
       betStart: 500,
+      chipsStart: [],
+      activeChips: [],
     };
   },
   computed: {
@@ -50,14 +49,8 @@ export default {
       return out;
     },
 
-    minVal() {
-      return Math.min(this.minBid, this.player.money);
-    },
     canBid() {
       return (this.gameStage === 0) && this.turn;
-    },
-    validBet() {
-      return (this.betStart >= this.minVal) && (this.betStart <= this.player.money);
     },
 
     ...mapGetters([
@@ -71,14 +64,25 @@ export default {
       this.betStart = (money < this.minBid) ? 0 : Math.max(this.minBid, Math.ceil(money / 2));
     },
 
-    setFirstBet() {
-      this.validBid = false;
+    setFirstBet({ bet, chips }) {
+      this.betStart = bet;
+      this.chipsStart = chips;
+
       this.adjustBet('addBet');
       this.$store.dispatch('nextPlayer');
     },
+
+    addChips() {
+      const chips = this.activeChips;
+      this.chipsStart.forEach(chip => chips.push(chip));
+      this.activeChips = chips.sort((a, b) => a - b);
+    },
+
     adjustBet(bidEvent) {
       const hasEnded = (this.bet === 0 && bidEvent !== 'addBet');
       if (!bidEvent || hasEnded) return this;
+
+      if (bidEvent === 'addBet') this.addChips();
 
       const betStart = this.betStart;
       const multipliers = {

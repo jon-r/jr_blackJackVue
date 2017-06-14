@@ -216,8 +216,8 @@ export default new Vuex.Store({
     deckDrawPeek: ({ state, dispatch }, toMatch) => {
       if (toMatch !== 10 && toMatch !== 11) return Promise.resolve(false);
 
-//      const rng = getRandom(state.deck.length);
-      const rng = 0; // temp, to increase the odds of dealer blackjack
+      const rng = getRandom(state.deck.length);
+//      const rng = 0; // temp, to increase the odds of dealer blackjack
 
       const rngCard = state.deck[rng];
       const rngCardValue = rngCard[0] === 1 ? 11 : Math.min(10, rngCard[0]);

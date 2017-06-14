@@ -13,11 +13,11 @@ export default {
     </button>
     <button class="ctrl-btn"
       @click="emitBid"
-      v-if="currChipValue > minBid" >
+      v-if="currChipValue >= minBid" >
       Submit Bid: £{{ currChipValue }}
     </button>
     <ul v-if="currChips" >
-      <li v-for="chip in orderlyChips" >{{ chip }}</li>
+      <li v-for="chip in currChips" >{{ chip }}</li>
     </ul>
   </div>
   `,
@@ -33,9 +33,6 @@ export default {
       return this.money - this.currChipValue;
     },
 
-    orderlyChips() {
-      return this.currChips.sort((a, b) => a - b);
-    },
 
     ...mapGetters([
       'minBid',
@@ -49,7 +46,9 @@ export default {
       this.currChips.push(chip);
     },
     emitBid() {
-      this.$emit('input', this.currChipValue);
+      this.$emit('pushBet', { bet: this.currChipValue, chips: this.currChips });
+      this.currChips = [];
+      this.currChipValue = 0;
     },
   },
 };

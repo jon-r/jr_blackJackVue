@@ -3,7 +3,7 @@
 .player-frame {
     display: inline-block;
     vertical-align: top;
-    margin-left: 20px;
+  width: 33%;
 }
 
 .options-group {
