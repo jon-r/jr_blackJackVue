@@ -6,11 +6,7 @@ import BetCtrl from './bet-ctrl';
 export default {
   props: ['turn', 'player'],
   template: `
-  <div class="player-money" >
-    <h5>
-      Money: £{{player.money}}
-      <span :class="diffClass" >£{{moneyDiff}}</span>
-    </h5>
+  <div >
 
     <bet-ctrl
       v-if="canBid"
@@ -18,10 +14,16 @@ export default {
       @pushBet="setFirstBet" >
     </bet-ctrl>
 
+
+
     <div class="player-bet" v-show="bet > 0" >
       Bet: £{{bet}}
-      <ul v-if="activeChips" >
-        <li v-for="chip in activeChips" >{{ chip }}</li>
+      <ul class="chip-stack" v-if="activeChips" >
+        <li v-for="chip in activeChips" :class="'chip-' + chip" >
+          <svg class="token" viewBox="0 0 100 100" >
+            <use xlink:href="#chip-tilt"/>
+          </svg>
+        </li>
       </ul>
     </div>
   </div>
@@ -31,7 +33,6 @@ export default {
   },
   data() {
     return {
-      oldMoney: 0,
       bet: 0,
       betStart: 500,
       chipsStart: [],
@@ -39,15 +40,6 @@ export default {
     };
   },
   computed: {
-    diffClass() {
-      return (this.moneyDiff > 0) ? 'money-plus' : 'money-minus';
-    },
-
-    moneyDiff() {
-      const out = this.player.money - this.oldMoney;
-      this.oldMoney = this.player.money;
-      return out;
-    },
 
     canBid() {
       return (this.gameStage === 0) && this.turn;
@@ -108,6 +100,7 @@ export default {
     },
 
     cashIn() {
+      this.activeChips = [];
       this.updateMonies({ money: this.bet, bet: -this.bet });
       if (this.player.money < this.minBid) {
         this.$store.dispatch('playerEndGame', this.player);

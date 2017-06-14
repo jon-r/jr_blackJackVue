@@ -8,20 +8,30 @@ export default {
   props: ['player'],
   template: `
   <section class="player-frame" :class="playerClass" >
+    <div class="player-frame-inner" >
 
-    <h3 class="player-name" :class="{active: isPlayerTurn, inactive: isPlayerInactive }" >{{player.name}}</h3>
+      <h3 class="player-name" :class="{active: isPlayerTurn, inactive: isPlayerInactive }" >{{player.name}}</h3>
 
-    <player-hand
-      :player="player"
-      :turn="isPlayerTurn" >
-    </player-hand>
+      <h5 class="player-money" >
+        Money: £{{player.money}}
+        <span :class="diffClass" >£{{moneyDiff}}</span>
+      </h5>
 
-    <player-bet
-      v-if="!player.isDealer"
-      :player="player"
-      :turn="isPlayerTurn" >
-    </player-bet>
+      <player-hand
+        v-show="gameStage > 0"
+        :player="player"
+        :turn="isPlayerTurn" >
+      </player-hand>
 
+      <player-bet
+        v-show="!player.isDealer"
+        :player="player"
+        :turn="isPlayerTurn" >
+      </player-bet>
+
+
+
+    </div>
   </section>`,
   components: {
     'player-hand': PlayerHand,
@@ -31,10 +41,22 @@ export default {
     return {
       playerClass: `player-${this.player.index}`,
       skip: false,
+      oldMoney: 0,
     };
   },
 
   computed: {
+
+    diffClass() {
+      return (this.moneyDiff > 0) ? 'money-plus' : 'money-minus';
+    },
+
+    moneyDiff() {
+      const out = this.player.money - this.oldMoney;
+      this.oldMoney = this.player.money;
+      return out;
+    },
+
     isPlayerTurn() {
       return this.gameActivePlayer === this.player.index;
     },

@@ -1,27 +1,37 @@
 export default {
   template: `
-  <div class="intro-form" >
-    <form id="v-options" class="intro-form" @submit.prevent="setOptions" >
+  <div class="options-outer center-content" >
+    <div class="options-inner" >
+      <button class="btn menu-toggle material-icons" @click="emitCloseOptions" >close</button>
+      <form id="v-options" class="options-form" @submit.prevent="setOptions" >
+        <fieldset class="options-group" >
+          <h4 class="options-title" >Player Names</h4>
+          <input v-for="(player,idx) in playerInput" :key="idx" v-model.lazy="player.name" type="text" :id="'input-' + idx" />
+        </fieldset>
 
-      <div class="options-group" >
-        <label for="input-deck" >Decks</label>
-        <input v-model.lazy="deckInput" type="number" id="input-deck" />
+        <fieldset class="options-group" >
+        <template v-if="moreOptions" >
+          <h4  class="options-title" @click="moreOptions = false" >Less Options <i class="material-icons">expand_less</i></h4>
+
+          <label>Decks</label>
+          <input v-model.lazy="deckInput" type="number" id="input-deck" />
+
+          <label>Min Bid</label>
+          <input v-model.lazy="minBid" type="number" min="0" id="input-deck" />
+
+        </template>
+        <template v-else>
+          <h4 class="options-title" @click="moreOptions = true" >More Options <i class="material-icons">expand_more</i></h4>
+        </template>
+        </fieldset>
+
+      </form>
+
+      <div class="options-footer" >
+        <button class="btn options-submit" @click="setOptions" >New Game</button>
+        <button class="btn options-submit" @click="skipBets" >Skip Bets</button>
       </div>
-
-      <div class="options-group" >
-        <label for="input-bid" >Min Bid</label>
-        <input v-model.lazy="minBid" type="number" min="0" id="input-deck" />
-      </div>
-
-      <div class="options-group" v-for="(player,idx) in playerInput" :key="idx" >
-        <label :for="'input-' + idx" >Player {{idx}}:</label>
-        <input v-model.lazy="player.name" type="text" :id="'input-' + idx" />
-      </div>
-
-      <input type="submit" val="Update" />
-
-    </form>
-    <button @click="skipBets" >Skip Bets</button>
+    </div>
   </div>
   `,
 
@@ -36,6 +46,7 @@ export default {
       ],
       deckInput: 6,
       minBid: 100,
+      moreOptions: false,
     };
   },
 
@@ -62,6 +73,7 @@ export default {
 
       players.push(dealer);
 
+      this.emitCloseOptions();
       return { players, deckCount, minBid };
     },
     setOptions() {
@@ -74,6 +86,10 @@ export default {
 
       this.$store.dispatch('nextPlayerPromise')
         .then(() => this.$store.dispatch('nextStage'));
+    },
+
+    emitCloseOptions() {
+      this.$emit('hide');
     },
 
   },

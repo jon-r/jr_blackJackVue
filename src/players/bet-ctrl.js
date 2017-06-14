@@ -4,20 +4,30 @@ export default {
   props: ['money'],
   template: `
   <div class="bet-ctrl" >
-    <button class="ctrl-btn"
-      v-for="chip in chips"
-      v-if="chip <= maxChips"
-      :class="'chip-' + chip"
-      @click="increment(chip)" >
-      £{{chip}}
-    </button>
-    <button class="ctrl-btn"
-      @click="emitBid"
-      v-if="currChipValue >= minBid" >
-      Submit Bid: £{{ currChipValue }}
-    </button>
-    <ul v-if="currChips" >
-      <li v-for="chip in currChips" >{{ chip }}</li>
+    <div class="ctrl-box" >
+      <div class="betting-chip"
+        v-for="chip in chips"
+        v-if="chip <= maxChips"
+        :class="'chip-' + chip"
+        @click="add(chip)" >
+
+        <svg class="token" viewBox="0 0 100 100" >
+          <use xlink:href="#chip"/>
+        </svg>
+        <span class="chip-value" >£{{chip}}</span>
+      </div>
+      <button class="ctrl-btn"
+        @click="emitBid"
+        v-if="currChipValue >= minBid" >
+        Submit Bid: £{{ currChipValue }}
+      </button>
+    </div>
+    <ul class="chip-stack" v-if="currChips" >
+      <li v-for="chip in currChips" :class="'chip-' + chip" @click="remove(chip)" >
+        <svg class="token" viewBox="0 0 100 100" >
+          <use xlink:href="#chip-tilt"/>
+        </svg>
+      </li>
     </ul>
   </div>
   `,
@@ -33,18 +43,23 @@ export default {
       return this.money - this.currChipValue;
     },
 
-
     ...mapGetters([
       'minBid',
     ]),
   },
   methods: {
 
-    increment(chip) {
-      // TODO: visual pile of chips
+    add(chip) {
       this.currChipValue += chip;
       this.currChips.push(chip);
     },
+
+    remove(chip) {
+      const n = this.currChips.findIndex(isChip => isChip === chip);
+      this.currChipValue -= chip;
+      this.currChips.splice(n, 1);
+    },
+
     emitBid() {
       this.$emit('pushBet', { bet: this.currChipValue, chips: this.currChips });
       this.currChips = [];

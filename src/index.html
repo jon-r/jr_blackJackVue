@@ -9,30 +9,34 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="assets/style-lite.css" rel="stylesheet" media="all">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="assets/style.css" rel="stylesheet" media="all">
+
 
 </head>
-  <body>
+  <body  >
+    <div id="v-blackJack">
 
-    <main id="v-blackJack" >
+      <options-form v-if="showOptions" @hide="showOptions = false" ></options-form>
 
-      <options-form ></options-form>
+      <main class="blackjack-table center-content" >
+        <button class="btn menu-toggle material-icons" @click="showOptions = true" >menu</button>
 
+        <div class="blackjack-inner" >
+          <player-frame
+            v-for="player in players"
+            :key="player.index"
+            :player="player" >
+          </player-frame>
+        </div>
 
-      <section class="table" >
+      </main>
 
-        <player-frame
-          v-for="player in players"
-          :key="player.index"
-          :player="player" >
-        </player-frame>
-
-      </section>
+      <svg-static v-once></svg-static>
 
       <h1>Stage: {{gameStage}} - {{debugStage}}</h1>
 
-    </main>
-
-    <script src="dist/bundle.js"></script>
+    </div>
   </body>
+   <script src="dist/bundle.js"></script>
 </html>

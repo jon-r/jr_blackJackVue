@@ -16,6 +16,10 @@ const app = new Vue({
     'svg-static': SVGElements,
   },
 
+  data: {
+    showOptions: true,
+  },
+
   // VUEX link to store (only need once)
   store,
 

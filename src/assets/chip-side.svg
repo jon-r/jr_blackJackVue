@@ -21,7 +21,7 @@
     <path d="m-50-50h100v-100h-100" />
     <circle r="40" fill="#fff" />
   </mask>
-  <linearGradient id="edge" y2="1" x2="0" >
+  <linearGradient id="edge" y1="1" x1="1" >
     <stop offset="6.8%" stop-color="#c00"/>
     <stop offset="6.8%" stop-color="#ccc"/>
     <stop offset="25%" stop-color="#ccc"/>
@@ -34,16 +34,16 @@
     <stop offset="93.8%" stop-color="#ccc"/>
   </linearGradient>
 
-  <linearGradient id="edge2" y1="1" y2="0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#edge" />
+  <linearGradient id="edge2" y2="1" y1="0"  xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#edge" />
 
   <g class="token" transform="scale(.5 1)">
-    <path fill="url(#edge)" d="M0-48h16a1 1 0 0 1 0 96h-13" filter="url(#mlt)"/>
+    <path fill="url(#edge)" d="M0-48h-16a1 1 0 0 0 0 96h16" filter="url(#mlt)"/>
     <circle r="48" fill="#c00"/>
     <g fill="transparent" stroke="#ddd" >
     <circle r="44"  stroke-width="8" stroke-dasharray="23"/>
-    <circle cx="4" r="38" stroke-width="4" stroke-dasharray="19.9" mask="url(#inner)"/>
+    <circle cx="-4" r="38" stroke-width="4" stroke-dasharray="19.9" mask="url(#inner)"/>
     </g>
-    <path filter="url(#mlt)" fill="url(#edge2)" d="M0-40a1 1 0 1 0 0 80h4a1 1 0 1 1 0-80" />
+    <path filter="url(#mlt)" fill="url(#edge2)" d="M0-40a1 1 0 1 1 0 80h-4a1 1 0 1 0 0-80" />
     <circle filter="url(#mlt)" r="40" opacity=".2" />
   </g>
 </svg>

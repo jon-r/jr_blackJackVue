@@ -6,7 +6,7 @@ import PlayerCtrl from './hand-ctrl';
 export default {
   props: ['turn', 'player', 'action'],
   template: `
-  <div class="player-hand" >
+  <div class="player-hand ctrl-box" >
 
     <player-cards
       v-for="(hand, idx) in hands"
