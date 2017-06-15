@@ -293,8 +293,9 @@ export default {
       this.$store.dispatch('setStage', 4);
     },
 
-    emitBidChange(event) {
-      this.$store.dispatch('betFn', event);
+    emitBidChange(func) {
+      const type = 'betFn';
+      this.$store.dispatch('ctrlFunction', { type, func });
       return this;
     },
 

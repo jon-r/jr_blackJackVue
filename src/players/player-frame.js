@@ -96,9 +96,9 @@ export default {
       return true;
     },
 
-    emitBidChange(event) {
-      const player = this.player;
-      this.$store.dispatch('playerBidEvent', { player, event });
+    emitBidChange(func) {
+      const type = 'betFn';
+      this.$store.dispatch('ctrlFunction', { type, func });
     },
 
     getScores(dealerScore) {

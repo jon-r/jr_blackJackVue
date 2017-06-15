@@ -42,6 +42,7 @@ export default {
       'gameRound',
       'gameStage',
       'firstBetFn',
+      'betFn',
     ]),
   },
   methods: {
@@ -63,6 +64,12 @@ export default {
       return true;
     },
 
+    changeExistingBet(bidEvent) {
+      const hasEnded = (this.bet === 0 && bidEvent !== 'addBet');
+
+      if (this.willAct && !hasEnded) this.adjustBet(bidEvent);
+    },
+
     addChips() {
       const chips = this.activeChips;
       this.chipsStart.forEach(chip => chips.push(chip));
@@ -70,8 +77,7 @@ export default {
     },
 
     adjustBet(bidEvent) {
-      const hasEnded = (this.bet === 0 && bidEvent !== 'addBet');
-      if (!bidEvent || hasEnded) return this;
+      console.log(bidEvent);
 
       if (bidEvent === 'addBet') this.addChips();
 
@@ -118,6 +124,6 @@ export default {
   watch: {
     gameRound: 'setBaseBet',
     firstBetFn: 'setFirstBet',
-    betFn: 'adjustBet',
+    betFn: 'changeExistingBet',
   },
 };

@@ -1,14 +1,3 @@
-// TODO:
-/*
-
-[x] gameStages
-[\] players (inc active)
-[\] dealer (score)
-[ ] deck
-[ ] game play (move ctrls, or at least the results here?)
-
-*/
-
 import Vue from 'vue';
 import Vuex from 'vuex';
 
@@ -130,6 +119,8 @@ export default new Vuex.Store({
     SPLICE_CARD(state, cardIdx) {
       state.deck.splice(cardIdx, 1);
     },
+
+    // global functions
     CTRL_SET_FUNCTION(state, { type, func }) {
       state.activePlayer[type] = func;
     },
@@ -173,18 +164,21 @@ export default new Vuex.Store({
       return true;
     },
 
-    nextStagePromise: ({ commit }) => new Promise((resolve) => {
-      commit('NEXT_STAGE');
-      resolve();
-    }),
 
-    nextStage: ({ state, dispatch }) => dispatch('nextStagePromise').then(() => {
-      setTimeout(() => {
-        if (state.gameStage === 5) {
-          dispatch('nextRound');
-        }
-      }, 3000);
-    }),
+    nextStage: ({ state, commit, dispatch }) => {
+      const stagePromise = () => new Promise((resolve) => {
+        commit('NEXT_STAGE');
+        resolve();
+      });
+
+      return stagePromise().then(() => {
+        setTimeout(() => {
+          if (state.gameStage === 5) {
+            dispatch('nextRound');
+          }
+        }, 3000);
+      });
+    },
 
     setStage: ({ commit }, i) => commit('SET_STAGE', i),
 
@@ -201,14 +195,6 @@ export default new Vuex.Store({
     playerSetScore: ({ commit }, values) => commit('PLAYER_SET_SCORE', values),
 
     playerUpdateMoney: ({ commit }, values) => commit('PLAYER_UPDATE_MONEY', values),
-
-    bidPromise: ({ commit }, values) => new Promise((resolve, reject) => {
-      commit('PLAYER_SET_BID_EVENT', values);
-      resolve();
-    }),
-
-    playerBidEvent: ({ dispatch, commit }, values) => dispatch('bidPromise', values)
-    .then(() => commit('PLAYER_CLEAR_BID_EVENT', values)),
 
     dealerCard: ({ commit }, card) => commit('DEALER_SET_PEEKED', card),
 
@@ -243,6 +229,7 @@ export default new Vuex.Store({
       return Promise.resolve(false);
     },
 
+    // function emitters
     ctrlFunction: ({ commit, dispatch }, { type, func }) => {
       const actionPromise = x => new Promise((resolve) => {
         commit('CTRL_SET_FUNCTION', x);
@@ -267,16 +254,15 @@ export default new Vuex.Store({
     players: state => state.players,
     dealer: state => state.dealer,
 
-    // deck and cards
-    // getCard: state => idx => state.deck.idx;
+    // other options
+    minBid: state => state.config.minBid,
+    autoTime: state => state.config.autoTime,
+
+    // function emitters
     cardFn: state => state.activePlayer.cardFn,
     betFn: state => state.activePlayer.betFn,
     firstBetFn: state => state.activePlayer.firstBetFn,
     handRules: state => state.activePlayer.handRules,
-
-    // other options
-    minBid: state => state.config.minBid,
-    autoTime: state => state.config.autoTime,
   },
 
 });

@@ -58,9 +58,7 @@ export default {
         isDealer,
         money: 1000,
         startBid: 0,
-        bidEvent: '',
         score: 0,
-        hands: [],
         inGame: true,
       };
     },

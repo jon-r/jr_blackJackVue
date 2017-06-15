@@ -123,6 +123,42 @@ h4 {font-size: 1.414em;}
   padding-bottom: 66.6%;
 }
 
+/* ctrl frame-------------------------------------------------------------- */
+
+.ctrl-frame {
+    max-width: 512px;
+    width: 75%;
+    margin: auto;
+    text-align: center;
+}
+
+.betting-chip {
+  display: inline-block;
+  position: relative;
+  width:20%;
+}
+
+.chip-value {
+  position: absolute;
+  display: block;
+  width: 100%;
+  font-size: 24px;
+  top: calc(50% - 18px);
+  color: #ddd;
+  font-family: Impact;
+}
+.chip-stack li {
+  display: inline-block;
+  width: 20%;
+  margin-left: -15%;
+}
+
+.chip-5 .token { filter: url(#red) }
+.chip-10 .token { filter: url(#blue) }
+.chip-25 .token { filter: url(#green) }
+.chip-100 .token { filter: url(#black) }
+.chip-500 .token { filter: url(#pink) }
+
 /* player frame-------------------------------------------------------------- */
 
 .player-frame {
@@ -173,53 +209,6 @@ h4 {font-size: 1.414em;}
   left: 40%;
 }
 
-/* player-bets -------------------------------------------------------------- */
-
-.betting-chip {
-  display: inline-block;
-  position: relative;
-  width:30%;
-}
-
-.token {
-  width:48px;
-}
-.chip-5 .token { filter: url(#red) }
-.chip-10 .token { filter: url(#blue) }
-.chip-25 .token { filter: url(#green) }
-.chip-100 .token { filter: url(#black) }
-.chip-500 .token { filter: url(#pink) }
-
-.chip-value {
-  position: absolute;
-  display: block;
-  width: 100%;
-  font-size: 12px;
-  top: calc(50% - 11px);
-  color: #ddd;
-}
-
-/*
-.chip-stack {
-  position: absolute;
-  bottom: 32px;
-  width: 100%;
-}
-*/
-
-.chip-stack li {
-  display: inline-block;
-  width: 30%;
-  margin-left: -20%;
-}
-
-/*
-.player-money {
-  position: absolute;
-  widtH:100%;
-  bottom:0;
-}
-*/
 
 /* player-hand -------------------------------------------------------------- */
 
