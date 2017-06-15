@@ -59,6 +59,13 @@ export default new Vuex.Store({
       deckCount: 6,
     },
 
+    activePlayer: {
+      handRules: false,
+      cardFn: false,
+      betFn: false,
+      firstBetFn: false,
+    },
+
   },
 
   mutations: {
@@ -122,6 +129,12 @@ export default new Vuex.Store({
     },
     SPLICE_CARD(state, cardIdx) {
       state.deck.splice(cardIdx, 1);
+    },
+    CTRL_SET_FUNCTION(state, { type, func }) {
+      state.activePlayer[type] = func;
+    },
+    CTRL_SET_HAND_RULES(state, rules) {
+      state.activePlayer.handRules = rules;
     },
 
     // other options
@@ -229,6 +242,19 @@ export default new Vuex.Store({
       dispatch('deckDrawPromise', rng).then(card => dispatch('dealerCard', card));
       return Promise.resolve(false);
     },
+
+    ctrlFunction: ({ commit, dispatch }, { type, func }) => {
+      const actionPromise = x => new Promise((resolve) => {
+        commit('CTRL_SET_FUNCTION', x);
+        resolve();
+      });
+
+      return actionPromise({ type, func })
+        .then(() => commit('CTRL_SET_FUNCTION', { type, func: false }));
+    },
+
+    handCtrlRules: ({ commit }, rules) => commit('CTRL_SET_HAND_RULES', rules),
+
   },
 
   getters: {
@@ -243,6 +269,10 @@ export default new Vuex.Store({
 
     // deck and cards
     // getCard: state => idx => state.deck.idx;
+    cardFn: state => state.activePlayer.cardFn,
+    betFn: state => state.activePlayer.betFn,
+    firstBetFn: state => state.activePlayer.firstBetFn,
+    handRules: state => state.activePlayer.handRules,
 
     // other options
     minBid: state => state.config.minBid,

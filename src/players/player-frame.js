@@ -29,8 +29,6 @@ export default {
         :turn="isPlayerTurn" >
       </player-bet>
 
-
-
     </div>
   </section>`,
   components: {
@@ -83,12 +81,8 @@ export default {
       const wontBid = this.gameStage === 0 && this.player.isDealer;
 
       if (this.isPlayerTurn && (cantBid || wontBid)) {
-        this.emitEndTurn();
+        this.$store.dispatch('nextPlayer');
       }
-    },
-
-    emitEndTurn() {
-      this.$store.dispatch('nextPlayer');
     },
 
     endRound() {
@@ -101,6 +95,7 @@ export default {
 
       return true;
     },
+
     emitBidChange(event) {
       const player = this.player;
       this.$store.dispatch('playerBidEvent', { player, event });

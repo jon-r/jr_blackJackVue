@@ -61,7 +61,11 @@ export default {
     },
 
     emitBid() {
-      this.$emit('pushBet', { bet: this.currChipValue, chips: this.currChips });
+      const type = 'firstBetFn';
+      const func = { bet: this.currChipValue, chips: this.currChips };
+      this.$store.dispatch('ctrlFunction', { type, func })
+        .then(() => this.$store.dispatch('nextPlayer'));
+     // this.$emit('pushBet', { bet: this.currChipValue, chips: this.currChips });
       this.currChips = [];
       this.currChipValue = 0;
     },

@@ -17,10 +17,7 @@
   <body  >
     <div id="v-blackJack">
 
-      <options-form v-if="showOptions" @hide="showOptions = false" ></options-form>
-
       <main class="blackjack-table center-content" >
-        <button class="btn menu-toggle material-icons" @click="showOptions = true" >menu</button>
 
         <div class="blackjack-inner" >
           <player-frame
@@ -28,9 +25,14 @@
             :key="player.index"
             :player="player" >
           </player-frame>
+
+
         </div>
 
       </main>
+
+      <ctrl-frame :player="activePlayer" ></ctrl-frame>
+
 
       <svg-static v-once></svg-static>
 

@@ -1,20 +1,11 @@
 import { mapGetters } from 'vuex';
 
-import BetCtrl from './bet-ctrl';
 
 // TODO: set bids at chips instead of numbers
 export default {
   props: ['turn', 'player'],
   template: `
   <div >
-
-    <bet-ctrl
-      v-if="canBid"
-      :money="player.money"
-      @pushBet="setFirstBet" >
-    </bet-ctrl>
-
-
 
     <div class="player-bet" v-show="bet > 0" >
       Bet: £{{bet}}
@@ -28,9 +19,7 @@ export default {
     </div>
   </div>
   `,
-  components: {
-    'bet-ctrl': BetCtrl,
-  },
+  components: {},
   data() {
     return {
       bet: 0,
@@ -41,13 +30,18 @@ export default {
   },
   computed: {
 
-    canBid() {
-      return (this.gameStage === 0) && this.turn;
+    willAct() {
+      return this.turn && this.betFn;
+    },
+
+    firstAct() {
+      return this.turn && this.firstBetFn;
     },
 
     ...mapGetters([
       'gameRound',
       'gameStage',
+      'firstBetFn',
     ]),
   },
   methods: {
@@ -56,12 +50,17 @@ export default {
       this.betStart = (money < this.minBid) ? 0 : Math.max(this.minBid, Math.ceil(money / 2));
     },
 
-    setFirstBet({ bet, chips }) {
+    setFirstBet(values) {
+      if (!this.firstAct) return false;
+
+      const { bet, chips } = values;
+
       this.betStart = bet;
       this.chipsStart = chips;
 
       this.adjustBet('addBet');
-      this.$store.dispatch('nextPlayer');
+
+      return true;
     },
 
     addChips() {
@@ -117,7 +116,8 @@ export default {
 
   },
   watch: {
-    'player.bidEvent': 'adjustBet',
     gameRound: 'setBaseBet',
+    firstBetFn: 'setFirstBet',
+    betFn: 'adjustBet',
   },
 };

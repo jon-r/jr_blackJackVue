@@ -109,7 +109,7 @@ h4 {font-size: 1.414em;}
 
 /* table -------------------------------------------------------------------- */
 .blackjack-table {
-  height: 100vh;
+/*  height: 100vh;*/
   max-width: 1024px;
   margin: auto;
   background: url(table-optimised.svg) center/contain no-repeat;
@@ -130,6 +130,10 @@ h4 {font-size: 1.414em;}
     position: absolute;
     text-align: center;
     padding-bottom: 25%;
+}
+
+.player-name.active {
+  color: green;
 }
 
 .player-frame-inner {

@@ -1,12 +1,11 @@
 import { mapGetters } from 'vuex';
 
 import PlayerCards from './cards';
-import PlayerCtrl from './hand-ctrl';
 
 export default {
-  props: ['turn', 'player', 'action'],
+  props: ['turn', 'player'],
   template: `
-  <div class="player-hand ctrl-box" >
+  <div class="player-hand" >
 
     <player-cards
       v-for="(hand, idx) in hands"
@@ -15,17 +14,10 @@ export default {
       v-model="hand.score" >
     </player-cards>
 
-    <player-ctrl
-      v-if="canCtrl"
-      :hand="hands[0]"
-      :player="player"
-      @ctrl="doCtrl">
-    </player-ctrl>
   </div>
   `,
   components: {
     'player-cards': PlayerCards,
-    'player-ctrl': PlayerCtrl,
   },
   data() {
     return {
@@ -34,12 +26,14 @@ export default {
     };
   },
   computed: {
+
     getActiveHand() {
-      return this.hands[this.activeHand];
+      const hand = this.hands[this.activeHand];
+      return hand;
     },
 
-    canCtrl() {
-      return !this.player.isDealer && this.turn && this.gameStage === 3;
+    willAct() {
+      return this.turn && this.cardFn;
     },
 
     allowPlay() {
@@ -63,6 +57,7 @@ export default {
       'gameStage',
       'dealer',
       'autoTime',
+      'cardFn',
     ]),
   },
   methods: {
@@ -133,7 +128,18 @@ export default {
 
       this.$set(activeHand.cards, activeHand.revealed, newCard);
       activeHand.revealed += 1;
+
+      this.updateRules();
+
       return this;
+    },
+
+    updateRules() {
+      const hand = this.getActiveHand;
+
+      const count = hand.revealed;
+      const split = (count === 2 && (hand.cards[0].face === hand.cards[1].face));
+      this.$store.dispatch('handCtrlRules', { count, split });
     },
 
     dealRevealSet(mayPeek = false) {
@@ -219,7 +225,9 @@ export default {
     },
 
     doCtrl(ctrl) {
-      this[ctrl]();
+      if (!this.willAct) return false;
+
+      return this[ctrl]();
     },
 
     hit() {
@@ -231,7 +239,7 @@ export default {
     },
 
     stand() {
-      this.nextHand();
+      this.wait(0).then(() => this.nextHand());
     },
 
     split() {
@@ -247,11 +255,13 @@ export default {
     },
 
     surrender() {
-      this.emitBidChange('forfeit').emitEndTurn();
+      this.emitBidChange('forfeit').wait(0)
+        .then(() => this.emitEndTurn());
     },
 
     double() {
-      this.emitBidChange('addBet').addBlankCard().emitEndTurn();
+      this.emitBidChange('addBet').addBlankCard().wait(0)
+        .then(() => this.emitEndTurn());
     },
 
     /* TURN 4 ------------------------- */
@@ -284,8 +294,7 @@ export default {
     },
 
     emitBidChange(event) {
-      const player = this.player;
-      this.$store.dispatch('playerBidEvent', { player, event });
+      this.$store.dispatch('betFn', event);
       return this;
     },
 
@@ -298,5 +307,6 @@ export default {
   watch: {
     gameRound: 'clearCards',
     turn: 'startTurn',
+    cardFn: 'doCtrl',
   },
 };

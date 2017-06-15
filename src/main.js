@@ -5,20 +5,18 @@ import Vue from 'vue';
 import store from './store';
 
 import PlayerFrame from './players/player-frame';
-import OptionsForm from './options-form';
+import CtrlFrame from './ctrls/ctrl-frame';
 import SVGElements from './svg-static';
 
 const app = new Vue({
   el: '#v-blackJack',
   components: {
     'player-frame': PlayerFrame,
-    'options-form': OptionsForm,
+    'ctrl-frame': CtrlFrame,
     'svg-static': SVGElements,
   },
 
-  data: {
-    showOptions: true,
-  },
+  data: {},
 
   // VUEX link to store (only need once)
   store,
@@ -38,9 +36,14 @@ const app = new Vue({
       return out.has(stage) ? out.get(stage) : 'no stage';
     },
 
+    activePlayer() {
+      return this.players[this.gameActivePlayer];
+    },
+
     ...mapGetters([
       'gameStage', // only here for debug purposes atm
       'players',
+      'gameActivePlayer',
     ]),
   },
 

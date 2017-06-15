@@ -60,6 +60,7 @@ export default {
         startBid: 0,
         bidEvent: '',
         score: 0,
+        hands: [],
         inGame: true,
       };
     },
