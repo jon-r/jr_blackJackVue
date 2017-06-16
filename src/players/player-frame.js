@@ -91,14 +91,17 @@ export default {
 
       const result = this.getScores(dealerScore);
 
-      this.emitBidChange(result);
-
-      return true;
+      return this.emitBidChange(result);
     },
 
-    emitBidChange(func) {
-      const type = 'betFn';
-      this.$store.dispatch('ctrlFunction', { type, func });
+    emitBidChange(params) {
+      const values = {
+        target: this.player.index,
+        type: 'bid',
+        params,
+      };
+
+      return this.$store.dispatch('fireEventBus', values);
     },
 
     getScores(dealerScore) {

@@ -32,8 +32,9 @@ export default {
       return hand;
     },
 
-    willAct() {
-      return this.turn && this.cardFn;
+    isCardEvent() {
+      const evt = this.eventBus;
+      return evt.targetPlayer === this.player.index && evt.eventType === 'card' && evt.eventParams;
     },
 
     allowPlay() {
@@ -57,7 +58,7 @@ export default {
       'gameStage',
       'dealer',
       'autoTime',
-      'cardFn',
+      'eventBus',
     ]),
   },
   methods: {
@@ -225,7 +226,7 @@ export default {
     },
 
     doCtrl(ctrl) {
-      if (!this.willAct) return false;
+      if (!this.isCardEvent) return false;
 
       return this[ctrl]();
     },
@@ -247,7 +248,8 @@ export default {
       const splitCard = hand.cards.splice(1)[0];
       hand.revealed -= 1;
 
-      this.emitBidChange('addBet').dealRevealSet()
+      this.emitBidChange('addBet')
+        .then(() => this.dealRevealSet())
         .then(() => this.addSplitHand(splitCard))
         .then(() => this.wait(0))
         .then(() => this.dealRevealSet())
@@ -255,12 +257,12 @@ export default {
     },
 
     surrender() {
-      this.emitBidChange('forfeit').wait(0)
+      this.emitBidChange('forfeit')
         .then(() => this.emitEndTurn());
     },
 
     double() {
-      this.emitBidChange('addBet').addBlankCard().wait(0)
+      this.addBlankCard().emitBidChange('addBet')
         .then(() => this.emitEndTurn());
     },
 
@@ -293,10 +295,14 @@ export default {
       this.$store.dispatch('setStage', 4);
     },
 
-    emitBidChange(func) {
-      const type = 'betFn';
-      this.$store.dispatch('ctrlFunction', { type, func });
-      return this;
+    emitBidChange(params) {
+      const values = {
+        target: this.player.index,
+        type: 'bid',
+        params,
+      };
+
+      return this.$store.dispatch('fireEventBus', values);
     },
 
     emitFinalScore(score) {
@@ -304,10 +310,14 @@ export default {
       this.$store.dispatch('playerSetScore', { player, score });
     },
 
+    temp(params) {
+      if (this.isCardEvent) console.log(params);
+    },
+
   },
   watch: {
     gameRound: 'clearCards',
     turn: 'startTurn',
-    cardFn: 'doCtrl',
+    'eventBus.eventParams': 'doCtrl',
   },
 };

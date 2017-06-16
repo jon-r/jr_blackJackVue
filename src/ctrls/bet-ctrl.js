@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  props: ['money'],
+  props: ['player'],
   template: `
   <div class="bet-ctrl" >
     <div class="ctrl-box" >
@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     maxChips() {
-      return this.money - this.currChipValue;
+      return this.player.money - this.currChipValue;
     },
 
     ...mapGetters([
@@ -61,11 +61,16 @@ export default {
     },
 
     emitBid() {
-      const type = 'firstBetFn';
-      const func = { bet: this.currChipValue, chips: this.currChips };
-      this.$store.dispatch('ctrlFunction', { type, func })
+      const params = { bet: this.currChipValue, chips: this.currChips, firstBid: true };
+      const values = {
+        target: this.player.index,
+        type: 'bid',
+        params,
+      };
+
+      this.$store.dispatch('fireEventBus', values)
         .then(() => this.$store.dispatch('nextPlayer'));
-     // this.$emit('pushBet', { bet: this.currChipValue, chips: this.currChips });
+
       this.currChips = [];
       this.currChipValue = 0;
     },

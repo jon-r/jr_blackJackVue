@@ -30,19 +30,14 @@ export default {
   },
   computed: {
 
-    willAct() {
-      return this.turn && this.betFn;
-    },
-
-    firstAct() {
-      return this.turn && this.firstBetFn;
+    isBidEvent() {
+      const evt = this.eventBus;
+      return evt.targetPlayer === this.player.index && evt.eventType === 'bid' && evt.eventParams;
     },
 
     ...mapGetters([
       'gameRound',
-      'gameStage',
-      'firstBetFn',
-      'betFn',
+      'eventBus',
     ]),
   },
   methods: {
@@ -51,23 +46,23 @@ export default {
       this.betStart = (money < this.minBid) ? 0 : Math.max(this.minBid, Math.ceil(money / 2));
     },
 
-    setFirstBet(values) {
-      if (!this.firstAct) return false;
+    setBet(params) {
+      if (!this.isBidEvent) return false;
 
+      const bidFn = params.firstBid ? this.setFirstBet : this.adjustBet;
+
+      return bidFn(params);
+    },
+
+    setFirstBet(values) {
       const { bet, chips } = values;
 
       this.betStart = bet;
       this.chipsStart = chips;
 
-      this.adjustBet('addBet');
+      this.adjustBet('addBet', true);
 
       return true;
-    },
-
-    changeExistingBet(bidEvent) {
-      const hasEnded = (this.bet === 0 && bidEvent !== 'addBet');
-
-      if (this.willAct && !hasEnded) this.adjustBet(bidEvent);
     },
 
     addChips() {
@@ -76,8 +71,8 @@ export default {
       this.activeChips = chips.sort((a, b) => a - b);
     },
 
-    adjustBet(bidEvent) {
-      console.log(bidEvent);
+    adjustBet(bidEvent, firstBet = false) {
+      if (this.bet === 0 && !firstBet) return this;
 
       if (bidEvent === 'addBet') this.addChips();
 
@@ -119,11 +114,9 @@ export default {
       this.bet += bet;
       return this;
     },
-
   },
   watch: {
     gameRound: 'setBaseBet',
-    firstBetFn: 'setFirstBet',
-    betFn: 'changeExistingBet',
+    'eventBus.eventParams': 'setBet',
   },
 };

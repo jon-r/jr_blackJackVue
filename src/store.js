@@ -1,25 +1,7 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
+import Vuex, { mapMutations } from 'vuex';
 
-function getRandom(range) {
-  return Math.floor(Math.random() * range);
-}
-
-function buildDeck(decks) {
-  const cards = [];
-  const nDecks = new Array(decks).fill();
-  const nSuits = new Array(4).fill();
-  const nFaces = new Array(13).fill();
-
-  nDecks.forEach((x, i) => {
-    nSuits.forEach((y, j) => {
-      nFaces.forEach((z, k) => {
-        cards.push([k + 1, j]);
-      });
-    });
-  });
-  return { cards, count: decks };
-}
+import { getRandom, buildDeck, mutationSetters, mutationIncrements, actionSetters, getState } from './store/storeTools';
 
 Vue.use(Vuex);
 
@@ -48,45 +30,24 @@ export default new Vuex.Store({
       deckCount: 6,
     },
 
-    activePlayer: {
-      handRules: false,
-      cardFn: false,
-      betFn: false,
-      firstBetFn: false,
+    handRules: false,
+
+    eventBus: {
+      targetPlayer: -1,
+      eventType: false,
+      eventParams: false,
     },
 
   },
 
   mutations: {
     // game stage ids
-    SET_ROUND(state, i) {
-      state.gameRound = i;
-    },
-    NEXT_ROUND(state) {
-      state.gameStage = 0;
-      state.gameRound += 1;
-    },
     SET_STAGE(state, i) {
       state.gameActivePlayer = 0;
       state.gameStage = i;
     },
-    NEXT_STAGE(state) {
-      state.gameActivePlayer = 0;
-      state.gameStage += 1;
-    },
 
     // players & dealer
-    SET_PLAYERS(state, playerArr) {
-      state.players = playerArr;
-      state.activePlayerCount = playerArr.length - 1;
-    },
-    SET_DEALER(state, dealer) {
-      state.dealer = dealer;
-      state.dealer.peeked = false;
-    },
-    NEXT_ACTIVE_PLAYER(state) {
-      state.gameActivePlayer += 1;
-    },
     PLAYER_SET_SCORE(state, { player, score }) {
       state.players[player.index].score = score;
     },
@@ -94,12 +55,6 @@ export default new Vuex.Store({
       const thisPlayer = state.players[player.index];
       thisPlayer.money += money;
       thisPlayer.startBid = bet;
-    },
-    PLAYER_SET_BID_EVENT(state, { player, event }) {
-      state.players[player.index].bidEvent = event;
-    },
-    PLAYER_CLEAR_BID_EVENT(state, { player, event }) {
-      state.players[player.index].bidEvent = '';
     },
     PLAYER_RESET_SCORES(state) {
       state.players.forEach(player => (player.score = 0));
@@ -112,27 +67,34 @@ export default new Vuex.Store({
     },
 
     // deck and cards
-    SET_DECK(state, deck) {
-      state.deck = deck.cards;
-      state.config.deckCount = deck.count;
-    },
     SPLICE_CARD(state, cardIdx) {
       state.deck.splice(cardIdx, 1);
     },
 
-    // global functions
-    CTRL_SET_FUNCTION(state, { type, func }) {
-      state.activePlayer[type] = func;
+    // global event bus
+    ARM_EVENT_BUS(state, { target, type }) {
+      Vue.set(state.eventBus, 'targetPlayer', target);
+      Vue.set(state.eventBus, 'eventType', type);
     },
-    CTRL_SET_HAND_RULES(state, rules) {
-      state.activePlayer.handRules = rules;
-    },
-
-    // other options
-    SET_MIN_BID(state, minBid) {
-      state.config.minBid = minBid;
+    FIRE_EVENT(state, params) {
+      Vue.set(state.eventBus, 'eventParams', params);
     },
 
+    ...mutationIncrements({
+      NEXT_ROUND: { reset: 'gameStage', value: 'gameRound' },
+      NEXT_STAGE: { reset: 'gameActivePlayer', value: 'gameStage' },
+      NEXT_ACTIVE_PLAYER: { value: 'gameActivePlayer', reset: false },
+    }),
+
+    ...mutationSetters({
+      SET_PLAYERS: 'players',
+      SET_PLAYER_COUNT: 'activePlayerCount',
+      SET_DEALER: 'dealer',
+      SET_ROUND: 'gameRound',
+      SET_DECK: 'deck',
+      SET_CONFIG: 'config',
+      CTRL_SET_HAND_RULES: 'handRules',
+    }),
   },
 
   actions: {
@@ -141,12 +103,14 @@ export default new Vuex.Store({
       console.log('new game');
 
       const dealer = options.players.find(player => player.isDealer);
-      const deck = buildDeck(options.deckCount);
+      const deck = buildDeck(options.config.deckCount);
+
       commit('NEXT_ACTIVE_PLAYER');
-      commit('SET_MIN_BID', options.minBid);
       commit('SET_ROUND', 0);
+      commit('SET_CONFIG', options.config);
       commit('SET_DECK', deck);
       commit('SET_PLAYERS', options.players);
+      commit('SET_PLAYER_COUNT', options.players.length - 1);
       commit('SET_DEALER', dealer);
     },
 
@@ -174,13 +138,12 @@ export default new Vuex.Store({
       return stagePromise().then(() => {
         setTimeout(() => {
           if (state.gameStage === 5) {
-            dispatch('nextRound');
+//            dispatch('nextRound');
           }
         }, 3000);
       });
     },
 
-    setStage: ({ commit }, i) => commit('SET_STAGE', i),
 
     nextPlayerPromise: ({ commit }) => new Promise((resolve) => {
       commit('NEXT_ACTIVE_PLAYER');
@@ -191,14 +154,6 @@ export default new Vuex.Store({
       if (state.gameActivePlayer > state.players.length - 1) dispatch('nextStage');
     }),
 
-    // players & dealer
-    playerSetScore: ({ commit }, values) => commit('PLAYER_SET_SCORE', values),
-
-    playerUpdateMoney: ({ commit }, values) => commit('PLAYER_UPDATE_MONEY', values),
-
-    dealerCard: ({ commit }, card) => commit('DEALER_SET_PEEKED', card),
-
-    playerEndGame: ({ commit }, player) => commit('PLAYER_END_GAME', player),
 
     // deck and cards
     deckDrawPromise: ({ state, commit }, idx) => new Promise((resolve, reject) => {
@@ -229,40 +184,43 @@ export default new Vuex.Store({
       return Promise.resolve(false);
     },
 
-    // function emitters
-    ctrlFunction: ({ commit, dispatch }, { type, func }) => {
+    // function emitter
+    fireEventBus: ({ commit }, values) => {
       const actionPromise = x => new Promise((resolve) => {
-        commit('CTRL_SET_FUNCTION', x);
+        const { target, type, params } = x;
+        commit('ARM_EVENT_BUS', { target, type });
+        commit('FIRE_EVENT', params);
         resolve();
       });
 
-      return actionPromise({ type, func })
-        .then(() => commit('CTRL_SET_FUNCTION', { type, func: false }));
+      return actionPromise(values).then(() => commit('FIRE_EVENT', false));
     },
 
-    handCtrlRules: ({ commit }, rules) => commit('CTRL_SET_HAND_RULES', rules),
-
+    ...actionSetters({
+      setStage: 'SET_STAGE',
+      playerSetScore: 'PLAYER_SET_SCORE',
+      playerUpdateMoney: 'PLAYER_UPDATE_MONEY',
+      dealerCard: 'DEALER_SET_PEEKED',
+      playerEndGame: 'PLAYER_END_GAME',
+      handCtrlRules: 'CTRL_SET_HAND_RULES',
+    }),
   },
 
   getters: {
-    // game stage ids
-    gameRound: state => state.gameRound,
-    gameStage: state => state.gameStage,
-    gameActivePlayer: state => state.gameActivePlayer,
-
-    // players & dealer
-    players: state => state.players,
-    dealer: state => state.dealer,
 
     // other options
     minBid: state => state.config.minBid,
     autoTime: state => state.config.autoTime,
 
-    // function emitters
-    cardFn: state => state.activePlayer.cardFn,
-    betFn: state => state.activePlayer.betFn,
-    firstBetFn: state => state.activePlayer.firstBetFn,
-    handRules: state => state.activePlayer.handRules,
+    ...getState([
+      'gameRound',
+      'gameStage',
+      'gameActivePlayer',
+      'players',
+      'dealer',
+      'handRules',
+      'eventBus',
+    ]),
   },
 
 });

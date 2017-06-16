@@ -8,7 +8,7 @@ export default {
       v-for="ctrl in ctrls"
       v-if="ctrl.canUse"
       :class="'ctrl-' + ctrl.name"
-      @click="emitCtrl(ctrl)" >
+      @click="emitCtrl(ctrl.name)" >
       {{ctrl.name}}
     </button>
   </div>
@@ -20,7 +20,7 @@ export default {
         { name: 'stand', canUse: true },
         { name: 'split', canUse: this.canSplit },
         { name: 'surrender', canUse: this.firstCtrl },
-        { name: 'double', canUse: this.firstCtrl && this.canAfford },
+        { name: 'double', canUse: this.canDouble },
       ];
     },
 
@@ -32,6 +32,10 @@ export default {
       return this.player.money >= this.player.startBid;
     },
 
+    canDouble() {
+      return this.firstCtrl && this.canAfford;
+    },
+
     canSplit() {
       return this.handRules.split && this.canAfford;
     },
@@ -41,10 +45,13 @@ export default {
     ]),
   },
   methods: {
-    emitCtrl(ctrl) {
-      const type = 'cardFn';
-      const func = ctrl.name;
-      this.$store.dispatch('ctrlFunction', { type, func });
+    emitCtrl(params) {
+      const values = {
+        target: this.player.index,
+        type: 'card',
+        params,
+      };
+      this.$store.dispatch('fireEventBus', values);
     },
   },
 };

@@ -19,6 +19,9 @@ export default {
           <label>Min Bid</label>
           <input v-model.lazy="minBid" type="number" min="0" id="input-deck" />
 
+          <label>Deal Speed</label>
+          <input v-model.lazy="autoTime" type="number" min="0" id="input-deck" />
+
         </template>
         <template v-else>
           <h4 class="options-title" @click="moreOptions = true" >More Options <i class="material-icons">expand_more</i></h4>
@@ -46,6 +49,7 @@ export default {
       ],
       deckInput: 6,
       minBid: 100,
+      autoTime: 250,
       moreOptions: false,
     };
   },
@@ -63,8 +67,13 @@ export default {
       };
     },
     getOptions() {
-      const minBid = this.minBid;
-      const deckCount = this.deckInput;
+      const config = {
+        minBid: this.minBid,
+        deckCount: this.deckInput,
+        autoTime: this.autoTime,
+      }
+
+
       const players = this.playerInput
         .map((player, index) => this.setNewPlayer(player.name, index));
 
@@ -73,7 +82,7 @@ export default {
       players.push(dealer);
 
       this.emitCloseOptions();
-      return { players, deckCount, minBid };
+      return { players, config };
     },
     setOptions() {
       const options = this.getOptions();

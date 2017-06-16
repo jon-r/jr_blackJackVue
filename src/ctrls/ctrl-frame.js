@@ -18,7 +18,7 @@ export default {
 
       <hand-ctrl v-if="canCtrl" :player="player" ></hand-ctrl>
 
-      <bet-ctrl v-if="canBid" :money="player.money" ></bet-ctrl>
+      <bet-ctrl v-if="canBid" :player="player" ></bet-ctrl>
 
     </template>
 
