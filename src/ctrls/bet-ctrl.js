@@ -3,32 +3,53 @@ import { mapGetters } from 'vuex';
 export default {
   props: ['player'],
   template: `
-  <div class="bet-ctrl" >
-    <div class="ctrl-box" >
-      <div class="betting-chip"
-        v-for="chip in chips"
-        v-if="chip <= maxChips"
-        :class="'chip-' + chip"
-        @click="add(chip)" >
+  <div class="ctrl-menu" >
 
-        <svg class="token" viewBox="0 0 100 100" >
+      <button class="betting-chip ctrl-btn"
+        v-for="chip in chips"
+        :disabled="(chip > maxChips || tooManyChips) ? true : false"
+        :class="'chip-' + chip"
+        @click="addChip(chip)" >
+
+        <span class="ctrl-btn-label" >£{{chip}}</span>
+
+        <svg class="token ctrl-btn-icon" viewBox="0 0 100 100" >
           <use xlink:href="#chip"/>
         </svg>
-        <span class="chip-value" >£{{chip}}</span>
-      </div>
-      <button class="ctrl-btn"
-        @click="emitBid"
-        v-if="currChipValue >= minBid" >
-        Submit Bid: £{{ currChipValue }}
       </button>
-    </div>
-    <ul class="chip-stack" v-if="currChips" >
-      <li v-for="chip in currChips" :class="'chip-' + chip" @click="remove(chip)" >
-        <svg class="token" viewBox="0 0 100 100" >
-          <use xlink:href="#chip-tilt"/>
-        </svg>
-      </li>
-    </ul>
+
+      <button class="ctrl-btn btn-alert"
+        @click="removeChip"
+        :disabled="currChips.length === 0 ? true:false" >
+
+        <span class="ctrl-btn-label" >Undo</span>
+
+        <i class="material-icons ctrl-btn-icon" >undo</i>
+      </button>
+
+      <button class="ctrl-btn btn-good"
+        @click="emitBid"
+        :disabled="currChipValue < minBid ? true:false" >
+
+        <span class="ctrl-btn-label" >
+          Submit Bid: £{{ currChipValue }}
+        </span>
+
+        <ul class="chip-stack ctrl-btn-icon" >
+          <li v-for="chip in currChips" :class="'chip-' + chip" >
+            <svg class="token" viewBox="0 0 100 100" >
+              <use xlink:href="#chip-tilt"/>
+            </svg>
+          </li>
+        </ul>
+
+        <span class="error-text"
+        v-if="currChipValue < minBid"  >
+          Min £{{minBid}}
+        </span>
+
+      </button>
+
   </div>
   `,
   data() {
@@ -43,21 +64,24 @@ export default {
       return this.player.money - this.currChipValue;
     },
 
+    tooManyChips() {
+      return this.currChips.length > 11;
+    },
+
     ...mapGetters([
       'minBid',
     ]),
   },
   methods: {
 
-    add(chip) {
+    addChip(chip) {
       this.currChipValue += chip;
       this.currChips.push(chip);
     },
 
-    remove(chip) {
-      const n = this.currChips.findIndex(isChip => isChip === chip);
+    removeChip() {
+      const chip = this.currChips.pop();
       this.currChipValue -= chip;
-      this.currChips.splice(n, 1);
     },
 
     emitBid() {

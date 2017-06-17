@@ -1,11 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 100 100">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-60 -60 120 120">
 
   <filter id="multiply">
     <feBlend in2="BackgroundImage" in="SourceGraphic" mode="multiply" />
   </filter>
 
-  <circle r="48" fill="#c00" />
-  <circle r="42" fill="transparent" stroke="#ddd" stroke-width="12" stroke-dasharray="22" />
-  <circle r="40" opacity="0.2" filter="url(#multiply)" />
-  <path fill="#555" d="m0 -40a1 1 0 1 0 0 80h2a1 1 0 1 1 0 -80" opacity=".2" filter="url(#multiply)" />
+  <filter id="grey">
+    <feColorMatrix values="1 0 0.5 0 0 1 0 0.5 0 0 1 0 0.5 0 0 0 0 0 1 0"/>
+  </filter>
+
+  <filter id="black">
+    <feColorMatrix values="0.1 1 0 0 0 0.1 1 0 0 0 0.1 1 0 0 0 0 0 0 1 0"/>
+  </filter>
+
+  <g filter="url(#grey)" >
+  </g><g filter="url(#black)" >
+    <circle r="48" fill="#c00" />
+    <circle r="42" fill="transparent" stroke="#ddd" stroke-width="12" stroke-dasharray="22" />
+    <circle r="40" opacity="0.2" filter="url(#multiply)" />
+    <path fill="#555" d="m0 -40a1 1 0 1 0 0 80h2a1 1 0 1 1 0 -80" opacity=".2" filter="url(#multiply)" />
+  </g>
 </svg>

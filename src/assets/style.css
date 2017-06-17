@@ -1,14 +1,33 @@
 /*! minireset.css v0.0.3 | MIT License | github.com/jgthms/minireset.css */
-html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input,select,textarea{margin:0}html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}img,embed,iframe,object,audio,video{height:auto;max-width:100%}iframe{border:0}table{border-collapse:collapse;border-spacing:0}td,th{padding:0;text-align:left}
+html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6,menu{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input,select,textarea{margin:0}html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}img,embed,iframe,object,audio,video{height:auto;max-width:100%}iframe{border:0}table{border-collapse:collapse;border-spacing:0}td,th{padding:0;text-align:left}
 
 /* global ------------------------------------------------------------------- */
 
 body {
   /* foundation fontstack */
   font: 400 16px/1.45 "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-  background: url(grid.svg) 0/32px, #000;
-  color: #333;
+  background: url(grid.svg) 0/32px;
+
+  padding-top: 32px;
 }
+
+.debugger {
+  position: absolute;
+  top:0;
+  lefT:0;
+}
+
+/*body::after {
+  content:"";
+  background: url(grid.svg) 0/32px;
+  position: absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  opacity: .1;
+  pointer-events: none;
+}*/
 
 p {margin-bottom: 1.3em;}
 
@@ -29,6 +48,10 @@ h3 {font-size: 1.999em;}
 
 h4 {font-size: 1.414em;}
 
+.error-text {
+  color: #c62828;
+}
+
 .btn {
   background: none;
   border: none;
@@ -48,109 +71,112 @@ h4 {font-size: 1.414em;}
   justify-content: center;
 }
 
-/* options form ------------------------------------------------------------- */
-
-.options-outer, .options-outer::before {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.frame {
+  padding: 8px;
 }
 
-.options-outer {
-  z-index: 20;
-  padding: 32px;
-}
+/* core layout -------------------------------------------------------------- */
 
-.options-outer::before {
-  content: "";
-  background-color: #000;
-  opacity: 0.2;
-}
-
-.options-inner {
-  position: relative;
-  flex: 0 1 512px;
-  padding: 16px;
-  background-color: #fff;
-  box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
-}
-
-.menu-toggle {
-  position: absolute;
-  right: 0;
-  top: 8px;
-}
-
-.options-footer {
-  text-align: right;
-}
-
-.options-group {
-  border: none;
-  margin: 8px -16px;
-}
-
-.options-form input {
-  border-width: 0 0 2px;
-  width: 128px;
-  margin: 4px 16px;
-  height: 24px;
-  font-size: 1em;
-}
-.options-form label {
-  margin-left: 16px;
-}
-
-.options-title {
-  padding: 0 16px;
-}
-
-/* table -------------------------------------------------------------------- */
-.blackjack-table {
-/*  height: 100vh;*/
-  max-width: 1024px;
+.container {
+  width: 1024px;
   margin: auto;
-  background: url(table-optimised.svg) center/contain no-repeat;
+  height: 768px;
+  background-color: #2a5a30;
+  border: #860707;
   color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
-.blackjack-inner {
+
+.blackjack-table {
+  flex: 1;
+}
+
+.ctrl-bar {
+  height: 128px;
+  background-color: #212121;
+  display: flex;
+  justify-content: center;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+/*.blackjack-inner {
   width:100%;
   max-width: 1024px;
   position: relative;
   padding-bottom: 66.6%;
-}
+}*/
+
 
 /* ctrl frame-------------------------------------------------------------- */
 
-.ctrl-frame {
-    max-width: 512px;
-    width: 75%;
-    margin: auto;
-    text-align: center;
+.player-info {
+  flex: 1;
 }
 
-.betting-chip {
-  display: inline-block;
-  position: relative;
-  width:20%;
+.ctrl-menu {
+  flex: 2;
+  display: flex;
+  background-color: #111;
 }
 
-.chip-value {
-  position: absolute;
+.ctrl-btn {
+  border: none;
+  background-color: #212121;
+  margin-left: 1px;
+  padding: 8px;
+  width: 12%;
+  height: 100%;
+  color: inherit;
+  transition: background 300ms;
+  cursor: pointer;
+}
+
+.ctrl-btn:hover {
+  background-color: #424242;
+}
+
+.btn-alert {
+  background-color: #f9a825;
+  color: #e65100;
+}
+.btn-alert:hover {
+  background-color: #fdd835;
+}
+.btn-good {
+  background-color: #1b5e20;
+}
+.btn-good:hover {
+  background-color: #2e7d32;
+}
+.ctrl-btn:disabled, .ctrl-btn:disabled:hover {
+  background-color: #111;
+  color: #484848;
+}
+
+.ctrl-btn-icon {
   display: block;
-  width: 100%;
-  font-size: 24px;
-  top: calc(50% - 18px);
-  color: #ddd;
-  font-family: Impact;
+  margin: auto;
+  height: 60%;
 }
+
+.ctrl-btn-label {
+
+}
+
+.chip-stack {
+  display: flex;
+  align-items: center;
+  flex-flow: wrap column-reverse;
+  padding-bottom: 30%;
+}
+
 .chip-stack li {
-  display: inline-block;
-  width: 20%;
-  margin-left: -15%;
+  width: 40%;
+  margin-bottom: -35%;
 }
 
 .chip-5 .token { filter: url(#red) }
@@ -158,6 +184,7 @@ h4 {font-size: 1.414em;}
 .chip-25 .token { filter: url(#green) }
 .chip-100 .token { filter: url(#black) }
 .chip-500 .token { filter: url(#pink) }
+.betting-chip:disabled .token { filter: url(#grey) }
 
 /* player frame-------------------------------------------------------------- */
 
@@ -165,7 +192,7 @@ h4 {font-size: 1.414em;}
     width: 20%;
     position: absolute;
     text-align: center;
-    padding-bottom: 25%;
+    padding-bottom: 20%;
 }
 
 .player-name.active {
@@ -179,27 +206,27 @@ h4 {font-size: 1.414em;}
 }
 
 .player-0 {
-  top: 36%;
+  top: 28%;
   left: 2%;
 }
 
 .player-1 {
-  top: 55%;
+  top: 47%;
   left: 19%;
 }
 
 .player-2 {
-  top: 62%;
+  top: 54%;
   left: 40%;
 }
 
 .player-3 {
-  top: 55%;
+  top: 47%;
   left: 61%;
 }
 
 .player-4 {
-  top: 36%;
+  top: 28%;
   left: 78%;
 }
 
@@ -209,6 +236,11 @@ h4 {font-size: 1.414em;}
   left: 40%;
 }
 
+.player-bet {
+    position: absolute;
+    left: -5%;
+    top: 0;
+}
 
 /* player-hand -------------------------------------------------------------- */
 
@@ -269,4 +301,64 @@ h4 {font-size: 1.414em;}
 }
 .card.spades::after {
   background-position: bottom right;
+}
+
+/* options form ------------------------------------------------------------- */
+
+.options-outer, .options-outer::before {
+  color: #333;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.options-outer {
+  z-index: 20;
+  padding: 32px;
+}
+
+.options-outer::before {
+  content: "";
+  background-color: #000;
+  opacity: 0.2;
+}
+
+.options-inner {
+  position: relative;
+  flex: 0 1 512px;
+  padding: 16px;
+  background-color: #fff;
+  box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
+}
+
+.menu-toggle {
+  position: absolute;
+  right: 0;
+  top: 8px;
+}
+
+.options-footer {
+  text-align: right;
+}
+
+.options-group {
+  border: none;
+  margin: 8px -16px;
+}
+
+.options-form input {
+  border-width: 0 0 2px;
+  width: 128px;
+  margin: 4px 16px;
+  height: 24px;
+  font-size: 1em;
+}
+.options-form label {
+  margin-left: 16px;
+}
+
+.options-title {
+  padding: 0 16px;
 }

@@ -15,9 +15,16 @@
 
 </head>
   <body  >
-    <div id="v-blackJack">
+    <div id="v-blackJack" class="container">
 
-      <main class="blackjack-table center-content" >
+      <button class="btn menu-toggle material-icons" @click="showOptions = true" >
+        menu
+      </button>
+
+      <options-modal v-if="showOptions" @hide="showOptions = false" >
+      </options-modal>
+
+      <main class="blackjack-table" >
 
         <div class="blackjack-inner" >
           <player-frame
@@ -29,14 +36,21 @@
 
         </div>
 
+        
+
       </main>
+
 
       <ctrl-frame :player="activePlayer" ></ctrl-frame>
 
 
+
+
+
+
       <svg-static v-once></svg-static>
 
-      <h1>Stage: {{gameStage}} - {{debugStage}}</h1>
+
 
     </div>
   </body>

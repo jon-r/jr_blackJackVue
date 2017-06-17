@@ -3,13 +3,13 @@ import { mapGetters } from 'vuex';
 export default {
   props: ['player'],
   template: `
-  <div class="player-ctrl" >
+  <div class="ctrl-menu" >
     <button class="ctrl-btn"
       v-for="ctrl in ctrls"
-      v-if="ctrl.canUse"
+      :disabled="ctrl.canUse ? false:true"
       :class="'ctrl-' + ctrl.name"
       @click="emitCtrl(ctrl.name)" >
-      {{ctrl.name}}
+      <span class="ctrl-btn-label" >{{ctrl.name}}</span>
     </button>
   </div>
   `,

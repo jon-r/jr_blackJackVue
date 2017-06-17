@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 32 32">
-  <path stroke="#222" d="M8 1v32m8-32v32m8-32v32M1 8h32M1 16h32M1 24h32"/>
-  <path stroke="#444" d="M32 1v32M1 32h32"/>
+  <path stroke="#eee" d="M8 1v32m8-32v32m8-32v32M1 8h32M1 16h32M1 24h32"/>
+  <path stroke="#ddd" d="M32 1v32M1 32h32"/>
 </svg>
