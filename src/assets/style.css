@@ -29,24 +29,26 @@ body {
   pointer-events: none;
 }*/
 
-p {margin-bottom: 1.3em;}
-
 h1, h2, h3, h4 {
-  margin-bottom: 0.5em;
   font-weight: inherit;
   line-height: 1.2;
 }
 
-h1 {
-  margin-top: 0;
-  font-size: 3.998em;
+h1 { font-size: 3.998em }
+
+h2 { font-size: 2.827em }
+
+h3 { font-size: 1.999em }
+
+h4 { font-size: 1.414em }
+
+.good-text {
+  color: #1b5e20;
 }
 
-h2 {font-size: 2.827em;}
-
-h3 {font-size: 1.999em;}
-
-h4 {font-size: 1.414em;}
+.alert-text {
+  color: #f9a825;
+}
 
 .error-text {
   color: #c62828;
@@ -92,6 +94,7 @@ h4 {font-size: 1.414em;}
 
 .blackjack-table {
   flex: 1;
+  background: url(table-print.svg) center/contain no-repeat;
 }
 
 .ctrl-bar {
@@ -109,6 +112,12 @@ h4 {font-size: 1.414em;}
   position: relative;
   padding-bottom: 66.6%;
 }*/
+
+.deck {
+    position: absolute;
+    top: 10%;
+    left: 70%;
+}
 
 
 /* ctrl frame-------------------------------------------------------------- */
@@ -147,7 +156,7 @@ h4 {font-size: 1.414em;}
   background-color: #fdd835;
 }
 .btn-good {
-  background-color: #1b5e20;
+  background-color: f;
 }
 .btn-good:hover {
   background-color: #2e7d32;
@@ -191,50 +200,53 @@ h4 {font-size: 1.414em;}
 .player-frame {
     width: 20%;
     position: absolute;
-    text-align: center;
     padding-bottom: 20%;
 }
 
+.player-frame-title {
+  background-color: #254a2a;
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.player-name {
+    display: inline-block;
+}
+
 .player-name.active {
-  color: green;
+  color: #f9a825;
 }
 
-.player-frame-inner {
-  position: absolute;
-  height: 100%;
-  width: 100%;
+.player-money {
+  display: inline-block;
 }
 
-.player-0 {
-  top: 28%;
-  left: 2%;
+.player-money span {
+    position: absolute;
+    top: 0;
 }
 
-.player-1 {
-  top: 47%;
-  left: 19%;
+@keyframes fade-up {
+  to {
+    transform: translateY(-150%);
+    opacity: 0;
+  }
 }
 
-.player-2 {
-  top: 54%;
-  left: 40%;
+.diff-float {
+  animation: fade-up 2s forwards;
 }
 
-.player-3 {
-  top: 47%;
-  left: 61%;
-}
 
-.player-4 {
-  top: 28%;
-  left: 78%;
-}
-
+.player-0 { top: 28%; left: 1%; }
+.player-1 { top: 46%; left: 18%; }
+.player-2 { top: 51%; left: 40%; }
+.player-3 { top: 46%; left: 62%; }
+.player-4 { top: 28%; left: 79%; }
 /*dealer*/
-.player-5 {
-  top: 7%;
-  left: 40%;
-}
+.player-5 { top: 7%; left: 42%; }
 
 .player-bet {
     position: absolute;
@@ -248,8 +260,15 @@ h4 {font-size: 1.414em;}
   height: 50%;
 }
 
+.hand-cards {
+  position: relative;
+}
+
+.card-outer {
+  position: absolute;
+}
+
 .card {
-  display: inline-block;
   width: 50px;
   height: 70px;
   background: white;
@@ -257,13 +276,18 @@ h4 {font-size: 1.414em;}
   border-radius: 3px;
   padding: 2px;
   overflow: hidden;
-  font-weight: bold;
   position: relative;
-  text-align: left;
-  transition: transform 150ms ease;
+  font-weight: bold;
   box-shadow: 0 2px 10px -4px #000;
 }
 
+.card.stacked {
+    box-shadow: -1px 3px 0 0px #984b4b;
+}
+
+.card.blank {
+  background: url(card-back.svg) center/cover , #c97272;
+}
 
 .card.hearts, .card.diamonds {
   color:red;
@@ -274,12 +298,35 @@ h4 {font-size: 1.414em;}
 .card.hearts, .card.diamonds, .card.clubs, .card.spades {
   z-index: 5;
 }
-.card.blank {
-  background: url(card-back.svg) center/cover , #c97272;
+
+
+@keyframes flip {
+  from { background-image: url(card-back.svg); }
+  50% {
+    background-image: url(card-back.svg);
+    transform: translate(100%) rotateY(90deg);
+  }
+  51%, to {
+    background-image: none;
+  }
 }
-.card.draw {
+@keyframes reveal {
+  from, 50% { opacity: 0 }
+  to, 51% { opacity: 1 }
+}
+
+/*.card.draw {
   transition-duration: 400ms;
+}*/
+
+.card:not(.blank) {
+  animation: flip .3s both;
 }
+
+.card:not(.blank)::after, .card:not(.blank) span {
+  animation: reveal .3s both;
+}
+
 .card:not(.blank)::after {
   content: "";
   position: absolute;
@@ -288,6 +335,7 @@ h4 {font-size: 1.414em;}
   height: 50px;
   width: 50px;
   background: url(card.min.svg) 0/200%;
+
 }
 
 .card.hearts::after {

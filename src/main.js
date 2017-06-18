@@ -25,6 +25,15 @@ const app = new Vue({
   // VUEX link to store (only need once)
   store,
 
+  mounted() {
+    const el = this.$refs.theShoe;
+
+    this.$store.dispatch('setShoePos', {
+      top: el.offsetTop,
+      left: el.offsetLeft,
+    });
+  },
+
   computed: {
 
     activePlayer() {
@@ -35,9 +44,12 @@ const app = new Vue({
       'players',
       'gameActivePlayer',
     ]),
+    
   },
 
-  methods: {},
+  methods: {
+
+  },
 });
 
 // just here to skip the 'unused' error

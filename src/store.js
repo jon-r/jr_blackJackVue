@@ -22,6 +22,7 @@ export default new Vuex.Store({
 
     // deck and cards
     deck: [],
+    shoePos: {},
 
     // other options
     config: {
@@ -92,6 +93,7 @@ export default new Vuex.Store({
       SET_DEALER: 'dealer',
       SET_ROUND: 'gameRound',
       SET_DECK: 'deck',
+      SET_SHOE_POS: 'shoePos',
       SET_CONFIG: 'config',
       CTRL_SET_HAND_RULES: 'handRules',
     }),
@@ -203,6 +205,7 @@ export default new Vuex.Store({
       dealerCard: 'DEALER_SET_PEEKED',
       playerEndGame: 'PLAYER_END_GAME',
       handCtrlRules: 'CTRL_SET_HAND_RULES',
+      setShoePos: 'SET_SHOE_POS',
     }),
   },
 
@@ -220,6 +223,7 @@ export default new Vuex.Store({
       'dealer',
       'handRules',
       'eventBus',
+      'shoePos',
     ]),
   },
 

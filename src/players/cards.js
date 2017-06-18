@@ -1,3 +1,14 @@
+function transformJiggle({
+  scale = 10,
+  offsetX = 0,
+  offsetY = 0,
+}) {
+  const [nudgeX, nudgeY, rotate] = [0, 0, 0]
+    .map(() => (Math.random() - 0.5) * scale);
+
+  return `translate(${nudgeX + offsetX}px,${nudgeY + offsetY}px) rotate(${rotate}deg)`;
+}
+
 export default {
   props: ['cards'],
   template: `
@@ -7,8 +18,13 @@ export default {
     </div>
 
     <transition-group enter name="cards" tag="div" >
-      <div v-for="(card, idx) in this.cards" :key="idx" class="card" :class="card.suit" >
-        {{card.face}}
+      <div v-for="(card, idx) in this.cards"
+        class="card-outer"
+        :key="idx" v-position="idx" >
+
+        <div class="card" :class="card.suit" >
+          <span>{{card.face}}</span>
+        </div>
       </div>
     </transition-group>
 
@@ -51,6 +67,14 @@ export default {
       default:
         return '';
       }
+    },
+  },
+  directives: {
+    position: {
+      bind(el, binding, vnode) {
+        const offsetX = binding.value * 30;
+        el.style.transform = transformJiggle({ offsetX });
+      },
     },
   },
 };

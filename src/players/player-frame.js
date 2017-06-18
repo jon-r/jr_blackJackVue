@@ -7,29 +7,30 @@ import PlayerBet from './bet';
 export default {
   props: ['player'],
   template: `
-  <section class="player-frame" :class="playerClass" >
-    <div class="player-frame-inner" >
-
-      <h3 class="player-name" :class="{active: isPlayerTurn, inactive: isPlayerInactive }" >{{player.name}}</h3>
+  <section class="player-frame" :class="playerClass" ref="frameParent" >
+    <header class="player-frame-title frame" >
+      <h4 class="player-name" :class="{'alert-text': isPlayerTurn, 'error-text': isPlayerInactive }" >{{player.name}}</h4>
 
       <h5 class="player-money" >
-        Money: £{{player.money}}
-        <span :class="diffClass" >£{{moneyDiff}}</span>
+        £{{player.money}}
+        <span :class="[ diffClass, {'diff-float': diffFloat}]" >
+          £{{moneyDiff}}
+        </span>
       </h5>
+    </header>
 
-      <player-hand
-        v-show="gameStage > 0"
-        :player="player"
-        :turn="isPlayerTurn" >
-      </player-hand>
+    <player-hand
+      v-show="gameStage > 0"
+      :player="player"
+      :turn="isPlayerTurn" >
+    </player-hand>
 
-      <player-bet
-        v-show="!player.isDealer"
-        :player="player"
-        :turn="isPlayerTurn" >
-      </player-bet>
+    <player-bet
+      v-show="!player.isDealer"
+      :player="player"
+      :turn="isPlayerTurn" >
+    </player-bet>
 
-    </div>
   </section>`,
   components: {
     'player-hand': PlayerHand,
@@ -40,13 +41,24 @@ export default {
       playerClass: `player-${this.player.index}`,
       skip: false,
       oldMoney: 0,
+      diffFloat: true,
     };
   },
 
   computed: {
 
+    frameOffset() {
+      const el = this.$refs.frameParent;
+
+      return {
+        top: el.offsetTop,
+        left: el.offsetLeft,
+      };
+    },
+
     diffClass() {
-      return (this.moneyDiff > 0) ? 'money-plus' : 'money-minus';
+      this.triggerTextAnim();
+      return (this.moneyDiff > 0) ? 'good-text' : 'error-text';
     },
 
     moneyDiff() {
@@ -116,6 +128,13 @@ export default {
       default: // dealerScore > playerScore
         return 'lose';
       }
+    },
+
+    triggerTextAnim() {
+      this.diffFloat = false;
+      this.$nextTick(() => {
+        this.diffFloat = true;
+      });
     },
   },
   watch: {

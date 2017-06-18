@@ -26,31 +26,21 @@
 
       <main class="blackjack-table" >
 
-        <div class="blackjack-inner" >
+          <div v-once class="deck" ref="theShoe" >
+            <div class="card blank stacked" ></div>
+          </div>
+
           <player-frame
             v-for="player in players"
             :key="player.index"
             :player="player" >
           </player-frame>
 
-
-        </div>
-
-        
-
       </main>
-
 
       <ctrl-frame :player="activePlayer" ></ctrl-frame>
 
-
-
-
-
-
       <svg-static v-once></svg-static>
-
-
 
     </div>
   </body>

@@ -5,7 +5,7 @@ import PlayerCards from './cards';
 export default {
   props: ['turn', 'player'],
   template: `
-  <div class="player-hand" >
+  <div class="player-hand frame" >
 
     <player-cards
       v-for="(hand, idx) in hands"
@@ -111,7 +111,7 @@ export default {
 
     addBlankCard() {
       const hand = this.getActiveHand;
-      hand.cards.push({ face: 'x', score: 0, suit: 'blank' });
+      hand.cards.push({ face: '', score: 0, suit: 'blank' });
       return this;
     },
 
