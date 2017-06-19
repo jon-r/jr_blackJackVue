@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -40 100 80">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -30 100 30" style="overflow:visible">
   <style>
     .chip-10 .token { filter: url(#blu) } .chip-25 .token { filter: url(#grn) } .chip-100 .token { filter: url(#blk) } .chip-500 .token { filter: url(#pnk) }
   </style>
@@ -36,7 +36,7 @@
 
   <linearGradient id="edge2" x1="1" x2="0"
      xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#edge" />
-
+  <symbol id="chip-tilt" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 30" style="overflow:visible">
   <g class="token" transform="scale(1 .5)">
     <path fill="url(#edge)" d="M-48 0v16a1 1 0 0 0 96 0v-16" filter="url(#mlt)"/>
     <circle r="48" fill="#c00"/>
@@ -47,4 +47,8 @@
     <path filter="url(#mlt)" fill="url(#edge2)" d="M-40 0a1 1 0 1 1 80 0v4a1 1 0 1 0-80 0" />
     <circle filter="url(#mlt)" r="40" opacity=".2" />
   </g>
+  </symbol>
+
+  <use xlink:href="#chip-tilt" ></use>
+
 </svg>

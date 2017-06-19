@@ -77,6 +77,10 @@ h4 { font-size: 1.414em }
   padding: 8px;
 }
 
+.shadow-light {
+  box-shadow:  0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+}
+
 /* core layout -------------------------------------------------------------- */
 
 .container {
@@ -115,7 +119,7 @@ h4 { font-size: 1.414em }
 
 .deck {
     position: absolute;
-    top: 15%;
+    top: 5%;
     left: 70%;
 }
 
@@ -155,6 +159,7 @@ h4 { font-size: 1.414em }
 .btn-alert:hover {
   background-color: #fdd835;
 }
+
 .btn-good {
   background-color: #1b5e20;
 }
@@ -172,39 +177,14 @@ h4 { font-size: 1.414em }
   height: 60%;
 }
 
-.ctrl-btn-label {
-
-}
-
-.chip-stack {
-  display: flex;
-  align-items: center;
-  flex-flow: wrap column-reverse;
-  padding-bottom: 30%;
-}
-
-.chip-stack.stack-left {
-  align-items: flex-start;
-}
-
-.chip-stack li {
-  width: 40%;
-  margin-bottom: -35%;
-}
-
-.chip-5 .token { filter: url(#red) }
-.chip-10 .token { filter: url(#blue) }
-.chip-25 .token { filter: url(#green) }
-.chip-100 .token { filter: url(#black) }
-.chip-500 .token { filter: url(#pink) }
-.betting-chip:disabled .token { filter: url(#grey) }
-
 /* player frame-------------------------------------------------------------- */
 
 .player-frame {
-    width: 20%;
-    position: absolute;
-    padding-bottom: 20%;
+  position: absolute;
+  width: 20%;
+  height: 192px;
+  display: flex;
+  flex-direction: column;
 }
 
 .player-frame-title {
@@ -213,14 +193,17 @@ h4 { font-size: 1.414em }
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  transition: border-color 400ms;
+  border-bottom: solid 2px #254a2a;
+  border-radius: 2px 2px 0 0;
+}
+
+.player-frame-title.is-active {
+  border-bottom-color: #f9a825;
 }
 
 .player-name {
-    display: inline-block;
-}
-
-.player-name.active {
-  color: #f9a825;
+  display: inline-block;
 }
 
 .player-money {
@@ -244,19 +227,13 @@ h4 { font-size: 1.414em }
 }
 
 
-.player-0 { top: 28%; left: 1%; }
-.player-1 { top: 46%; left: 18%; }
-.player-2 { top: 51%; left: 40%; }
-.player-3 { top: 46%; left: 62%; }
-.player-4 { top: 28%; left: 79%; }
+.player-0 { top: 25%; left: 1%; }
+.player-1 { top: 51%; left: 15%; }
+.player-2 { top: 56%; left: 40%; }
+.player-3 { top: 51%; left: 65%; }
+.player-4 { top: 25%; left: 79%; }
 /*dealer*/
 .player-5 { top: 7%; left: 42%; }
-
-.player-bet {
-    position: absolute;
-    left: -4px;
-    top: 48px;
-}
 
 /* player-hand -------------------------------------------------------------- */
 
@@ -264,11 +241,70 @@ h4 { font-size: 1.414em }
   height: 50%;
 }
 
+
 .player-hand {
-  padding-left: 36px;
+  padding: 8px 36px;
+  position: relative;
+  flex: 1;
 }
 
-.hand-cards {
+.hand-score {
+    position: absolute;
+    min-width: 2em;
+    height: 2em;
+    text-align: center;
+    left: -32px;
+    line-height: 2em;
+    background: #212121;
+    border-radius: 1em;
+    font-size: 0.7em;
+    z-index: 10;
+    padding: 0 6px;
+    white-space: nowrap;
+    top: 24px;
+}
+
+.hand-info {
+
+}
+
+/* player-bet --------------------------------------------------------------- */
+
+.player-bet {
+  position: absolute;
+  right: 8px;
+  top: 4px;
+}
+
+.chip-stack {
+  display: flex;
+  align-items: center;
+  flex-flow: wrap column-reverse;
+  justify-content: flex-end;
+  padding-bottom: 8px;
+}
+
+.chip-stack.stack-right {
+  align-items: flex-end;
+  flex-flow: nowrap column-reverse;
+}
+
+.chip-stack li {
+  width: 32px;
+  height: 8px;
+}
+
+.chip-5 .token { filter: url(#red) }
+.chip-10 .token { filter: url(#blue) }
+.chip-25 .token { filter: url(#green) }
+.chip-100 .token { filter: url(#black) }
+.chip-500 .token { filter: url(#pink) }
+.betting-chip:disabled .token { filter: url(#grey) }
+
+/* cards -------------------------------------------------------------------- */
+
+.player-cards {
+  height: 50%;
   position: relative;
 }
 
@@ -290,7 +326,6 @@ h4 { font-size: 1.414em }
   overflow: hidden;
   position: relative;
   font-weight: bold;
-  box-shadow: 0 2px 10px -4px #09210c;
 }
 
 .card.stacked {
@@ -307,12 +342,6 @@ h4 { font-size: 1.414em }
 .card.clubs, .card.spades {
   color: black;
 }
-/*
-.card-.hearts, .card-.diamonds, .card-.clubs, .card-.spades {
-  z-index: 5;
-}
-*/
-
 
 @keyframes flip {
   from { background-image: url(card-back.svg); }
@@ -328,10 +357,6 @@ h4 { font-size: 1.414em }
   from, 50% { opacity: 0 }
   to, 51% { opacity: 1 }
 }
-
-/*.card.draw {
-  transition-duration: 400ms;
-}*/
 
 .card:not(.blank) {
   animation: flip .3s both;

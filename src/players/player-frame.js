@@ -8,8 +8,20 @@ export default {
   props: ['player'],
   template: `
   <section class="player-frame" :class="playerClass" ref="frameParent" >
-    <header class="player-frame-title frame" >
-      <h4 class="player-name" :class="{'alert-text': isPlayerTurn, 'error-text': isPlayerInactive }" >{{player.name}}</h4>
+    <player-hand
+      :player="player"
+      :framepos="framepos"
+      :turn="isPlayerTurn" >
+    </player-hand>
+
+    <player-bet
+      v-if="!player.isDealer"
+      :player="player"
+      :turn="isPlayerTurn" >
+    </player-bet>
+
+    <header class="player-frame-title frame shadow-light" v-if="!player.isDealer" :class="{ 'is-active' : isPlayerTurn  }" >
+      <h4 class="player-name" :class="{ 'alert-text': isPlayerTurn, 'error-text': isPlayerInactive }" >{{player.name}}</h4>
 
       <h5 class="player-money" >
         £{{player.money}}
@@ -19,18 +31,7 @@ export default {
       </h5>
     </header>
 
-    <player-hand
-      v-show="gameStage > 0"
-      :player="player"
-      :framepos="framepos"
-      :turn="isPlayerTurn" >
-    </player-hand>
 
-    <player-bet
-      v-show="!player.isDealer"
-      :player="player"
-      :turn="isPlayerTurn" >
-    </player-bet>
 
   </section>`,
   components: {

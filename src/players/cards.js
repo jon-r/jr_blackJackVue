@@ -4,9 +4,9 @@ import { mapGetters } from 'vuex';
 export default {
   props: ['cards', 'framepos'],
   template: `
-  <div class="held-cards" >
-    <div class="hand-score" >
-      {{this.scoreStr}} {{this.score}}
+  <div class="player-cards" >
+    <div class="hand-score shadow-light" :class="{ 'error-text': score > 21 }" >
+      {{score}} {{scoreStr}}
     </div>
 
     <transition-group
@@ -20,7 +20,7 @@ export default {
         :key="idx"
         :data-index="idx" >
 
-        <div class="card" :class="card.suit" >
+        <div class="card shadow-light" :class="card.suit" >
           <span>{{card.face}}</span>
         </div>
       </div>

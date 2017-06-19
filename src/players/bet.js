@@ -5,18 +5,15 @@ import { mapGetters } from 'vuex';
 export default {
   props: ['turn', 'player'],
   template: `
-  <div >
-
-    <div class="player-bet" v-show="bet > 0" >
-      Bet: £{{bet}}
-      <ul class="chip-stack stack-left" v-if="activeChips" >
-        <li v-for="chip in activeChips" :class="'chip-' + chip" >
-          <svg class="token" viewBox="0 0 100 100" >
-            <use xlink:href="#chip-tilt"/>
-          </svg>
-        </li>
-      </ul>
-    </div>
+  <div class="player-bet" v-show="bet > 0" >
+    Bet: £{{bet}}
+    <ul class="chip-stack stack-right" v-if="activeChips" >
+      <li v-for="chip in activeChips" :class="'chip-' + chip" >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60" >
+          <use class="token" xlink:href="#chip-tilt"/>
+        </svg>
+      </li>
+    </ul>
   </div>
   `,
   components: {},

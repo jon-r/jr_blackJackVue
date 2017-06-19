@@ -43,18 +43,17 @@ export default {
     <linearGradient id="edge2" x1="1" x2="0"
        xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#edge" />
 
-
-    <symbol id="chip-tilt" viewBox="-50 -50 100 100" >
-    <g class="token" transform="scale(1 .5)">
-      <path fill="url(#edge)" d="M-48 0v16a1 1 0 0 0 96 0v-16" filter="url(#mlt)"/>
-      <circle r="48" fill="#c00"/>
-      <g fill="transparent" stroke="#ddd" >
-      <circle r="44"  stroke-width="8" stroke-dasharray="23"/>
-      <circle cy="4" r="38" stroke-width="4" stroke-dasharray="19.9" mask="url(#inner)"/>
+    <symbol id="chip-tilt" xmlns="http://www.w3.org/2000/svg" viewBox="-50 -30 100 60" >
+      <g class="token" transform="scale(1 .5)">
+        <path fill="url(#edge)" d="M-48 0v16a1 1 0 0 0 96 0v-16" filter="url(#mlt)"/>
+        <circle r="48" fill="#c00"/>
+        <g fill="transparent" stroke="#ddd" >
+        <circle r="44"  stroke-width="8" stroke-dasharray="23"/>
+        <circle cy="4" r="38" stroke-width="4" stroke-dasharray="19.9" mask="url(#inner)"/>
+        </g>
+        <path filter="url(#mlt)" fill="url(#edge2)" d="M-40 0a1 1 0 1 1 80 0v4a1 1 0 1 0-80 0" />
+        <circle filter="url(#mlt)" r="40" opacity=".2" />
       </g>
-      <path filter="url(#mlt)" fill="url(#edge2)" d="M-40 0a1 1 0 1 1 80 0v4a1 1 0 1 0-80 0" />
-      <circle filter="url(#mlt)" r="40" opacity=".2" />
-    </g>
     </symbol>
     <symbol id="chip" viewBox="-60 -60 120 120" >
     <circle r="48" fill="#c00" />

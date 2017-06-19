@@ -37,15 +37,14 @@ export default {
 
         <ul class="chip-stack ctrl-btn-icon" >
           <li v-for="chip in currChips" :class="'chip-' + chip" >
-            <svg class="token" viewBox="0 0 100 100" >
-              <use xlink:href="#chip-tilt"/>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60" >
+              <use class="token" xlink:href="#chip-tilt"/>
             </svg>
           </li>
         </ul>
 
-        <span class="error-text"
-        v-if="currChipValue < minBid"  >
-          Min £{{minBid}}
+        <span class="error-text" v-if="bidErr"  >
+          {{bidErr}}
         </span>
 
       </button>
@@ -68,11 +67,19 @@ export default {
       return this.currChips.length > 11;
     },
 
+    bidErr() {
+      if (this.currChipValue < this.minBid) return `Min £${this.minBid}`;
+      if (this.tooManyChips) return 'Max Chips';
+
+      return '';
+    },
+
     ...mapGetters([
       'minBid',
     ]),
   },
   methods: {
+
 
     addChip(chip) {
       this.currChipValue += chip;
