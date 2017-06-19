@@ -9,7 +9,7 @@ export default {
 
     <div class="player-bet" v-show="bet > 0" >
       Bet: £{{bet}}
-      <ul class="chip-stack" v-if="activeChips" >
+      <ul class="chip-stack stack-left" v-if="activeChips" >
         <li v-for="chip in activeChips" :class="'chip-' + chip" >
           <svg class="token" viewBox="0 0 100 100" >
             <use xlink:href="#chip-tilt"/>

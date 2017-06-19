@@ -3,13 +3,14 @@ import { mapGetters } from 'vuex';
 import PlayerCards from './cards';
 
 export default {
-  props: ['turn', 'player'],
+  props: ['turn', 'player', 'framepos'],
   template: `
   <div class="player-hand frame" >
 
     <player-cards
       v-for="(hand, idx) in hands"
       :key="idx"
+      :framepos="framepos"
       :cards="hand.cards"
       v-model="hand.score" >
     </player-cards>

@@ -22,6 +22,7 @@ export default {
     <player-hand
       v-show="gameStage > 0"
       :player="player"
+      :framepos="framepos"
       :turn="isPlayerTurn" >
     </player-hand>
 
@@ -42,19 +43,20 @@ export default {
       skip: false,
       oldMoney: 0,
       diffFloat: true,
+      framepos: {},
+    };
+  },
+
+  mounted() {
+    const el = this.$refs.frameParent;
+
+    this.framepos = {
+      x: el.offsetLeft,
+      y: el.offsetTop,
     };
   },
 
   computed: {
-
-    frameOffset() {
-      const el = this.$refs.frameParent;
-
-      return {
-        top: el.offsetTop,
-        left: el.offsetLeft,
-      };
-    },
 
     diffClass() {
       this.triggerTextAnim();

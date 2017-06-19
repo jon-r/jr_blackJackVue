@@ -29,8 +29,8 @@ const app = new Vue({
     const el = this.$refs.theShoe;
 
     this.$store.dispatch('setShoePos', {
-      top: el.offsetTop,
-      left: el.offsetLeft,
+      x: el.offsetLeft,
+      y: el.offsetTop,
     });
   },
 
