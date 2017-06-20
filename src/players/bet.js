@@ -35,6 +35,7 @@ export default {
     ...mapGetters([
       'gameRound',
       'eventBus',
+      'minBid',
     ]),
   },
   methods: {
@@ -99,7 +100,11 @@ export default {
     cashIn() {
       this.activeChips = [];
       this.updateMonies({ money: this.bet, bet: -this.bet });
+
+      console.log(this.player.money, this.player.name);
+
       if (this.player.money < this.minBid) {
+        console.log(this.player.name, 'game over')
         this.$store.dispatch('playerEndGame', this.player);
       }
     },

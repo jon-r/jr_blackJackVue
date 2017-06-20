@@ -2,7 +2,7 @@ import { mapGetters } from 'vuex';
 
 import Vue from 'vue';
 
-import store from './store';
+import store from './store/store';
 
 import PlayerFrame from './players/player-frame';
 import CtrlFrame from './ctrls/ctrl-frame';
@@ -44,7 +44,7 @@ const app = new Vue({
       'players',
       'gameActivePlayer',
     ]),
-    
+
   },
 
   methods: {

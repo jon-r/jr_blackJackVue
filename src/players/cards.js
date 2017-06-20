@@ -117,7 +117,6 @@ export default {
       this.setPos(el, { x, y, r });
 
       requestAnimationFrame(() => this.lerpLoop(el, done));
-//      setTimeout(() => this.lerpLoop(el, done), 10);
       return true;
     },
 
@@ -127,25 +126,13 @@ export default {
       offsetY = 0,
     }) {
       const [x, y, r] = [0, 0, 0]
-        .map(() => (Math.random() - 0.5) * scale);
+        .map(() => Math.round((Math.random() - 0.5) * scale));
 
       el.dataset.targetX = x + offsetX;
       el.dataset.targetY = y + offsetY;
       el.dataset.targetZ = r;
-
-//      return `translate(${nudgeX + offsetX}px,${nudgeY + offsetY}px) rotate(${rotate}deg)`;
     },
 
-
-
-
   },
-//  directives: {
-//    position: {
-//      bind(el, binding, vnode) {
-//        const offsetX = binding.value * 30;
-//        el.style.transform = transformJiggle({ offsetX });
-//      },
-//    },
-//  },
+
 };

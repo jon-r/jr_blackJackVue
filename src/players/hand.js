@@ -131,17 +131,7 @@ export default {
       this.$set(activeHand.cards, activeHand.revealed, newCard);
       activeHand.revealed += 1;
 
-      this.updateRules();
-
       return this;
-    },
-
-    updateRules() {
-      const hand = this.getActiveHand;
-
-      const count = hand.revealed;
-      const split = (count === 2 && (hand.cards[0].face === hand.cards[1].face));
-      this.$store.dispatch('handCtrlRules', { count, split });
     },
 
     dealRevealSet(mayPeek = false) {
@@ -209,7 +199,15 @@ export default {
 
     /* TURN 3 -------------------- */
 
+    updateRules() {
+      const hand = this.getActiveHand;
+      const count = hand.revealed;
+      const split = (count === 2 && (hand.cards[0].face === hand.cards[1].face));
+      this.$store.dispatch('handCtrlRules', { count, split });
+    },
+
     scoreCheck() {
+      this.updateRules();
       if (!this.allowPlay) this.nextHand();
     },
 
@@ -237,7 +235,12 @@ export default {
     },
 
     autoHit() {
-      return this.allowPlay ? this.dealRevealSet().then(() => this.autoHit()) : this.emitEndTurn();
+      if (this.allowPlay) {
+        console.log('dealer dealing on ', this.getActiveHand.score);
+        this.dealRevealSet().then(() => this.autoHit());
+      } else {
+        this.emitEndTurn();
+      }
     },
 
     stand() {
@@ -309,10 +312,6 @@ export default {
     emitFinalScore(score) {
       const player = this.player;
       this.$store.dispatch('playerSetScore', { player, score });
-    },
-
-    temp(params) {
-      if (this.isCardEvent) console.log(params);
     },
 
   },

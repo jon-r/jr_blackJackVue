@@ -31,8 +31,6 @@ export default {
       </h5>
     </header>
 
-
-
   </section>`,
   components: {
     'player-hand': PlayerHand,
@@ -121,6 +119,7 @@ export default {
 
     getScores(dealerScore) {
       const playerScore = this.player.score;
+
       switch (true) {
       case dealerScore === playerScore:
         return 'push';

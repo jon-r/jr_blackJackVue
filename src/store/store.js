@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex, { mapMutations } from 'vuex';
 
-import { getRandom, buildDeck, mutationSetters, mutationIncrements, actionSetters, getState } from './store/storeTools';
+import { getRandom, buildDeck, mutationSetters, mutationIncrements, actionSetters, getState } from './storeTools';
 
 Vue.use(Vuex);
 
@@ -108,7 +108,7 @@ export default new Vuex.Store({
       const deck = buildDeck(options.config.deckCount);
 
       commit('NEXT_ACTIVE_PLAYER');
-      commit('SET_ROUND', 0);
+      commit('NEXT_ROUND');
       commit('SET_CONFIG', options.config);
       commit('SET_DECK', deck);
       commit('SET_PLAYERS', options.players);
@@ -140,7 +140,7 @@ export default new Vuex.Store({
       return stagePromise().then(() => {
         setTimeout(() => {
           if (state.gameStage === 5) {
-//            dispatch('nextRound');
+            dispatch('nextRound');
           }
         }, 3000);
       });
