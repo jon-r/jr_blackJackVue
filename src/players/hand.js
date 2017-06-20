@@ -160,6 +160,7 @@ export default {
         [2, this.dealOutSecond],
         [3, this.playerActions],
         [4, this.dealOutLast],
+        [5, this.emptyHands],
       ]);
 
       const fn = actions.get(this.gameStage);
@@ -218,7 +219,8 @@ export default {
       }
 
       if (this.dealer.peeked) {
-        return this.setCard(this.dealer.peeked).autoHit();
+        return this.setCard(this.dealer.peeked).wait(0)
+          .then(() => this.autoHit());
       }
 
       return this.fillBlanks().then(() => this.autoHit());
@@ -236,8 +238,9 @@ export default {
 
     autoHit() {
       if (this.allowPlay) {
-        console.log('dealer dealing on ', this.getActiveHand.score);
-        this.dealRevealSet().then(() => this.autoHit());
+        this.dealRevealSet()
+          .then(() => this.wait(this.autoTime))
+          .then(() => this.autoHit());
       } else {
         this.emitEndTurn();
       }
@@ -287,6 +290,14 @@ export default {
       this.emitFinalScore(bestScore);
 
       return this;
+    },
+
+    /* TURN 5 ------------------------------------- */
+
+    emptyHands() {
+      this.wait(this.autoTime)
+        .then(() => this.hands.forEach((hand) => { hand.cards = []; }))
+        .then(() => this.emitEndTurn());
     },
 
     /* emits -------------*/

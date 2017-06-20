@@ -47,9 +47,7 @@ const app = new Vue({
 
   },
 
-  methods: {
-
-  },
+  methods: {},
 });
 
 // just here to skip the 'unused' error

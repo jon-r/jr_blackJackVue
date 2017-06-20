@@ -112,21 +112,27 @@ export default new Vuex.Store({
       commit('SET_CONFIG', options.config);
       commit('SET_DECK', deck);
       commit('SET_PLAYERS', options.players);
-      commit('SET_PLAYER_COUNT', options.players.length - 1);
+      commit('SET_PLAYER_COUNT', options.players.length);
       commit('SET_DEALER', dealer);
     },
 
     nextRound: ({ state, commit }) => {
       console.log('new round');
-      if (state.activePlayerCount < 1) {
+
+      const quarterDeck = (state.config.deckCount * 13); // 25% of total cards in game
+
+      if (state.activePlayerCount < 4) { // TEMP ending early
         console.log('GAME OVER');
         return false;
       }
-      const deck = buildDeck(state.config.deckCount);
 
       commit('PLAYER_RESET_SCORES');
       commit('NEXT_ROUND');
-      commit('SET_DECK', deck);
+
+      if (state.deck.length < quarterDeck) {
+        const deck = buildDeck(state.config.deckCount);
+        commit('SET_DECK', deck);
+      }
       return true;
     },
 
@@ -139,7 +145,7 @@ export default new Vuex.Store({
 
       return stagePromise().then(() => {
         setTimeout(() => {
-          if (state.gameStage === 5) {
+          if (state.gameStage > 5) {
             dispatch('nextRound');
           }
         }, 3000);

@@ -13,6 +13,7 @@ export default {
       name="cards"
       @before-enter="beforeEnter"
       @enter="enter"
+      @leave="leave"
       tag="div" >
       <div v-for="(card, idx) in this.cards"
         class="card-outer"
@@ -34,7 +35,7 @@ export default {
     };
   },
   computed: {
-    transitionPosition() {
+    setEnterPosition() {
       const shoe = this.shoePos;
       const frame = this.framepos;
       // todo: figure out why these magic numbers are needed
@@ -42,7 +43,14 @@ export default {
       return {
         x: shoe.x - frame.x - 5,
         y: shoe.y - frame.y - 70,
-        r: 0,
+      };
+    },
+
+    setLeavePosition() {
+      const frame = this.framepos;
+      return {
+        x: -frame.x,
+        y: -(frame.y + 70),
       };
     },
 
@@ -88,8 +96,8 @@ export default {
     beforeEnter(el) {
       const offsetX = el.dataset.index * 30;
 
-      const position = this.transitionPosition;
-      this.transformJiggle(el, { offsetX });
+      const position = this.setEnterPosition;
+      this.setTransformJiggle(el, { offsetX });
 
       this.setPos(el, position);
     },
@@ -97,7 +105,12 @@ export default {
       this.lerpLoop(el, done);
     },
 
-    setPos(el, { x, y, r }) {
+    leave(el, done) {
+      this.setTransformClearTable(el);
+      this.lerpLoop(el, done);
+    },
+
+    setPos(el, { x, y, r = 0 }) {
       el.dataset.posX = x;
       el.dataset.posY = y;
       el.dataset.posR = r;
@@ -106,11 +119,15 @@ export default {
 
     lerpLoop(el, done) {
       const data = el.dataset;
-      const speed = 0.2;
+      const speed = 0.1;
 
-      if (data.posX === data.targetX) return done();
+      const closeEnough = (Math.abs(data.posX - data.targetX) < 0.5)
+        && (Math.abs(data.posY - data.targetY) < 0.5);
 
-      const x = ((1 - 0.1) * data.posX) + (0.1 * data.targetX);
+      // ends the lerploop when the element is within 0.5px away from its goal
+      if (closeEnough) return done();
+
+      const x = ((1 - speed) * data.posX) + (speed * data.targetX);
       const y = ((1 - speed) * data.posY) + (speed * data.targetY);
       const r = ((1 - speed) * data.posR) + (speed * data.targetZ);
 
@@ -120,7 +137,7 @@ export default {
       return true;
     },
 
-    transformJiggle(el, {
+    setTransformJiggle(el, {
       scale = 10,
       offsetX = 0,
       offsetY = 0,
@@ -131,6 +148,12 @@ export default {
       el.dataset.targetX = x + offsetX;
       el.dataset.targetY = y + offsetY;
       el.dataset.targetZ = r;
+    },
+
+    setTransformClearTable(el) {
+      const exit = this.setLeavePosition;
+      el.dataset.targetX = exit.x;
+      el.dataset.targetY = exit.y;
     },
 
   },
