@@ -1,19 +1,23 @@
 import { mapGetters } from 'vuex';
-
+import { runLerpLoop, setStartFinish, setTarget } from '../animationTools';
 
 // TODO: set bids at chips instead of numbers
 export default {
-  props: ['turn', 'player'],
+  props: ['turn', 'player', 'framepos'],
   template: `
   <div class="player-bet" v-show="bet > 0" >
     Bet: £{{bet}}
-    <ul class="chip-stack stack-right" v-if="activeChips" >
-      <li v-for="chip in activeChips" :class="'chip-' + chip" >
+    <transition-group class="chip-stack stack-right" name="bets" tag="ul"
+      @before-enter="beforeEnter" @enter="enter" @leave="leave" >
+      <li v-for="(chip, idx) in activeChips"
+        :class="'chip-' + chip"
+        :key="idx"
+        :data-key="idx" >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60" >
           <use class="token" xlink:href="#chip-tilt"/>
         </svg>
       </li>
-    </ul>
+    </transition-group>
   </div>
   `,
   components: {},
@@ -27,6 +31,14 @@ export default {
   },
   computed: {
 
+    leavePosition() {
+      const frame = this.framepos;
+      return {
+        x: -frame.x,
+        y: -frame.y,
+      };
+    },
+
     isBidEvent() {
       const evt = this.eventBus;
       return evt.targetPlayer === this.player.index && evt.eventType === 'bid' && evt.eventParams;
@@ -39,6 +51,22 @@ export default {
     ]),
   },
   methods: {
+
+    beforeEnter(el) {
+      const start = { x: 0, y: 200, r: 0 };
+
+//      el.style.opacity = 0;
+      setStartFinish(el, { start });
+    },
+    enter(el, done) {
+//      el.style.opacity = 1;
+      runLerpLoop(el, done);
+    },
+    leave(el, done) {
+      setTarget(el, this.leavePosition);
+      runLerpLoop(el, done);
+    },
+
     setBaseBet() {
       const money = this.player.money;
       this.betStart = (money < this.minBid) ? 0 : Math.max(this.minBid, Math.ceil(money / 2));
@@ -101,10 +129,7 @@ export default {
       this.activeChips = [];
       this.updateMonies({ money: this.bet, bet: -this.bet });
 
-      console.log(this.player.money, this.player.name);
-
       if (this.player.money < this.minBid) {
-        console.log(this.player.name, 'game over')
         this.$store.dispatch('playerEndGame', this.player);
       }
     },

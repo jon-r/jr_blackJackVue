@@ -17,6 +17,7 @@ export default {
     <player-bet
       v-if="!player.isDealer"
       :player="player"
+      :framepos="framepos"
       :turn="isPlayerTurn" >
     </player-bet>
 
