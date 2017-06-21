@@ -1,11 +1,11 @@
 import { mapGetters } from 'vuex';
-import { runLerpLoop, setStartFinish, setTarget } from '../animationTools';
+import { runLerpLoop, setStartFinish, setTarget, arrayStaggeredPush, arrayStaggeredPull } from '../animationTools';
 
 // TODO: set bids at chips instead of numbers
 export default {
   props: ['turn', 'player', 'framepos'],
   template: `
-  <div class="player-bet" v-show="bet > 0" >
+  <div class="player-bet" >
     Bet: £{{bet}}
     <transition-group class="chip-stack stack-right" name="bets" tag="ul"
       @before-enter="beforeEnter" @enter="enter" @leave="leave" >
@@ -33,10 +33,7 @@ export default {
 
     leavePosition() {
       const frame = this.framepos;
-      return {
-        x: -frame.x,
-        y: -frame.y,
-      };
+      return { x: 0, y: -frame.y };
     },
 
     isBidEvent() {
@@ -53,18 +50,18 @@ export default {
   methods: {
 
     beforeEnter(el) {
-      const start = { x: 0, y: 200, r: 0 };
+      const start = { x: 0, y: -200, r: 0 };
 
-//      el.style.opacity = 0;
       setStartFinish(el, { start });
     },
     enter(el, done) {
 //      el.style.opacity = 1;
-      runLerpLoop(el, done);
+      runLerpLoop(el, done, 50);
     },
     leave(el, done) {
-      setTarget(el, this.leavePosition);
-      runLerpLoop(el, done);
+      const target = this.leavePosition;
+      setTarget(el, target);
+      runLerpLoop(el, done, 50);
     },
 
     setBaseBet() {
@@ -91,43 +88,72 @@ export default {
       return true;
     },
 
-    addChips() {
-      const chips = this.activeChips;
-      this.chipsStart.forEach(chip => chips.push(chip));
-      this.activeChips = chips.sort((a, b) => a - b);
+    calcChips(value) {
+      const chips = [500, 100, 25, 10, 5];
+      const out = [];
+
+      let i = 0;
+      let remainder = value;
+
+      while (i < chips.length) {
+        const chip = chips[i];
+        if (chip <= remainder) {
+          out.push(chip);
+          remainder -= chip;
+        } else {
+          i += 1;
+        }
+      }
+      return out;
+    },
+
+    adjustChips(newBet) {
+      if (newBet === 0) return false;
+
+      const array = this.activeChips;
+      const input = this.calcChips(Math.abs(newBet));
+      const args = [input, array, 100];
+
+    //  console.log('adjust', this.player.name, input, array);
+
+      switch (true) {
+      case (newBet < 0):
+        return arrayStaggeredPull(...args);
+      case (newBet > 0):
+        return arrayStaggeredPush(...args);
+      default: // no change
+        return false;
+      }
     },
 
     adjustBet(bidEvent, firstBet = false) {
       if (this.bet === 0 && !firstBet) return this;
 
-      if (bidEvent === 'addBet') this.addChips();
-
-      const betStart = this.betStart;
-      const multipliers = {
-        // Todo: better split results
-        addBet: { cost: -1, wins: 1, end: false },
-        forfeit: { cost: 0.5, wins: -1, end: true },
-        lose: { cost: 0, wins: -1, end: true },
-        push: { cost: 0, wins: 0, end: true },
-        win: { cost: 0, wins: 1, end: true },
-        blackJack: { cost: 0, wins: 1.5, end: true },
+      const betAdjust = {
+        addBet: 1,
+        forfeit: -0.5,
+        lose: -1,
+        push: 0,
+        win: 1,
+        blackJack: 1.5,
       };
 
-      const scoring = multipliers[bidEvent];
+      const betStart = this.betStart;
+      const money = (bidEvent === 'addBet') ? -betStart : 0;
+      const bet = betStart * betAdjust[bidEvent];
 
-      const money = betStart * scoring.cost;
-      const bet = betStart * scoring.wins;
-
+      this.adjustChips(bet);
       this.updateMonies({ money, bet });
 
-      if (scoring.end) this.cashIn();
+      if (bidEvent !== 'addBet') this.cashIn();
 
       return this;
     },
 
     cashIn() {
-      this.activeChips = [];
       this.updateMonies({ money: this.bet, bet: -this.bet });
+
+      // TODO: slide chips to/from the player? align stack to bottom of tile?
 
       if (this.player.money < this.minBid) {
         this.$store.dispatch('playerEndGame', this.player);
@@ -136,6 +162,9 @@ export default {
 
     updateMonies({ money, bet }) {
       const player = this.player;
+      console.log(player.name, bet);
+
+
       this.$store.dispatch('playerUpdateMoney', { player, money, bet });
 
       this.bet += bet;

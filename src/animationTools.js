@@ -53,10 +53,38 @@ export function transformJiggle({
   };
 }
 
-export function staggerArray(input, output, staggerTime) {
-  if (input.length > 0) {
-    const item = input.pop();
-    output.push(item);
-    setTimeout(() => staggerArray(input, output, staggerTime), staggerTime);
-  }
+
+export function arrayStaggeredPush(input, array, staggerTime) {
+  if (input.length === 0) return false;
+
+  const item = input.pop();
+  array.push(item);
+  setTimeout(() => arrayStaggeredPush(input, array, staggerTime), staggerTime);
+  return true;
 }
+
+export function arrayStaggeredPull(input, array, staggerTime) {
+  if (input.length === 0) return false;
+
+  console.log('removing chips');
+
+  const item = input.pop();
+  const find = array.indexOf(item);
+
+//  console.log(find);
+
+  if (find !== -1) {
+    array.splice(find, 1);
+    console.log(array);
+  } else {
+    console.log('TO FIX - pulling half chips');
+    return true;
+  }
+  setTimeout(() => arrayStaggeredPull(input, array, staggerTime), staggerTime);
+  return true;
+}
+
+const test = [1, 1, 2, 2, 4, 4, 4, 5];
+const testin = [1, 2, 4, 5];
+
+arrayStaggeredPull(testin, test, 100);

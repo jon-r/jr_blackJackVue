@@ -98,12 +98,12 @@ export default {
       });
     },
     enter(el, done) {
-      runLerpLoop(el, done);
+      runLerpLoop(el, done, 200);
     },
 
     leave(el, done) {
       setTarget(el, this.leavePosition);
-      runLerpLoop(el, done);
+      runLerpLoop(el, done, 100);
     },
   },
 

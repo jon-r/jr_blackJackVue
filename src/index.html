@@ -26,15 +26,22 @@
 
       <main class="blackjack-table" >
 
-          <div v-once class="deck" ref="theShoe" >
-            <div class="card blank stacked" ></div>
-          </div>
+        <ul class="announcement" >
+          <li>Message the first</li>
+          <li>Message the second</li>
+          <li>Message the third</li>
+          <li>Message the forth</li>
+        </ul>
 
-          <player-frame
-            v-for="player in players"
-            :key="player.index"
-            :player="player" >
-          </player-frame>
+        <div v-once class="deck" ref="theShoe" >
+          <div class="card blank stacked" ></div>
+        </div>
+
+        <player-frame
+          v-for="player in players"
+          :key="player.index"
+          :player="player" >
+        </player-frame>
 
       </main>
 
