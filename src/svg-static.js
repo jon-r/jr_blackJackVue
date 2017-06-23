@@ -14,6 +14,9 @@ export default {
     <filter id="red">
       <feColorMatrix in="SourceGraphic" type="hueRotate" values="0"/>
     </filter>
+    <filter id="yellow">
+      <feColorMatrix values="1.2 0 .8 0 0 1.2 .8 0 0 0 0 .8 .8 0 0 0 0 0 1 0"/>
+    </filter>
     <filter id="green">
       <feColorMatrix in="SourceGraphic" type="hueRotate" values="120"/>
     </filter>

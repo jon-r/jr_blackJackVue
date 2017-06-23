@@ -25,7 +25,7 @@ export default {
     return {
       bet: 0,
       betStart: 500,
-      chipsStart: [],
+//      chipsStart: [],
       activeChips: [],
     };
   },
@@ -81,7 +81,7 @@ export default {
       const { bet, chips } = values;
 
       this.betStart = bet;
-      this.chipsStart = chips;
+//      this.chipsStart = chips;
 
       this.adjustBet('addBet', true);
 
@@ -89,7 +89,7 @@ export default {
     },
 
     calcChips(value) {
-      const chips = [500, 100, 25, 10, 5];
+      const chips = [1000, 500, 100, 25, 10, 5];
       const out = [];
 
       let i = 0;

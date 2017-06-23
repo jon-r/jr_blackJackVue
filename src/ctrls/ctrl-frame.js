@@ -11,11 +11,7 @@ export default {
   <section class="ctrl-bar" >
     <template v-if="player" >
 
-      <div class="player-info frame" >
-        <h3>Player: {{player.name}}</h3>
-        <p>Current Money: £{{player.money}}.<br>
-        {{infoText}}
-        </p>
+      <div class="player-info frame" v-html="infoText" >
       </div>
 
       <hand-ctrl v-if="canCtrl" :player="player" ></hand-ctrl>
@@ -24,9 +20,7 @@ export default {
 
     </template>
 
-
-      <sub class="debugger">*debug* Stage: {{gameStage}} - {{debugStage}}</sub>
-
+    <sub class="debugger">*debug* Stage: {{gameStage}} - {{debugStage}}</sub>
 
   </section>`,
   components: {
@@ -53,12 +47,12 @@ export default {
 
     infoText() {
       const stage = this.gameStage;
-      const name = this.player.name;
+      const player = this.player;
       const out = new Map([
-        [0, `${name}, place your bets.`],
+        [0, `<h4>${player.name}, place your bets. </h4> <p>Current money: £${player.money}. Min Bid: £${this.minBid}</p>`],
         [1, 'Dealing out the first cards.'],
         [2, 'Dealing out the first cards. #peekCheck'],
-        [3, `${name}'s turn. #drawnResponse`],
+        [3, `${player.name}'s turn. #drawnResponse`],
         [4, '#scoresResponse'],
       ]);
       return out.has(stage) ? out.get(stage) : '';
@@ -75,6 +69,7 @@ export default {
     ...mapGetters([
       'dealer',
       'gameStage',
+      'minBid',
     ]),
   },
 

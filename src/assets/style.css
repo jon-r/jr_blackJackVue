@@ -103,7 +103,7 @@ h4 { font-size: 1.414em }
 
 .ctrl-bar {
   height: 128px;
-  background-color: #212121;
+  background-color: #333;
   display: flex;
   justify-content: center;
   padding-left: 8px;
@@ -133,7 +133,7 @@ h4 { font-size: 1.414em }
 .ctrl-menu {
   flex: 2;
   display: flex;
-  background-color: #111;
+  padding: 16px;
 }
 
 .ctrl-btn {
@@ -148,8 +148,19 @@ h4 { font-size: 1.414em }
   cursor: pointer;
 }
 
+.ctrl-btn:first-of-type {
+  border-radius: 2px 0 0 2px;
+}
+.ctrl-btn:last-of-type {
+  border-radius: 0 2px 2px 0;
+}
+
 .ctrl-btn:hover {
-  background-color: #424242;
+  background-color: #5b5b5b;
+}
+
+.ctrl-btn-label {
+  min-height: 1em;
 }
 
 .btn-alert {
@@ -167,14 +178,17 @@ h4 { font-size: 1.414em }
   background-color: #2e7d32;
 }
 .ctrl-btn:disabled, .ctrl-btn:disabled:hover {
-  background-color: #111;
-  color: #484848;
+  background-color: #4c4c4c;
+  color: #828282;
 }
 
 .ctrl-btn-icon {
   display: block;
   margin: auto;
-  height: 60%;
+  height: 1.5em;
+  font-size: 32px;
+  line-height: 1.5;
+  /* text settings for mtl icons */
 }
 
 /* player frame-------------------------------------------------------------- */
@@ -277,16 +291,12 @@ h4 { font-size: 1.414em }
 }
 
 .chip-stack {
-  display: flex;
-  align-items: center;
-  flex-flow: wrap column-reverse;
-  justify-content: flex-end;
-  padding-bottom: 8px;
-}
-
-.chip-stack.stack-right {
-  align-items: flex-end;
-  flex-flow: nowrap column-reverse;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+    padding-bottom: 8px;
+    height: 110px;
 }
 
 .chip-stack li {
@@ -299,6 +309,7 @@ h4 { font-size: 1.414em }
 .chip-25 .token { filter: url(#green) }
 .chip-100 .token { filter: url(#black) }
 .chip-500 .token { filter: url(#pink) }
+.chip-1000 .token { filter: url(#yellow) }
 .betting-chip:disabled .token { filter: url(#grey) }
 
 /* cards -------------------------------------------------------------------- */

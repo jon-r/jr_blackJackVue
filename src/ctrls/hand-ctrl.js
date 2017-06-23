@@ -10,17 +10,19 @@ export default {
       :class="'ctrl-' + ctrl.name"
       @click="emitCtrl(ctrl.name)" >
       <span class="ctrl-btn-label" >{{ctrl.name}}</span>
+      <i class="material-icons ctrl-btn-icon" >{{ctrl.icon}}</i>
+      <span class="ctrl-btn-label alert-text" >{{bidCost(ctrl.name)}}</span>
     </button>
   </div>
   `,
   computed: {
     ctrls() {
       return [
-        { name: 'hit', canUse: true },
-        { name: 'stand', canUse: true },
-        { name: 'split', canUse: this.canSplit },
-        { name: 'surrender', canUse: this.firstCtrl },
-        { name: 'double', canUse: this.canDouble },
+        { name: 'hit', canUse: true, icon: 'touch_app' },
+        { name: 'stand', canUse: true, icon: 'pan_tool' },
+        { name: 'split', canUse: this.canSplit, icon: 'call_split' },
+        { name: 'surrender', canUse: this.firstCtrl, icon: 'flag' },
+        { name: 'double', canUse: this.canDouble, icon: 'monetization_on' },
       ];
     },
 
@@ -45,6 +47,11 @@ export default {
     ]),
   },
   methods: {
+
+    bidCost(name) {
+      return (name === 'split' || name === 'double') ? `+ £${this.player.startBid}` : '';
+    },
+
     emitCtrl(params) {
       const values = {
         target: this.player.index,

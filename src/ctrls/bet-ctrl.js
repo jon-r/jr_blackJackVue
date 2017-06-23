@@ -4,56 +4,49 @@ export default {
   props: ['player'],
   template: `
   <div class="ctrl-menu" >
+    <button class="betting-chip ctrl-btn"
+      v-for="chip in chips"
+      :disabled="(chip > maxChips) ? true : false"
+      :class="'chip-' + chip"
+      @click="addChip(chip)" >
 
-      <button class="betting-chip ctrl-btn"
-        v-for="chip in chips"
-        :disabled="(chip > maxChips || tooManyChips) ? true : false"
-        :class="'chip-' + chip"
-        @click="addChip(chip)" >
+      <span class="ctrl-btn-label" >£{{chip}}</span>
 
-        <span class="ctrl-btn-label" >£{{chip}}</span>
+      <svg class="token ctrl-btn-icon" viewBox="0 0 100 100" >
+        <use xlink:href="#chip"/>
+      </svg>
 
-        <svg class="token ctrl-btn-icon" viewBox="0 0 100 100" >
-          <use xlink:href="#chip"/>
-        </svg>
-      </button>
+    </button>
 
-      <button class="ctrl-btn btn-alert"
-        @click="removeChip"
-        :disabled="currChips.length === 0 ? true:false" >
+    <button class="ctrl-btn btn-alert"
+      @click="removeChip"
+      :disabled="currChips.length === 0 ? true:false" >
 
-        <span class="ctrl-btn-label" >Undo</span>
+      <span class="ctrl-btn-label" >Undo</span>
 
-        <i class="material-icons ctrl-btn-icon" >undo</i>
-      </button>
+      <i class="material-icons ctrl-btn-icon" >undo</i>
+    </button>
 
-      <button class="ctrl-btn btn-good"
-        @click="emitBid"
-        :disabled="currChipValue < minBid ? true:false" >
+    <button class="ctrl-btn btn-good"
+      @click="emitBid"
+      :disabled="bidErr ? true:false" >
 
-        <span class="ctrl-btn-label" >
-          Submit Bid: £{{ currChipValue }}
-        </span>
+      <span class="ctrl-btn-label" >
+        Submit Bid: £{{ currChipValue }}
+      </span>
 
-        <ul class="chip-stack ctrl-btn-icon" >
-          <li v-for="chip in currChips" :class="'chip-' + chip" >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60" >
-              <use class="token" xlink:href="#chip-tilt"/>
-            </svg>
-          </li>
-        </ul>
+      <i class="material-icons ctrl-btn-icon" >publish</i>
 
-        <span class="error-text" v-if="bidErr"  >
-          {{bidErr}}
-        </span>
+      <span class="error-text ctrl-btn-label" v-show="bidErr"  >
+        {{bidErr}}
+      </span>
 
-      </button>
-
+    </button>
   </div>
   `,
   data() {
     return {
-      chips: [5, 10, 25, 100, 500],
+      chips: [5, 10, 25, 100, 500, 1000],
       currChips: [],
       currChipValue: 0,
     };
@@ -63,15 +56,12 @@ export default {
       return this.player.money - this.currChipValue;
     },
 
-    tooManyChips() {
-      return this.currChips.length > 11;
-    },
+//    tooManyChips() {
+//      return this.currChips.length > 11;
+//    },
 
     bidErr() {
-      if (this.currChipValue < this.minBid) return `Min £${this.minBid}`;
-      if (this.tooManyChips) return 'Max Chips';
-
-      return '';
+      return (this.currChipValue < this.minBid) ? `Min £${this.minBid}` : '';
     },
 
     ...mapGetters([
@@ -92,7 +82,7 @@ export default {
     },
 
     emitBid() {
-      const params = { bet: this.currChipValue, chips: this.currChips, firstBid: true };
+      const params = { bet: this.currChipValue, firstBid: true };
       const values = {
         target: this.player.index,
         type: 'bid',

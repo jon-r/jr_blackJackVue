@@ -54,21 +54,21 @@ export function transformJiggle({
 }
 
 
-export function arrayStaggeredPush(input, array, staggerTime) {
-  if (input.length === 0) return false;
+export function arrayStaggeredPush(toAdd, array, staggerTime) {
+  if (toAdd.length === 0) return false;
 
-  const item = input.pop();
+  const item = toAdd.pop();
   array.push(item);
-  setTimeout(() => arrayStaggeredPush(input, array, staggerTime), staggerTime);
+  setTimeout(() => arrayStaggeredPush(toAdd, array, staggerTime), staggerTime);
   return true;
 }
 
-export function arrayStaggeredPull(input, array, staggerTime) {
-  if (input.length === 0) return false;
+export function arrayStaggeredPull(toRemove, array, staggerTime) {
+  if (toRemove.length === 0) return false;
 
   console.log('removing chips');
 
-  const item = input.pop();
+  const item = toRemove.pop();
   const find = array.indexOf(item);
 
 //  console.log(find);
@@ -80,11 +80,6 @@ export function arrayStaggeredPull(input, array, staggerTime) {
     console.log('TO FIX - pulling half chips');
     return true;
   }
-  setTimeout(() => arrayStaggeredPull(input, array, staggerTime), staggerTime);
+  setTimeout(() => arrayStaggeredPull(toRemove, array, staggerTime), staggerTime);
   return true;
 }
-
-const test = [1, 1, 2, 2, 4, 4, 4, 5];
-const testin = [1, 2, 4, 5];
-
-arrayStaggeredPull(testin, test, 100);
