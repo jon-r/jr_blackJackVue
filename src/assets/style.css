@@ -290,13 +290,23 @@ h4 { font-size: 1.414em }
   top: 4px;
 }
 
+
 .chip-stack {
-    display: flex;
-    align-items: flex-end;
-    flex-direction: column-reverse;
-    justify-content: flex-start;
-    padding-bottom: 8px;
-    height: 110px;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+  padding-bottom: 8px;
+  height: 110px;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 300ms ease-in, opacity 300ms 500ms;
+}
+
+.chip-stack.show {
+  transform: none;
+  opacity: 1;
+  transition: none;
 }
 
 .chip-stack li {

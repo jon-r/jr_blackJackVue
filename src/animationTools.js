@@ -66,8 +66,6 @@ export function arrayStaggeredPush(toAdd, array, staggerTime) {
 export function arrayStaggeredPull(toRemove, array, staggerTime) {
   if (toRemove.length === 0) return false;
 
-  console.log('removing chips');
-
   const item = toRemove.pop();
   const find = array.indexOf(item);
 
@@ -75,7 +73,6 @@ export function arrayStaggeredPull(toRemove, array, staggerTime) {
 
   if (find !== -1) {
     array.splice(find, 1);
-    console.log(array);
   } else {
     console.log('TO FIX - pulling half chips');
     return true;

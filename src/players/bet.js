@@ -6,18 +6,20 @@ export default {
   props: ['turn', 'player', 'framepos'],
   template: `
   <div class="player-bet" >
-    Bet: £{{bet}}
-    <transition-group class="chip-stack stack-right" name="bets" tag="ul"
+    <span v-show="bet > 0" >Bet: £{{bet}}</span>
+
+    <transition-group class="chip-stack" name="bets" tag="ul" :class="{ show : quidsIn }"
       @before-enter="beforeEnter" @enter="enter" @leave="leave" >
-      <li v-for="(chip, idx) in activeChips"
+      <li v-for="(chip, idx) in chips"
         :class="'chip-' + chip"
         :key="idx"
         :data-key="idx" >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60" >
+        <svg viewBox="0 0 100 60" >
           <use class="token" xlink:href="#chip-tilt"/>
         </svg>
       </li>
     </transition-group>
+
   </div>
   `,
   components: {},
@@ -25,8 +27,8 @@ export default {
     return {
       bet: 0,
       betStart: 500,
-//      chipsStart: [],
-      activeChips: [],
+      quidsIn: false,
+      chips: [],
     };
   },
   computed: {
@@ -66,6 +68,7 @@ export default {
 
     setBaseBet() {
       const money = this.player.money;
+      this.chips = [];
       this.betStart = (money < this.minBid) ? 0 : Math.max(this.minBid, Math.ceil(money / 2));
     },
 
@@ -79,13 +82,20 @@ export default {
 
     setFirstBet(values) {
       const { bet, chips } = values;
-
+      this.showChips();
       this.betStart = bet;
-//      this.chipsStart = chips;
-
       this.adjustBet('addBet', true);
 
       return true;
+    },
+
+    showChips() {
+      this.quidsIn = true;
+    },
+
+    hideChips() {
+      this.quidsIn = false;
+      console.log('quids out');
     },
 
     calcChips(value) {
@@ -110,7 +120,7 @@ export default {
     adjustChips(newBet) {
       if (newBet === 0) return false;
 
-      const array = this.activeChips;
+      const array = this.chips;
       const input = this.calcChips(Math.abs(newBet));
       const args = [input, array, 100];
 
@@ -145,15 +155,21 @@ export default {
       this.adjustChips(bet);
       this.updateMonies({ money, bet });
 
-      if (bidEvent !== 'addBet') this.cashIn();
+
+      if (bidEvent !== 'addBet') {
+        console.log('cash in');
+        setTimeout(this.cashIn, 1000);
+      }
 
       return this;
     },
 
     cashIn() {
-      this.updateMonies({ money: this.bet, bet: -this.bet });
+      const money = this.bet;
+      const bet = -money;
 
-      // TODO: slide chips to/from the player? align stack to bottom of tile?
+      this.updateMonies({ money, bet });
+      this.hideChips();
 
       if (this.player.money < this.minBid) {
         this.$store.dispatch('playerEndGame', this.player);
@@ -162,8 +178,6 @@ export default {
 
     updateMonies({ money, bet }) {
       const player = this.player;
-      console.log(player.name, bet);
-
 
       this.$store.dispatch('playerUpdateMoney', { player, money, bet });
 
