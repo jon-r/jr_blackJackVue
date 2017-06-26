@@ -83,13 +83,20 @@ export default {
 
     emitBid() {
       const params = { bet: this.currChipValue, firstBid: true };
-      const values = {
+
+      const msgValues = {
+        type: 'message',
+        params: `${this.player.name} bets £${this.currChipValue}`,
+      };
+
+      const bidValues = {
         target: this.player.index,
         type: 'bid',
         params,
       };
 
-      this.$store.dispatch('fireEventBus', values)
+      this.$store.dispatch('fireEventBus', msgValues)
+        .then(() => this.$store.dispatch('fireEventBus', bidValues))
         .then(() => this.$store.dispatch('nextPlayer'));
 
       this.currChips = [];

@@ -11,6 +11,7 @@ import OptionsModal from './ctrls/options-ctrl';
 
 const app = new Vue({
   el: '#v-blackJack',
+
   components: {
     'player-frame': PlayerFrame,
     'ctrl-frame': CtrlFrame,
@@ -20,6 +21,8 @@ const app = new Vue({
 
   data: {
     showOptions: true,
+    messages: [],
+    messageIdx: 0,
   },
 
   // VUEX link to store (only need once)
@@ -40,14 +43,40 @@ const app = new Vue({
       return this.players[this.gameActivePlayer];
     },
 
+    isAnnouncement() {
+      const evt = this.eventBus;
+      return evt.eventType === 'message' && evt.eventParams;
+    },
+
     ...mapGetters([
       'players',
       'gameActivePlayer',
+      'eventBus',
     ]),
 
   },
 
-  methods: {},
+  methods: {
+    updateChat(params) {
+      if (!this.isAnnouncement) return false;
+
+      this.messageIdx += 1;
+
+      this.messages.unshift({
+        text: params,
+        idx: this.messageIdx,
+      });
+
+      if (this.messages.length > 4) this.messages.pop();
+
+      return true;
+      // this.messages.splice(5);
+    },
+  },
+
+  watch: {
+    'eventBus.eventParams': 'updateChat',
+  },
 });
 
 // just here to skip the 'unused' error

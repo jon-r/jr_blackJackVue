@@ -26,12 +26,9 @@
 
       <main class="blackjack-table" >
 
-        <ul class="announcement" >
-          <li>Message the first</li>
-          <li>Message the second</li>
-          <li>Message the third</li>
-          <li>Message the forth</li>
-        </ul>
+        <transition-group class="announcement frame" name="messages" tag="ul" >
+          <li v-for="msg in messages" :key="msg.idx" >{{msg.text}}</li>
+        </transition-group>
 
         <div v-once class="deck" ref="theShoe" >
           <div class="card blank stacked" ></div>

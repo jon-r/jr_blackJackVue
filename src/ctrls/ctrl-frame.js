@@ -20,7 +20,7 @@ export default {
 
     </template>
 
-    <sub class="debugger">*debug* Stage: {{gameStage}} - {{debugStage}}</sub>
+    <sub class="">*debug* Stage: {{gameStage}} - {{debugStage}}</sub>
 
   </section>`,
   components: {

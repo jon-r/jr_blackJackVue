@@ -123,6 +123,13 @@ h4 { font-size: 1.414em }
     left: 70%;
 }
 
+.announcement {
+  width: 400px;
+}
+
+.announcement li:first-of-type {
+  font-size: 1.4rem;
+}
 
 /* ctrl frame-------------------------------------------------------------- */
 
