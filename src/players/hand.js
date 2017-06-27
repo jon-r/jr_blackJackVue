@@ -24,6 +24,7 @@ export default {
     return {
       hands: [],
       activeHand: 0,
+      messageAddon: '',
     };
   },
   computed: {
@@ -41,16 +42,23 @@ export default {
     allowPlay() {
       if (!this.getActiveHand) return false;
 
+      const hand = this.getActiveHand;
       const isDealer = this.player.isDealer;
-      const score = this.getActiveHand.score;
+      const score = hand.score;
       const max = isDealer ? 17 : 21;
+      let messageStr = '';
+
+      console.log(score);
 
       if (score > 21) {
+        messageStr = 'Bust!';
         this.emitBidChange('lose');
-      } else if (score === 21 && this.getActiveHand.revealed === 2) {
+      } else if (score === 21 && hand.revealed === 2) {
+        messageStr = 'BlackJack!';
         this.emitBidChange('blackJack');
       }
 
+      this.cardMessage(hand, messageStr);
       return score < max;
     },
 
@@ -190,30 +198,30 @@ export default {
       this.dealRevealSet(isDealer)
       .then(() => {
         const endImmediately = (isDealer && this.getActiveHand.score === 21);
-        if (endImmediately) {
-          this.emitEndRound();
-        } else {
-          this.emitEndTurn();
-        }
+
+        return (endImmediately) ? this.emitEndRound() : this.emitEndTurn();
       });
     },
 
     /* TURN 3 -------------------- */
 
-    updateRules() {
-      const hand = this.getActiveHand;
+    updateRules(hand) {
       const count = hand.revealed;
       const split = (count === 2 && (hand.cards[0].face === hand.cards[1].face));
       this.$store.dispatch('handCtrlRules', { count, split });
+      return this;
     },
 
     scoreCheck() {
-      this.updateRules();
+      const hand = this.getActiveHand;
+
+      this.updateRules(hand);
       if (!this.allowPlay) this.nextHand();
     },
 
 
     playerActions() {
+      console.log('player turns');
       if (!this.player.isDealer) {
         return this.scoreCheck();
       }
@@ -292,7 +300,7 @@ export default {
       return this;
     },
 
-    /* TURN 5 ------------------------------------- */
+    /* TURN 5 ----------------------------------------------------------- */
 
     emptyHands() {
       this.wait(this.autoTime)
@@ -300,7 +308,7 @@ export default {
         .then(() => this.emitEndTurn());
     },
 
-    /* emits -------------*/
+    /* emits -------------------------------------------------------------*/
 
     emitEndTurn() {
       this.$store.dispatch('nextPlayer');
@@ -323,6 +331,23 @@ export default {
     emitFinalScore(score) {
       const player = this.player;
       this.$store.dispatch('playerSetScore', { player, score });
+    },
+
+    /* messenger ---------------------------------------------------------*/
+
+    cardMessage(hand, outcome) {
+      const player = this.player.name;
+      const has = (hand.revealed === 2) ? 'starts with' : 'now has';
+      const score = hand.score;
+
+      const params = `${player} ${has} ${score}. ${outcome}`;
+
+      const msgValues = {
+        type: 'message',
+        params,
+      };
+
+      return this.$store.dispatch('fireEventBus', msgValues);
     },
 
   },

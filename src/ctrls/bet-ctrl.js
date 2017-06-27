@@ -56,10 +56,6 @@ export default {
       return this.player.money - this.currChipValue;
     },
 
-//    tooManyChips() {
-//      return this.currChips.length > 11;
-//    },
-
     bidErr() {
       return (this.currChipValue < this.minBid) ? `Min £${this.minBid}` : '';
     },

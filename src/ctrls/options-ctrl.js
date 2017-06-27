@@ -71,8 +71,7 @@ export default {
         minBid: this.minBid,
         deckCount: this.deckInput,
         autoTime: this.autoTime,
-      }
-
+      };
 
       const players = this.playerInput
         .map((player, index) => this.setNewPlayer(player.name, index));

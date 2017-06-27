@@ -23,6 +23,7 @@ const app = new Vue({
     showOptions: true,
     messages: [],
     messageIdx: 0,
+    maxMessages: 5,
   },
 
   // VUEX link to store (only need once)
@@ -67,7 +68,7 @@ const app = new Vue({
         idx: this.messageIdx,
       });
 
-      if (this.messages.length > 4) this.messages.pop();
+      if (this.messages.length > this.maxMessages) this.messages.pop();
 
       return true;
       // this.messages.splice(5);

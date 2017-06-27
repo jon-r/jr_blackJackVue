@@ -82,6 +82,7 @@ export default {
       default:
         return '';
       }
+
     },
 
     ...mapGetters([
@@ -89,6 +90,7 @@ export default {
     ]),
   },
   methods: {
+
     beforeEnter(el) {
       const offsetX = el.dataset.index * 30;
 

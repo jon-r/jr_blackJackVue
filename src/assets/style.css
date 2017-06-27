@@ -67,11 +67,6 @@ h4 { font-size: 1.414em }
   vertical-align: middle;
 }
 
-.center-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 .frame {
   padding: 8px;
@@ -110,37 +105,49 @@ h4 { font-size: 1.414em }
   padding-right: 8px;
 }
 
-/*.blackjack-inner {
-  width:100%;
-  max-width: 1024px;
-  position: relative;
-  padding-bottom: 66.6%;
-}*/
-
 .deck {
-    position: absolute;
-    top: 5%;
-    left: 70%;
+  position: absolute;
+  top: 5%;
+  left: 70%;
 }
 
 .announcement {
-  width: 400px;
+  width: 512px;
 }
 
-.announcement li:first-of-type {
-  font-size: 1.4rem;
+.message {
+  transition: transform 0.3s ease-in-out, color 1s ease-out;
+  transform-origin: top left;
 }
+
+.message:first-of-type {
+  color: #f9a825;
+}
+
+.messages-enter {
+  transform: translateY(-100%);
+  transition-delay: 0.3s;
+  opacity: 0;
+}
+
+.messages-leave-to {
+  opacity: 0;
+  transition: opacity 5s, transform 0.5s ease-out;
+}
+
 
 /* ctrl frame-------------------------------------------------------------- */
 
 .player-info {
   flex: 1;
+  text-align: right;
 }
 
 .ctrl-menu {
   flex: 2;
   display: flex;
   padding: 16px;
+  justify-content: center;
 }
 
 .ctrl-btn {
@@ -420,24 +427,19 @@ h4 { font-size: 1.414em }
 
 /* options form ------------------------------------------------------------- */
 
-.options-outer, .options-outer::before {
+.options-outer {
   color: #333;
-  position: fixed;
+  position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-}
-
-.options-outer {
   z-index: 20;
   padding: 32px;
-}
-
-.options-outer::before {
-  content: "";
-  background-color: #000;
-  opacity: 0.2;
+  background-color: rgba(0,0,0,.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .options-inner {

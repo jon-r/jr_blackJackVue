@@ -27,7 +27,7 @@
       <main class="blackjack-table" >
 
         <transition-group class="announcement frame" name="messages" tag="ul" >
-          <li v-for="msg in messages" :key="msg.idx" >{{msg.text}}</li>
+          <li class="message" v-for="msg in messages" :key="msg.idx" >{{msg.text}}</li>
         </transition-group>
 
         <div v-once class="deck" ref="theShoe" >

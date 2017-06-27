@@ -53,12 +53,19 @@ export default {
     },
 
     emitCtrl(params) {
-      const values = {
+      const message = `${this.player.name} ${params}s`;
+      const msgValues = {
+        type: 'message',
+        params: message,
+      };
+
+      const handValues = {
         target: this.player.index,
         type: 'card',
         params,
       };
-      this.$store.dispatch('fireEventBus', values);
+      this.$store.dispatch('fireEventBus', msgValues)
+        .then(() => this.$store.dispatch('fireEventBus', handValues));
     },
   },
 };
