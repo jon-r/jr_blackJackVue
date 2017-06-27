@@ -11,8 +11,8 @@ export default new Vuex.Store({
 
   state: {
     // game stage ids
-    gameRound: 0,
-    gameStage: 0,
+    gameRound: -1,
+    gameStage: -1,
     gameActivePlayer: -1,
 
     // players & dealer
@@ -64,6 +64,7 @@ export default new Vuex.Store({
       state.dealer.peeked = card;
     },
     PLAYER_END_GAME(state, player) {
+      state.activePlayerCount -= 1;
       state.players[player.index].inGame = false;
     },
 
