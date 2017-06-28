@@ -108,14 +108,15 @@ export default {
       return this.emitBidChange(result);
     },
 
-    emitBidChange(params) {
-      const values = {
+    emitBidChange(string) {
+      const params = {
         target: this.player.index,
         type: 'bid',
-        params,
+        params: string, // RM
+        string,
       };
 
-      return this.$store.dispatch('fireEventBus', values);
+      return this.$store.dispatch('fireEventBus', params); // FIXED
     },
 
     getScores(dealerScore) {

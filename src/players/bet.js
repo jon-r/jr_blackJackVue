@@ -26,7 +26,6 @@ export default {
   data() {
     return {
       bet: 0,
-      betStart: 500,
       quidsIn: false,
       chips: [],
     };
@@ -66,10 +65,8 @@ export default {
       runLerpLoop(el, done, 50);
     },
 
-    setBaseBet() {
-      const money = this.player.money;
+    resetBet() {
       this.chips = [];
-      this.betStart = (money < this.minBid) ? 0 : Math.max(this.minBid, Math.ceil(money / 2));
     },
 
     setBet(params) {
@@ -81,9 +78,9 @@ export default {
     },
 
     setFirstBet(values) {
-      const { bet, chips } = values;
+//      const { bet, chips } = values;
       this.showChips();
-      this.betStart = bet;
+      this.betStart = values;
       this.adjustBet('addBet', true);
 
       return true;
@@ -179,14 +176,16 @@ export default {
     updateMonies({ money, bet }) {
       const player = this.player;
 
-      this.$store.dispatch('playerUpdateMoney', { player, money, bet });
+      // THIS NEEDS FIXING
+      // this.$store.dispatch('playerUpdateMoney', { player, money, bet });
 
       this.bet += bet;
       return this;
     },
   },
   watch: {
-    gameRound: 'setBaseBet',
-    'eventBus.eventParams': 'setBet',
+    gameRound: 'resetBet',
+    'eventBus.eventParams': 'adjustBet',
+    'player.startBid': 'setFirstBet',
   },
 };

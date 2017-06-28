@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex, { mapMutations } from 'vuex';
 
-import { getRandom, buildDeck, mutationSetters, mutationIncrements, actionSetters, getState } from './storeTools';
+import { getRandom, buildDeck, mutationSetters, mutationIncrements, actionSetters, getState, playerSetters } from './storeTools';
 
 Vue.use(Vuex);
 
@@ -31,8 +31,11 @@ export default new Vuex.Store({
       deckCount: 6,
     },
 
+    newMessage: '',
+
     handRules: false,
 
+    eventIndx: -1, // for future event triggers
     eventBus: {
       targetPlayer: -1,
       eventType: false,
@@ -49,17 +52,10 @@ export default new Vuex.Store({
     },
 
     // players & dealer
-    PLAYER_SET_SCORE(state, { player, score }) {
-      state.players[player.index].score = score;
+    PLAYER_UPDATE_MONEY(state, { idx, value }) {
+      state.players[idx].money += value;
     },
-    PLAYER_UPDATE_MONEY(state, { player, money, bet }) {
-      const thisPlayer = state.players[player.index];
-      thisPlayer.money += money;
-      thisPlayer.startBid = bet;
-    },
-    PLAYER_RESET_SCORES(state) {
-      state.players.forEach(player => (player.score = 0));
-    },
+
     DEALER_SET_PEEKED(state, card) {
       state.dealer.peeked = card;
     },
@@ -97,6 +93,14 @@ export default new Vuex.Store({
       SET_SHOE_POS: 'shoePos',
       SET_CONFIG: 'config',
       CTRL_SET_HAND_RULES: 'handRules',
+      SET_EVENT: 'eventBus2',
+      SET_MESSAGE: 'newMessage',
+    }),
+
+    ...playerSetters({
+      PLAYER_SET_SCORE: 'score',
+      PLAYER_SET_MONEY: 'money',
+      PLAYER_SET_BID: 'startBid',
     }),
   },
 
@@ -126,8 +130,7 @@ export default new Vuex.Store({
         console.log('GAME OVER');
         return false;
       }
-
-      commit('PLAYER_RESET_SCORES');
+      state.players.forEach(player => commit('PLAYER_SET_SCORE', { idx: player.index, value: 0 }));
       commit('NEXT_ROUND');
 
       if (state.deck.length < quarterDeck) {
@@ -136,7 +139,6 @@ export default new Vuex.Store({
       }
       return true;
     },
-
 
     nextStage: ({ state, commit, dispatch }) => {
       const stagePromise = () => new Promise((resolve) => {
@@ -153,7 +155,6 @@ export default new Vuex.Store({
       });
     },
 
-
     nextPlayerPromise: ({ commit }) => new Promise((resolve) => {
       commit('NEXT_ACTIVE_PLAYER');
       resolve();
@@ -163,6 +164,11 @@ export default new Vuex.Store({
       if (state.gameActivePlayer > state.players.length - 1) dispatch('nextStage');
     }),
 
+    // players
+    playerSetBid({ commit }, { idx, value }) {
+      commit('PLAYER_SET_BID', { idx, value });
+      commit('PLAYER_UPDATE_MONEY', { idx, value: -value });
+    },
 
     // deck and cards
     deckDrawPromise: ({ state, commit }, idx) => new Promise((resolve, reject) => {
@@ -205,14 +211,21 @@ export default new Vuex.Store({
       return actionPromise(values).then(() => commit('FIRE_EVENT', false));
     },
 
+//    doEvent: ({ commit }, values) => {
+//
+//      return new Promise((resolve) => {
+//
+//      });
+//    },
+
     ...actionSetters({
       setStage: 'SET_STAGE',
       playerSetScore: 'PLAYER_SET_SCORE',
-      playerUpdateMoney: 'PLAYER_UPDATE_MONEY',
       dealerCard: 'DEALER_SET_PEEKED',
       playerEndGame: 'PLAYER_END_GAME',
       handCtrlRules: 'CTRL_SET_HAND_RULES',
       setShoePos: 'SET_SHOE_POS',
+      setNewMessage: 'SET_MESSAGE',
     }),
   },
 
@@ -231,6 +244,7 @@ export default new Vuex.Store({
       'handRules',
       'eventBus',
       'shoePos',
+      'newMessage',
     ]),
   },
 

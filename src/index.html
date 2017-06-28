@@ -20,7 +20,8 @@
 
 TO DO LIST:
 
-- split event emits (message, bet, hand); (i think mixed ones are clashing)
+- rework evt bus to not use the SET/RESET shindig. just have an increasing evtIdx to trigger updates?
+- fix 'update bids' function (bet.js); currently not re-updating bets (should be able to use the same event as SET FIRST BID) ??
 - fix end round. some controls for Next round/New game
 - end round results (winners, losers)
 - clean/tidy anything?

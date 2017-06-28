@@ -80,20 +80,23 @@ export default {
     emitBid() {
       const params = { bet: this.currChipValue, firstBid: true };
 
-      const msgValues = {
-        type: 'message',
-        params: `${this.player.name} bets £${this.currChipValue}`,
+      const bidvals = {
+        idx: this.player.index,
+        value: this.currChipValue,
       };
 
-      const bidValues = {
-        target: this.player.index,
-        type: 'bid',
-        params,
-      };
+      const msg = `${this.player.name} bets £${this.currChipValue}`;
 
-      this.$store.dispatch('fireEventBus', msgValues)
-        .then(() => this.$store.dispatch('fireEventBus', bidValues))
-        .then(() => this.$store.dispatch('nextPlayer'));
+//      const msgValues = {
+//        type: 'message',
+//        params: `${this.player.name} bets £${this.currChipValue}`, // RM
+//        string: ,
+//      };
+
+      // TODO = newBid (change to setter rather than evt trigger);
+      this.$store.dispatch('playerSetBid', bidvals);
+      this.$store.dispatch('setNewMessage', msg);
+      this.$store.dispatch('nextPlayer');
 
       this.currChips = [];
       this.currChipValue = 0;

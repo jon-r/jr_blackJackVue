@@ -44,22 +44,17 @@ const app = new Vue({
       return this.players[this.gameActivePlayer];
     },
 
-    isAnnouncement() {
-      const evt = this.eventBus;
-      return evt.eventType === 'message' && evt.eventParams;
-    },
 
     ...mapGetters([
       'players',
       'gameActivePlayer',
-      'eventBus',
+      'newMessage',
     ]),
 
   },
 
   methods: {
     updateChat(params) {
-      if (!this.isAnnouncement) return false;
 
       this.messageIdx += 1;
 
@@ -69,14 +64,11 @@ const app = new Vue({
       });
 
       if (this.messages.length > this.maxMessages) this.messages.pop();
-
-      return true;
-      // this.messages.splice(5);
     },
   },
 
   watch: {
-    'eventBus.eventParams': 'updateChat',
+    newMessage: 'updateChat',
   },
 });
 

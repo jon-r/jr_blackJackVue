@@ -318,19 +318,23 @@ export default {
       this.$store.dispatch('setStage', 4);
     },
 
-    emitBidChange(params) {
-      const values = {
-        target: this.player.index,
+    emitBidChange(string) {
+      const target = this.player.index;
+      const type = 'bid';
+
+      const params = {
+        target,
         type: 'bid',
-        params,
+        params: string, // RM
+        string,
       };
 
-      return this.$store.dispatch('fireEventBus', values);
+      return this.$store.dispatch('fireEventBus', params); // FIXED
     },
 
-    emitFinalScore(score) {
-      const player = this.player;
-      this.$store.dispatch('playerSetScore', { player, score });
+    emitFinalScore(value) {
+      const idx = this.player.index;
+      this.$store.dispatch('playerSetScore', { idx, value });
     },
 
     /* messenger ---------------------------------------------------------*/
@@ -340,14 +344,9 @@ export default {
       const has = (hand.revealed === 2) ? 'starts with' : 'now has';
       const score = hand.score;
 
-      const params = `${player} ${has} ${score}. ${outcome}`;
+      const msg = `${player} ${has} ${score}. ${outcome}`;
 
-      const msgValues = {
-        type: 'message',
-        params,
-      };
-
-      return this.$store.dispatch('fireEventBus', msgValues);
+      this.$store.dispatch('setNewMessage', msg);
     },
 
   },

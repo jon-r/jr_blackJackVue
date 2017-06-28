@@ -52,20 +52,19 @@ export default {
       return (name === 'split' || name === 'double') ? `+ £${this.player.startBid}` : '';
     },
 
-    emitCtrl(params) {
-      const message = `${this.player.name} ${params}s`;
-      const msgValues = {
-        type: 'message',
-        params: message,
-      };
+    emitCtrl(ctrl) {
+      const msg = `${this.player.name} ${ctrl}s`;
 
       const handValues = {
         target: this.player.index,
         type: 'card',
-        params,
+        params: ctrl, // RM
+        string: ctrl,
       };
-      this.$store.dispatch('fireEventBus', msgValues)
-        .then(() => this.$store.dispatch('fireEventBus', handValues));
+
+      this.$store.dispatch('setNewMessage', msg);
+
+      this.$store.dispatch('fireEventBus', handValues); // FIXED
     },
   },
 };

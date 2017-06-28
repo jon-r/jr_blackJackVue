@@ -67,12 +67,9 @@ export default {
 
       if (!out.has(stage)) return false;
 
-      const msgValues = {
-        type: 'message',
-        params: out.get(stage),
-      };
+      const msg = out.get(stage);
 
-      return this.$store.dispatch('fireEventBus', msgValues);
+      return this.$store.dispatch('setNewMessage', msg);
     },
   },
   watch: {

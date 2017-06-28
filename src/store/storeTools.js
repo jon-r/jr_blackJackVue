@@ -23,10 +23,26 @@ export function mutationSetters(mutations) {
   const out = {};
 
   Object.keys(mutations).forEach((mutation) => {
-    const value = mutations[mutation];
+    const key = mutations[mutation];
 
-    out[mutation] = (state, i) => {
-      state[value] = i;
+    out[mutation] = (state, value) => {
+      state[key] = value;
+    };
+  });
+
+  return out;
+}
+
+export function playerSetters(mutations) {
+  const out = {};
+
+  Object.keys(mutations).forEach((mutation) => {
+    // const value = mutations[key].value;
+    const key = mutations[mutation];
+
+    out[mutation] = (state, { idx, value }) => {
+      const player = state.players[idx];
+      player[key] = value;
     };
   });
 
@@ -37,8 +53,8 @@ export function mutationIncrements(mutations) {
   const out = {};
 
   Object.keys(mutations).forEach((mutation) => {
-    const value = mutations[mutation].value;
-    const reset = mutations[mutation].reset;
+    const { value, reset } = mutations[mutation];
+   // const reset = mutations[mutation].reset;
 
     out[mutation] = (state, i) => {
       state[value] += 1;
