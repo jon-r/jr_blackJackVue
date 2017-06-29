@@ -91,8 +91,29 @@ export default {
       const options = this.getOptions();
       this.$store.dispatch('newGame', options);
 
-      this.$store.dispatch('nextPlayerPromise')
-        .then(() => this.$store.dispatch('nextStage'));
+      this.autoBet(0, options.players.length - 1)
+        .then(() => this.$store.dispatch('nextPlayerPromise'))
+        .then(() => setTimeout(() => this.$store.dispatch('nextStage'), 2000));
+    },
+
+    autoBet(idx, max) {
+      console.log(idx, max);
+      if (idx > max) return Promise.resolve();
+
+      const betVals = {
+        idx,
+        value: 500,
+      };
+      const betEvent = {
+        idx,
+        type: 'bet',
+        value: 'addBet',
+      };
+      const nextIdx = idx + 1;
+
+      return this.$store.dispatch('playerSetBet', betVals)
+        .then(() => this.$store.dispatch('doEvent', betEvent))
+        .then(() => this.autoBet(nextIdx, max));
     },
 
     emitCloseOptions() {

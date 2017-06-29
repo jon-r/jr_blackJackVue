@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 
 import HandCtrl from './hand-ctrl';
 import BetCtrl from './bet-ctrl';
+import EndGameCtrl from './end-game-ctrl';
 
 
 export default {
@@ -15,32 +16,28 @@ export default {
         <p>{{tips}}</p>
       </div>
 
-      <hand-ctrl v-if="canCtrl" :player="player" ></hand-ctrl>
+      <bet-ctrl v-if="gameStage === 0" :player="player" ></bet-ctrl>
 
-      <bet-ctrl v-if="canBet" :player="player" ></bet-ctrl>
+      <hand-ctrl v-else-if="gameStage === 3" :player="player" ></hand-ctrl>
+
+      <end-game-ctrl v-else-if="gameStage > 4" :player="player" ></end-game-ctrl>
 
     </template>
   </section>`,
   components: {
     'hand-ctrl': HandCtrl,
     'bet-ctrl': BetCtrl,
+    'end-game-ctrl': EndGameCtrl,
   },
 
   computed: {
-
-    canBet() {
-      return (this.gameStage === 0);
-    },
-
-    canCtrl() {
-      return (this.gameStage === 3);
-    },
 
     tips() {
       const player = this.player;
       const stage = this.gameStage;
       const out = new Map([
         [0, `Current money: £${player.money}. Min Bet: £${this.minBet}.`],
+        [5, '#endGameStats'],
         // to do = more tips?
       ]);
 
@@ -63,6 +60,7 @@ export default {
       const out = new Map([
         [0, 'Please place Your bets'],
         [1, 'All bets are in, dealing out the first cards.'],
+        [5, '#EndGameMessage'],
       ]);
 
       if (!out.has(stage)) return false;

@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       hands: [],
-      activeHand: 0,
+      activeHand: -1,
       messageAddon: '',
     };
   },
@@ -164,7 +164,6 @@ export default {
         [2, this.dealOutSecond],
         [3, this.playerActions],
         [4, this.dealOutLast],
-        [5, this.emptyHands],
       ]);
 
       const fn = actions.get(this.gameStage);
@@ -174,14 +173,31 @@ export default {
 
     /* TURN 0 ------------------ */
 
-    clearCards() {
-      this.hands = [];
-      this.activeHand = 0;
+    clearTable() {
+      console.log('clearing table');
+      this.hands.forEach((hand) => { hand.cards = []; });
+
+      this.wait(this.autoTime).then(() => {
+        this.hands = [];
+        this.activeHand = -1;
+      });
+
+//      if (this.hands.length > 0) {
+//        this.hands.forEach((hand) => { hand.cards = []; });
+//      }
+//
+//      this.hands = [];
+//
+//      return this.wait(this.autoTime)
+//        .then(() => this.addHand())
+//        .then(() => { this.activeHand = 0; });
     },
 
     /* TURN 1 ------------------ */
 
     dealOutFirst() {
+      this.activeHand = 0;
+      console.log('first cards');
       this.addHand().wait(0)
         .then(() => this.dealRevealSet())
         .then(() => this.emitEndTurn());
@@ -299,11 +315,7 @@ export default {
 
     /* TURN 5 ----------------------------------------------------------- */
 
-    emptyHands() {
-      this.wait(this.autoTime)
-        .then(() => this.hands.forEach((hand) => { hand.cards = []; }))
-        .then(() => this.emitEndTurn());
-    },
+    // emit scores for end of round?
 
     /* emits -------------------------------------------------------------*/
 
@@ -344,8 +356,9 @@ export default {
 
   },
   watch: {
-    gameRound: 'clearCards',
+    gameRound: 'clearTable',
     turn: 'startTurn',
     eventID: 'doCtrl',
+
   },
 };

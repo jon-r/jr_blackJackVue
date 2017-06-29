@@ -17,7 +17,7 @@ export default new Vuex.Store({
     // game stage ids
     gameRound: -1,
     gameStage: -1,
-    gameActivePlayer: -1,
+    gameActivePlayer: 0,
 
     // players & dealer
     dealer: {},
@@ -108,7 +108,7 @@ export default new Vuex.Store({
       const dealer = options.players.find(player => player.isDealer);
       const deck = buildDeck(options.config.deckCount);
 
-      commit('NEXT_ACTIVE_PLAYER');
+      // commit('NEXT_ACTIVE_PLAYER');
       commit('NEXT_ROUND');
       commit('SET_CONFIG', options.config);
       commit('SET_DECK', deck);
@@ -117,38 +117,48 @@ export default new Vuex.Store({
       commit('SET_DEALER', dealer);
     },
 
+    resetGame: ({ commit }) => {
+      console.log('reset all');
+
+      commit('SET_PLAYERS', []);
+      commit('SET_STAGE', -1);
+    },
+
     nextRound: ({ state, commit }) => {
       console.log('new round');
 
       const quarterDeck = (state.config.deckCount * 13); // 25% of total cards in game
 
-      if (state.activePlayerCount < 4) { // TEMP ending early
-        console.log('GAME OVER');
-        return false;
-      }
+//      if (state.activePlayerCount < 4) { // TEMP ending early
+//        console.log('GAME OVER');
+//        return false;
+//      }
       state.players.forEach(player => commit('PLAYER_SET_SCORE', { idx: player.index, value: 0 }));
       commit('NEXT_ROUND');
 
       if (state.deck.length < quarterDeck) {
+        console.log('reshuffling cards');
         const deck = buildDeck(state.config.deckCount);
         commit('SET_DECK', deck);
       }
       return true;
     },
 
+    // TODO: no longer a promise.
     nextStage: ({ state, commit, dispatch }) => {
       const stagePromise = () => new Promise((resolve) => {
         commit('NEXT_STAGE');
         resolve();
       });
 
-      return stagePromise().then(() => {
-        setTimeout(() => {
-          if (state.gameStage > 5) {
-            dispatch('nextRound');
-          }
-        }, 3000);
-      });
+      return stagePromise();
+//        .then(() => {
+//        setTimeout(() => {
+//          if (state.gameStage > 5) {
+//            dispatch('nextRound');
+//          }
+//        }, 3000);
+//      });
     },
 
     nextPlayerPromise: ({ commit }) => new Promise((resolve) => {
@@ -221,10 +231,12 @@ export default new Vuex.Store({
     minBet: state => state.config.minBet,
     autoTime: state => state.config.autoTime,
 
+
     ...getState([
       'gameRound',
       'gameStage',
       'gameActivePlayer',
+      'activePlayerCount', // todo set this as function rather than just a number?
       'players',
       'dealer',
       'handRules',

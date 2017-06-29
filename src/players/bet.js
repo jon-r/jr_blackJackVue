@@ -61,6 +61,7 @@ export default {
     },
 
     resetBet() {
+      this.bet = 0;
       this.chips = [];
     },
 
@@ -117,6 +118,8 @@ export default {
       const isBetEvent = (idx === this.player.index) && (type === 'bet');
 
       if (!isBetEvent) return this;
+
+
 
      // if (this.bet === 0 && !firstBet) return this;
       // is this still a thing?
