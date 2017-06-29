@@ -16,8 +16,8 @@ export default {
           <label>Decks</label>
           <input v-model.lazy="deckInput" type="number" id="input-deck" />
 
-          <label>Min Bid</label>
-          <input v-model.lazy="minBid" type="number" min="0" id="input-deck" />
+          <label>Min Bet</label>
+          <input v-model.lazy="minBet" type="number" min="0" id="input-deck" />
 
           <label>Deal Speed</label>
           <input v-model.lazy="autoTime" type="number" min="0" id="input-deck" />
@@ -48,7 +48,7 @@ export default {
         { name: 'Ethan' },
       ],
       deckInput: 6,
-      minBid: 100,
+      minBet: 100,
       autoTime: 250,
       moreOptions: false,
     };
@@ -61,14 +61,14 @@ export default {
         name,
         isDealer,
         money: 1000,
-        startBid: 0,
+        firstBet: 0,
         score: 0,
         inGame: true,
       };
     },
     getOptions() {
       const config = {
-        minBid: this.minBid,
+        minBet: this.minBet,
         deckCount: this.deckInput,
         autoTime: this.autoTime,
       };

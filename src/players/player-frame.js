@@ -81,7 +81,7 @@ export default {
       'gameActivePlayer',
       'dealer',
       'gameStage',
-      'minBid',
+      'minBet',
     ]),
   },
 
@@ -91,10 +91,10 @@ export default {
     // fix the skipping of players when out of money.
 
     turnCheck() {
-      const cantBid = !this.player.inGame;
-      const wontBid = this.gameStage === 0 && this.player.isDealer;
+      const cantBet = !this.player.inGame;
+      const wontBet = this.gameStage === 0 && this.player.isDealer;
 
-      if (this.isPlayerTurn && (cantBid || wontBid)) {
+      if (this.isPlayerTurn && (cantBet || wontBet)) {
         this.$store.dispatch('nextPlayer');
       }
     },
@@ -105,13 +105,13 @@ export default {
 
       const result = this.getScores(dealerScore);
 
-      return this.emitBidChange(result);
+      return this.emitBetChange(result);
     },
 
-    emitBidChange(string) {
+    emitBetChange(string) {
       const params = {
         target: this.player.index,
-        type: 'bid',
+        type: 'bet',
         params: string, // RM
         string,
       };

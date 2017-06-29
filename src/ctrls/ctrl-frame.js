@@ -17,7 +17,7 @@ export default {
 
       <hand-ctrl v-if="canCtrl" :player="player" ></hand-ctrl>
 
-      <bet-ctrl v-if="canBid" :player="player" ></bet-ctrl>
+      <bet-ctrl v-if="canBet" :player="player" ></bet-ctrl>
 
     </template>
   </section>`,
@@ -28,7 +28,7 @@ export default {
 
   computed: {
 
-    canBid() {
+    canBet() {
       return (this.gameStage === 0);
     },
 
@@ -40,7 +40,7 @@ export default {
       const player = this.player;
       const stage = this.gameStage;
       const out = new Map([
-        [0, `Current money: £${player.money}. Min Bid: £${this.minBid}.`],
+        [0, `Current money: £${player.money}. Min Bet: £${this.minBet}.`],
         // to do = more tips?
       ]);
 
@@ -51,7 +51,7 @@ export default {
     ...mapGetters([
       'gameStage',
       'turn',
-      'minBid',
+      'minBet',
       'handRules',
     ]),
   },

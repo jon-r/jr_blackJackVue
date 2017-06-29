@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 import { runLerpLoop, setStartFinish, setTarget, arrayStaggeredPush, arrayStaggeredPull } from '../animationTools';
 
-// TODO: set bids at chips instead of numbers
+// TODO: set bets at chips instead of numbers
 export default {
   props: ['turn', 'player', 'framepos'],
   template: `
@@ -37,15 +37,22 @@ export default {
       return { x: 0, y: -frame.y };
     },
 
-    isBidEvent() {
+    isBetEvent() {
       const evt = this.eventBus;
-      return evt.targetPlayer === this.player.index && evt.eventType === 'bid' && evt.eventParams;
+      return evt.targetPlayer === this.player.index && evt.eventType === 'bet' && evt.eventParams;
+    },
+
+    isBetEvent2() {
+      const { idx, type, value } = this.eventBus2;
+      return idx === this.player.index && type === 'bet';
     },
 
     ...mapGetters([
       'gameRound',
       'eventBus',
-      'minBid',
+      'eventBus2',
+      'eventID',
+      'minBet',
     ]),
   },
   methods: {
@@ -69,22 +76,19 @@ export default {
       this.chips = [];
     },
 
-    setBet(params) {
-      if (!this.isBidEvent) return false;
-
-      const bidFn = params.firstBid ? this.setFirstBet : this.adjustBet;
-
-      return bidFn(params);
-    },
-
-    setFirstBet(values) {
+//    updateBet(bet) {
+//      this.betStart = bet;
+//
+//      this.showChips();
+//      this.adjustBet('addBet', true);
+//
 //      const { bet, chips } = values;
-      this.showChips();
-      this.betStart = values;
-      this.adjustBet('addBet', true);
-
-      return true;
-    },
+//      this.showChips();
+//      this.betStart = values;
+//      this.adjustBet('addBet', true);
+//
+//      return true;
+//    },
 
     showChips() {
       this.quidsIn = true;
@@ -114,6 +118,7 @@ export default {
       return out;
     },
 
+    // todo make this a computed based on the bet?
     adjustChips(newBet) {
       if (newBet === 0) return false;
 
@@ -133,8 +138,17 @@ export default {
       }
     },
 
-    adjustBet(bidEvent, firstBet = false) {
-      if (this.bet === 0 && !firstBet) return this;
+    adjustBet() {
+//      const event = this.eventBus2;
+      const { idx, type, value } = this.eventBus2;
+      const isBetEvent = (idx === this.player.index) && (type === 'bet');
+
+
+      if (!isBetEvent) return this;
+
+
+     // if (this.bet === 0 && !firstBet) return this;
+      // is this still a thing?
 
       const betAdjust = {
         addBet: 1,
@@ -145,15 +159,17 @@ export default {
         blackJack: 1.5,
       };
 
-      const betStart = this.betStart;
-      const money = (bidEvent === 'addBet') ? -betStart : 0;
-      const bet = betStart * betAdjust[bidEvent];
+      this.showChips();
+
+      const firstBet = this.player.firstBet;
+      const bet = firstBet * betAdjust[value];
 
       this.adjustChips(bet);
-      this.updateMonies({ money, bet });
+      this.bet += bet;
 
+      // TODO fix splits ending both hands
 
-      if (bidEvent !== 'addBet') {
+      if (value !== 'addBet') { // THIS IS BREAKING SPLITS??
         console.log('cash in');
         setTimeout(this.cashIn, 1000);
       }
@@ -168,16 +184,16 @@ export default {
       this.updateMonies({ money, bet });
       this.hideChips();
 
-      if (this.player.money < this.minBid) {
+      if (this.player.money < this.minBet) {
         this.$store.dispatch('playerEndGame', this.player);
       }
     },
 
     updateMonies({ money, bet }) {
-      const player = this.player;
+      const idx = this.player.index;
+      const betVals = { idx, money, bet };
 
-      // THIS NEEDS FIXING
-      // this.$store.dispatch('playerUpdateMoney', { player, money, bet });
+      this.$store.dispatch('playerSetBet', betVals);
 
       this.bet += bet;
       return this;
@@ -185,7 +201,7 @@ export default {
   },
   watch: {
     gameRound: 'resetBet',
-    'eventBus.eventParams': 'adjustBet',
-    'player.startBid': 'setFirstBet',
+   // 'eventBus.eventParams': 'adjustBet',
+    eventID: 'adjustBet',
   },
 };

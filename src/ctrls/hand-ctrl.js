@@ -11,7 +11,7 @@ export default {
       @click="emitCtrl(ctrl.name)" >
       <span class="ctrl-btn-label" >{{ctrl.name}}</span>
       <i class="material-icons ctrl-btn-icon" >{{ctrl.icon}}</i>
-      <span class="ctrl-btn-label alert-text" >{{bidCost(ctrl.name)}}</span>
+      <span class="ctrl-btn-label alert-text" v-if="betCost(ctrl.name)" >- £{{player.firstBet}}</span>
     </button>
   </div>
   `,
@@ -31,7 +31,7 @@ export default {
     },
 
     canAfford() {
-      return this.player.money >= this.player.startBid;
+      return this.player.money >= this.player.firstBet;
     },
 
     canDouble() {
@@ -48,23 +48,27 @@ export default {
   },
   methods: {
 
-    bidCost(name) {
-      return (name === 'split' || name === 'double') ? `+ £${this.player.startBid}` : '';
+    betCost(name) {
+      return (name === 'split' || name === 'double');
     },
 
+
     emitCtrl(ctrl) {
-      const msg = `${this.player.name} ${ctrl}s`;
+      const player = this.player;
+      const idx = player.index;
+      const store = this.$store;
+      const msg = `${player.name} ${ctrl}s`;
 
       const handValues = {
-        target: this.player.index,
+        target: idx,
         type: 'card',
         params: ctrl, // RM
         string: ctrl,
       };
 
-      this.$store.dispatch('setNewMessage', msg);
+      store.dispatch('setNewMessage', msg);
 
-      this.$store.dispatch('fireEventBus', handValues); // FIXED
+      store.dispatch('fireEventBus', handValues); // FIXED
     },
   },
 };

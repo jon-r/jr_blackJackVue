@@ -28,17 +28,17 @@ export default {
     </button>
 
     <button class="ctrl-btn btn-good"
-      @click="emitBid"
-      :disabled="bidErr ? true:false" >
+      @click="emitBet"
+      :disabled="betErr ? true:false" >
 
       <span class="ctrl-btn-label" >
-        Submit Bid: £{{ currChipValue }}
+        Submit Bet: £{{ currChipValue }}
       </span>
 
       <i class="material-icons ctrl-btn-icon" >publish</i>
 
-      <span class="error-text ctrl-btn-label" v-show="bidErr"  >
-        {{bidErr}}
+      <span class="error-text ctrl-btn-label" v-show="betErr"  >
+        {{betErr}}
       </span>
 
     </button>
@@ -56,12 +56,13 @@ export default {
       return this.player.money - this.currChipValue;
     },
 
-    bidErr() {
-      return (this.currChipValue < this.minBid) ? `Min £${this.minBid}` : '';
+    // todo rejig to be in the template
+    betErr() {
+      return (this.currChipValue < this.minBet) ? `Min £${this.minBet}` : '';
     },
 
     ...mapGetters([
-      'minBid',
+      'minBet',
     ]),
   },
   methods: {
@@ -77,29 +78,58 @@ export default {
       this.currChipValue -= chip;
     },
 
-    emitBid() {
-      const params = { bet: this.currChipValue, firstBid: true };
+    emitBet() {
+      const player = this.player;
+      const idx = player.index;
+      const bet = this.currChipValue;
+      const store = this.$store;
 
-      const bidvals = {
-        idx: this.player.index,
-        value: this.currChipValue,
+      const betVals = {
+        idx,
+        money: -bet,
+        bet,
+      };
+      const betEvent = {
+        idx,
+        type: 'bet',
+        value: 'addBet',
       };
 
-      const msg = `${this.player.name} bets £${this.currChipValue}`;
-
-//      const msgValues = {
-//        type: 'message',
-//        params: `${this.player.name} bets £${this.currChipValue}`, // RM
-//        string: ,
-//      };
-
-      // TODO = newBid (change to setter rather than evt trigger);
-      this.$store.dispatch('playerSetBid', bidvals);
-      this.$store.dispatch('setNewMessage', msg);
-      this.$store.dispatch('nextPlayer');
+      const msg = `${player.name} bets £${bet}`;
 
       this.currChips = [];
       this.currChipValue = 0;
+
+      // todo combine these in store?
+      store.dispatch('setNewMessage', msg);
+
+      store.dispatch('playerSetBet', betVals)
+        .then(() => store.dispatch('doEvent', betEvent))
+        .then(() => store.dispatch('nextPlayer'));
     },
   },
 };
+
+
+/*
+
+BET CHANGE METHODS:
+
+set bet (bet-ctrl) - setter
+split/double/surrender (card-ctrl) - adjuster
+win/lose/push/blackjack (cards) - adjuster
+cash in (bet?) - setter
+
+
+betSetAction {
+  message
+  store money change
+  store baseBet change
+}
+
+betAdjustAction {
+  message
+  tell bet.js to adjust the betStack
+}
+
+*/

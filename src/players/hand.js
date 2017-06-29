@@ -52,10 +52,10 @@ export default {
 
       if (score > 21) {
         messageStr = 'Bust!';
-        this.emitBidChange('lose');
+        this.emitBetChange('lose');
       } else if (score === 21 && hand.revealed === 2) {
         messageStr = 'BlackJack!';
-        this.emitBidChange('blackJack');
+        this.emitBetChange('blackJack');
       }
 
       this.cardMessage(hand, messageStr);
@@ -263,7 +263,7 @@ export default {
       const splitCard = hand.cards.splice(1)[0];
       hand.revealed -= 1;
 
-      this.emitBidChange('addBet')
+      this.emitBetChange('addBet')
         .then(() => this.dealRevealSet())
         .then(() => this.addSplitHand(splitCard))
         .then(() => this.wait(0))
@@ -272,12 +272,12 @@ export default {
     },
 
     surrender() {
-      this.emitBidChange('forfeit')
+      this.emitBetChange('forfeit')
         .then(() => this.emitEndTurn());
     },
 
     double() {
-      this.addBlankCard().emitBidChange('addBet')
+      this.addBlankCard().emitBetChange('addBet')
         .then(() => this.emitEndTurn());
     },
 
@@ -318,18 +318,14 @@ export default {
       this.$store.dispatch('setStage', 4);
     },
 
-    emitBidChange(string) {
-      const target = this.player.index;
-      const type = 'bid';
-
-      const params = {
-        target,
-        type: 'bid',
-        params: string, // RM
-        string,
+    emitBetChange(value) {
+      const betEvent = {
+        idx: this.player.index,
+        type: 'bet',
+        value,
       };
 
-      return this.$store.dispatch('fireEventBus', params); // FIXED
+      return this.$store.dispatch('doEvent', betEvent);
     },
 
     emitFinalScore(value) {
