@@ -26,7 +26,7 @@ const app = new Vue({
     maxMessages: 5,
   },
 
-  // VUEX link to store (only need once)
+  // VUEX link to store
   store,
 
   mounted() {
@@ -55,7 +55,6 @@ const app = new Vue({
 
   methods: {
     updateChat(params) {
-
       this.messageIdx += 1;
 
       this.messages.unshift({

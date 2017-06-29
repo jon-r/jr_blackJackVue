@@ -1,3 +1,4 @@
+// TODO less lerp, more css animation
 export function setPos(el, { x, y, r = 0 }) {
   el.dataset.posX = x;
   el.dataset.posY = y;

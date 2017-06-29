@@ -87,9 +87,6 @@ export default {
 
   methods: {
 
-    // TODO:
-    // fix the skipping of players when out of money.
-
     turnCheck() {
       const cantBet = !this.player.inGame;
       const wontBet = this.gameStage === 0 && this.player.isDealer;
@@ -108,15 +105,14 @@ export default {
       return this.emitBetChange(result);
     },
 
-    emitBetChange(string) {
-      const params = {
-        target: this.player.index,
+    emitBetChange(value) {
+      const betEvent = {
+        idx: this.player.index,
         type: 'bet',
-        params: string, // RM
-        string,
+        value,
       };
 
-      return this.$store.dispatch('fireEventBus', params); // FIXED
+      this.$store.dispatch('doEvent', betEvent);
     },
 
     getScores(dealerScore) {
@@ -142,7 +138,7 @@ export default {
     },
   },
   watch: {
-    'dealer.score': 'endRound',
+    'dealer.score': 'endRound', // todo set this and any similar from game round?
     isPlayerTurn: 'turnCheck',
   },
 };

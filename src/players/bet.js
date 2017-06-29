@@ -37,20 +37,9 @@ export default {
       return { x: 0, y: -frame.y };
     },
 
-    isBetEvent() {
-      const evt = this.eventBus;
-      return evt.targetPlayer === this.player.index && evt.eventType === 'bet' && evt.eventParams;
-    },
-
-    isBetEvent2() {
-      const { idx, type, value } = this.eventBus2;
-      return idx === this.player.index && type === 'bet';
-    },
-
     ...mapGetters([
       'gameRound',
       'eventBus',
-      'eventBus2',
       'eventID',
       'minBet',
     ]),
@@ -63,7 +52,6 @@ export default {
       setStartFinish(el, { start });
     },
     enter(el, done) {
-//      el.style.opacity = 1;
       runLerpLoop(el, done, 50);
     },
     leave(el, done) {
@@ -75,20 +63,6 @@ export default {
     resetBet() {
       this.chips = [];
     },
-
-//    updateBet(bet) {
-//      this.betStart = bet;
-//
-//      this.showChips();
-//      this.adjustBet('addBet', true);
-//
-//      const { bet, chips } = values;
-//      this.showChips();
-//      this.betStart = values;
-//      this.adjustBet('addBet', true);
-//
-//      return true;
-//    },
 
     showChips() {
       this.quidsIn = true;
@@ -139,13 +113,10 @@ export default {
     },
 
     adjustBet() {
-//      const event = this.eventBus2;
-      const { idx, type, value } = this.eventBus2;
+      const { idx, type, value } = this.eventBus;
       const isBetEvent = (idx === this.player.index) && (type === 'bet');
 
-
       if (!isBetEvent) return this;
-
 
      // if (this.bet === 0 && !firstBet) return this;
       // is this still a thing?
@@ -167,21 +138,22 @@ export default {
       this.adjustChips(bet);
       this.bet += bet;
 
+      const moneyChange = (value === 'addBet') ? -firstBet : this.bet;
+
       // TODO fix splits ending both hands
 
-      if (value !== 'addBet') { // THIS IS BREAKING SPLITS??
-        console.log('cash in');
-        setTimeout(this.cashIn, 1000);
-      }
+      setTimeout(() => {
+        this.emitMoneyChange(moneyChange);
+        if (value !== 'addBet') this.cashIn(); // THIS IS BREAKING SPLITS??
+      });
 
       return this;
     },
 
     cashIn() {
-      const money = this.bet;
-      const bet = -money;
+      console.log('cash in');
 
-      this.updateMonies({ money, bet });
+      this.bet = 0;
       this.hideChips();
 
       if (this.player.money < this.minBet) {
@@ -189,19 +161,15 @@ export default {
       }
     },
 
-    updateMonies({ money, bet }) {
+    emitMoneyChange(value) {
       const idx = this.player.index;
-      const betVals = { idx, money, bet };
-
-      this.$store.dispatch('playerSetBet', betVals);
-
-      this.bet += bet;
-      return this;
+      const betVals = { idx, value };
+      this.$store.dispatch('playerUpdateMoney', betVals);
     },
+
   },
   watch: {
     gameRound: 'resetBet',
-   // 'eventBus.eventParams': 'adjustBet',
     eventID: 'adjustBet',
   },
 };

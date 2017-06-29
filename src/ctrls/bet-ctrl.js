@@ -67,7 +67,6 @@ export default {
   },
   methods: {
 
-
     addChip(chip) {
       this.currChipValue += chip;
       this.currChips.push(chip);
@@ -86,8 +85,7 @@ export default {
 
       const betVals = {
         idx,
-        money: -bet,
-        bet,
+        value: bet,
       };
       const betEvent = {
         idx,
@@ -109,27 +107,3 @@ export default {
     },
   },
 };
-
-
-/*
-
-BET CHANGE METHODS:
-
-set bet (bet-ctrl) - setter
-split/double/surrender (card-ctrl) - adjuster
-win/lose/push/blackjack (cards) - adjuster
-cash in (bet?) - setter
-
-
-betSetAction {
-  message
-  store money change
-  store baseBet change
-}
-
-betAdjustAction {
-  message
-  tell bet.js to adjust the betStack
-}
-
-*/

@@ -1,3 +1,7 @@
+// todo: general tidy of the store. group actions, split mutations.
+// combine more into more ... function groups?
+// merge commonly done actions into big chains ()
+
 import Vue from 'vue';
 import Vuex, { mapMutations } from 'vuex';
 
@@ -35,15 +39,8 @@ export default new Vuex.Store({
 
     handRules: false,
 
-
-    eventBus: {
-      targetPlayer: -1,
-      eventType: false,
-      eventParams: false,
-    },
-
     eventID: 0,
-    eventBus2: {
+    eventBus: {
       idx: -1,
       type: false,
       value: false,
@@ -59,8 +56,8 @@ export default new Vuex.Store({
     },
 
     // players & dealer
-    PLAYER_UPDATE_MONEY(state, { idx, money }) {
-      state.players[idx].money += money;
+    PLAYER_UPDATE_MONEY(state, { idx, value }) {
+      state.players[idx].money += value;
     },
 
     DEALER_SET_PEEKED(state, card) {
@@ -75,15 +72,6 @@ export default new Vuex.Store({
     // deck and cards
     SPLICE_CARD(state, cardIdx) {
       state.deck.splice(cardIdx, 1);
-    },
-
-    // global event bus
-    ARM_EVENT_BUS(state, { target, type }) {
-      Vue.set(state.eventBus, 'targetPlayer', target);
-      Vue.set(state.eventBus, 'eventType', type);
-    },
-    FIRE_EVENT(state, params) {
-      Vue.set(state.eventBus, 'eventParams', params);
     },
 
     ...mutationIncrements({
@@ -102,7 +90,7 @@ export default new Vuex.Store({
       SET_SHOE_POS: 'shoePos',
       SET_CONFIG: 'config',
       CTRL_SET_HAND_RULES: 'handRules',
-      SET_EVENT: 'eventBus2',
+      SET_EVENT: 'eventBus',
       SET_MESSAGE: 'newMessage',
     }),
 
@@ -173,13 +161,10 @@ export default new Vuex.Store({
     }),
 
     // players
-    playerSetBet: ({ commit }, { idx, bet, money }) => new Promise((resolve) => {
-      console.log('bet update', bet, money);
-      commit('PLAYER_SET_BET', { idx, value: bet });
-      commit('PLAYER_UPDATE_MONEY', { idx, money });
+    playerSetBet: ({ commit }, { idx, value }) => new Promise((resolve) => {
+      commit('PLAYER_SET_BET', { idx, value });
       resolve();
     }),
-
 
     // deck and cards
     deckDrawPromise: ({ state, commit }, idx) => new Promise((resolve, reject) => {
@@ -210,27 +195,17 @@ export default new Vuex.Store({
       return Promise.resolve(false);
     },
 
-    // function emitter
-    fireEventBus: ({ commit }, values) => {
-      const actionPromise = x => new Promise((resolve) => {
-        const { target, type, params } = x;
-        commit('ARM_EVENT_BUS', { target, type });
-        commit('FIRE_EVENT', params);
-        resolve();
-      });
-
-      return actionPromise(values).then(() => commit('FIRE_EVENT', false));
-    },
-
     doEvent: ({ commit }, values) => new Promise((resolve) => {
       commit('SET_EVENT', values);
       commit('NEXT_EVENT');
       resolve();
     }),
 
+    // TODO new promise group?
     ...actionSetters({
       setStage: 'SET_STAGE',
       playerSetScore: 'PLAYER_SET_SCORE',
+      playerSetBid: 'PLAYER_SET_BET',
       playerUpdateMoney: 'PLAYER_UPDATE_MONEY',
       dealerCard: 'DEALER_SET_PEEKED',
       playerEndGame: 'PLAYER_END_GAME',
@@ -253,9 +228,8 @@ export default new Vuex.Store({
       'players',
       'dealer',
       'handRules',
-      'eventBus',
       'eventID',
-      'eventBus2',
+      'eventBus', // TODO combine events to a single getter? and check any other getters
       'shoePos',
       'newMessage',
     ]),

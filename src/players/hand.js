@@ -1,3 +1,6 @@
+// TODO: anyway to clean out some of this module? by far the biggest.
+// maybe move some of the card functions or smt
+
 import { mapGetters } from 'vuex';
 
 import PlayerCards from './cards';
@@ -34,21 +37,13 @@ export default {
       return hand;
     },
 
-    isCardEvent() {
-      const evt = this.eventBus;
-      return evt.targetPlayer === this.player.index && evt.eventType === 'card' && evt.eventParams;
-    },
-
     allowPlay() {
       if (!this.getActiveHand) return false;
 
       const hand = this.getActiveHand;
-      const isDealer = this.player.isDealer;
       const score = hand.score;
-      const max = isDealer ? 17 : 21;
+      const max = this.player.isDealer ? 17 : 21;
       let messageStr = '';
-
-      console.log(score);
 
       if (score > 21) {
         messageStr = 'Bust!';
@@ -68,6 +63,7 @@ export default {
       'dealer',
       'autoTime',
       'eventBus',
+      'eventID',
     ]),
   },
   methods: {
@@ -234,10 +230,11 @@ export default {
       return this.fillBlanks().then(() => this.autoHit());
     },
 
-    doCtrl(ctrl) {
-      if (!this.isCardEvent) return false;
+    doCtrl() {
+      const { idx, type, value } = this.eventBus;
+      const isHandEvent = (idx === this.player.index) && (type === 'card');
 
-      return this[ctrl]();
+      if (isHandEvent) this[value]();
     },
 
     hit() {
@@ -349,6 +346,6 @@ export default {
   watch: {
     gameRound: 'clearCards',
     turn: 'startTurn',
-    'eventBus.eventParams': 'doCtrl',
+    eventID: 'doCtrl',
   },
 };

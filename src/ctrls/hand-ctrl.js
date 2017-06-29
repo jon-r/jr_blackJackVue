@@ -55,20 +55,17 @@ export default {
 
     emitCtrl(ctrl) {
       const player = this.player;
-      const idx = player.index;
       const store = this.$store;
+
       const msg = `${player.name} ${ctrl}s`;
 
-      const handValues = {
-        target: idx,
+      const handEvent = {
+        idx: player.index,
         type: 'card',
-        params: ctrl, // RM
-        string: ctrl,
+        value: ctrl,
       };
-
+      store.dispatch('doEvent', handEvent);
       store.dispatch('setNewMessage', msg);
-
-      store.dispatch('fireEventBus', handValues); // FIXED
     },
   },
 };
