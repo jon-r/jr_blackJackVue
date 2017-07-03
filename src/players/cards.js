@@ -34,7 +34,7 @@ export default {
     enterPosition() {
       const shoe = this.shoePos;
       const frame = this.framepos;
-      // todo: figure out why these magic numbers are needed ?
+      // todo bonus: figure out why these magic numbers are needed ?
 
       return {
         x: shoe.x - frame.x - 36,
@@ -105,10 +105,7 @@ export default {
     leave(el, done) {
       setPos(el, this.leavePosition);
 
-      el.addEventListener('transitionend', () => {
-        console.log('done');
-        done();
-      });
+      el.addEventListener('transitionend', done);
     },
   },
 

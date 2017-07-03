@@ -1,24 +1,3 @@
-
-export function getRandom(range) {
-  return Math.floor(Math.random() * range);
-}
-
-export function buildDeck(decks) {
-  const cards = [];
-  const nDecks = new Array(decks).fill();
-  const nSuits = new Array(4).fill();
-  const nFaces = new Array(13).fill();
-
-  nDecks.forEach((x, i) => {
-    nSuits.forEach((y, j) => {
-      nFaces.forEach((z, k) => {
-        cards.push([k + 1, j]);
-      });
-    });
-  });
-  return cards;
-}
-
 export function mutationSetters(mutations) {
   const out = {};
 

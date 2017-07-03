@@ -5,7 +5,8 @@
 import Vue from 'vue';
 import Vuex, { mapMutations } from 'vuex';
 
-import { getRandom, buildDeck, mutationSetters, mutationIncrements, actionSetters, getState, playerSetters } from './storeTools';
+import { mutationSetters, mutationIncrements, actionSetters, getState, playerSetters } from './storeTools';
+import { getRandom, buildDeck } from '../deckTools';
 
 Vue.use(Vuex);
 

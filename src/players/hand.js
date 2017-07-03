@@ -2,6 +2,7 @@
 // maybe move some of the card functions or smt
 
 import { mapGetters } from 'vuex';
+import { valueCard, blankCard } from '../deckTools';
 
 import PlayerCards from './cards';
 
@@ -101,22 +102,10 @@ export default {
 
     /* card methods */
 
-    valueCard(cardRaw) {
-      const suits = ['hearts', 'diamonds', 'spades', 'clubs'];
-      const faces = { 1: 'A', 11: 'J', 12: 'Q', 13: 'K' };
-      const value = cardRaw[0];
-      const suit = cardRaw[1];
-
-      return {
-        face: (value in faces) ? faces[value] : value,
-        score: value === 1 ? 11 : Math.min(10, value),
-        suit: suits[suit],
-      };
-    },
 
     addBlankCard() {
       const hand = this.getActiveHand;
-      hand.cards.push({ face: '', score: 0, suit: 'blank' });
+      hand.cards.push(blankCard);
       return this;
     },
 
@@ -129,7 +118,7 @@ export default {
     setCard(card, isPreset = false) {
       if (!card) return this;
 
-      const newCard = isPreset ? card : this.valueCard(card);
+      const newCard = isPreset ? card : valueCard(card);
       const activeHand = this.getActiveHand;
 
       this.$set(activeHand.cards, activeHand.revealed, newCard);
@@ -174,30 +163,18 @@ export default {
     /* TURN 0 ------------------ */
 
     clearTable() {
-      console.log('clearing table');
       this.hands.forEach((hand) => { hand.cards = []; });
 
       this.wait(2000).then(() => {
         this.hands = [];
         this.activeHand = -1;
       });
-
-//      if (this.hands.length > 0) {
-//        this.hands.forEach((hand) => { hand.cards = []; });
-//      }
-//
-//      this.hands = [];
-//
-//      return this.wait(this.autoTime)
-//        .then(() => this.addHand())
-//        .then(() => { this.activeHand = 0; });
     },
 
     /* TURN 1 ------------------ */
 
     dealOutFirst() {
       this.activeHand = 0;
-      console.log('first cards');
       this.addHand().wait(0)
         .then(() => this.dealRevealSet())
         .then(() => this.emitEndTurn());
@@ -315,7 +292,7 @@ export default {
 
     /* TURN 5 ----------------------------------------------------------- */
 
-    // emit scores for end of round?
+    // todo: emit scores for end of round msg?
 
     /* emits -------------------------------------------------------------*/
 
