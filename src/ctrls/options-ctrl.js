@@ -4,27 +4,37 @@ export default {
     <div class="options-inner" >
       <button class="btn menu-toggle material-icons" @click="emitCloseOptions" >close</button>
       <form id="v-options" class="options-form" @submit.prevent="setOptions" >
-        <fieldset class="options-group" >
-          <h4 class="options-title" >Player Names</h4>
-          <input v-for="(player,idx) in playerInput" :key="idx" v-model.lazy="player.name" type="text" :id="'input-' + idx" />
+        <fieldset class="options-group frame" >
+          <h4 class="options-title frame" >Player Names</h4>
+
+          <div v-for="(player,idx) in playerInput" :key="idx" class="input-group frame" >
+            <input  v-model.lazy="player.name" type="text" :id="'input-' + idx" />
+            <label :for="'input-' + idx" ><i class="material-icons">person</i> Player {{idx}}</label>
+          </div>
         </fieldset>
 
-        <fieldset class="options-group" >
+        <fieldset class="options-group frame" >
         <template v-if="moreOptions" >
-          <h4  class="options-title" @click="moreOptions = false" >Less Options <i class="material-icons">expand_less</i></h4>
+          <h4  class="options-title frame" @click="moreOptions = false" >Less Options <i class="material-icons">expand_less</i></h4>
 
-          <label>Decks</label>
-          <input v-model.lazy="deckInput" type="number" id="input-deck" />
+          <div class="input-group frame" >
+            <input v-model.lazy="deckInput" type="number" id="input-deck" />
+            <label for="input-deck" ><i class="material-icons">style</i> Decks</label>
+          </div>
 
-          <label>Min Bet</label>
-          <input v-model.lazy="minBet" type="number" min="0" id="input-deck" />
+          <div class="input-group frame" >
+            <input v-model.lazy="minBet" type="number" min="0" id="input-bet" />
+            <label for="input-bet" ><i class="material-icons">remove_circle</i> Min Bet</label>
+          </div>
 
-          <label>Deal Speed</label>
-          <input v-model.lazy="autoTime" type="number" min="0" id="input-deck" />
+          <div class="input-group frame" >
+            <input v-model.lazy="autoTime" type="number" min="0" id="input-speed" />
+            <label for="input-speed" ><i class="material-icons">slow_motion_video</i> Deal Speed</label>
+          </div>
 
         </template>
         <template v-else>
-          <h4 class="options-title" @click="moreOptions = true" >More Options <i class="material-icons">expand_more</i></h4>
+          <h4 class="options-title frame" @click="moreOptions = true" >More Options <i class="material-icons">expand_more</i></h4>
         </template>
         </fieldset>
 

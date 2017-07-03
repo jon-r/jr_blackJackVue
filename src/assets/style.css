@@ -462,20 +462,32 @@ h4 { font-size: 1.414em }
 
 .options-group {
   border: none;
-  margin: 8px -16px;
+  margin: 8px 0;
 }
 
-.options-form input {
+.input-group {
+  display: inline-flex;
+  flex-direction: column-reverse;
+  width: 50%;
+}
+
+.input-group label {
+  font-size: 0.7em;
+  color: #666;
+}
+
+
+.input-group input {
   border-width: 0 0 2px;
-  width: 128px;
-  margin: 4px 16px;
   height: 24px;
   font-size: 1em;
 }
-.options-form label {
-  margin-left: 16px;
+
+.input-group input:focus {
+  border-color: #4a4ad9;
+  outline: none;
 }
 
-.options-title {
-  padding: 0 16px;
+.input-group input:focus + label {
+  color: #4a4ad9;
 }
