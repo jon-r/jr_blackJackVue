@@ -47,7 +47,6 @@ const app = new Vue({
 
     ...mapGetters([
       'players',
-      'gameStage',
       'gameActivePlayer',
       'newMessage',
     ]),
@@ -66,14 +65,10 @@ const app = new Vue({
       if (this.messages.length > this.maxMessages) this.messages.pop();
     },
 
-    updateOptions() {
-      if (this.gameStage < 0) this.showOptions = true;
-    }
   },
 
   watch: {
     newMessage: 'updateChat',
-    gameStage: 'updateOptions',
   },
 });
 

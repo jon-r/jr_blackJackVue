@@ -312,7 +312,7 @@ h4 { font-size: 1.414em }
 
 .chip-stack {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   flex-direction: column-reverse;
   justify-content: flex-start;
   padding-bottom: 16px;
@@ -329,6 +329,7 @@ h4 { font-size: 1.414em }
 }
 
 .chip-stack li {
+  transition:  transform 150ms ease-in;
   width: 32px;
   height: 8px;
 }
@@ -350,7 +351,7 @@ h4 { font-size: 1.414em }
 
 .card-outer {
   position: absolute;
-/*  transition: transform 500ms ease-out;*/
+  transition: transform 600ms ease-out;
 }
 .card-outer:not(.blank) {
   z-index: 5;

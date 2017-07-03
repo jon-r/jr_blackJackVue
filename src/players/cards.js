@@ -1,5 +1,5 @@
 import { mapGetters } from 'vuex';
-import { runLerpLoop, transformJiggle, setStartFinish, setTarget } from '../animationTools';
+import { transformJiggle, setPos } from '../animationTools';
 
 export default {
   props: ['cards', 'framepos'],
@@ -34,11 +34,11 @@ export default {
     enterPosition() {
       const shoe = this.shoePos;
       const frame = this.framepos;
-      // todo: figure out why these magic numbers are needed
+      // todo: figure out why these magic numbers are needed ?
 
       return {
-        x: shoe.x - frame.x - 5,
-        y: shoe.y - frame.y - 70,
+        x: shoe.x - frame.x - 36,
+        y: shoe.y - frame.y - 50,
       };
     },
 
@@ -46,7 +46,7 @@ export default {
       const frame = this.framepos;
       return {
         x: -frame.x,
-        y: -(frame.y + 70),
+        y: -frame.y - 100, // to go right off the page
       };
     },
 
@@ -82,7 +82,6 @@ export default {
       default:
         return '';
       }
-
     },
 
     ...mapGetters([
@@ -90,22 +89,26 @@ export default {
     ]),
   },
   methods: {
-
     beforeEnter(el) {
       const offsetX = el.dataset.index * 30;
 
-      setStartFinish(el, {
-        start: this.enterPosition,
-        finish: transformJiggle({ offsetX }),
-      });
+      setPos(el, this.enterPosition);
     },
     enter(el, done) {
-      runLerpLoop(el, done, 200);
+      const offsetX = el.dataset.index * 30;
+
+      requestAnimationFrame(() => {
+        setPos(el, transformJiggle({ offsetX }));
+      });
     },
 
     leave(el, done) {
-      setTarget(el, this.leavePosition);
-      runLerpLoop(el, done, 100);
+      setPos(el, this.leavePosition);
+
+      el.addEventListener('transitionend', () => {
+        console.log('done');
+        done();
+      });
     },
   },
 

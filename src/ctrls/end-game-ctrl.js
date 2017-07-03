@@ -19,7 +19,7 @@ export default {
   computed: {
 
     enoughPlayers() {
-      return this.activePlayerCount > 1;
+      return this.activePlayerCount > 0;
     },
 
     ctrls() {
@@ -37,7 +37,7 @@ export default {
   methods: {
 
     setTurn(turn) {
-      const evt = (turn === 'new game') ? 'resetGame' : 'nextRound';
+      const evt = (turn === 'new game') ? 'newGame' : 'nextRound';
       this.$store.dispatch(evt);
       console.log(turn);
     },

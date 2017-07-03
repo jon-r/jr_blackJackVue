@@ -1,12 +1,10 @@
 import { mapGetters } from 'vuex';
-import { runLerpLoop, setStartFinish, setTarget, arrayStaggeredPush, arrayStaggeredPull } from '../animationTools';
+import { arrayStaggeredPush, arrayStaggeredPull, setPos } from '../animationTools';
 
 export default {
   props: ['turn', 'player', 'framepos'],
   template: `
   <div class="player-bet" >
-    <span v-show="bet > 0" >Bet: £{{bet}}</span>
-
     <transition-group class="chip-stack" name="bets" tag="ul" :class="{ show : quidsIn }"
       @before-enter="beforeEnter" @enter="enter" @leave="leave" >
       <li v-for="(chip, idx) in chips"
@@ -19,6 +17,8 @@ export default {
       </li>
     </transition-group>
 
+    <span v-show="bet > 0" >Bet: £{{bet}}</span>
+
   </div>
   `,
   components: {},
@@ -27,6 +27,7 @@ export default {
       bet: 0,
       quidsIn: false,
       chips: [],
+      alreadyEnded: false,
     };
   },
   computed: {
@@ -46,17 +47,20 @@ export default {
   methods: {
 
     beforeEnter(el) {
-      const start = { x: 0, y: -200, r: 0 };
-
-      setStartFinish(el, { start });
+      setPos(el, { x: 0, y: -200 });
     },
     enter(el, done) {
-      runLerpLoop(el, done, 50);
+      requestAnimationFrame(() => {
+        setPos(el, { x: 0, y: 0 });
+      });
     },
     leave(el, done) {
       const target = this.leavePosition;
-      setTarget(el, target);
-      runLerpLoop(el, done, 50);
+      setPos(el, target);
+      el.addEventListener('transitionend', () => {
+        console.log('done');
+        done();
+      });
     },
 
     showChips() {
@@ -87,7 +91,7 @@ export default {
       return out;
     },
 
-    // todo make this a computed based on the bet?
+    // todo bonus: make this a computed based on the bet?
     adjustChips(newBet) {
       if (newBet === 0) return false;
 
@@ -109,7 +113,7 @@ export default {
       const { idx, type, value } = this.eventBus;
       const isBetEvent = (idx === this.player.index) && (type === 'bet');
 
-      if ((!isBetEvent) || (this.bet === 0 && value !== 'addBet')) return this;
+      if ((!isBetEvent) || (this.bet === 0 && value !== 'addBet') || this.alreadyEnded) return this;
 
       const betAdjust = {
         addBet: 1,
@@ -122,6 +126,8 @@ export default {
 
       this.showChips();
 
+      if (value === 'blackJack' || value === 'forfeit') this.alreadyEnded = true;
+
       const firstBet = this.player.firstBet;
       const bet = firstBet * betAdjust[value];
 
@@ -131,21 +137,18 @@ export default {
       return true;
     },
 
-    cashOut(bet) {
-//      const bet = this.player.firstBet;
-      this.emitMoneyChange(-bet);
-    },
-
     cashIn(bet) {
       console.log('cash in', this.bet);
 
       this.hideChips();
 
+      this.alreadyEnded = false;
+
       this.emitMoneyChange(this.bet).then(() => {
         this.bet = 0;
 
         if (this.player.money < this.minBet) {
-          this.$store.dispatch('playerEndGame', this.player);
+          this.$store.dispatch('playerEndGame', {idx: this.player.index, value: false });
         }
       });
 
@@ -165,7 +168,6 @@ export default {
   },
   watch: {
     gameRound: 'cashIn',
-//    gameRound: 'resetBet',
     eventID: 'adjustBet',
   },
 };

@@ -177,7 +177,7 @@ export default {
       console.log('clearing table');
       this.hands.forEach((hand) => { hand.cards = []; });
 
-      this.wait(this.autoTime).then(() => {
+      this.wait(2000).then(() => {
         this.hands = [];
         this.activeHand = -1;
       });

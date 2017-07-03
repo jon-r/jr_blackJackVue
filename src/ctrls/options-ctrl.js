@@ -83,28 +83,31 @@ export default {
         deckCount: this.deckInput,
         autoTime: this.autoTime,
       };
-
       const players = this.playerInput
         .map((player, index) => this.setNewPlayer(player.name, index));
-
       const dealer = this.setNewPlayer('Dealer', players.length, true);
 
       players.push(dealer);
 
-      this.emitCloseOptions();
       return { players, config };
     },
     setOptions() {
       const options = this.getOptions();
+
+      this.emitCloseOptions();
+
       this.$store.dispatch('newGame', options);
     },
     skipBets() {
       const options = this.getOptions();
-      this.$store.dispatch('newGame', options);
+      const store = this.$store;
 
-      this.autoBet(0, options.players.length - 1)
-        .then(() => this.$store.dispatch('nextPlayerPromise'))
-        .then(() => setTimeout(() => this.$store.dispatch('nextStage'), 2000));
+      this.emitCloseOptions();
+
+      store.dispatch('newGame', options)
+        .then(() => this.autoBet(0, options.players.length - 1))
+        .then(() => store.dispatch('nextPlayerPromise'))
+        .then(() => store.dispatch('nextStage'));
     },
 
     autoBet(idx, max) {

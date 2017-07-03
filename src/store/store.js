@@ -22,7 +22,6 @@ export default new Vuex.Store({
     // players & dealer
     dealer: {},
     players: [],
-    activePlayerCount: 0,
 
     // deck and cards
     deck: [],
@@ -49,11 +48,6 @@ export default new Vuex.Store({
   },
 
   mutations: {
-    // game stage ids
-    SET_STAGE(state, i) {
-      state.gameActivePlayer = 0;
-      state.gameStage = i;
-    },
 
     // players & dealer
     PLAYER_UPDATE_MONEY(state, { idx, value }) {
@@ -62,11 +56,6 @@ export default new Vuex.Store({
 
     DEALER_SET_PEEKED(state, card) {
       state.dealer.peeked = card;
-    },
-
-    PLAYER_END_GAME(state, player) {
-      state.activePlayerCount -= 1;
-      state.players[player.index].inGame = false;
     },
 
     // deck and cards
@@ -82,6 +71,8 @@ export default new Vuex.Store({
     }),
 
     ...mutationSetters({
+      SET_STAGE: 'gameStage',
+      SET_ACTIVE_PLAYER: 'gameActivePlayer',
       SET_PLAYERS: 'players',
       SET_PLAYER_COUNT: 'activePlayerCount',
       SET_DEALER: 'dealer',
@@ -95,6 +86,7 @@ export default new Vuex.Store({
     }),
 
     ...playerSetters({
+      PLAYER_END_GAME: 'inGame',
       PLAYER_SET_SCORE: 'score',
       PLAYER_SET_BET: 'firstBet',
     }),
@@ -102,37 +94,33 @@ export default new Vuex.Store({
 
   actions: {
     // game stage ids
-    newGame: ({ commit }, options) => {
-      console.log('new game');
-
+    newGame: ({ commit, dispatch }, options) => {
       const dealer = options.players.find(player => player.isDealer);
       const deck = buildDeck(options.config.deckCount);
 
-      // commit('NEXT_ACTIVE_PLAYER');
-      commit('NEXT_ROUND');
-      commit('SET_CONFIG', options.config);
-      commit('SET_DECK', deck);
-      commit('SET_PLAYERS', options.players);
-      commit('SET_PLAYER_COUNT', options.players.length);
-      commit('SET_DEALER', dealer);
+      return dispatch('resetGame').then(() => {
+        commit('NEXT_ACTIVE_PLAYER');
+        commit('NEXT_ROUND');
+        commit('SET_CONFIG', options.config);
+        commit('SET_DECK', deck);
+        commit('SET_PLAYERS', options.players);
+        commit('SET_PLAYER_COUNT', options.players.length);
+        commit('SET_DEALER', dealer);
+      });
     },
 
-    resetGame: ({ commit }) => {
-      console.log('reset all');
-
+    resetGame: ({ commit }) => new Promise((resolve) => {
       commit('SET_PLAYERS', []);
+      commit('SET_ACTIVE_PLAYER', -1);
       commit('SET_STAGE', -1);
-    },
+      resolve();
+    }),
 
     nextRound: ({ state, commit }) => {
       console.log('new round');
 
-      const quarterDeck = (state.config.deckCount * 13); // 25% of total cards in game
+      const quarterDeck = (state.config.deckCount * 13); // 25% of total cards in game = reshuffle
 
-//      if (state.activePlayerCount < 4) { // TEMP ending early
-//        console.log('GAME OVER');
-//        return false;
-//      }
       state.players.forEach(player => commit('PLAYER_SET_SCORE', { idx: player.index, value: 0 }));
       commit('NEXT_ROUND');
 
@@ -144,6 +132,11 @@ export default new Vuex.Store({
       return true;
     },
 
+    setStage: ({ commit }, n) => {
+      commit('SET_STAGE', n);
+    },
+
+
     // TODO: no longer a promise.
     nextStage: ({ state, commit, dispatch }) => {
       const stagePromise = () => new Promise((resolve) => {
@@ -152,13 +145,6 @@ export default new Vuex.Store({
       });
 
       return stagePromise();
-//        .then(() => {
-//        setTimeout(() => {
-//          if (state.gameStage > 5) {
-//            dispatch('nextRound');
-//          }
-//        }, 3000);
-//      });
     },
 
     nextPlayerPromise: ({ commit }) => new Promise((resolve) => {
@@ -214,7 +200,6 @@ export default new Vuex.Store({
 
     // TODO new promise group?
     ...actionSetters({
-      setStage: 'SET_STAGE',
       playerSetScore: 'PLAYER_SET_SCORE',
       playerSetBid: 'PLAYER_SET_BET',
       playerUpdateMoney: 'PLAYER_UPDATE_MONEY',
@@ -232,12 +217,16 @@ export default new Vuex.Store({
     minBet: state => state.config.minBet,
     autoTime: state => state.config.autoTime,
 
+    // starts at -1 to skip dealer;
+    activePlayerCount: state => state.players
+      .reduce((n, player) => n + (player.inGame), -1),
+
 
     ...getState([
       'gameRound',
       'gameStage',
       'gameActivePlayer',
-      'activePlayerCount', // todo set this as function rather than just a number?
+//      'activePlayerCount', // todo set this as function rather than just a number?
       'players',
       'dealer',
       'handRules',

@@ -28,7 +28,7 @@ export default {
       <i class="material-icons ctrl-btn-icon" >publish</i>
 
       <span class="error-text ctrl-btn-label" v-show="betErr"  >
-        Min £{{betErr}}
+        Min £{{minBet}}
       </span>
     </button>
 
