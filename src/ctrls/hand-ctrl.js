@@ -17,29 +17,18 @@ export default {
   `,
   computed: {
     ctrls() {
+      const firstCtrl = this.handRules.count < 3;
+      const canAfford = (this.player.money >= this.player.firstBet);
+      const canDouble = (firstCtrl && canAfford)
+      const canSplit = (this.handRules.split && canAfford)
+
       return [
         { name: 'hit', canUse: true, icon: 'touch_app' },
         { name: 'stand', canUse: true, icon: 'pan_tool' },
-        { name: 'split', canUse: this.canSplit, icon: 'call_split' },
-        { name: 'surrender', canUse: this.firstCtrl, icon: 'flag' },
-        { name: 'double', canUse: this.canDouble, icon: 'monetization_on' },
+        { name: 'split', canUse: canSplit, icon: 'call_split' },
+        { name: 'surrender', canUse: firstCtrl, icon: 'flag' },
+        { name: 'double', canUse: canDouble, icon: 'monetization_on' },
       ];
-    },
-
-    firstCtrl() {
-      return this.handRules.count < 3;
-    },
-
-    canAfford() {
-      return this.player.money >= this.player.firstBet;
-    },
-
-    canDouble() {
-      return this.firstCtrl && this.canAfford;
-    },
-
-    canSplit() {
-      return this.handRules.split && this.canAfford;
     },
 
     ...mapGetters([
@@ -52,21 +41,18 @@ export default {
       return (name === 'split' || name === 'double');
     },
 
-
     emitCtrl(ctrl) {
       const player = this.player;
       const idx = player.index;
       const store = this.$store;
-
-      const msg = `${player.name} ${ctrl}s`;
-
       const handEvent = {
         idx,
         type: 'card',
         value: ctrl,
       };
+
       store.dispatch('doEvent', handEvent);
-      store.dispatch('setNewMessage', msg);
+      store.dispatch('setNewMessage', `${player.name} ${ctrl}s`);
 
       if (this.betCost(ctrl)) {
         const betVals = {

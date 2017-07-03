@@ -21,7 +21,6 @@ export default {
 
   </div>
   `,
-  components: {},
   data() {
     return {
       bet: 0,
@@ -32,10 +31,7 @@ export default {
   },
   computed: {
 
-    leavePosition() {
-      const frame = this.framepos;
-      return { x: 0, y: -frame.y };
-    },
+
 
     ...mapGetters([
       'gameRound',
@@ -49,16 +45,17 @@ export default {
     beforeEnter(el) {
       setPos(el, { x: 0, y: -200 });
     },
+
     enter(el, done) {
       requestAnimationFrame(() => {
         setPos(el, { x: 0, y: 0 });
       });
     },
+
     leave(el, done) {
-      const target = this.leavePosition;
-      setPos(el, target);
+      const frame = this.framepos;
+      setPos(el, { x: 0, y: -frame.y });
       el.addEventListener('transitionend', () => {
-        console.log('done');
         done();
       });
     },
@@ -69,7 +66,6 @@ export default {
 
     hideChips() {
       this.quidsIn = false;
-      console.log('quids out');
     },
 
     calcChips(value) {
@@ -79,6 +75,7 @@ export default {
       let i = 0;
       let remainder = value;
 
+      // todo bonus: can this be reduced?
       while (i < chips.length) {
         const chip = chips[i];
         if (chip <= remainder) {
@@ -95,9 +92,8 @@ export default {
     adjustChips(newBet) {
       if (newBet === 0) return false;
 
-      const array = this.chips;
       const input = this.calcChips(Math.abs(newBet));
-      const args = [input, array, 100];
+      const args = [input, this.chips, 100];
 
       switch (true) {
       case (newBet < 0):
@@ -112,8 +108,9 @@ export default {
     adjustBet() {
       const { idx, type, value } = this.eventBus;
       const isBetEvent = (idx === this.player.index) && (type === 'bet');
+      const hasNoBet = (this.bet === 0 && value !== 'addBet')
 
-      if ((!isBetEvent) || (this.bet === 0 && value !== 'addBet') || this.alreadyEnded) return this;
+      if (!isBetEvent || hasNoBet || this.alreadyEnded) return this;
 
       const betAdjust = {
         addBet: 1,
@@ -128,8 +125,7 @@ export default {
 
       if (value === 'blackJack' || value === 'forfeit') this.alreadyEnded = true;
 
-      const firstBet = this.player.firstBet;
-      const bet = firstBet * betAdjust[value];
+      const bet = this.player.firstBet * betAdjust[value];
 
       this.adjustChips(bet);
       this.bet += bet;
@@ -148,10 +144,11 @@ export default {
         this.bet = 0;
 
         if (this.player.money < this.minBet) {
-          this.$store.dispatch('playerEndGame', {idx: this.player.index, value: false });
+          this.$store.dispatch('playerEndGame', { idx: this.player.index, value: false });
         }
       });
 
+      //todo bonus: remove timeout?
       setTimeout(() => {
         this.chips = [];
       }, 1000);

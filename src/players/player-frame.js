@@ -22,7 +22,7 @@ export default {
     </player-bet>
 
     <header class="player-frame-title frame shadow-light" v-if="!player.isDealer" :class="{ 'is-active' : isPlayerTurn  }" >
-      <h4 class="player-name" :class="{ 'alert-text': isPlayerTurn, 'error-text': isPlayerInactive }" >{{player.name}}</h4>
+      <h4 class="player-name" :class="{ 'alert-text': isPlayerTurn, 'error-text': !this.player.inGame }" >{{player.name}}</h4>
 
       <h5 class="player-money" >
         £{{player.money}}
@@ -40,7 +40,6 @@ export default {
   data() {
     return {
       playerClass: `player-${this.player.index}`,
-      skip: false,
       oldMoney: 0,
       diffFloat: true,
       framepos: {},
@@ -73,15 +72,10 @@ export default {
       return this.gameActivePlayer === this.player.index;
     },
 
-    isPlayerInactive() {
-      return !this.player.inGame;
-    },
-
     ...mapGetters([
       'gameActivePlayer',
       'dealer',
       'gameStage',
-      'minBet',
     ]),
   },
 
@@ -91,16 +85,13 @@ export default {
       const cantBet = !this.player.inGame;
       const wontBet = this.gameStage === 0 && this.player.isDealer;
 
-      if (this.isPlayerTurn && (cantBet || wontBet)) {
-        this.$store.dispatch('nextPlayer');
-      }
+      if (this.isPlayerTurn && (cantBet || wontBet)) this.$store.dispatch('nextPlayer');
     },
 
-    endRound() {
-      const dealerScore = this.dealer.score;
-      if (dealerScore === 0) return false;
+    endRound(dealerScore) {
+      if (!dealerScore) return false;
 
-      const result = this.getScores(dealerScore);
+      const result = this.getScores();
 
       return this.emitBetChange(result);
     },
@@ -115,7 +106,8 @@ export default {
       this.$store.dispatch('doEvent', betEvent);
     },
 
-    getScores(dealerScore) {
+    getScores() {
+      const dealerScore = this.dealer.score;
       const playerScore = this.player.score;
 
       switch (true) {
@@ -138,7 +130,7 @@ export default {
     },
   },
   watch: {
-    'dealer.score': 'endRound', // todo set this and any similar from game round?
+    'dealer.score': 'endRound',
     isPlayerTurn: 'turnCheck',
   },
 };

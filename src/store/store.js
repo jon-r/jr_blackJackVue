@@ -1,4 +1,3 @@
-// todo: general tidy of the store. group actions, split mutations.
 // combine more into more ... function groups?
 // merge commonly done actions into big chains ()
 
@@ -118,34 +117,20 @@ export default new Vuex.Store({
     }),
 
     nextRound: ({ state, commit }) => {
-      console.log('new round');
-
       const quarterDeck = (state.config.deckCount * 13); // 25% of total cards in game = reshuffle
 
       state.players.forEach(player => commit('PLAYER_SET_SCORE', { idx: player.index, value: 0 }));
       commit('NEXT_ROUND');
 
       if (state.deck.length < quarterDeck) {
-        console.log('reshuffling cards');
         const deck = buildDeck(state.config.deckCount);
         commit('SET_DECK', deck);
       }
       return true;
     },
 
-    setStage: ({ commit }, n) => {
-      commit('SET_STAGE', n);
-    },
-
-
-    // TODO: no longer a promise.
-    nextStage: ({ state, commit, dispatch }) => {
-      const stagePromise = () => new Promise((resolve) => {
-        commit('NEXT_STAGE');
-        resolve();
-      });
-
-      return stagePromise();
+    nextStage: ({ commit }) => {
+      commit('NEXT_STAGE');
     },
 
     nextPlayerPromise: ({ commit }) => new Promise((resolve) => {
@@ -180,7 +165,6 @@ export default new Vuex.Store({
       if (toMatch !== 10 && toMatch !== 11) return Promise.resolve(false);
 
       const rng = getRandom(state.deck.length);
-//      const rng = 0; // temp, to increase the odds of dealer blackjack
 
       const rngCard = state.deck[rng];
       const rngCardValue = rngCard[0] === 1 ? 11 : Math.min(10, rngCard[0]);
@@ -199,8 +183,8 @@ export default new Vuex.Store({
       resolve();
     }),
 
-    // TODO new promise group?
     ...actionSetters({
+      setStage: 'SET_STAGE',
       playerSetScore: 'PLAYER_SET_SCORE',
       playerSetBid: 'PLAYER_SET_BET',
       playerUpdateMoney: 'PLAYER_UPDATE_MONEY',
@@ -227,12 +211,11 @@ export default new Vuex.Store({
       'gameRound',
       'gameStage',
       'gameActivePlayer',
-//      'activePlayerCount', // todo set this as function rather than just a number?
       'players',
       'dealer',
       'handRules',
       'eventID',
-      'eventBus', // TODO combine events to a single getter? and check any other getters
+      'eventBus', // TODO bonus; combine events to a single getter? and check any other getters
       'shoePos',
       'newMessage',
     ]),

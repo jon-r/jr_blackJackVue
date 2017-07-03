@@ -64,7 +64,7 @@ export default {
     };
   },
 
-  // todo: bonus buttons as a new sub-template
+  // todo bonus; buttons as a new sub-template
   methods: {
     setNewPlayer(name, index, isDealer = false) {
       return {
@@ -83,8 +83,10 @@ export default {
         deckCount: this.deckInput,
         autoTime: this.autoTime,
       };
+
       const players = this.playerInput
         .map((player, index) => this.setNewPlayer(player.name, index));
+
       const dealer = this.setNewPlayer('Dealer', players.length, true);
 
       players.push(dealer);
@@ -113,6 +115,7 @@ export default {
     autoBet(idx, max) {
       if (idx > max) return Promise.resolve();
 
+      const store = this.$store;
       const betVals = {
         idx,
         value: 500,
@@ -124,8 +127,8 @@ export default {
       };
       const nextIdx = idx + 1;
 
-      return this.$store.dispatch('playerSetBet', betVals)
-        .then(() => this.$store.dispatch('doEvent', betEvent))
+      return store.dispatch('playerSetBet', betVals)
+        .then(() => store.dispatch('doEvent', betEvent))
         .then(() => this.autoBet(nextIdx, max));
     },
 

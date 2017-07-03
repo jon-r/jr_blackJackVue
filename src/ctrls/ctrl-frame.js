@@ -14,7 +14,6 @@ export default {
       <div class="player-info frame" >
         <h2>{{player.name}}</h2>
         <p>{{tips}}</p>
-        <sub><pre>debug stage: {{gameStage}}</pre></sub>
       </div>
 
       <bet-ctrl v-if="gameStage === 0" :player="player" ></bet-ctrl>
@@ -25,6 +24,7 @@ export default {
 
     </template>
   </section>`,
+
   components: {
     'hand-ctrl': HandCtrl,
     'bet-ctrl': BetCtrl,
@@ -38,19 +38,16 @@ export default {
       const stage = this.gameStage;
       const out = new Map([
         [0, `Current money: £${player.money}. Min Bet: £${this.minBet}.`],
-        [5, '#endGameStats'],
+        [5, '#endGameStats'], // todo required
         // to do = more tips?
       ]);
 
       return out.has(stage) ? out.get(stage) : '';
     },
 
-
     ...mapGetters([
       'gameStage',
-      'turn',
       'minBet',
-      'handRules',
     ]),
   },
 
@@ -61,7 +58,7 @@ export default {
       const out = new Map([
         [0, 'Please place Your bets'],
         [1, 'All bets are in, dealing out the first cards.'],
-        [5, '#EndGameMessage'],
+        [5, '#EndGameMessage'], // todo required
       ]);
 
       if (!out.has(stage)) return false;

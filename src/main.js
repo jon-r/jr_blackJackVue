@@ -23,7 +23,6 @@ const app = new Vue({
     showOptions: true,
     messages: [],
     messageIdx: 0,
-    maxMessages: 5,
   },
 
   // VUEX link to store
@@ -44,7 +43,6 @@ const app = new Vue({
       return this.players[this.gameActivePlayer];
     },
 
-
     ...mapGetters([
       'players',
       'gameActivePlayer',
@@ -55,6 +53,8 @@ const app = new Vue({
 
   methods: {
     updateChat(params) {
+      const maxMessages = 5;
+
       this.messageIdx += 1;
 
       this.messages.unshift({
@@ -62,9 +62,8 @@ const app = new Vue({
         idx: this.messageIdx,
       });
 
-      if (this.messages.length > this.maxMessages) this.messages.pop();
+      if (this.messages.length > maxMessages) this.messages.pop();
     },
-
   },
 
   watch: {

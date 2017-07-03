@@ -18,14 +18,12 @@ export default {
   `,
   computed: {
 
-    enoughPlayers() {
-      return this.activePlayerCount > 0;
-    },
-
     ctrls() {
+      const enough = this.activePlayerCount > 0;
+
       return [
         { name: 'new game', canUse: true, icon: 'skip_previous' },
-        { name: 'next round', canUse: this.enoughPlayers, icon: 'skip_next' },
+        { name: 'next round', canUse: enough, icon: 'skip_next' },
       ];
     },
 

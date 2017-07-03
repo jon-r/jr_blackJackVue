@@ -1,8 +1,4 @@
 export function setPos(el, { x, y, r = 0 }) {
-  el.dataset.posX = x;
-  el.dataset.posY = y;
-  el.dataset.posR = r;
-
   el.style.transform = `translate(${x}px,${y}px) rotate(${r}deg)`;
 }
 
@@ -21,7 +17,6 @@ export function transformJiggle({
   };
 }
 
-
 export function arrayStaggeredPush(toAdd, array, staggerTime) {
   if (toAdd.length === 0) return false;
 
@@ -37,12 +32,10 @@ export function arrayStaggeredPull(toRemove, array, staggerTime) {
   const item = toRemove.pop();
   const find = array.indexOf(item);
 
-//  console.log(find);
-
   if (find !== -1) {
     array.splice(find, 1);
   } else {
-    console.log('TODO - pulling half chips');
+    // TODO required - pulling half chips
     return true;
   }
   setTimeout(() => arrayStaggeredPull(toRemove, array, staggerTime), staggerTime);

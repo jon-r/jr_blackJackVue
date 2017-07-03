@@ -90,13 +90,11 @@ export default {
         value: 'addBet',
       };
 
-      const msg = `${player.name} bets £${bet}`;
-
       this.currChips = [];
       this.currChipValue = 0;
 
-      // todo combine these in store?
-      store.dispatch('setNewMessage', msg);
+      // todo bonus combine these in store?
+      store.dispatch('setNewMessage', `${player.name} bets £${bet}`);
 
       store.dispatch('playerSetBet', betVals)
         .then(() => store.dispatch('doEvent', betEvent))

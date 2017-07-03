@@ -12,9 +12,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="assets/style.css" rel="stylesheet" media="all">
 
-
 </head>
-
 
 <!--
 
@@ -23,43 +21,44 @@ TO DO LIST:
 - end round results (winners, losers)
 - review todos
 - fine tune material style (follow mdl guide)
+- animate options opening/closing. + the footer options changing
 
 -->
 
+<body>
+  <div id="v-blackJack" class="container">
 
-  <body  >
-    <div id="v-blackJack" class="container">
+    <button class="btn menu-toggle" @click="showOptions = true" >
+      <i class="material-icons">menu</i>
+    </button>
 
-      <button class="btn menu-toggle material-icons" @click="showOptions = true" >
-        menu
-      </button>
+    <options-modal v-if="showOptions" @hide="showOptions = false" >
+    </options-modal>
 
-      <options-modal v-if="showOptions" @hide="showOptions = false" >
-      </options-modal>
+    <main class="blackjack-table" >
 
-      <main class="blackjack-table" >
+      <transition-group class="announcement frame" name="messages" tag="ul" >
+        <li class="message" v-for="msg in messages" :key="msg.idx" >{{msg.text}}</li>
+      </transition-group>
 
-        <transition-group class="announcement frame" name="messages" tag="ul" >
-          <li class="message" v-for="msg in messages" :key="msg.idx" >{{msg.text}}</li>
-        </transition-group>
+      <div v-once class="deck" ref="theShoe" >
+        <div class="card blank stacked" ></div>
+      </div>
 
-        <div v-once class="deck" ref="theShoe" >
-          <div class="card blank stacked" ></div>
-        </div>
+      <player-frame
+        v-for="player in players"
+        :key="player.index"
+        :player="player" >
+      </player-frame>
 
-        <player-frame
-          v-for="player in players"
-          :key="player.index"
-          :player="player" >
-        </player-frame>
+    </main>
 
-      </main>
+    <ctrl-frame :player="activePlayer" ></ctrl-frame>
 
-      <ctrl-frame :player="activePlayer" ></ctrl-frame>
+    <svg-static v-once></svg-static>
 
-      <svg-static v-once></svg-static>
+  </div>
+</body>
 
-    </div>
-  </body>
-   <script src="dist/bundle.js"></script>
+<script src="dist/bundle.js"></script>
 </html>
