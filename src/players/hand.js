@@ -4,7 +4,7 @@ import { valueCard, blankCard } from '../deckTools';
 import PlayerCards from './cards';
 
 export default {
-  props: ['turn', 'player', 'framepos'],
+  props: ['turn', 'player', 'framepos', 'result'],
   template: `
   <div class="player-hand frame" >
 
@@ -13,8 +13,12 @@ export default {
       :key="idx"
       :framepos="framepos"
       :cards="hand.cards"
+      :active="idx === activeHand"
       v-model="hand.score" >
     </player-cards>
+    <div class="round-alert alert-text" v-if="roundResult && !player.isDealer" >
+      {{roundResult}}
+    </div>
 
   </div>
   `,
@@ -25,7 +29,7 @@ export default {
     return {
       hands: [],
       activeHand: -1,
-      messageAddon: '',
+      message: '',
     };
   },
   computed: {
@@ -40,18 +44,21 @@ export default {
       const hand = this.getActiveHand;
       const score = hand.score;
       const max = this.player.isDealer ? 17 : 21;
-      let messageStr = '';
 
       if (score > 21) {
-        messageStr = 'Bust!';
+        this.message = 'Bust!';
         this.emitBetChange('lose');
       } else if (score === 21 && hand.revealed === 2) {
-        messageStr = 'BlackJack!';
+        this.message = 'BlackJack!';
         this.emitBetChange('blackJack');
       }
 
-      this.cardMessage(hand, messageStr);
+      this.cardMessage(hand, this.message);
       return score < max;
+    },
+
+    roundResult() {
+      return this.message || this.result || '';
     },
 
     ...mapGetters([
@@ -77,9 +84,7 @@ export default {
       return this;
     },
 
-    addSplitHand(splitcard) {
-
-
+    addSplitHand(splitCard) {
       this.addHand().nextHand().setCard(splitCard, true);
       return this;
     },
@@ -151,6 +156,7 @@ export default {
         [2, this.dealOutSecond],
         [3, this.playerActions],
         [4, this.dealOutLast],
+ //       [5, this.roundResult],
       ]);
 
       const fn = actions.get(this.gameStage);
@@ -162,18 +168,19 @@ export default {
 
     clearTable() {
       this.hands.forEach((hand) => { hand.cards = []; });
+      this.message = '';
 
-      this.wait(2000).then(() => {
+      setTimeout(() => {
         this.hands = [];
         this.activeHand = -1;
-      });
+      }, 2000);
     },
 
     /* TURN 1 ------------------ */
 
     dealOutFirst() {
       this.activeHand = 0;
-      this.addHand().wait(0)
+      this.addHand().wait(100)
         .then(() => this.dealRevealSet())
         .then(() => this.emitEndTurn());
     },
@@ -286,10 +293,6 @@ export default {
       return this;
     },
 
-    /* TURN 5 ----------------------------------------------------------- */
-
-    // todo required: emit scores for end of round msg?
-
     /* emits -------------------------------------------------------------*/
 
     emitEndTurn() {
@@ -297,7 +300,9 @@ export default {
     },
 
     emitEndRound() {
-      this.$store.dispatch('setStage', 4);
+      const store = this.$store;
+      store.dispatch('setStage', 3);
+      store.dispatch('nextPlayer');
     },
 
     emitBetChange(value) {

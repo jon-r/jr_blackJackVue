@@ -165,6 +165,7 @@ export default new Vuex.Store({
       if (toMatch !== 10 && toMatch !== 11) return Promise.resolve(false);
 
       const rng = getRandom(state.deck.length);
+//      const rng = 0; // debug to force dealer blackJAcks
 
       const rngCard = state.deck[rng];
       const rngCardValue = rngCard[0] === 1 ? 11 : Math.min(10, rngCard[0]);

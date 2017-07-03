@@ -9,6 +9,7 @@ export default {
   template: `
   <section class="player-frame" :class="playerClass" ref="frameParent" >
     <player-hand
+      :result="roundResult"
       :player="player"
       :framepos="framepos"
       :turn="isPlayerTurn" >
@@ -43,6 +44,7 @@ export default {
       oldMoney: 0,
       diffFloat: true,
       framepos: {},
+      roundResult: '',
     };
   },
 
@@ -76,6 +78,7 @@ export default {
       'gameActivePlayer',
       'dealer',
       'gameStage',
+      'gameRound',
     ]),
   },
 
@@ -91,9 +94,15 @@ export default {
     endRound(dealerScore) {
       if (!dealerScore) return false;
 
-      const result = this.getScores();
+      this.roundResult = this.getScores();
 
-      return this.emitBetChange(result);
+
+      return this.emitBetChange(this.roundResult);
+    },
+
+    cleanUp() {
+      this.roundResult = '';
+      // todo bonus: anything else can go here?
     },
 
     emitBetChange(value) {
@@ -132,5 +141,6 @@ export default {
   watch: {
     'dealer.score': 'endRound',
     isPlayerTurn: 'turnCheck',
+    gameRound: 'cleanUp',
   },
 };

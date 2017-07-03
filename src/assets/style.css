@@ -1,3 +1,23 @@
+/*
+TODO:
+maximise material design styling
+- edit/clean/replace elements?
+- pixel perfect margin/sizes
+- animations? transitions? make use of vue anim
+
+cleanup
+- optimise styles
+- remove obsolete/unused
+- combine/atomise?
+
+fix
+- focus button style
+- overlapping?
+- duplicate?
+- make active player clearer?
+
+*/
+
 /*! minireset.css v0.0.3 | MIT License | github.com/jgthms/minireset.css */
 html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6,menu{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input,select,textarea{margin:0}html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}img,embed,iframe,object,audio,video{height:auto;max-width:100%}iframe{border:0}table{border-collapse:collapse;border-spacing:0}td,th{padding:0;text-align:left}
 
@@ -17,17 +37,6 @@ body {
   lefT:0;
 }
 
-/*body::after {
-  content:"";
-  background: url(grid.svg) 0/32px;
-  position: absolute;
-  top:0;
-  bottom:0;
-  left:0;
-  right:0;
-  opacity: .1;
-  pointer-events: none;
-}*/
 
 h1, h2, h3, h4 {
   font-weight: inherit;
@@ -94,6 +103,7 @@ h4 { font-size: 1.414em }
 .blackjack-table {
   flex: 1;
   background: url(table-print.svg) center/contain no-repeat;
+  overflow: hidden;
 }
 
 .ctrl-bar {
@@ -279,24 +289,43 @@ h4 { font-size: 1.414em }
   justify-content: center;
 }
 
+
 .hand-score {
-    position: absolute;
-    min-width: 2em;
-    height: 2em;
-    text-align: center;
-    left: -32px;
-    line-height: 2em;
-    background: #212121;
-    border-radius: 1em;
-    font-size: 0.7em;
-    z-index: 10;
-    padding: 0 6px;
-    white-space: nowrap;
-    top: 24px;
+  position: absolute;
+  min-width: 2em;
+  height: 2em;
+  text-align: center;
+  left: -32px;
+  line-height: 2em;
+  background: #212121;
+  border-radius: 1em;
+  font-size: 0.7em;
+  z-index: 10;
+  padding: 0 6px;
+  white-space: nowrap;
+  top: 24px;
 }
 
-.hand-info {
 
+
+.round-alert {
+  position: absolute;
+  z-index: 20;
+  text-transform: capitalize;
+  font-weight: bold;
+  width: 100%;
+  text-align: center;
+  left: 0;
+  font-size: 2em;
+  text-shadow: 0 0 10px #000;
+  transform-origin: center;
+  animation: pop 500ms backwards;
+}
+
+@keyframes pop {
+  from { transform: translateY(-8px) scale(0.3) }
+  60% { transform: scale(1.5) }
+  to { transform: none; }
 }
 
 /* player-bet --------------------------------------------------------------- */
@@ -316,8 +345,8 @@ h4 { font-size: 1.414em }
   flex-direction: column-reverse;
   justify-content: flex-start;
   padding-bottom: 16px;
-  height: 110px;
-  transform: translateY(100%);
+  z-index: 5;
+  transform: translate(150px, 32px);
   opacity: 0;
   transition: transform 300ms ease-in, opacity 300ms 500ms;
 }
@@ -347,6 +376,14 @@ h4 { font-size: 1.414em }
 .player-cards {
   height: 50%;
   position: relative;
+  opacity: 0.5;
+  filter: grayscale(0.5);
+  transition: 300ms;
+}
+
+.active-hand {
+  opacity: 1;
+  filter: none;
 }
 
 .card-outer {

@@ -2,10 +2,10 @@ import { mapGetters } from 'vuex';
 import { transformJiggle, setPos } from '../animationTools';
 
 export default {
-  props: ['cards', 'framepos'],
+  props: ['cards', 'framepos', 'active'],
   template: `
-  <div class="player-cards" >
-    <div class="hand-score shadow-light" :class="{ 'error-text': score > 21 }" >
+  <div class="player-cards" :class="{ 'active-hand': active }" >
+    <div class="hand-score shadow-light" :class="{ 'error-text': score > 21}" >
       {{score}} {{scoreStr}}
     </div>
 
