@@ -55,17 +55,26 @@ export default {
 
     emitCtrl(ctrl) {
       const player = this.player;
+      const idx = player.index;
       const store = this.$store;
 
       const msg = `${player.name} ${ctrl}s`;
 
       const handEvent = {
-        idx: player.index,
+        idx,
         type: 'card',
         value: ctrl,
       };
       store.dispatch('doEvent', handEvent);
       store.dispatch('setNewMessage', msg);
+
+      if (this.betCost(ctrl)) {
+        const betVals = {
+          idx,
+          value: player.firstBet,
+        };
+        store.dispatch('playerSetBet', betVals);
+      }
     },
   },
 };

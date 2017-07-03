@@ -64,6 +64,7 @@ export default {
     };
   },
 
+  // todo: bonus buttons as a new sub-template
   methods: {
     setNewPlayer(name, index, isDealer = false) {
       return {
@@ -107,7 +108,6 @@ export default {
     },
 
     autoBet(idx, max) {
-      console.log(idx, max);
       if (idx > max) return Promise.resolve();
 
       const betVals = {

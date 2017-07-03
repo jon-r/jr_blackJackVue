@@ -172,6 +172,7 @@ export default new Vuex.Store({
 
     // players
     playerSetBet: ({ commit }, { idx, value }) => new Promise((resolve) => {
+      commit('PLAYER_UPDATE_MONEY', { idx, value: -value });
       commit('PLAYER_SET_BET', { idx, value });
       resolve();
     }),

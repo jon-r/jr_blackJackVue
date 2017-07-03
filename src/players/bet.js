@@ -1,7 +1,6 @@
 import { mapGetters } from 'vuex';
 import { runLerpLoop, setStartFinish, setTarget, arrayStaggeredPush, arrayStaggeredPull } from '../animationTools';
 
-// TODO: set bets at chips instead of numbers
 export default {
   props: ['turn', 'player', 'framepos'],
   template: `
@@ -60,11 +59,6 @@ export default {
       runLerpLoop(el, done, 50);
     },
 
-    resetBet() {
-      this.bet = 0;
-      this.chips = [];
-    },
-
     showChips() {
       this.quidsIn = true;
     },
@@ -101,8 +95,6 @@ export default {
       const input = this.calcChips(Math.abs(newBet));
       const args = [input, array, 100];
 
-    //  console.log('adjust', this.player.name, input, array);
-
       switch (true) {
       case (newBet < 0):
         return arrayStaggeredPull(...args);
@@ -117,12 +109,7 @@ export default {
       const { idx, type, value } = this.eventBus;
       const isBetEvent = (idx === this.player.index) && (type === 'bet');
 
-      if (!isBetEvent) return this;
-
-
-
-     // if (this.bet === 0 && !firstBet) return this;
-      // is this still a thing?
+      if ((!isBetEvent) || (this.bet === 0 && value !== 'addBet')) return this;
 
       const betAdjust = {
         addBet: 1,
@@ -141,38 +128,44 @@ export default {
       this.adjustChips(bet);
       this.bet += bet;
 
-      const moneyChange = (value === 'addBet') ? -firstBet : this.bet;
-
-      // TODO fix splits ending both hands
-
-      setTimeout(() => {
-        this.emitMoneyChange(moneyChange);
-        if (value !== 'addBet') this.cashIn(); // THIS IS BREAKING SPLITS??
-      });
-
-      return this;
+      return true;
     },
 
-    cashIn() {
-      console.log('cash in');
+    cashOut(bet) {
+//      const bet = this.player.firstBet;
+      this.emitMoneyChange(-bet);
+    },
 
-      this.bet = 0;
+    cashIn(bet) {
+      console.log('cash in', this.bet);
+
       this.hideChips();
 
-      if (this.player.money < this.minBet) {
-        this.$store.dispatch('playerEndGame', this.player);
-      }
+      this.emitMoneyChange(this.bet).then(() => {
+        this.bet = 0;
+
+        if (this.player.money < this.minBet) {
+          this.$store.dispatch('playerEndGame', this.player);
+        }
+      });
+
+      setTimeout(() => {
+        this.chips = [];
+      }, 1000);
+
+      return true;
     },
 
     emitMoneyChange(value) {
       const idx = this.player.index;
       const betVals = { idx, value };
-      this.$store.dispatch('playerUpdateMoney', betVals);
+      return this.$store.dispatch('playerUpdateMoney', betVals);
     },
 
   },
   watch: {
-    gameRound: 'resetBet',
+    gameRound: 'cashIn',
+//    gameRound: 'resetBet',
     eventID: 'adjustBet',
   },
 };

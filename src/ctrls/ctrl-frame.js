@@ -14,6 +14,7 @@ export default {
       <div class="player-info frame" >
         <h2>{{player.name}}</h2>
         <p>{{tips}}</p>
+        <sub><pre>debug stage: {{gameStage}}</pre></sub>
       </div>
 
       <bet-ctrl v-if="gameStage === 0" :player="player" ></bet-ctrl>

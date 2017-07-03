@@ -15,16 +15,6 @@ export default {
       <svg class="token ctrl-btn-icon" viewBox="0 0 100 100" >
         <use xlink:href="#chip"/>
       </svg>
-
-    </button>
-
-    <button class="ctrl-btn btn-alert"
-      @click="removeChip"
-      :disabled="currChips.length === 0 ? true:false" >
-
-      <span class="ctrl-btn-label" >Undo</span>
-
-      <i class="material-icons ctrl-btn-icon" >undo</i>
     </button>
 
     <button class="ctrl-btn btn-good"
@@ -38,9 +28,17 @@ export default {
       <i class="material-icons ctrl-btn-icon" >publish</i>
 
       <span class="error-text ctrl-btn-label" v-show="betErr"  >
-        {{betErr}}
+        Min £{{betErr}}
       </span>
+    </button>
 
+    <button class="ctrl-btn btn-alert"
+      @click="removeChip"
+      :disabled="currChips.length === 0 ? true:false" >
+
+      <span class="ctrl-btn-label" >Undo</span>
+
+      <i class="material-icons ctrl-btn-icon" >undo</i>
     </button>
   </div>
   `,
@@ -56,9 +54,8 @@ export default {
       return this.player.money - this.currChipValue;
     },
 
-    // todo rejig to be in the template
     betErr() {
-      return (this.currChipValue < this.minBet) ? `Min £${this.minBet}` : '';
+      return (this.currChipValue < this.minBet);
     },
 
     ...mapGetters([
