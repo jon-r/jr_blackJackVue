@@ -20,18 +20,13 @@ var config = {
         }],
         exclude: /node_modules/,
       },
-//      {
-//        test: /\.(sass|scss)$/, //Check for sass or scss file names
-//        use: [
-//          'style-loader',
-//          'css-loader',
-//          'sass-loader',
-//        ]
-//      },
       {
-        test: /\.json$/,
-        loader: 'json-loader', // JSON loader
+        test: /\.css$/,
+        exclude: /node_modules/,
+        loader: 'style!css', // TODO fix this for CSS?
+        // https://github.com/tj/frontend-boilerplate/blob/master/webpack.config.js
       },
+
     ],
   },
   // To run development server
