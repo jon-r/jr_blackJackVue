@@ -25,34 +25,28 @@ html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,ifr
 
 body {
   /* foundation fontstack */
-  font: 400 16px/1.45 "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font: normal 15px/1.5 "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
   background: url(grid.svg) 0/32px;
-
   padding-top: 32px;
 }
 
-.debugger {
-  position: absolute;
-  top:0;
-  lefT:0;
-}
-
-
 h1, h2, h3, h4 {
-  font-weight: inherit;
-  line-height: 1.2;
+  font-weight: 400;
+  line-height: 1.1;
 }
 
-h1 { font-size: 3.998em }
+h1 { font-size: 3.56rem }
 
-h2 { font-size: 2.827em }
+h2 { font-size: 2.92rem }
 
-h3 { font-size: 1.999em }
+h3 { font-size: 2.28rem }
 
-h4 { font-size: 1.414em }
+h4 { font-size: 1.64rem }
+
+h5 { font-size: 1rem }
 
 .good-text {
-  color: #1b5e20;
+  color: #4caf50;
 }
 
 .alert-text {
@@ -63,12 +57,18 @@ h4 { font-size: 1.414em }
   color: #c62828;
 }
 
-.btn {
+.text-btn {
   background: none;
   border: none;
   font-size: 1em;
   padding: 0 8px;
   color: inherit;
+  cursor: pointer;
+}
+
+.text-btn:hover {
+  color: #81d4fa;
+  transition: color 200ms;
 }
 
 .material-icons {
@@ -76,9 +76,19 @@ h4 { font-size: 1.414em }
   vertical-align: middle;
 }
 
+.centre-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 
 .frame {
   padding: 8px;
+}
+
+.frame-thick {
+  padding: 16px;
 }
 
 .shadow-light {
@@ -145,6 +155,80 @@ h4 { font-size: 1.414em }
   transition: opacity 5s, transform 0.5s ease-out;
 }
 
+/* options form ------------------------------------------------------------- */
+
+.modal-container {
+  color: #333;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  padding: 32px;
+  background-color: rgba(0,0,0,.2);
+}
+
+.modal {
+  position: relative;
+  flex: 0 1 512px;
+  background-color: #fafafa;
+  box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  background-color: #0288d1;
+  color: #fafafa;
+}
+
+.modal-toggle {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  font-size: 2.28rem;  /* h3 */
+}
+
+.modal-footer {
+  text-align: right;
+}
+
+.options-group {
+  border: none;
+  margin: 8px 0;
+}
+
+.input-group {
+  display: flex;
+  float: left;
+  flex-direction: column-reverse;
+  width: 50%;
+}
+
+.input-group label {
+  font-size: 0.7em;
+  color: #666;
+}
+
+
+.input-group input {
+  border-width: 0 0 2px;
+  height: 24px;
+  font-size: 1em;
+  background: none;
+
+}
+
+.input-group input:focus {
+  border-color: #81d4fa;
+  outline: none;
+  transition: color 200ms;
+}
+
+.input-group input:focus + label {
+  color: #81d4fa;
+  transition: color 200ms;
+}
+
 
 /* ctrl frame-------------------------------------------------------------- */
 
@@ -155,9 +239,6 @@ h4 { font-size: 1.414em }
 
 .ctrl-menu {
   flex: 2;
-  display: flex;
-  padding: 16px;
-  justify-content: center;
 }
 
 .ctrl-btn {
@@ -196,7 +277,7 @@ h4 { font-size: 1.414em }
 }
 
 .btn-good {
-  background-color: #1b5e20;
+  background-color: #4caf50;
 }
 .btn-good:hover {
   background-color: #2e7d32;
@@ -466,71 +547,4 @@ h4 { font-size: 1.414em }
 }
 .card.spades::after {
   background-position: bottom right;
-}
-
-/* options form ------------------------------------------------------------- */
-
-.options-outer {
-  color: #333;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  padding: 32px;
-  background-color: rgba(0,0,0,.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.options-inner {
-  position: relative;
-  flex: 0 1 512px;
-  padding: 16px;
-  background-color: #fff;
-  box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
-}
-
-.menu-toggle {
-  position: absolute;
-  right: 0;
-  top: 8px;
-}
-
-.options-footer {
-  text-align: right;
-}
-
-.options-group {
-  border: none;
-  margin: 8px 0;
-}
-
-.input-group {
-  display: inline-flex;
-  flex-direction: column-reverse;
-  width: 50%;
-}
-
-.input-group label {
-  font-size: 0.7em;
-  color: #666;
-}
-
-
-.input-group input {
-  border-width: 0 0 2px;
-  height: 24px;
-  font-size: 1em;
-}
-
-.input-group input:focus {
-  border-color: #4a4ad9;
-  outline: none;
-}
-
-.input-group input:focus + label {
-  color: #4a4ad9;
 }

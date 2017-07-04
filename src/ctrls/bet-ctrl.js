@@ -3,43 +3,20 @@ import { mapGetters } from 'vuex';
 export default {
   props: ['player'],
   template: `
-  <div class="ctrl-menu" >
-    <button class="betting-chip ctrl-btn"
-      v-for="chip in chips"
-      :disabled="(chip > maxChips) ? true : false"
-      :class="'chip-' + chip"
-      @click="addChip(chip)" >
+  <div class="ctrl-menu frame-thick centre-flex" >
 
-      <span class="ctrl-btn-label" >£{{chip}}</span>
+    <button-ctrl
+      v-for="(ctrl,i) in ctrlBets"
+      :key="i" :ctrl="ctrl"
+      @click.native="addChip(ctrl.ref)" >
+    </button-ctrl>
 
-      <svg class="token ctrl-btn-icon" viewBox="0 0 100 100" >
-        <use xlink:href="#chip"/>
-      </svg>
-    </button>
+    <button-ctrl
+      v-for="(ctrl,j) in ctrlSubmits"
+      :key="j" :ctrl="ctrl"
+      @click.native="ctrl.onClick()" >
+    </button-ctrl>
 
-    <button class="ctrl-btn btn-good"
-      @click="emitBet"
-      :disabled="betErr ? true:false" >
-
-      <span class="ctrl-btn-label" >
-        Submit Bet: £{{ currChipValue }}
-      </span>
-
-      <i class="material-icons ctrl-btn-icon" >publish</i>
-
-      <span class="error-text ctrl-btn-label" v-show="betErr"  >
-        Min £{{minBet}}
-      </span>
-    </button>
-
-    <button class="ctrl-btn btn-alert"
-      @click="removeChip"
-      :disabled="currChips.length === 0 ? true:false" >
-
-      <span class="ctrl-btn-label" >Undo</span>
-
-      <i class="material-icons ctrl-btn-icon" >undo</i>
-    </button>
   </div>
   `,
   data() {
@@ -50,12 +27,31 @@ export default {
     };
   },
   computed: {
-    maxChips() {
-      return this.player.money - this.currChipValue;
+    ctrlBets() {
+      const maxChips = (this.player.money - this.currChipValue);
+
+      return this.chips.map((chip) => {
+        const canUse = chip <= maxChips;
+        return {
+          ref: chip,
+          name: `£${chip}`,
+          class: `betting-chip chip-${chip}`,
+          svg: '#chip',
+          canUse,
+          onClick: this.addChip,
+        };
+      });
     },
 
-    betErr() {
-      return (this.currChipValue < this.minBet);
+    ctrlSubmits() {
+      const bet = this.currChipValue;
+      const canUse = (bet >= this.minBet);
+      const betStr = canUse ? `Submit: £${bet}` : `Min: £${this.minBet}`;
+
+      return [
+        { name: betStr, class: 'btn-good', icon: 'publish', canUse, onClick: this.emitBet },
+        { name: 'Undo', class: 'btn-alert', icon: 'undo', canUse: bet > 0, onClick: this.removeChip },
+      ];
     },
 
     ...mapGetters([

@@ -1,10 +1,20 @@
+import CtrlButton from './button';
+
 export default {
   template: `
-  <div class="options-outer center-content" >
-    <div class="options-inner" >
-      <button class="btn menu-toggle material-icons" @click="emitCloseOptions" >close</button>
-      <form id="v-options" class="options-form" @submit.prevent="setOptions" >
-        <fieldset class="options-group frame" >
+  <div class="modal-container centre-flex" @click.self="emitCloseOptions" >
+    <div class="modal" >
+
+      <header class="modal-header frame-thick" >
+        <h3 class="modal-title" >Let's Play BlackJack!</h3>
+
+        <button class="text-btn modal-toggle" @click="emitCloseOptions" >
+          <i class="material-icons">close</i>
+        </button>
+      </header>
+
+      <form id="v-options" class="options-form frame" @submit.prevent="setOptions" >
+        <fieldset class="options-group" >
           <h4 class="options-title frame" >Player Names</h4>
 
           <div v-for="(player,idx) in playerInput" :key="idx" class="input-group frame" >
@@ -13,9 +23,9 @@ export default {
           </div>
         </fieldset>
 
-        <fieldset class="options-group frame" >
+        <fieldset class="options-group" >
         <template v-if="moreOptions" >
-          <h4  class="options-title frame" @click="moreOptions = false" >Less Options <i class="material-icons">expand_less</i></h4>
+          <h4  class="options-title frame" @click="moreOptions = false" >Less Options <i class="material-icons text-btn">expand_less</i></h4>
 
           <div class="input-group frame" >
             <input v-model.lazy="deckInput" type="number" id="input-deck" />
@@ -34,15 +44,15 @@ export default {
 
         </template>
         <template v-else>
-          <h4 class="options-title frame" @click="moreOptions = true" >More Options <i class="material-icons">expand_more</i></h4>
+          <h4 class="options-title frame" @click="moreOptions = true" >More Options <i class="material-icons text-btn">expand_more</i></h4>
         </template>
         </fieldset>
 
       </form>
 
-      <div class="options-footer" >
-        <button class="btn options-submit" @click="setOptions" >New Game</button>
-        <button class="btn options-submit" @click="skipBets" >Skip Bets</button>
+      <div class="modal-footer frame-thick" >
+        <button class="text-btn options-submit" @click="setOptions" >NEW GAME</button>
+        <button class="text-btn options-submit" @click="skipBets" >SKIP BETS</button>
       </div>
     </div>
   </div>
@@ -64,7 +74,6 @@ export default {
     };
   },
 
-  // todo bonus; buttons as a new sub-template
   methods: {
     setNewPlayer(name, index, isDealer = false) {
       return {
