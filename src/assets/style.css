@@ -35,7 +35,7 @@ h1, h2, h3, h4 {
   line-height: 1.1;
 }
 
-h1 { font-size: 3.56rem }
+h1 { font-size: 3.56rem } /* currently unused? */
 
 h2 { font-size: 2.92rem }
 
@@ -66,10 +66,12 @@ h5 { font-size: 1rem }
   cursor: pointer;
 }
 
-.text-btn:hover {
-  color: #81d4fa;
+.text-btn:hover, .text-btn:focus {
+  color: #00c853;
   transition: color 200ms;
+  outline: none;
 }
+
 
 .material-icons {
   font-size: 1.4em;
@@ -164,7 +166,7 @@ h5 { font-size: 1rem }
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 20;
+  z-index: 30;
   padding: 32px;
   background-color: rgba(0,0,0,.2);
 }
@@ -177,7 +179,7 @@ h5 { font-size: 1rem }
 }
 
 .modal-header {
-  background-color: #0288d1;
+  background-color: #2e7d32;
   color: #fafafa;
 }
 
@@ -219,13 +221,13 @@ h5 { font-size: 1rem }
 }
 
 .input-group input:focus {
-  border-color: #81d4fa;
+  border-color: #00c853;
   outline: none;
   transition: color 200ms;
 }
 
 .input-group input:focus + label {
-  color: #81d4fa;
+  color: #00c853;
   transition: color 200ms;
 }
 
@@ -235,6 +237,7 @@ h5 { font-size: 1rem }
 .player-info {
   flex: 1;
   text-align: right;
+  align-self: center;
 }
 
 .ctrl-menu {
@@ -249,8 +252,14 @@ h5 { font-size: 1rem }
   width: 12%;
   height: 100%;
   color: inherit;
-  transition: background 300ms;
+  border: solid 1px transparent;
+  transition: 200ms;
   cursor: pointer;
+}
+
+.ctrl-btn:focus {
+  outline: none;
+  border-color: #0277bd;
 }
 
 .ctrl-btn:first-of-type {
@@ -277,10 +286,11 @@ h5 { font-size: 1rem }
 }
 
 .btn-good {
-  background-color: #4caf50;
+  background-color: #2e7d32;
+
 }
 .btn-good:hover {
-  background-color: #2e7d32;
+  background-color: #4caf50;
 }
 .ctrl-btn:disabled, .ctrl-btn:disabled:hover {
   background-color: #4c4c4c;
@@ -307,13 +317,13 @@ h5 { font-size: 1rem }
 }
 
 .player-frame-title {
-  background-color: #254a2a;
+  background-color: #1b5e20;
   position: relative;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   transition: border-color 400ms;
-  border-bottom: solid 2px #254a2a;
+  border-bottom: solid 2px #2e7d32;
   border-radius: 2px 2px 0 0;
 }
 
@@ -360,7 +370,6 @@ h5 { font-size: 1rem }
   height: 50%;
 }
 
-
 .player-hand {
   padding: 8px 36px;
   position: relative;
@@ -369,7 +378,6 @@ h5 { font-size: 1rem }
   flex-direction: column;
   justify-content: center;
 }
-
 
 .hand-score {
   position: absolute;
@@ -386,8 +394,6 @@ h5 { font-size: 1rem }
   white-space: nowrap;
   top: 24px;
 }
-
-
 
 .round-alert {
   position: absolute;
@@ -417,6 +423,8 @@ h5 { font-size: 1rem }
   align-items: flex-end;
   width: 100%;
   height: 24px;
+  padding: 0 8px;
+  font-size: 0.8em;
 }
 
 

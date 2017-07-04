@@ -52,9 +52,10 @@ export default {
       if (ctrl === 'split' || ctrl === 'double') {
         const betVals = {
           idx,
-          value: player.firstBet,
+          value: -player.firstBet,
         };
-        store.dispatch('playerSetBet', betVals);
+
+        store.dispatch('playerUpdateMoney', betVals);
       }
     },
   },

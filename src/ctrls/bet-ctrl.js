@@ -46,10 +46,11 @@ export default {
     ctrlSubmits() {
       const bet = this.currChipValue;
       const canUse = (bet >= this.minBet);
-      const betStr = canUse ? `Submit: £${bet}` : `Min: £${this.minBet}`;
+      const betStr = canUse ? `Submit: £${bet}` : 'Submit';
+      const alert = `Min: £${this.minBet}`;
 
       return [
-        { name: betStr, class: 'btn-good', icon: 'publish', canUse, onClick: this.emitBet },
+        { name: betStr, class: 'btn-good', icon: 'publish', canUse, onClick: this.emitBet, alert, alertIf: !canUse },
         { name: 'Undo', class: 'btn-alert', icon: 'undo', canUse: bet > 0, onClick: this.removeChip },
       ];
     },

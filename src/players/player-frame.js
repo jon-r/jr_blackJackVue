@@ -9,6 +9,7 @@ export default {
   template: `
   <section class="player-frame" :class="playerClass" ref="frameParent" >
     <player-hand
+      v-if="player.inGame"
       :result="roundResult"
       :player="player"
       :framepos="framepos"
@@ -85,6 +86,7 @@ export default {
   methods: {
 
     turnCheck() {
+      console.log('checkTurn', this.player.name);
       const cantBet = !this.player.inGame;
       const wontBet = this.gameStage === 0 && this.player.isDealer;
 

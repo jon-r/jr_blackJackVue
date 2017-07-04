@@ -272,6 +272,7 @@ export default {
 
     double() {
       this.addBlankCard().emitBetChange('addBet')
+        .then(() => this.$store.dispatch('playerDoubleBet', { idx: this.player.index })) // needed to change the bet AFTER adding. to avoid double dipping
         .then(() => this.emitEndTurn());
     },
 

@@ -17,7 +17,7 @@ export default new Vuex.Store({
     // game stage ids
     gameRound: -1,
     gameStage: -1,
-    gameActivePlayer: 0,
+    gameActivePlayer: -1,
 
     // players & dealer
     dealer: {},
@@ -52,6 +52,10 @@ export default new Vuex.Store({
     // players & dealer
     PLAYER_UPDATE_MONEY(state, { idx, value }) {
       state.players[idx].money += value;
+    },
+
+    PLAYER_DOUBLE_BET(state, { idx }) {
+      state.players[idx].firstBet *= 2;
     },
 
     DEALER_SET_PEEKED(state, card) {
@@ -98,15 +102,16 @@ export default new Vuex.Store({
       const dealer = options.players.find(player => player.isDealer);
       const deck = buildDeck(options.config.deckCount);
 
-      return dispatch('resetGame').then(() => {
-        commit('NEXT_ACTIVE_PLAYER');
-        commit('NEXT_ROUND');
-        commit('SET_CONFIG', options.config);
-        commit('SET_DECK', deck);
-        commit('SET_PLAYERS', options.players);
-        commit('SET_PLAYER_COUNT', options.players.length);
-        commit('SET_DEALER', dealer);
-      });
+      return dispatch('resetGame')
+        .then(() => {
+          commit('NEXT_ROUND');
+          commit('SET_CONFIG', options.config);
+          commit('SET_DECK', deck);
+          commit('SET_PLAYERS', options.players);
+          commit('SET_PLAYER_COUNT', options.players.length);
+          commit('SET_DEALER', dealer);
+        })
+        .then(() => commit('NEXT_ACTIVE_PLAYER')); // set last to trigger the first player actions
     },
 
     resetGame: ({ commit }) => new Promise((resolve) => {
@@ -125,6 +130,7 @@ export default new Vuex.Store({
       if (state.deck.length < quarterDeck) {
         const deck = buildDeck(state.config.deckCount);
         commit('SET_DECK', deck);
+        commit('SET_MESSAGE', 'Reshuffling the deck');
       }
       return true;
     },
@@ -143,7 +149,7 @@ export default new Vuex.Store({
     }),
 
     // players
-    playerSetBet: ({ commit }, { idx, value }) => new Promise((resolve) => {
+    playerSetBet: ({ commit }, { idx, value, double = false }) => new Promise((resolve) => {
       commit('PLAYER_UPDATE_MONEY', { idx, value: -value });
       commit('PLAYER_SET_BET', { idx, value });
       resolve();
@@ -187,7 +193,7 @@ export default new Vuex.Store({
     ...actionSetters({
       setStage: 'SET_STAGE',
       playerSetScore: 'PLAYER_SET_SCORE',
-      playerSetBid: 'PLAYER_SET_BET',
+      playerDoubleBet: 'PLAYER_DOUBLE_BET',
       playerUpdateMoney: 'PLAYER_UPDATE_MONEY',
       dealerCard: 'DEALER_SET_PEEKED',
       playerEndGame: 'PLAYER_END_GAME',

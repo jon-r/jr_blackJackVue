@@ -72,7 +72,6 @@ export default {
       let i = 0;
       let remainder = value;
 
-      // todo bonus: can this be reduced?
       while (i < chips.length) {
         const chip = chips[i];
         if (chip <= remainder) {
@@ -146,8 +145,6 @@ export default {
     },
 
     cashIn(bet) {
-      console.log('cash in', this.bet);
-
       this.hideChips();
 
       this.alreadyEnded = false;
@@ -160,7 +157,6 @@ export default {
         }
       });
 
-      // todo bonus: remove timeout?
       setTimeout(() => {
         this.chips = [];
       }, 1000);

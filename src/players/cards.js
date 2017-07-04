@@ -96,10 +96,8 @@ export default {
     },
     enter(el, done) {
       const offsetX = el.dataset.index * 30;
-
-      requestAnimationFrame(() => {
-        setPos(el, transformJiggle({ offsetX }));
-      });
+      const jiggle = transformJiggle({ offsetX });
+      this.$nextTick(() => setPos(el, jiggle));
     },
 
     leave(el, done) {
