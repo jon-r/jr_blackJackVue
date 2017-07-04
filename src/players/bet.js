@@ -30,9 +30,6 @@ export default {
     };
   },
   computed: {
-
-
-
     ...mapGetters([
       'gameRound',
       'eventBus',
@@ -94,10 +91,12 @@ export default {
 
       const input = this.calcChips(Math.abs(newBet));
       const args = [input, this.chips, 100];
+      let remaining;
 
       switch (true) {
       case (newBet < 0):
-        return arrayStaggeredPull(...args);
+        remaining = arrayStaggeredPull(...args);
+        return (remaining) ? this.splitChips(remaining) : true;
       case (newBet > 0):
         return arrayStaggeredPush(...args);
       default: // no change
@@ -105,10 +104,23 @@ export default {
       }
     },
 
+    splitChips(toRemove) {
+      const removeTotal = toRemove.reduce((sum, value) => sum + value, 0);
+      const chipsFilter = this.chips.filter(chip => chip > removeTotal);
+      const lowestChip = Math.min(...chipsFilter); // the lowest chip that can be broken down;
+      const newChips = this.calcChips(lowestChip - removeTotal);
+
+      const rm = this.chips.indexOf(lowestChip);
+      this.chips.splice(rm, 1);
+      setTimeout(() => {
+        arrayStaggeredPush(newChips, this.chips, 100);
+      }, 100);
+    },
+
     adjustBet() {
       const { idx, type, value } = this.eventBus;
       const isBetEvent = (idx === this.player.index) && (type === 'bet');
-      const hasNoBet = (this.bet === 0 && value !== 'addBet')
+      const hasNoBet = (this.bet === 0 && value !== 'addBet');
 
       if (!isBetEvent || hasNoBet || this.alreadyEnded) return this;
 
@@ -148,7 +160,7 @@ export default {
         }
       });
 
-      //todo bonus: remove timeout?
+      // todo bonus: remove timeout?
       setTimeout(() => {
         this.chips = [];
       }, 1000);

@@ -35,9 +35,10 @@ export function arrayStaggeredPull(toRemove, array, staggerTime) {
   if (find !== -1) {
     array.splice(find, 1);
   } else {
-    // TODO required - pulling half chips
-    return true;
+    toRemove.push(item);
+    // returning the chip that cannot be found;
+    return toRemove;
   }
   setTimeout(() => arrayStaggeredPull(toRemove, array, staggerTime), staggerTime);
-  return true;
+  return false;
 }

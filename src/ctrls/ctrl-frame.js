@@ -38,8 +38,8 @@ export default {
       const stage = this.gameStage;
       const out = new Map([
         [0, `Current money: £${player.money}. Min Bet: £${this.minBet}.`],
-        [5, '#endGameStats'], // todo required
-        // to do = more tips?
+        [5, 'Round Over. Keep on playing?'],
+        // todo bonus = more tips?
       ]);
 
       return out.has(stage) ? out.get(stage) : '';
@@ -58,7 +58,7 @@ export default {
       const out = new Map([
         [0, 'Please place Your bets'],
         [1, 'All bets are in, dealing out the first cards.'],
-        [5, '#EndGameMessage'], // todo required
+        [5, 'Round Over'],
       ]);
 
       if (!out.has(stage)) return false;
