@@ -50,11 +50,17 @@ const app = new Vue({
       'players',
       'gameActivePlayer',
       'newMessage',
+      'eventBus',
+      'eventID'
     ]),
 
   },
 
   methods: {
+    newGameCheck() {
+      if (this.eventBus.type === 'newGame') this.showOptions = true;
+    },
+
     updateChat(params) {
       const maxMessages = 5;
 
@@ -71,6 +77,7 @@ const app = new Vue({
 
   watch: {
     newMessage: 'updateChat',
+    eventID: 'newGameCheck',
   },
 });
 

@@ -126,12 +126,15 @@ export default new Vuex.Store({
 
       state.players.forEach(player => commit('PLAYER_SET_SCORE', { idx: player.index, value: 0 }));
       commit('NEXT_ROUND');
+      commit('SET_ACTIVE_PLAYER', -1);
 
       if (state.deck.length < quarterDeck) {
         const deck = buildDeck(state.config.deckCount);
         commit('SET_DECK', deck);
         commit('SET_MESSAGE', 'Reshuffling the deck');
       }
+
+      setTimeout(() => commit('NEXT_ACTIVE_PLAYER'), 200);
       return true;
     },
 

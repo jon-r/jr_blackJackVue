@@ -94,6 +94,7 @@ export default {
       };
 
       const players = this.playerInput
+        .filter(player => player.name)
         .map((player, index) => this.setNewPlayer(player.name, index));
 
       const dealer = this.setNewPlayer('Dealer', players.length, true);

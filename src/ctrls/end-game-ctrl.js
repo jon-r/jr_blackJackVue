@@ -12,17 +12,6 @@ export default {
   </div>
   `,
 
-//    <button class="ctrl-btn"
-//      v-for="ctrl in ctrls"
-//      :disabled="ctrl.canUse ? false:true"
-//      :class="'ctrl-' + ctrl.name"
-//      @click="setTurn(ctrl.name)" >
-//
-//      <span class="ctrl-btn-label" >{{ctrl.name}}</span>
-//
-//      <i class="material-icons ctrl-btn-icon" >{{ctrl.icon}}</i>
-//    </button>
-
   computed: {
 
     ctrls() {
@@ -42,8 +31,14 @@ export default {
   methods: {
 
     setTurn(turn) {
-      const evt = (turn === 'new game') ? 'newGame' : 'nextRound';
-      this.$store.dispatch(evt);
+      const store = this.$store;
+
+      if (turn === 'next round') {
+        return store.dispatch('nextRound');
+      }
+
+      const gameEvent = { type: 'newGame' };
+      return store.dispatch('doEvent', gameEvent);
     },
 
   },

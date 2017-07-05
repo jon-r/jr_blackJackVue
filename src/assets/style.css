@@ -189,7 +189,7 @@ h5 { font-size: 1rem }
   }
 
   .blackjack-table {
-    background: url(table-print.svg) center/contain no-repeat;
+    background: url(./table-print.svg) center/contain no-repeat;
     overflow: hidden;
   }
 
@@ -442,7 +442,7 @@ h5 { font-size: 1rem }
   padding: 8px 36px;
   position: relative;
   justify-content: center;
-  z-index: 5;
+  z-index: 6;
 }
 
 .hand-score {
@@ -565,7 +565,7 @@ h5 { font-size: 1rem }
 }
 
 .card.blank {
-  background: url(card-back.svg) center/cover , #c97272;
+  background: url(./card-back.svg) center/cover , #c97272;
 }
 
 .hearts .card, .diamonds .card {
@@ -576,9 +576,9 @@ h5 { font-size: 1rem }
 }
 
 @keyframes flip {
-  from { background-image: url(card-back.svg); }
+  from { background-image: url(./card-back.svg); }
   50% {
-    background-image: url(card-back.svg);
+    background-image: url(./card-back.svg);
     transform: rotateY(90deg);
   }
   51%, to {
@@ -605,7 +605,7 @@ h5 { font-size: 1rem }
   bottom:-5px;
   height: 40px;
   width: 40px;
-  background: url(card.min.svg) 0/200%;
+  background: url(./card.min.svg) 0/200%;
 
 }
 

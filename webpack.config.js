@@ -9,7 +9,7 @@ const config = {
   output: {
     path: `${__dirname}/dist`, // `dist` is the destination
     filename: 'bundle.js',
-    publicPath: '/dist',
+//    publicPath: './',
   },
   module: {
     rules: [
@@ -33,7 +33,13 @@ const config = {
           ],
         }),
       },
-      { test: /\.(jpe?g|gif|png|svg|woff|ttf|wav|mp3)$/, loader: 'file-loader' },
+      {
+        test: /\.(jpe?g|gif|png|svg|woff|ttf|wav|mp3)$/,
+        loader: 'file-loader',
+        query: {
+//          useRelativePath: process.env.NODE_ENV === 'production',
+        },
+      },
     ],
   },
   // To run development server
@@ -44,7 +50,7 @@ const config = {
 
   resolve: {
     alias: {
-      vue: 'vue/dist/vue.js',
+      vue: 'vue/dist/vue.common.js',
     },
   },
 
@@ -55,6 +61,8 @@ const config = {
 // Check if build is running in production mode, then change the sourcemap type
 if (process.env.NODE_ENV === 'production') {
   config.devtool = 'source-map';
+
+  console.log(process.env.NODE_ENV);
 
   // Can do more here
   // JSUglify plugin
