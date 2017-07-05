@@ -1,12 +1,13 @@
-var webpack = require('webpack');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-var config = {
-  context: __dirname +'/src', // `__dirname` is root of project and `src` is source
+const config = {
+  context: `${__dirname}/src`, // `__dirname` is root of project and `src` is source
   entry: {
     app: './main.js',
   },
   output: {
-    path: __dirname +'/dist', // `dist` is the destination
+    path: `${__dirname}/dist`, // `dist` is the destination
     filename: 'bundle.js',
     publicPath: '/dist',
   },
@@ -22,17 +23,24 @@ var config = {
       },
       {
         test: /\.css$/,
-        exclude: /node_modules/,
-        loader: 'style!css', // TODO fix this for CSS?
-        // https://github.com/tj/frontend-boilerplate/blob/master/webpack.config.js
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+            },
+            'postcss-loader',
+          ],
+        }),
       },
-
+      { test: /\.(jpe?g|gif|png|svg|woff|ttf|wav|mp3)$/, loader: 'file-loader' },
     ],
   },
   // To run development server
   devServer: {
-    contentBase: __dirname +'/src',
+    contentBase: `${__dirname}/src`,
   },
+  plugins: [new ExtractTextPlugin('app.css')],
 
   resolve: {
     alias: {

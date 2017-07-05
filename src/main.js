@@ -9,6 +9,9 @@ import CtrlFrame from './ctrls/ctrl-frame';
 import SVGElements from './svg-static';
 import OptionsModal from './ctrls/options-ctrl';
 
+// importing stylesheet for webpack
+import './assets/style.css';
+
 const app = new Vue({
   el: '#v-blackJack',
 
