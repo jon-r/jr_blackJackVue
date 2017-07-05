@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 export default {
   props: ['player'],
   template: `
-  <div class="ctrl-menu frame-thick flex-centre" >
+  <div class="ctrl-menu frame-thick flex flex-wrap" >
     <button-ctrl
       v-for="(ctrl,j) in ctrls"
       :key="j" :ctrl="ctrl"

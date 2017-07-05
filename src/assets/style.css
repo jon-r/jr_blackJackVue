@@ -24,25 +24,21 @@ html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,ifr
 /* global ------------------------------------------------------------------- */
 
 body {
-  /* foundation fontstack */
-  font: normal 15px/1.5 "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-  background: url(grid.svg) 0/32px;
-  padding-top: 32px;
+  font: normal 12px/1.2 Roboto, Helvetica, Arial, sans-serif;
 }
+
 
 h1, h2, h3, h4 {
   font-weight: 400;
   line-height: 1.1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
-h1 { font-size: 3.56rem } /* currently unused? */
-
-h2 { font-size: 2.92rem }
-
-h3 { font-size: 2.28rem }
-
-h4 { font-size: 1.64rem }
-
+h2 { font-size: calc(0.5vw + 1.92rem) }
+h3 { font-size: calc(0.5vw + 1.28rem) }
+h4 { font-size: calc(0.5vw + .64rem) }
 h5 { font-size: 1rem }
 
 .good-text {
@@ -78,19 +74,21 @@ h5 { font-size: 1rem }
 
 
 .material-icons {
-  font-size: 1.4em;
+/*  font-size: 1.4em;*/
   vertical-align: middle;
 }
 
-.flex,
-.flex-centre,
-.flex-column {
+.flex{
   display: flex;
 }
 
 .flex-centre {
   align-items: center;
   justify-content: center;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
 }
 
 .flex-column {
@@ -102,50 +100,63 @@ h5 { font-size: 1rem }
 }
 
 .frame {
-  padding: 8px;
+  padding: 4px;
 }
 
 .frame-thick {
-  padding: 16px;
+  padding: 8px;
 }
 
 .shadow-light {
   box-shadow:  0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }
 
+@media screen and (min-width: 1024px) {
+  body {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .frame {
+    padding: 8px;
+  }
+
+  .frame-thick {
+    padding: 16px;
+  }
+}
+
 /* core layout -------------------------------------------------------------- */
 
 .container {
-  width: 1024px;
+  width: 100vw;
+  max-width: 1024px;
   margin: auto;
-  height: 768px;
+  height: 100vh;
   background-color: #2a5a30;
   border: #860707;
   color: #fff;
   position: relative;
 }
 
-
 .blackjack-table {
-  background: url(table-print.svg) center/contain no-repeat;
-  overflow: hidden;
+  position: relative;
 }
 
 .ctrl-bar {
-  height: 128px;
+  height: 196px;
   background-color: #333;
-  padding-left: 8px;
-  padding-right: 8px;
+  flex-wrap: wrap;
+  overflow-y: auto;
 }
 
 .deck {
   position: absolute;
   top: 5%;
-  left: 70%;
+  left: 5%;
 }
 
 .announcement {
-  width: 512px;
+  display: none;
 }
 
 .message {
@@ -166,6 +177,30 @@ h5 { font-size: 1rem }
 .messages-leave-to {
   opacity: 0;
   transition: opacity 5s, transform 0.5s ease-out;
+}
+
+@media screen and (min-width: 1024px) {
+  .container {
+    max-height: 768px;
+  }
+
+  .ctrl-bar {
+    height: 128px;
+  }
+
+  .blackjack-table {
+    background: url(table-print.svg) center/contain no-repeat;
+    overflow: hidden;
+  }
+
+  .announcement {
+    width: 512px;
+    display: block;
+  }
+
+  .deck {
+    left: 70%;
+  }
 }
 
 /* options form ------------------------------------------------------------- */
@@ -199,7 +234,12 @@ h5 { font-size: 1rem }
   position: absolute;
   right: 8px;
   top: 8px;
-  font-size: 2.28rem;  /* h3 */
+  font-size: calc(0.5vw + 1.28rem); /* h3 */
+  z-index: 10;
+}
+
+.modal-title {
+  max-width: calc(100% - 64px);
 }
 
 
@@ -243,24 +283,25 @@ h5 { font-size: 1rem }
 /* ctrl frame-------------------------------------------------------------- */
 
 .player-info {
-  align-self: center;
+  display: none;
 }
 
 .ctrl-menu {
   flex: 2;
+  justify-content: center;
 }
 
 .ctrl-btn {
   border: none;
   background-color: #212121;
   margin-left: 1px;
-  padding: 8px;
-  width: 12%;
-  height: 100%;
+  margin-bottom: 1px;
+  width: 25%;
   color: inherit;
   border: solid 1px transparent;
   transition: 200ms;
   cursor: pointer;
+  text-transform: capitalize;
 }
 
 .ctrl-btn:focus {
@@ -312,13 +353,38 @@ h5 { font-size: 1rem }
   /* text settings for mtl icons */
 }
 
+@media screen and (min-width: 1024px) {
+  .ctrl-btn {
+    width: 12%;
+    padding: 8px;
+  }
+
+  .player-info {
+    display: block;
+    align-self: center;
+    min-width: 0;
+    max-width: 33%;
+
+  }
+}
+
 /* player frame-------------------------------------------------------------- */
 
 .player-frame {
   position: absolute;
-  width: 20%;
-  height: 208px;
+  width: 40%;
+  max-width: 208px;
+  height: 25%;
+  max-height: 208px;
 }
+.player-0 { top: 25%; left: 5%; }
+.player-1 { top: 50%; left: 5%; }
+.player-2 { top: 75%; left: 35%; }
+.player-3 { top: 50%; right: 5%; }
+.player-4 { top: 25%; right: 5%; }
+
+/*dealer*/
+.player-5 { top: 2%; left: 30%; }
 
 .player-frame-title {
   background-color: #1b5e20;
@@ -334,11 +400,7 @@ h5 { font-size: 1rem }
   border-bottom-color: #f9a825;
 }
 
-.player-name {
-  display: inline-block;
-}
-
-.player-money {
+.player-name, .player-money {
   display: inline-block;
 }
 
@@ -359,13 +421,16 @@ h5 { font-size: 1rem }
 }
 
 
-.player-0 { top: 23%; left: 1%; }
-.player-1 { top: 49%; left: 15%; }
-.player-2 { top: 55%; left: 40%; }
-.player-3 { top: 49%; left: 65%; }
-.player-4 { top: 23%; left: 79%; }
-/*dealer*/
-.player-5 { top: 7%; left: 42%; }
+@media screen and (min-width: 1024px) {
+
+  .player-0 { top: 33%; left: 1%; }
+  .player-1 { top: 63%; left: 15%; }
+  .player-2 { top: 71%; left: 40%; }
+  .player-3 { top: 63%; right: 15%; }
+  .player-4 { top: 33%; right: 1%; }
+  /*dealer*/
+  .player-5 { top: 7%; left: 42%; }
+}
 
 /* player-hand -------------------------------------------------------------- */
 
@@ -377,6 +442,7 @@ h5 { font-size: 1rem }
   padding: 8px 36px;
   position: relative;
   justify-content: center;
+  z-index: 5;
 }
 
 .hand-score {
@@ -392,7 +458,7 @@ h5 { font-size: 1rem }
   z-index: 10;
   padding: 0 6px;
   white-space: nowrap;
-  top: 24px;
+  top: 1em;
 }
 
 .round-alert {
@@ -464,11 +530,15 @@ h5 { font-size: 1rem }
   opacity: 0.5;
   filter: grayscale(0.5);
   transition: 300ms;
+  transform: translateY(-10px);
 }
 
-.active-hand {
+
+.player-cards.active-hand {
   opacity: 1;
   filter: none;
+  z-index: 5;
+  transform: none;
 }
 
 .card-outer {
@@ -480,10 +550,9 @@ h5 { font-size: 1rem }
 }
 
 .card {
-  width: 50px;
-  height: 70px;
+  width: 35px;
+  height: 49px;
   background: white;
-  margin-right: -20px;
   border-radius: 3px;
   padding: 2px;
   overflow: hidden;
@@ -534,8 +603,8 @@ h5 { font-size: 1rem }
   position: absolute;
   right: -10px;
   bottom:-5px;
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
   background: url(card.min.svg) 0/200%;
 
 }
@@ -551,4 +620,18 @@ h5 { font-size: 1rem }
 }
 .card.spades::after {
   background-position: bottom right;
+}
+
+@media screen and (min-width: 1024px) {
+  .player-cards {
+    transform: none;
+  }
+  .card {
+    width: 50px;
+    height: 70px;
+  }
+  .card:not(.blank)::after {
+    height: 50px;
+    width: 50px;
+  }
 }

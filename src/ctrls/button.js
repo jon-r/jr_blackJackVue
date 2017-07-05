@@ -20,7 +20,7 @@ Vue.component('button-ctrl', {
 
       <i v-else-if="ctrl.icon" class="material-icons ctrl-btn-icon" >{{ctrl.icon}}</i>
 
-      <span class="ctrl-btn-alert alert-text" v-if="ctrl.alertIf" >{{ctrl.alert}}</span>
+      <span class="ctrl-btn-alert alert-text" v-if="ctrl.alert" >{{ctrl.alert}}</span>
 
     </button>
   `,

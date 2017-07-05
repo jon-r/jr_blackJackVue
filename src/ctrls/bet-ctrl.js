@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 export default {
   props: ['player'],
   template: `
-  <div class="ctrl-menu frame-thick flex-centre" >
+  <div class="ctrl-menu frame-thick flex flex-wrap" >
 
     <button-ctrl
       v-for="(ctrl,i) in ctrlBets"
@@ -50,7 +50,7 @@ export default {
       const alert = `Min: £${this.minBet}`;
 
       return [
-        { name: betStr, class: 'btn-good', icon: 'publish', canUse, onClick: this.emitBet, alert, alertIf: !canUse },
+        { name: betStr, class: 'btn-good', icon: 'publish', canUse, onClick: this.emitBet, alert },
         { name: 'Undo', class: 'btn-alert', icon: 'undo', canUse: bet > 0, onClick: this.removeChip },
       ];
     },

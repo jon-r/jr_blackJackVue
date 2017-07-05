@@ -7,7 +7,7 @@ import PlayerBet from './bet';
 export default {
   props: ['player'],
   template: `
-  <section class="player-frame flex-column" :class="playerClass" ref="frameParent" >
+  <section class="player-frame flex flex-column" :class="playerClass" ref="frameParent" >
     <player-hand
       v-if="player.inGame"
       :result="roundResult"
