@@ -6,7 +6,7 @@ import PlayerCards from './cards';
 export default {
   props: ['turn', 'player', 'framepos', 'result'],
   template: `
-  <div class="player-hand frame" >
+  <div class="player-hand frame flex-auto flex-column" >
 
     <player-cards
       v-for="(hand, idx) in hands"

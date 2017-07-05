@@ -57,6 +57,10 @@ h5 { font-size: 1rem }
   color: #c62828;
 }
 
+.text-right {
+  text-align: right;
+}
+
 .text-btn {
   background: none;
   border: none;
@@ -78,12 +82,24 @@ h5 { font-size: 1rem }
   vertical-align: middle;
 }
 
-.centre-flex {
+.flex,
+.flex-centre,
+.flex-column {
   display: flex;
+}
+
+.flex-centre {
   align-items: center;
   justify-content: center;
 }
 
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-auto {
+  flex: auto;
+}
 
 .frame {
   padding: 8px;
@@ -106,14 +122,11 @@ h5 { font-size: 1rem }
   background-color: #2a5a30;
   border: #860707;
   color: #fff;
-  display: flex;
-  flex-direction: column;
   position: relative;
 }
 
 
 .blackjack-table {
-  flex: 1;
   background: url(table-print.svg) center/contain no-repeat;
   overflow: hidden;
 }
@@ -121,8 +134,6 @@ h5 { font-size: 1rem }
 .ctrl-bar {
   height: 128px;
   background-color: #333;
-  display: flex;
-  justify-content: center;
   padding-left: 8px;
   padding-right: 8px;
 }
@@ -173,7 +184,8 @@ h5 { font-size: 1rem }
 
 .modal {
   position: relative;
-  flex: 0 1 512px;
+  width: 100%;
+  max-width: 512px;
   background-color: #fafafa;
   box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
 }
@@ -190,9 +202,6 @@ h5 { font-size: 1rem }
   font-size: 2.28rem;  /* h3 */
 }
 
-.modal-footer {
-  text-align: right;
-}
 
 .options-group {
   border: none;
@@ -200,7 +209,6 @@ h5 { font-size: 1rem }
 }
 
 .input-group {
-  display: flex;
   float: left;
   flex-direction: column-reverse;
   width: 50%;
@@ -235,8 +243,6 @@ h5 { font-size: 1rem }
 /* ctrl frame-------------------------------------------------------------- */
 
 .player-info {
-  flex: 1;
-  text-align: right;
   align-self: center;
 }
 
@@ -312,14 +318,11 @@ h5 { font-size: 1rem }
   position: absolute;
   width: 20%;
   height: 208px;
-  display: flex;
-  flex-direction: column;
 }
 
 .player-frame-title {
   background-color: #1b5e20;
   position: relative;
-  display: flex;
   align-items: baseline;
   justify-content: space-between;
   transition: border-color 400ms;
@@ -373,9 +376,6 @@ h5 { font-size: 1rem }
 .player-hand {
   padding: 8px 36px;
   position: relative;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
 }
 
@@ -418,7 +418,6 @@ h5 { font-size: 1rem }
 /* player-bet --------------------------------------------------------------- */
 
 .player-bet {
-  display: flex;
   justify-content: space-between;
   align-items: flex-end;
   width: 100%;
@@ -429,10 +428,7 @@ h5 { font-size: 1rem }
 
 
 .chip-stack {
-  display: flex;
-  align-items: flex-start;
   flex-direction: column-reverse;
-  justify-content: flex-start;
   padding-bottom: 16px;
   z-index: 5;
   transform: translate(150px, 32px);

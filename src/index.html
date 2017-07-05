@@ -24,7 +24,7 @@ TO DO LIST:
 -->
 
 <body>
-  <div id="v-blackJack" class="container">
+  <div id="v-blackJack" class="container flex-column">
 
     <button class="text-btn modal-toggle" @click="showOptions = true" >
       <i class="material-icons">menu</i>
@@ -33,7 +33,7 @@ TO DO LIST:
     <options-modal v-if="showOptions" @hide="showOptions = false" >
     </options-modal>
 
-    <main class="blackjack-table" >
+    <main class="blackjack-table flex-auto" >
 
       <transition-group class="announcement frame" name="messages" tag="ul" >
         <li class="message" v-for="msg in messages" :key="msg.idx" >{{msg.text}}</li>

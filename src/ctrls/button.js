@@ -10,7 +10,7 @@ alertIf
 Vue.component('button-ctrl', {
   props: ['ctrl'],
   template: `
-    <button class="ctrl-btn" :disabled="!ctrl.canUse" :class="ctrl.class"  >
+    <button class="ctrl-btn flex-auto" :disabled="!ctrl.canUse" :class="ctrl.class"  >
 
       <h5 class="ctrl-btn-title" >{{ctrl.name}}</h5>
 

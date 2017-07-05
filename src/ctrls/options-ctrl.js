@@ -2,7 +2,7 @@ import CtrlButton from './button';
 
 export default {
   template: `
-  <div class="modal-container centre-flex" @click.self="emitCloseOptions" >
+  <div class="modal-container flex-centre" @click.self="emitCloseOptions" >
     <div class="modal" >
 
       <header class="modal-header frame-thick" >
@@ -17,7 +17,7 @@ export default {
         <fieldset class="options-group" >
           <h4 class="options-title frame" >Player Names</h4>
 
-          <div v-for="(player,idx) in playerInput" :key="idx" class="input-group frame" >
+          <div v-for="(player,idx) in playerInput" :key="idx" class="input-group flex-column frame" >
             <input  v-model.lazy="player.name" type="text" :id="'input-' + idx" />
             <label :for="'input-' + idx" ><i class="material-icons">person</i> Player {{idx}}</label>
           </div>
@@ -27,17 +27,17 @@ export default {
         <template v-if="moreOptions" >
           <h4  class="options-title frame" @click="moreOptions = false" >Less Options <i class="material-icons text-btn">expand_less</i></h4>
 
-          <div class="input-group frame" >
+          <div class="input-group flex-column frame" >
             <input v-model.lazy="deckInput" type="number" id="input-deck" />
             <label for="input-deck" ><i class="material-icons">style</i> Decks</label>
           </div>
 
-          <div class="input-group frame" >
+          <div class="input-group flex-column frame" >
             <input v-model.lazy="minBet" type="number" min="0" id="input-bet" />
             <label for="input-bet" ><i class="material-icons">remove_circle</i> Min Bet</label>
           </div>
 
-          <div class="input-group frame" >
+          <div class="input-group flex-column frame" >
             <input v-model.lazy="autoTime" type="number" min="0" id="input-speed" />
             <label for="input-speed" ><i class="material-icons">slow_motion_video</i> Deal Speed</label>
           </div>
@@ -50,7 +50,7 @@ export default {
 
       </form>
 
-      <div class="modal-footer frame-thick" >
+      <div class="modal-footer frame-thick text-right" >
         <button class="text-btn options-submit" @click="setOptions" >NEW GAME</button>
         <button class="text-btn options-submit" @click="skipBets" >SKIP BETS</button>
       </div>

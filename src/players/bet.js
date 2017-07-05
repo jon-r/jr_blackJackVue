@@ -4,9 +4,9 @@ import { arrayStaggeredPush, arrayStaggeredPull, setPos } from '../animationTool
 export default {
   props: ['turn', 'player', 'framepos'],
   template: `
-  <div class="player-bet" >
-    <transition-group class="chip-stack" name="bets" tag="ul" :class="{ show : quidsIn }"
-      @before-enter="beforeEnter" @enter="enter" @leave="leave" >
+  <div class="player-bet flex" >
+    <transition-group class="chip-stack flex" name="bets" tag="ul" :class="{ show : quidsIn }"
+      @after-enter="enterTo" @enter="enter" @leave="leave" >
       <li v-for="(chip, idx) in chips"
         :class="'chip-' + chip"
         :key="idx"
@@ -39,11 +39,11 @@ export default {
   },
   methods: {
 
-    beforeEnter(el) {
+    enter(el) {
       setPos(el, { x: 0, y: -200 });
     },
 
-    enter(el, done) {
+    enterTo(el, done) {
       requestAnimationFrame(() => {
         setPos(el, { x: 0, y: 0 });
       });

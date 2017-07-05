@@ -7,7 +7,7 @@ import PlayerBet from './bet';
 export default {
   props: ['player'],
   template: `
-  <section class="player-frame" :class="playerClass" ref="frameParent" >
+  <section class="player-frame flex-column" :class="playerClass" ref="frameParent" >
     <player-hand
       v-if="player.inGame"
       :result="roundResult"
@@ -23,7 +23,7 @@ export default {
       :turn="isPlayerTurn" >
     </player-bet>
 
-    <header class="player-frame-title frame shadow-light" v-if="!player.isDealer" :class="{ 'is-active' : isPlayerTurn  }" >
+    <header class="player-frame-title flex frame shadow-light" v-if="!player.isDealer" :class="{ 'is-active' : isPlayerTurn  }" >
       <h4 class="player-name" :class="{ 'alert-text': isPlayerTurn, 'error-text': !this.player.inGame }" >{{player.name}}</h4>
 
       <h5 class="player-money" >
@@ -86,7 +86,6 @@ export default {
   methods: {
 
     turnCheck() {
-      console.log('checkTurn', this.player.name);
       const cantBet = !this.player.inGame;
       const wontBet = this.gameStage === 0 && this.player.isDealer;
 

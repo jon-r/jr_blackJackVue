@@ -9,9 +9,9 @@ import EndGameCtrl from './end-game-ctrl';
 export default {
   props: ['player'],
   template: `
-  <section class="ctrl-bar" >
+  <section class="ctrl-bar flex" >
     <template v-if="player" >
-      <div class="player-info frame" >
+      <div class="player-info frame text-right flex-auto" >
         <h2>{{player.name}}</h2>
         <p>{{tips}}</p>
       </div>

@@ -9,8 +9,8 @@ export default {
       {{score}} {{scoreStr}}
     </div>
 
-    <transition-group name="cards" tag="div"
-      @before-enter="beforeEnter" @enter="enter" @leave="leave" >
+    <transition-group appear name="cards" tag="div"
+      @enter="enter" @after-enter="enterTo" @leave="leave" >
       <div v-for="(card, idx) in this.cards"
         class="card-outer"
         :class="card.suit"
@@ -34,11 +34,10 @@ export default {
     enterPosition() {
       const shoe = this.shoePos;
       const frame = this.framepos;
-      // todo bonus: figure out why these magic numbers are needed ?
 
       return {
         x: shoe.x - frame.x - 36,
-        y: shoe.y - frame.y - 50,
+        y: shoe.y - frame.y - 70,
       };
     },
 
@@ -89,15 +88,13 @@ export default {
     ]),
   },
   methods: {
-    beforeEnter(el) {
-      const offsetX = el.dataset.index * 30;
-
+    enter(el) {
       setPos(el, this.enterPosition);
     },
-    enter(el, done) {
+    enterTo(el, done) {
       const offsetX = el.dataset.index * 30;
       const jiggle = transformJiggle({ offsetX });
-      this.$nextTick(() => setPos(el, jiggle));
+      setPos(el, jiggle);
     },
 
     leave(el, done) {
