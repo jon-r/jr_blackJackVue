@@ -49,6 +49,7 @@ bonus: save options?
 
       <player-frame
         v-for="player in players"
+        v-if="player.index > -1"
         :key="player.index"
         :player="player" >
       </player-frame>

@@ -21,7 +21,13 @@ export default new Vuex.Store({
 
     // players & dealer
     dealer: {},
-    players: [],
+    players: [
+      { name: 'Aaron' },
+      { name: 'Beth' },
+      { name: 'Chris' },
+      { name: 'Denise' },
+      { name: 'Ethan' },
+    ],
 
     // deck and cards
     deck: [],
@@ -29,7 +35,7 @@ export default new Vuex.Store({
 
     // other options
     config: {
-      minBet: 0,
+      minBet: 100,
       autoTime: 250,
       deckCount: 6,
     },
@@ -57,6 +63,13 @@ export default new Vuex.Store({
     PLAYER_DOUBLE_BET(state, { idx }) {
       state.players[idx].firstBet *= 2;
     },
+
+//    RESET_PLAYERS(state) {
+//      const playerNames =
+//      state.players.forEach(player => {
+//
+//      })
+//    },
 
     DEALER_SET_PEEKED(state, card) {
       state.dealer.peeked = card;
@@ -114,8 +127,10 @@ export default new Vuex.Store({
         .then(() => commit('NEXT_ACTIVE_PLAYER')); // set last to trigger the first player actions
     },
 
-    resetGame: ({ commit }) => new Promise((resolve) => {
-      commit('SET_PLAYERS', []);
+    resetGame: ({ commit, state }) => new Promise((resolve) => {
+      const names = state.players.map(player => player.name);
+
+      commit('SET_PLAYERS', names);
       commit('SET_ACTIVE_PLAYER', -1);
       commit('SET_STAGE', -1);
       resolve();
@@ -228,6 +243,7 @@ export default new Vuex.Store({
       'eventBus', // TODO bonus; combine events to a single getter? and check any other getters
       'shoePos',
       'newMessage',
+      'config',
     ]),
   },
 

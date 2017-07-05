@@ -1,3 +1,5 @@
+import { mapGetters } from 'vuex';
+
 import CtrlButton from './button';
 
 export default {
@@ -28,7 +30,7 @@ export default {
           <h4  class="options-title frame" @click="moreOptions = false" >Less Options <i class="material-icons text-btn">expand_less</i></h4>
 
           <div class="input-group flex flex-column frame" >
-            <input v-model.lazy="deckInput" type="number" id="input-deck" />
+            <input v-model.lazy="deckCount" type="number" id="input-deck" />
             <label for="input-deck" ><i class="material-icons">style</i> Decks</label>
           </div>
 
@@ -61,17 +63,30 @@ export default {
   data() {
     return {
       playerInput: [
-        { name: 'Aaron' },
-        { name: 'Beth' },
-        { name: 'Chris' },
-        { name: 'Denise' },
-        { name: 'Ethan' },
+
       ],
-      deckInput: 6,
-      minBet: 100,
-      autoTime: 250,
+      deckCount: 0,
+      minBet: 0,
+      autoTime: 0,
+
       moreOptions: false,
     };
+  },
+
+  mounted() {
+    this.deckCount = this.config.deckCount;
+    this.minBet = this.config.minBet;
+    this.autoTime = this.config.autoTime;
+    this.playerInput = this.players.slice(0, 5).map(player => player.name);
+  },
+
+  // todo. cleanly linking the options with the state
+
+  computed: {
+    ...mapGetters([
+      'players',
+      'config',
+    ]),
   },
 
   methods: {
@@ -89,7 +104,7 @@ export default {
     getOptions() {
       const config = {
         minBet: this.minBet,
-        deckCount: this.deckInput,
+        deckCount: this.deckCount,
         autoTime: this.autoTime,
       };
 
