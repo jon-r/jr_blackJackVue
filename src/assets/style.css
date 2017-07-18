@@ -19,12 +19,13 @@ fix
 */
 
 /*! minireset.css v0.0.3 | MIT License | github.com/jgthms/minireset.css */
-html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6,menu{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input,select,textarea{margin:0}html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}img,embed,iframe,object,audio,video{height:auto;max-width:100%}iframe{border:0}table{border-collapse:collapse;border-spacing:0}td,th{padding:0;text-align:left}
+html,body,p,ul,li,h1,h2,h3,h4,h5,h6{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input{margin:0}html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}
 
-/* global ------------------------------------------------------------------- */
+/* type --------------------------------------------------------------------- */
 
 body {
   font: normal 12px/1.2 Roboto, Helvetica, Arial, sans-serif;
+  color: #fff;
 }
 
 
@@ -128,18 +129,16 @@ h5 { font-size: 1rem }
 /* core layout -------------------------------------------------------------- */
 
 .container {
-  width: 100vw;
   max-width: 1024px;
   margin: auto;
   height: 100vh;
   background-color: #2a5a30;
-  border: #860707;
-  color: #fff;
   position: relative;
 }
 
 .blackjack-table {
   position: relative;
+  overflow: hidden;
 }
 
 .ctrl-bar {
@@ -190,7 +189,6 @@ h5 { font-size: 1rem }
 
   .blackjack-table {
     background: url(./table-print.svg) center/contain no-repeat;
-    overflow: hidden;
   }
 
   .announcement {
@@ -514,7 +512,6 @@ h5 { font-size: 1rem }
   height: 8px;
 }
 
-.chip-5 .token { filter: url(#red) }
 .chip-10 .token { filter: url(#blue) }
 .chip-25 .token { filter: url(#green) }
 .chip-100 .token { filter: url(#black) }

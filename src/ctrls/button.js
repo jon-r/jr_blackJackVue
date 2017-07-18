@@ -14,8 +14,8 @@ Vue.component('button-ctrl', {
 
       <h5 class="ctrl-btn-title" >{{ctrl.name}}</h5>
 
-      <svg v-if="ctrl.svg" class="token ctrl-btn-icon" viewBox="0 0 100 100" >
-        <use :xlink:href="ctrl.svg"/>
+      <svg v-if="ctrl.svg" viewBox="0 0 100 100" >
+          <use class="token ctrl-btn-icon" :xlink:href="ctrl.svg"/>
       </svg>
 
       <i v-else-if="ctrl.icon" class="material-icons ctrl-btn-icon" >{{ctrl.icon}}</i>

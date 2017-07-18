@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 export default {
   props: ['player'],
   template: `
-  <div class="ctrl-menu frame-thick flex flex-wrap" >
+  <div class="ctrl-menu frame flex flex-wrap" >
     <button-ctrl
       v-for="(ctrl,j) in ctrls"
       :key="j" :ctrl="ctrl"
@@ -24,7 +24,7 @@ export default {
       return [
         { name: 'hit', canUse: true, icon: 'touch_app' },
         { name: 'stand', canUse: true, icon: 'pan_tool' },
-        { name: 'split', canUse: canSplit, icon: 'call_split', alert: cost},
+        { name: 'split', canUse: canSplit, icon: 'call_split', alert: cost },
         { name: 'surrender', canUse: firstCtrl, icon: 'flag', alert: returns },
         { name: 'double', canUse: canDouble, icon: 'monetization_on', alert: cost },
       ];

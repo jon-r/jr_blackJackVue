@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = {
   context: `${__dirname}/src`, // `__dirname` is root of project and `src` is source
@@ -46,7 +47,15 @@ const config = {
   devServer: {
     contentBase: `${__dirname}/src`,
   },
-  plugins: [new ExtractTextPlugin('app.css')],
+  plugins: [
+    new ExtractTextPlugin('app.css'),
+    new HtmlWebpackPlugin({
+      template: `${__dirname}/src/index.html`,
+      minify: {
+        collapseWhitespace: true,
+      },
+    }),
+  ],
 
   resolve: {
     alias: {

@@ -98,7 +98,7 @@ export default {
     ...mapGetters([
       'players',
       'config',
-      'gameRound'
+      'gameRound',
     ]),
   },
 
