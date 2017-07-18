@@ -1,5 +1,7 @@
 import { mapGetters } from 'vuex';
 
+import { getRandom } from '../deckTools';
+
 import CtrlButton from './button';
 
 export default {
@@ -54,7 +56,7 @@ export default {
 
       <div class="modal-footer frame-thick text-right" >
         <button class="text-btn options-submit" @click="setOptions" >NEW GAME</button>
-        <button class="text-btn options-submit" @click="skipBets" >SKIP BETS</button>
+        <button class="text-btn options-submit" @click="skipBets" >SKIP BETS (DEMO)</button>
       </div>
     </div>
   </div>
@@ -62,9 +64,6 @@ export default {
 
   data() {
     return {
-      playerInput: [
-
-      ],
       deckCount: 0,
       minBet: 0,
       autoTime: 0,
@@ -77,16 +76,31 @@ export default {
     this.deckCount = this.config.deckCount;
     this.minBet = this.config.minBet;
     this.autoTime = this.config.autoTime;
-    this.playerInput = this.players.slice(0, 5).map(player => player.name);
+
+    // enable demo mode
+    const params = location.search;
+    if (params.includes('demo') && this.gameRound < 0) this.skipBets();
   },
 
   // todo. cleanly linking the options with the state
   // revert to non saving options if cant get done today
 
   computed: {
+    playerInput() {
+      // clones the players stored, and fills in the blanks
+      const players = this.players.filter(player => !player.isDealer).slice(0);
+      const empties = new Array(5 - players.length);
+      players.push(...empties);
+
+      console.log(players);
+
+      return players.map(player => ({ name: player.name || false }));
+    },
+
     ...mapGetters([
       'players',
       'config',
+      'gameRound'
     ]),
   },
 
@@ -110,7 +124,6 @@ export default {
       };
 
       const players = this.playerInput
-        .filter(player => player.name)
         .map((player, index) => this.setNewPlayer(player.name, index));
 
       const dealer = this.setNewPlayer('Dealer', players.length, true);
@@ -142,9 +155,11 @@ export default {
       if (idx > max) return Promise.resolve();
 
       const store = this.$store;
+      const rngBet = (getRandom(10) + 1) * 100;
+
       const betVals = {
         idx,
-        value: 500,
+        value: rngBet,
       };
       const betEvent = {
         idx,
