@@ -81,6 +81,7 @@ export default {
   },
 
   // todo. cleanly linking the options with the state
+  // revert to non saving options if cant get done today
 
   computed: {
     ...mapGetters([
