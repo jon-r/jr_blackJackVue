@@ -4,8 +4,24 @@ TODO LIST:
 bugs
 SKIP AARON when no money
 new game button doesnt work
-change MQ to something like 900px, so it works for ipad (and the tech demo)
+!!!!- remove the multiply from the chips. its breaking EVERYTHING
+- autoplay demo if url ends with demo. hash? window.location.search
+webpack inline svg ? use in the svg static to save effort
+lower media query (900-1000)
 
 bonus: save options?
+
+
+Mid-Game demo version. (extend from ‘SKIP BETS’)
+	more random first bets
+	trigger on ‘scroll to view’
+Make nice (simple) static site background to hold the game
+bug fixes?
+
+bonuses
+review this to improve css.
+http://cssstats.com/stats?url=http%3A%2F%2Fjon-richards.com%2Fblackjack-2&ua=Browser%20Default
+clean up the css reset?
+Make two versions (non-ie, edge+)
 
 -->
