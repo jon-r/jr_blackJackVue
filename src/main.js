@@ -51,7 +51,8 @@ const app = new Vue({
       'gameActivePlayer',
       'newMessage',
       'eventBus',
-      'eventID'
+      'eventID',
+      'activePlayerCount',
     ]),
 
   },

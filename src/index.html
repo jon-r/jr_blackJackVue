@@ -39,7 +39,7 @@
 
       <player-frame
         v-for="player in players"
-        v-if="player.index > -1"
+        v-if="player.index > -1 && activePlayerCount > 0"
         :key="player.index"
         :player="player" >
       </player-frame>

@@ -92,8 +92,6 @@ export default {
       const empties = new Array(5 - players.length);
       players.push(...empties);
 
-      console.log(players);
-
       return players.map(player => ({ name: player.name || false }));
     },
 
