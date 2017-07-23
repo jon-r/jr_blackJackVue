@@ -79,6 +79,8 @@ h5 { font-size: 1rem }
   vertical-align: middle;
 }
 
+/* flex settings ------------------------------------------------------------ */
+
 .flex{
   display: flex;
 }
@@ -126,10 +128,46 @@ h5 { font-size: 1rem }
   }
 }
 
+/* landing page ------------------------------------------------------------- */
+.site-body {
+  background-image: radial-gradient(circle, #1d570f 50%, #133a0a), url(./felt-tiled.jpg);
+  background-blend-mode: multiply;
+}
+.site-header {
+  width: 512px;
+  margin: 2rem auto;
+}
+.site-logo {
+  width: 512px;
+  height: 256px;
+}
+.site-content {
+  width: 100%;
+  max-width:1056px;
+  padding: 16px;
+  border: 8px solid rgba(249, 168, 37, 0.3);
+  border-radius: 16px;
+  margin: 2rem auto;
+}
+
+.site-footer {
+  color: #653f02;
+  text-shadow: 0 1px 3px #e7bb5a;
+  width: 100%;
+  padding: 1rem;
+  font-weight: bold;
+  text-align: center;
+  background: url(./brass.jpg) top/cover;
+}
+.site-footer a {
+  color: inherit;
+}
+
 /* core layout -------------------------------------------------------------- */
 
 .container {
   max-width: 1024px;
+  width: 100%;
   margin: auto;
   height: 100vh;
   background-color: #2a5a30;

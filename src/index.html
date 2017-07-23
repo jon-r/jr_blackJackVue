@@ -4,115 +4,131 @@
   <meta charset="utf-8">
   <base href="./">
 
-  <title>VueJS BlackJack Testing</title>
+  <title>VueJS BlackJack by Jon Richards</title>
+  <meta name="author" content="Jon Richards">
 
-  <meta name="description" content="">
+  <meta name="description" content="Play Blackjack! Built in VueJS">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link href="https://fonts.googleapis.com/icon?family=Roboto|Material+Icons" rel="stylesheet">
-
 </head>
 
 
-<body>
-  <div id="v-blackJack" class="container flex flex-column">
+<body class="site-body" >
 
-    <button class="text-btn modal-toggle" @click="showOptions = true" >
-      <i class="material-icons">menu</i>
-    </button>
+  <header class="site-header">
+    <img class="site-logo" src="/assets/logo.svg"  />
+  </header>
 
-    <options-modal v-if="showOptions" @hide="showOptions = false" >
-    </options-modal>
+  <main class="site-content">
 
-    <main class="blackjack-table flex-auto" >
+    <div id="v-blackJack" class="container flex flex-column">
 
-      <transition-group class="announcement frame" name="messages" tag="ul" >
-        <li class="message" v-for="msg in messages" :key="msg.idx" >{{msg.text}}</li>
-      </transition-group>
+      <button class="text-btn modal-toggle" @click="showOptions = true" >
+        <i class="material-icons">menu</i>
+      </button>
 
-      <div v-once class="deck" ref="theShoe" >
-        <div class="card blank stacked" ></div>
-      </div>
+      <options-modal v-if="showOptions" @hide="showOptions = false" >
+      </options-modal>
 
-      <player-frame
-        v-for="player in players"
-        v-if="player.index > -1 && activePlayerCount > 0"
-        :key="player.index"
-        :player="player" >
-      </player-frame>
+      <main class="blackjack-table flex-auto" >
 
-    </main>
+        <transition-group class="announcement frame" name="messages" tag="ul" >
+          <li class="message" v-for="msg in messages" :key="msg.idx" >{{msg.text}}</li>
+        </transition-group>
 
-    <ctrl-frame :player="activePlayer" ></ctrl-frame>
+        <div v-once class="deck" ref="theShoe" >
+          <div class="card blank stacked" ></div>
+        </div>
 
-    <svg-static v-once></svg-static>
+        <player-frame
+          v-for="player in players"
+          v-if="player.index > -1 && activePlayerCount > 0"
+          :key="player.index"
+          :player="player" >
+        </player-frame>
 
-  </div>
-</body>
+      </main>
 
+      <ctrl-frame :player="activePlayer" ></ctrl-frame>
 
+      <svg-static v-once></svg-static>
 
-<svg height="100" width="100" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" >
-  <defs>
-    <filter id="pink">
-      <feColorMatrix in="SourceGraphic" type="hueRotate" values="-20"/>
-    </filter>
-    <filter id="blue">
-      <feColorMatrix in="SourceGraphic" type="hueRotate" values="240"/>
-    </filter>
-    <filter id="yellow">
-      <feColorMatrix values="1.2 0 .8 0 0 1.2 .8 0 0 0 0 .8 .8 0 0 0 0 0 1 0"/>
-    </filter>
-    <filter id="green">
-      <feColorMatrix in="SourceGraphic" type="hueRotate" values="120"/>
-    </filter>
-    <filter id="black">
-      <feColorMatrix values="0.1 1 0 0 0 0.1 1 0 0 0 0.1 1 0 0 0 0 0 0 1 0"/>
-    </filter>
-    <filter id="grey">
-      <feColorMatrix values="1 0 0.5 0 0 1 0 0.5 0 0 1 0 0.5 0 0 0 0 0 1 0"/>
-    </filter>
-    <mask id="inner" >
-      <path d="m-50-50h100v-100h-100" />
-      <circle r="40" fill="#fff" />
-    </mask>
+    </div>
 
-    <linearGradient id="edge" y2="1" y1="1" >
-      <stop offset="6.8%" stop-color="#c00"/>
-      <stop offset="6.8%" stop-color="#ccc"/>
-      <stop offset="25%" stop-color="#ccc"/>
-      <stop offset="25%" stop-color="#c00"/>
-      <stop offset="50%" stop-color="#c00"/>
-      <stop offset="50%" stop-color="#ccc"/>
-      <stop offset="74.5%" stop-color="#ccc"/>
-      <stop offset="74.5%" stop-color="#c00"/>
-      <stop offset="93.8%" stop-color="#c00"/>
-      <stop offset="93.8%" stop-color="#ccc"/>
-    </linearGradient>
+  </main>
 
-    <linearGradient id="edge2" x1="1" x2="0" xlink:href="#edge" />
+  <svg height="0" width="0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" >
+    <defs>
+      <filter id="pink">
+        <feColorMatrix in="SourceGraphic" type="hueRotate" values="-20"/>
+      </filter>
+      <filter id="blue">
+        <feColorMatrix in="SourceGraphic" type="hueRotate" values="240"/>
+      </filter>
+      <filter id="yellow">
+        <feColorMatrix values="1.2 0 .8 0 0 1.2 .8 0 0 0 0 .8 .8 0 0 0 0 0 1 0"/>
+      </filter>
+      <filter id="green">
+        <feColorMatrix in="SourceGraphic" type="hueRotate" values="120"/>
+      </filter>
+      <filter id="black">
+        <feColorMatrix values="0.1 1 0 0 0 0.1 1 0 0 0 0.1 1 0 0 0 0 0 0 1 0"/>
+      </filter>
+      <filter id="grey">
+        <feColorMatrix values="1 0 0.5 0 0 1 0 0.5 0 0 1 0 0.5 0 0 0 0 0 1 0"/>
+      </filter>
+      <mask id="inner" >
+        <path d="m-50-50h100v-100h-100" />
+        <circle r="40" fill="#fff" />
+      </mask>
 
-    <symbol id="chip-tilt" viewBox="-50 -30 100 60" >
-      <g class="token" transform="scale(1 .5)">
-        <path fill="url(#edge)" d="M-48 0v16a1 1 0 0 0 96 0v-16" />
-        <circle r="48" fill="#c00"/>
-        <g fill="transparent" stroke="#ddd" >
-        <circle r="44"  stroke-width="8" stroke-dasharray="23"/>
-        <circle cy="4" r="38" stroke-width="4" stroke-dasharray="19.9" mask="url(#inner)"/>
+      <linearGradient id="edge" y2="1" y1="1" >
+        <stop offset="6.8%" stop-color="#c00"/>
+        <stop offset="6.8%" stop-color="#ccc"/>
+        <stop offset="25%" stop-color="#ccc"/>
+        <stop offset="25%" stop-color="#c00"/>
+        <stop offset="50%" stop-color="#c00"/>
+        <stop offset="50%" stop-color="#ccc"/>
+        <stop offset="74.5%" stop-color="#ccc"/>
+        <stop offset="74.5%" stop-color="#c00"/>
+        <stop offset="93.8%" stop-color="#c00"/>
+        <stop offset="93.8%" stop-color="#ccc"/>
+      </linearGradient>
+
+      <linearGradient id="edge2" x1="1" x2="0" xlink:href="#edge" />
+
+      <symbol id="chip-tilt" viewBox="-50 -30 100 60" >
+        <g class="token" transform="scale(1 .5)">
+          <path fill="url(#edge)" d="M-48 0v16a1 1 0 0 0 96 0v-16" />
+          <circle r="48" fill="#c00"/>
+          <g fill="transparent" stroke="#ddd" >
+          <circle r="44"  stroke-width="8" stroke-dasharray="23"/>
+          <circle cy="4" r="38" stroke-width="4" stroke-dasharray="19.9" mask="url(#inner)"/>
+          </g>
+          <path fill="url(#edge2)" d="M-40 0a1 1 0 1 1 80 0v4a1 1 0 1 0-80 0" />
+          <circle r="40" opacity=".2" />
         </g>
-        <path fill="url(#edge2)" d="M-40 0a1 1 0 1 1 80 0v4a1 1 0 1 0-80 0" />
-        <circle r="40" opacity=".2" />
-      </g>
-    </symbol>
-    <symbol id="chip" viewBox="-60 -60 120 120" >
-      <circle r="48" fill="#c00" />
-      <circle r="42" fill="transparent" stroke="#ddd" stroke-width="12" stroke-dasharray="22" />
-      <circle r="40" opacity="0.2" />
-      <path fill="#555" d="m0 -40a1 1 0 1 0 0 80h2a1 1 0 1 1 0 -80" opacity=".2" />
-    </symbol>
-  </defs>
+      </symbol>
+      <symbol id="chip" viewBox="-60 -60 120 120" >
+        <circle r="48" fill="#c00" />
+        <circle r="42" fill="transparent" stroke="#ddd" stroke-width="12" stroke-dasharray="22" />
+        <circle r="40" opacity="0.2" />
+        <path fill="#555" d="m0 -40a1 1 0 1 0 0 80h2a1 1 0 1 1 0 -80" opacity=".2" />
+      </symbol>
+    </defs>
+  </svg>
 
-</svg>
+  <footer class="site-footer">
+    <span class="credits" >
+      Developed by <a href="https://jon-richards.com/" target="_blank" rel="noreferrer" >Jon Richards</a> &copy; 2017
+      | Thanks to <a href="http://benjamingallagher.co.uk/" target="_blank" rel="noreferrer" >Ben Gallagher</a> for the landing page design
+      | Built with <a href="https://vuejs.org/" target="_blank" rel="noreferrer" >Vue.js</a>
+    </span>
+
+  </footer>
+
+</body>
 
 </html>
