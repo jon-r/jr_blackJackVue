@@ -1,16 +1,18 @@
 {
   "name": "vue-blackjack",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "blackJack game in vue.js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "./node_modules/.bin/webpack-dev-server --config webpack.config.js",
     "build": "NODE_ENV=production ./node_modules/.bin/webpack -p --config webpack.config.js",
-    "build-win": "set NODE_ENV=production&&bash ./node_modules/.bin/webpack -p --config webpack.config.js"
+    "build-win": "set NODE_ENV=production&&bash ./node_modules/.bin/webpack -p --config webpack.config.js",
+    "dev": "vite"
   },
   "author": "Jon Richards",
   "license": "MIT",
+  "type": "module",
   "devDependencies": {
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
@@ -39,7 +41,11 @@
     "webpack-dev-server": "^2.4.5"
   },
   "dependencies": {
-    "vue": "^2.3.3",
+    "@vitejs/plugin-vue": "^5.1.2",
+    "typescript": "^5.5.4",
+    "vite": "^5.3.5",
+    "vue": "^3.4.35",
+    "vue-tsc": "^2.0.29",
     "vuex": "^2.3.1"
   }
 }
