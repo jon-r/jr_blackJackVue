@@ -1,7 +1,16 @@
+// @ts-expect-error - bad types
 import { mapGetters } from 'vuex';
+import {defineComponent, PropType} from "vue";
+import {Player} from "../types/players.ts";
+import button from "./button.ts";
 
-export default {
-  props: ['player'],
+export default defineComponent({
+  components: {
+    'button-ctrl': button
+  },
+  props: {
+    player: {type: Object as PropType<Player>, required: true}
+  },
   template: `
   <div class="ctrl-menu frame-thick flex flex-wrap" >
     <button-ctrl
@@ -15,7 +24,7 @@ export default {
   computed: {
 
     ctrls() {
-      const hasPlayers = this.activePlayerCount > 0;
+      const hasPlayers = (this.activePlayerCount as number) > 0;
 
       return [
         { name: 'new game', canUse: true, icon: 'skip_previous' },
@@ -30,7 +39,7 @@ export default {
   },
   methods: {
 
-    setTurn(turn) {
+    setTurn(turn: string) {
       const store = this.$store;
 
       if (turn === 'next round') {
@@ -42,4 +51,4 @@ export default {
     },
 
   },
-};
+});

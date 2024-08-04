@@ -1,13 +1,16 @@
-// import Vue from 'vue';
+// @ts-expect-error - bad types
 import { mapGetters } from 'vuex';
 
-import HandCtrl from './hand-ctrl';
-import BetCtrl from './bet-ctrl';
-import EndGameCtrl from './end-game-ctrl';
+import HandCtrl from './hand-ctrl.ts';
+import BetCtrl from './bet-ctrl.ts';
+import EndGameCtrl from './end-game-ctrl.ts';
+import {defineComponent, PropType} from "vue";
+import {Player} from "../types/players.ts";
 
-
-export default {
-  props: ['player'],
+export default defineComponent({
+  props: {
+    player: {type: Object as PropType<Player>, required: true}
+  },
   template: `
   <section class="ctrl-bar flex" >
     <template v-if="player" >
@@ -35,7 +38,7 @@ export default {
 
     tips() {
       const player = this.player;
-      const stage = this.gameStage;
+      const stage = this.gameStage as number;
       const out = new Map([
         [0, `Current money: £${player.money}. Min Bet: £${this.minBet}.`],
         [5, 'Round Over. Keep on playing?'],
@@ -52,9 +55,8 @@ export default {
   },
 
   methods: {
-
-
-    postMessage(stage) {
+    // todo stage to enum
+    postMessage(stage: number) {
       const out = new Map([
         [0, 'Please place Your bets'],
         [1, 'All bets are in, dealing out the first cards.'],
@@ -71,4 +73,4 @@ export default {
   watch: {
     gameStage: 'postMessage',
   },
-};
+});

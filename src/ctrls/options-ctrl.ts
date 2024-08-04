@@ -1,10 +1,13 @@
+// @ts-expect-error - bad types
 import { mapGetters } from 'vuex';
 
 import { getRandom } from '../deckTools';
 
-import CtrlButton from './button';
+import {defineComponent} from "vue";
+import {AnyPlayer, Player} from "../types/players.ts";
+import {GameConfig, NewGameOptions} from "../types/config.ts";
 
-export default {
+export default defineComponent({
   template: `
   <div class="modal-container flex flex-centre" @click.self="emitCloseOptions" >
     <div class="modal" >
@@ -73,13 +76,13 @@ export default {
   },
 
   mounted() {
-    this.deckCount = this.config.deckCount;
-    this.minBet = this.config.minBet;
-    this.autoTime = this.config.autoTime;
+    this.deckCount = (this.config as GameConfig).deckCount;
+    this.minBet = (this.config as GameConfig).minBet;
+    this.autoTime = (this.config as GameConfig).autoTime;
 
     // enable demo mode
     const params = location.search;
-    if (params.includes('demo') && this.gameRound < 0) this.skipBets();
+    if (params.includes('demo') && (this.gameRound as number) < 0) this.skipBets();
   },
 
   // todo. cleanly linking the options with the state
@@ -88,7 +91,7 @@ export default {
   computed: {
     playerInput() {
       // clones the players stored, and fills in the blanks
-      const players = this.players.filter(player => !player.isDealer).slice(0);
+      const players = (this.players as AnyPlayer[]).filter(player => !player.isDealer).slice(0);
       const empties = new Array(5 - players.length);
       players.push(...empties);
 
@@ -103,7 +106,7 @@ export default {
   },
 
   methods: {
-    setNewPlayer(name, index, isDealer = false) {
+    setNewPlayer(name: string, index: number, isDealer = false): AnyPlayer {
       return {
         index,
         name,
@@ -112,16 +115,17 @@ export default {
         firstBet: 0,
         score: 0,
         inGame: true,
-      };
+        peeked: null
+      } as AnyPlayer;
     },
-    getOptions() {
+    getOptions(): NewGameOptions {
       const config = {
         minBet: this.minBet,
         deckCount: this.deckCount,
         autoTime: this.autoTime,
       };
 
-      const players = this.playerInput
+      const players = (this.playerInput as Player[])
         .map((player, index) => this.setNewPlayer(player.name, index));
 
       const dealer = this.setNewPlayer('Dealer', players.length, true);
@@ -149,7 +153,7 @@ export default {
         .then(() => store.dispatch('nextStage'));
     },
 
-    autoBet(idx, max) {
+    autoBet(idx: number, max: number): Promise<void> {
       if (idx > max) return Promise.resolve();
 
       const store = this.$store;
@@ -176,4 +180,4 @@ export default {
     },
 
   },
-};
+});

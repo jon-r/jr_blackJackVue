@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import {defineComponent, PropType} from 'vue';
 /*
 canUse
 name
@@ -7,8 +7,20 @@ alert
 alertIf
 */
 
-Vue.component('button-ctrl', {
-  props: ['ctrl'],
+export type ButtonControlProps = {
+  canUse: boolean;
+  name: string;
+  icon: string;
+  alert?: string;
+  class?: string;
+  onClick?: () => void;
+}
+
+export default defineComponent( {
+  props: {
+    // todo split this up?
+    ctrl: { type: Object as PropType<ButtonControlProps>, required: true },
+  },
   template: `
     <button class="ctrl-btn flex-auto" :disabled="!ctrl.canUse" :class="ctrl.class"  >
 

@@ -1,7 +1,16 @@
+// @ts-expect-error - bad types
 import { mapGetters } from 'vuex';
+import {defineComponent, PropType} from "vue";
+import {Player} from "../types/players.ts";
+import button, {ButtonControlProps} from "./button.ts";
 
-export default {
-  props: ['player'],
+export default defineComponent({
+  components: {
+    'button-ctrl': button
+  },
+  props: {
+    player: {type: Object as PropType<Player>, required: true}
+  },
   template: `
   <div class="ctrl-menu frame flex flex-wrap" >
 
@@ -22,7 +31,7 @@ export default {
   data() {
     return {
       chips: [5, 10, 25, 100, 500, 1000],
-      currChips: [],
+      currChips: [] as number[],
       currChipValue: 0,
     };
   },
@@ -43,9 +52,9 @@ export default {
       });
     },
 
-    ctrlSubmits() {
+    ctrlSubmits(): ButtonControlProps[] {
       const bet = this.currChipValue;
-      const canUse = (bet >= this.minBet);
+      const canUse = (bet >= (this.minBet as number));
       const betStr = canUse ? `Submit: £${bet}` : 'Submit';
       const alert = `Min: £${this.minBet}`;
 
@@ -61,14 +70,14 @@ export default {
   },
   methods: {
 
-    addChip(chip) {
+    addChip(chip: number) {
       this.currChipValue += chip;
       this.currChips.push(chip);
     },
 
     removeChip() {
       const chip = this.currChips.pop();
-      this.currChipValue -= chip;
+      this.currChipValue -= chip || 0;
     },
 
     emitBet() {
@@ -98,4 +107,4 @@ export default {
         .then(() => store.dispatch('nextPlayer'));
     },
   },
-};
+});

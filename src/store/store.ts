@@ -1,17 +1,22 @@
 // combine more into more ... function groups?
 // merge commonly done actions into big chains ()
 
-import Vue from 'vue';
-import Vuex, { mapMutations } from 'vuex';
+// @ts-expect-error - bad types
+import Vuex from 'vuex';
+import type { StoreOptions } from 'vuex/types/index.js';
 
-import { mutationSetters, mutationIncrements, actionSetters, getState, playerSetters } from './storeTools';
+import { mutationSetters, mutationIncrements, actionSetters, getState, playerSetters } from './storeTools.ts';
 import { getRandom, buildDeck } from '../deckTools';
+import {AppState, DoubleBetMutation, PlayerMutation} from "../types/state.ts";
+import {DEFAULT_PLAYER} from "../constants/player.ts";
+import {Card} from "../types/card.ts";
+import {NewGameOptions} from "../types/config.ts";
 
-Vue.use(Vuex);
+// Vue.use(Vuex);
 
-export default new Vuex.Store({
+export default new Vuex.Store<AppState>({
 
-  strict: process.env.NODE_ENV !== 'production',
+  strict: import.meta.env.MODE !== 'production',
 
   state: {
     // game stage ids
@@ -20,14 +25,15 @@ export default new Vuex.Store({
     gameActivePlayer: -1,
 
     // players & dealer
-    dealer: {},
+    dealer: {...DEFAULT_PLAYER, index: 0, name: 'Dealer', isDealer: true, peeked: null},
     players: [
-      { name: 'Aaron' },
-      { name: 'Beth' },
-      { name: 'Chris' },
-      { name: 'Denise' },
-      { name: 'Ethan' },
+      {...DEFAULT_PLAYER, index: 0, name: 'Aaron' },
+      {...DEFAULT_PLAYER, index: 1, name: 'Beth' },
+      {...DEFAULT_PLAYER, index: 2, name: 'Chris' },
+      {...DEFAULT_PLAYER, index: 3, name: 'Denise' },
+      {...DEFAULT_PLAYER, index: 4, name: 'Ethan' },
     ],
+    activePlayerCount: 5,
 
     // deck and cards
     deck: [],
@@ -42,7 +48,10 @@ export default new Vuex.Store({
 
     newMessage: '',
 
-    handRules: false,
+    handRules: {
+      count: 0,
+      split: false,
+    },
 
     eventID: 0,
     eventBus: {
@@ -56,11 +65,11 @@ export default new Vuex.Store({
   mutations: {
 
     // players & dealer
-    PLAYER_UPDATE_MONEY(state, { idx, value }) {
+    PLAYER_UPDATE_MONEY(state: AppState, { idx, value }: PlayerMutation) {
       state.players[idx].money += value;
     },
 
-    PLAYER_DOUBLE_BET(state, { idx }) {
+    PLAYER_DOUBLE_BET(state: AppState, { idx }: DoubleBetMutation) {
       state.players[idx].firstBet *= 2;
     },
 
@@ -71,12 +80,12 @@ export default new Vuex.Store({
 //      })
 //    },
 
-    DEALER_SET_PEEKED(state, card) {
+    DEALER_SET_PEEKED(state: AppState, card: Card) {
       state.dealer.peeked = card;
     },
 
     // deck and cards
-    SPLICE_CARD(state, cardIdx) {
+    SPLICE_CARD(state: AppState, cardIdx: number) {
       state.deck.splice(cardIdx, 1);
     },
 
@@ -111,7 +120,7 @@ export default new Vuex.Store({
 
   actions: {
     // game stage ids
-    newGame: ({ commit, dispatch }, options) => {
+    newGame: ({ commit, dispatch }, options: NewGameOptions) => {
       const dealer = options.players.find(player => player.isDealer);
       const deck = buildDeck(options.config.deckCount);
 
@@ -127,7 +136,7 @@ export default new Vuex.Store({
         .then(() => commit('NEXT_ACTIVE_PLAYER')); // set last to trigger the first player actions
     },
 
-    resetGame: ({ commit, state }) => new Promise((resolve) => {
+    resetGame: ({ commit, state }) => new Promise<void>((resolve) => {
       const names = state.players.map(player => player.name);
 
       commit('SET_PLAYERS', names);
@@ -157,7 +166,7 @@ export default new Vuex.Store({
       commit('NEXT_STAGE');
     },
 
-    nextPlayerPromise: ({ commit }) => new Promise((resolve) => {
+    nextPlayerPromise: ({ commit }) => new Promise<void>((resolve) => {
       commit('NEXT_ACTIVE_PLAYER');
       resolve();
     }),
@@ -167,14 +176,14 @@ export default new Vuex.Store({
     }),
 
     // players
-    playerSetBet: ({ commit }, { idx, value, double = false }) => new Promise((resolve) => {
+    playerSetBet: ({ commit }, { idx, value }) => new Promise<void>((resolve) => {
       commit('PLAYER_UPDATE_MONEY', { idx, value: -value });
       commit('PLAYER_SET_BET', { idx, value });
       resolve();
     }),
 
     // deck and cards
-    deckDrawPromise: ({ state, commit }, idx) => new Promise((resolve, reject) => {
+    deckDrawPromise: ({ state, commit }, idx) => new Promise((resolve) => {
       const card = state.deck[idx];
       commit('SPLICE_CARD', idx);
       resolve(card);
@@ -202,7 +211,7 @@ export default new Vuex.Store({
       return Promise.resolve(false);
     },
 
-    doEvent: ({ commit }, values) => new Promise((resolve) => {
+    doEvent: ({ commit }, values) => new Promise<void>((resolve) => {
       commit('SET_EVENT', values);
       commit('NEXT_EVENT');
       resolve();
@@ -229,7 +238,7 @@ export default new Vuex.Store({
 
     // starts at -1 to skip dealer;
     activePlayerCount: state => state.players
-      .reduce((n, player) => n + (player.inGame), -1),
+      .reduce((n, player) => n + Number(player.inGame), -1),
 
 
     ...getState([
@@ -247,4 +256,4 @@ export default new Vuex.Store({
     ]),
   },
 
-});
+} satisfies StoreOptions<AppState>);
