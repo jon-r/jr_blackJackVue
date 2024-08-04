@@ -1,10 +1,21 @@
+// @ts-expect-error - bad types
 import { mapGetters } from 'vuex';
 import { valueCard, blankCard } from '../deckTools';
 
-import PlayerCards from './cards';
+import PlayerCards from './cards.ts';
+import {defineComponent, PropType} from "vue";
+import {Position} from "../types/animations.ts";
+import {Dealer, Player} from "../types/players.ts";
+import {PlayerHand, RawCard} from "../types/card.ts";
+import {GameEvent} from "../types/state.ts";
 
-export default {
-  props: ['turn', 'player', 'framepos', 'result'],
+export default defineComponent({
+  props: {
+    'turn': {type: Number, required: true},
+    'player': {type: Object as PropType<Player>, required: true},
+    'framepos': {type: Object as PropType<Position>, required: true},
+    'result': {type: Number, required: true}
+  },
   template: `
   <div class="player-hand frame flex-auto flex flex-column" >
 
@@ -27,14 +38,14 @@ export default {
   },
   data() {
     return {
-      hands: [],
+      hands: [] as PlayerHand[],
       activeHand: -1,
       message: '',
     };
   },
   computed: {
 
-    getActiveHand() {
+    getActiveHand(): PlayerHand | undefined {
       return this.hands[this.activeHand];
     },
 
@@ -72,7 +83,7 @@ export default {
   },
   methods: {
 
-    wait(time, resolved = null) {
+    wait<T>(time: number, resolved: T): Promise<T> {
       return new Promise(resolve =>
         setTimeout(() => resolve(resolved), time),
       );
@@ -84,7 +95,7 @@ export default {
       return this;
     },
 
-    addSplitHand(splitCard) {
+    addSplitHand(splitCard: RawCard) {
       this.addHand().nextHand().setCard(splitCard, true);
       return this;
     },
@@ -112,13 +123,13 @@ export default {
       return this;
     },
 
-    revealCard(mayPeek = false) {
+    revealCard(mayPeek = false): Promise<RawCard> {
       const drawType = mayPeek ? 'deckDrawPeek' : 'deckDrawRandom';
 
       return this.$store.dispatch(drawType, this.getActiveHand.score);
     },
 
-    setCard(card, isPreset = false) {
+    setCard(card: RawCard, isPreset = false) {
       if (!card) return this;
 
       const newCard = isPreset ? card : valueCard(card);
@@ -132,7 +143,7 @@ export default {
 
     dealRevealSet(mayPeek = false) {
       return this.addBlankCard().revealCard(mayPeek)
-        .then(rawCard => this.wait(this.autoTime, rawCard))
+        .then(rawCard => this.wait(this.autoTime as number, rawCard))
         .then(rawCard => this.setCard(rawCard));
     },
 
@@ -143,7 +154,7 @@ export default {
       if (!hasBlank) return Promise.resolve();
 
       return this.revealCard()
-        .then(rawCard => this.wait(this.autoTime, rawCard))
+        .then(rawCard => this.wait(this.autoTime as number, rawCard))
         .then(rawCard => this.setCard(rawCard));
     },
 
@@ -159,7 +170,7 @@ export default {
  //       [5, this.roundResult],
       ]);
 
-      const fn = actions.get(this.gameStage);
+      const fn = actions.get(this.gameStage as number);
 
       return fn ? fn() : false;
     },
@@ -180,7 +191,7 @@ export default {
 
     dealOutFirst() {
       this.activeHand = 0;
-      this.addHand().wait(100)
+      this.addHand().wait(100, null)
         .then(() => this.dealRevealSet())
         .then(() => this.emitEndTurn());
     },
@@ -194,7 +205,7 @@ export default {
         const endImmediately = (isDealer && this.getActiveHand.score === 21);
 
         return (endImmediately)
-          ? this.wait(this.autoTime).then(() => this.emitEndRound())
+          ? this.wait(this.autoTime as number, null).then(() => this.emitEndRound())
           : this.emitEndTurn();
       });
     },
@@ -219,8 +230,9 @@ export default {
         return this.scoreCheck();
       }
 
-      if (this.dealer.peeked) {
-        return this.setCard(this.dealer.peeked).wait(0)
+      const peekedCard = (this.dealer as Dealer).peeked
+      if (peekedCard) {
+        return this.setCard(peekedCard).wait(0, null)
           .then(() => this.autoHit());
       }
 
@@ -228,9 +240,10 @@ export default {
     },
 
     doCtrl() {
-      const { idx, type, value } = this.eventBus;
+      const { idx, type, value } = this.eventBus as GameEvent;
       const isHandEvent = (idx === this.player.index) && (type === 'card');
 
+      // @ts-expect-error - do this better
       if (isHandEvent) this[value]();
     },
 
@@ -241,7 +254,7 @@ export default {
     autoHit() {
       if (this.allowPlay) {
         this.dealRevealSet()
-          .then(() => this.wait(this.autoTime))
+          .then(() => this.wait(this.autoTime as number, null))
           .then(() => this.autoHit());
       } else {
         this.emitEndTurn();
@@ -249,7 +262,7 @@ export default {
     },
 
     stand() {
-      this.wait(0).then(() => this.nextHand());
+      this.wait(0, null).then(() => this.nextHand());
     },
 
     split() {
@@ -260,7 +273,7 @@ export default {
       this.emitBetChange('addBet')
         .then(() => this.dealRevealSet())
         .then(() => this.addSplitHand(splitCard))
-        .then(() => this.wait(100))
+        .then(() => this.wait(100, null))
         .then(() => this.dealRevealSet())
         .then(() => this.prevHand().scoreCheck());
     },
@@ -306,7 +319,7 @@ export default {
       store.dispatch('nextPlayer');
     },
 
-    emitBetChange(value) {
+    emitBetChange(value: string) {
       const betEvent = {
         idx: this.player.index,
         type: 'bet',
@@ -316,14 +329,14 @@ export default {
       return this.$store.dispatch('doEvent', betEvent);
     },
 
-    emitFinalScore(value) {
+    emitFinalScore(value: number) {
       const idx = this.player.index;
       this.$store.dispatch('playerSetScore', { idx, value });
     },
 
     /* messenger ---------------------------------------------------------*/
 
-    cardMessage(hand, outcome) {
+    cardMessage(hand: PlayerHand, outcome: string) {
       const has = (hand.revealed === 2) ? 'starts with' : 'now has';
 
       const msg = `${this.player.name} ${has} ${hand.score}. ${outcome}`;
@@ -337,4 +350,4 @@ export default {
     turn: 'startTurn',
     eventID: 'doCtrl',
   },
-};
+});

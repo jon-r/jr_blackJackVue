@@ -1,4 +1,4 @@
-import {Card} from "./card.ts";
+import {RawCard} from "./card.ts";
 
 export type Player = {
     isDealer: false,
@@ -14,7 +14,7 @@ export type Player = {
 
 export type Dealer = {
     isDealer: true,
-    peeked: Card | null;
+    peeked: RawCard | null;
 
     index: number;
     name: string;

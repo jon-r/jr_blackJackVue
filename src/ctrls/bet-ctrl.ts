@@ -2,11 +2,11 @@
 import { mapGetters } from 'vuex';
 import {defineComponent, PropType} from "vue";
 import {Player} from "../types/players.ts";
-import button, {ButtonControlProps} from "./button.ts";
+import ButtonCtrl, {ButtonControlProps} from "./button.ts";
 
 export default defineComponent({
   components: {
-    'button-ctrl': button
+    'button-ctrl': ButtonCtrl
   },
   props: {
     player: {type: Object as PropType<Player>, required: true}

@@ -9,7 +9,7 @@ import { mutationSetters, mutationIncrements, actionSetters, getState, playerSet
 import { getRandom, buildDeck } from '../deckTools';
 import {AppState, DoubleBetMutation, PlayerMutation} from "../types/state.ts";
 import {DEFAULT_PLAYER} from "../constants/player.ts";
-import {Card} from "../types/card.ts";
+import {Card, RawCard} from "../types/card.ts";
 import {NewGameOptions} from "../types/config.ts";
 
 // Vue.use(Vuex);
@@ -57,7 +57,7 @@ export default new Vuex.Store<AppState>({
     eventBus: {
       idx: -1,
       type: false,
-      value: false,
+      value: "",
     },
 
   },
@@ -80,7 +80,7 @@ export default new Vuex.Store<AppState>({
 //      })
 //    },
 
-    DEALER_SET_PEEKED(state: AppState, card: Card) {
+    DEALER_SET_PEEKED(state: AppState, card: RawCard) {
       state.dealer.peeked = card;
     },
 

@@ -1,12 +1,16 @@
-// import Vue from 'vue';
+// @ts-expect-error - bad types
 import { mapGetters } from 'vuex';
 
-import PlayerHand from './hand';
-import PlayerBet from './bet';
+import PlayerHand from './hand.js';
+import PlayerBet from './bet.js';
+import {defineComponent, PropType} from "vue";
+import {Dealer, Player} from "../types/players.ts";
 
-export default {
-  props: ['player'],
-  template: `
+export default defineComponent({
+  props: {
+    'player': {type: Object as PropType<Player>, required: true}
+  },
+template: `
   <section class="player-frame flex flex-column" :class="playerClass" ref="frameParent" >
     <player-hand
       v-if="player.inGame"
@@ -92,7 +96,7 @@ export default {
       if (this.isPlayerTurn && (cantBet || wontBet)) this.$store.dispatch('nextPlayer');
     },
 
-    endRound(dealerScore) {
+    endRound(dealerScore: number) {
       if (!dealerScore) return false;
 
       this.roundResult = this.getScores();
@@ -106,7 +110,7 @@ export default {
       // todo bonus: anything else can go here?
     },
 
-    emitBetChange(value) {
+    emitBetChange(value: string) {
       const betEvent = {
         idx: this.player.index,
         type: 'bet',
@@ -117,7 +121,7 @@ export default {
     },
 
     getScores() {
-      const dealerScore = this.dealer.score;
+      const dealerScore = (this.dealer as Dealer).score;
       const playerScore = this.player.score;
 
       switch (true) {
@@ -144,4 +148,4 @@ export default {
     isPlayerTurn: 'turnCheck',
     gameRound: 'cleanUp',
   },
-};
+});

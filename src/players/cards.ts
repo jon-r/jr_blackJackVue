@@ -1,8 +1,16 @@
+// @ts-expect-error - bad types
 import { mapGetters } from 'vuex';
 import { transformJiggle, setPos } from '../animationTools';
+import {defineComponent, PropType} from "vue";
+import {Position} from "../types/animations.ts";
+import {Card} from "../types/card.ts";
 
-export default {
-  props: ['cards', 'framepos', 'active'],
+export default defineComponent({
+  props: {
+    'cards': { type: Object as PropType<Card[]>, required: true },
+    'framepos': { type: Object as PropType<Position>, required: true },
+    'active': { type: Boolean, required: true },
+  },
   template: `
   <div class="player-cards" :class="{ 'active-hand': active }" >
     <div class="hand-score shadow-light" :class="{ 'error-text': score > 21}" >
@@ -31,8 +39,8 @@ export default {
     };
   },
   computed: {
-    enterPosition() {
-      const shoe = this.shoePos;
+    enterPosition(): Position {
+      const shoe = this.shoePos as Position;
       const frame = this.framepos;
 
       return {
@@ -41,7 +49,7 @@ export default {
       };
     },
 
-    leavePosition() {
+    leavePosition(): Position {
       const frame = this.framepos;
       return {
         x: -frame.x,
@@ -54,7 +62,7 @@ export default {
 
       if (cards.length === 0) return 0;
 
-      this.aces = cards.reduce((count, card) => count + (card.face === 'A'), 0);
+      this.aces = cards.reduce((count, card) => count + Number(card.face === 'A'), 0);
 
       let newScore = cards.reduce((score, card) => score + card.score, 0);
 
@@ -69,7 +77,7 @@ export default {
     },
 
     scoreStr() {
-      const score = this.score;
+      const score = this.score as number;
 
       switch (true) {
       case (score > 21):
@@ -88,20 +96,20 @@ export default {
     ]),
   },
   methods: {
-    enter(el) {
-      setPos(el, this.enterPosition);
+    enter(el: HTMLElement) {
+      setPos(el, this.enterPosition as Position);
     },
-    enterTo(el, done) {
-      const offsetX = el.dataset.index * 30;
+    enterTo(el: HTMLElement) {
+      const offsetX = Number(el.dataset.index) * 30;
       const jiggle = transformJiggle({ offsetX });
       setPos(el, jiggle);
     },
 
-    leave(el, done) {
-      setPos(el, this.leavePosition);
+    leave(el: HTMLElement, done: () => void) {
+      setPos(el, this.leavePosition as Position);
 
       el.addEventListener('transitionend', done);
     },
   },
 
-};
+});

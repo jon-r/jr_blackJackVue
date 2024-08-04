@@ -5,7 +5,7 @@ import {GameConfig} from "./config.ts";
 export type GameEvent = {
     idx: number;
     type: string | false;
-    value: number | false;
+    value: string;
 }
 
 export type AppState = {
