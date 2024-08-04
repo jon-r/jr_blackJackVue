@@ -1,7 +1,7 @@
 // @ts-expect-error - bad types
 import { mapGetters } from 'vuex';
 
-import { getRandom } from '../deckTools';
+import { getRandom } from '../deckTools.ts';
 
 import {defineComponent} from "vue";
 import {AnyPlayer, Player} from "../types/players.ts";

@@ -1,6 +1,6 @@
 // @ts-expect-error - bad types
 import { mapGetters } from 'vuex';
-import { valueCard, blankCard } from '../deckTools';
+import { valueCard, blankCard } from '../deckTools.ts';
 
 import PlayerCards from './cards.ts';
 import {defineComponent, PropType} from "vue";

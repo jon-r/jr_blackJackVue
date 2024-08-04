@@ -1,6 +1,6 @@
 // @ts-expect-error - bad types
 import { mapGetters } from 'vuex';
-import { transformJiggle, setPos } from '../animationTools';
+import { transformJiggle, setPos } from '../animationTools.ts';
 import {defineComponent, PropType} from "vue";
 import {Position} from "../types/animations.ts";
 import {Card} from "../types/card.ts";

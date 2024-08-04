@@ -1,6 +1,6 @@
 // @ts-expect-error - bad types
 import { mapGetters } from 'vuex';
-import { arrayStaggeredPush, arrayStaggeredPull, setPos } from '../animationTools';
+import { arrayStaggeredPush, arrayStaggeredPull, setPos } from '../animationTools.ts';
 import {defineComponent, PropType} from "vue";
 import {Player} from "../types/players.ts";
 import {GameEvent} from "../types/state.ts";

@@ -6,7 +6,7 @@ import Vuex from 'vuex';
 import type { StoreOptions } from 'vuex/types/index.js';
 
 import { mutationSetters, mutationIncrements, actionSetters, getState, playerSetters } from './storeTools.ts';
-import { getRandom, buildDeck } from '../deckTools';
+import { getRandom, buildDeck } from '../deckTools.ts';
 import {AppState, DoubleBetMutation, PlayerMutation} from "../types/state.ts";
 import {DEFAULT_PLAYER} from "../constants/player.ts";
 import {Card, RawCard} from "../types/card.ts";

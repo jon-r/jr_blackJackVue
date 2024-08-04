@@ -1,6 +1,6 @@
 import {Player} from "../types/players.ts";
 
-export const DEFAULT_PLAYER: Omit<Player, 'name'|'index'> = {
+export const DEFAULT_PLAYER: Omit<Player, 'name'|'index'|'peaked'> = {
     money: 0,
     firstBet: 0,
     isDealer: false,

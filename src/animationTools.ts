@@ -1,4 +1,6 @@
-export function setPos(el, { x, y, r = 0 }) {
+import {Position} from "./types/animations.ts";
+
+export function setPos(el: HTMLElement, { x, y, r = 0 }: Position) {
   el.style.transform = `translate(${x}px,${y}px) rotate(${r}deg)`;
 }
 
@@ -17,19 +19,19 @@ export function transformJiggle({
   };
 }
 
-export function arrayStaggeredPush(toAdd, array, staggerTime) {
+export function arrayStaggeredPush<T>(toAdd: T[], array: T[], staggerTime: number) {
   if (toAdd.length === 0) return false;
 
-  const item = toAdd.pop();
+  const item = toAdd.pop()!;
   array.push(item);
   setTimeout(() => arrayStaggeredPush(toAdd, array, staggerTime), staggerTime);
   return true;
 }
 
-export function arrayStaggeredPull(toRemove, array, staggerTime) {
+export function arrayStaggeredPull<T>(toRemove: T[], array: T[], staggerTime: number) {
   if (toRemove.length === 0) return false;
 
-  const item = toRemove.pop();
+  const item = toRemove.pop()!;
   const find = array.indexOf(item);
 
   if (find !== -1) {
