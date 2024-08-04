@@ -9,7 +9,7 @@ import {Player} from "../types/players.ts";
 
 export default defineComponent({
   props: {
-    player: {type: Object as PropType<Player>, required: true}
+    player: {type: Object as PropType<Player>, required: false}
   },
   template: `
   <section class="ctrl-bar flex" >
@@ -40,7 +40,7 @@ export default defineComponent({
       const player = this.player;
       const stage = this.gameStage as number;
       const out = new Map([
-        [0, `Current money: £${player.money}. Min Bet: £${this.minBet}.`],
+        [0, `Current money: £${player?.money}. Min Bet: £${this.minBet}.`],
         [5, 'Round Over. Keep on playing?'],
         // todo bonus = more tips?
       ]);

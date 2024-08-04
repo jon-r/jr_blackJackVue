@@ -13,35 +13,37 @@ import {AnyPlayer} from "./types/players.ts";
 export default defineComponent({
     // el: '#v-blackJack',
     template: `
-      <button class="text-btn modal-toggle" @click="showOptions = true" >
-        <i class="material-icons">menu</i>
-      </button>
-
-      <options-modal v-if="showOptions" @hide="showOptions = false" >
-      </options-modal>
-
-      <main class="blackjack-table flex-auto" >
-
-        <transition-group class="announcement frame" name="messages" tag="ul" >
-          <li class="message" v-for="msg in messages" :key="msg.idx" >{{msg.text}}</li>
-        </transition-group>
-
-        <div v-once class="deck" ref="theShoe" >
-          <div class="card blank stacked" ></div>
-        </div>
-
-        <player-frame
-            v-if="activePlayerCount > 0"
-            v-for="player in players"
-            :key="player.index"
-            :player="player" >
-        </player-frame>
-
-      </main>
-
-      <ctrl-frame :player="activePlayer" ></ctrl-frame>
-
-      <svg-static v-once></svg-static>
+      <div id="v-blackJack" class="container flex flex-column">
+          <button class="text-btn modal-toggle" @click="showOptions = true" >
+            <i class="material-icons">menu</i>
+          </button>
+    
+          <options-modal v-if="showOptions" @hide="showOptions = false" >
+          </options-modal>
+    
+          <main class="blackjack-table flex-auto" >
+    
+            <transition-group class="announcement frame" name="messages" tag="ul" >
+              <li class="message" v-for="msg in messages" :key="msg.idx" >{{msg.text}}</li>
+            </transition-group>
+    
+            <div v-once class="deck" ref="theShoe" >
+              <div class="card blank stacked" ></div>
+            </div>
+    
+            <player-frame
+                v-if="activePlayerCount > 0"
+                v-for="player in players"
+                :key="player.index"
+                :player="player" >
+            </player-frame>
+    
+          </main>
+    
+          <ctrl-frame :player="activePlayer" ></ctrl-frame>
+    
+          <svg-static v-once></svg-static>
+      </div>
     `,
 
     components: {

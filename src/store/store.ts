@@ -25,7 +25,7 @@ export default new Vuex.Store<AppState>({
     gameActivePlayer: -1,
 
     // players & dealer
-    dealer: {...DEFAULT_PLAYER, index: 0, name: 'Dealer', isDealer: true},
+    dealer: {...DEFAULT_PLAYER, index: 5, name: 'Dealer', isDealer: true},
     players: [
       {...DEFAULT_PLAYER, index: 0, name: 'Aaron' },
       {...DEFAULT_PLAYER, index: 1, name: 'Beth' },

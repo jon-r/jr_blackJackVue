@@ -8,7 +8,7 @@ import {Position} from "../types/animations.ts";
 
 export default defineComponent({
   props: {
-    'turn': {type: Number, required: true},
+    'turn': {type: Boolean, required: true},
     'player': {type: Object as PropType<Player>, required: true},
     'framepos': {type: Object as PropType<Position>, required: true},
   },

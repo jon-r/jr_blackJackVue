@@ -11,10 +11,10 @@ import {GameEvent} from "../types/state.ts";
 
 export default defineComponent({
   props: {
-    'turn': {type: Number, required: true},
+    'turn': {type: Boolean, required: true},
     'player': {type: Object as PropType<Player>, required: true},
     'framepos': {type: Object as PropType<Position>, required: true},
-    'result': {type: Number, required: true}
+    'result': {type: String, required: true}
   },
   template: `
   <div class="player-hand frame flex-auto flex flex-column" >
