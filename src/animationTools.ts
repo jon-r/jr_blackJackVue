@@ -28,7 +28,7 @@ export function arrayStaggeredPush<T>(toAdd: T[], array: T[], staggerTime: numbe
   return true;
 }
 
-export function arrayStaggeredPull<T>(toRemove: T[], array: T[], staggerTime: number) {
+export function arrayStaggeredPull<T>(toRemove: T[], array: T[], staggerTime: number): T[] | false {
   if (toRemove.length === 0) return false;
 
   const item = toRemove.pop()!;

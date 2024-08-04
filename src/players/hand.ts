@@ -6,7 +6,7 @@ import PlayerCards from './cards.ts';
 import {defineComponent, PropType} from "vue";
 import {Position} from "../types/animations.ts";
 import {Dealer, Player} from "../types/players.ts";
-import {PlayerHand, RawCard} from "../types/card.ts";
+import {Card, PlayerHand, RawCard} from "../types/card.ts";
 import {GameEvent} from "../types/state.ts";
 
 export default defineComponent({
@@ -52,7 +52,7 @@ export default defineComponent({
     allowPlay() {
       if (!this.getActiveHand) return false;
 
-      const hand = this.getActiveHand;
+      const hand = this.getActiveHand as PlayerHand;
       const score = hand.score;
       const max = this.player.isDealer ? 17 : 21;
 
@@ -95,7 +95,7 @@ export default defineComponent({
       return this;
     },
 
-    addSplitHand(splitCard: RawCard) {
+    addSplitHand(splitCard: Card) {
       this.addHand().nextHand().setCard(splitCard, true);
       return this;
     },
@@ -118,7 +118,7 @@ export default defineComponent({
 
 
     addBlankCard() {
-      const hand = this.getActiveHand;
+      const hand = this.getActiveHand as PlayerHand;
       hand.cards.push(blankCard);
       return this;
     },
@@ -126,16 +126,18 @@ export default defineComponent({
     revealCard(mayPeek = false): Promise<RawCard> {
       const drawType = mayPeek ? 'deckDrawPeek' : 'deckDrawRandom';
 
-      return this.$store.dispatch(drawType, this.getActiveHand.score);
+      return this.$store.dispatch(drawType, (this.getActiveHand as PlayerHand).score);
     },
 
-    setCard(card: RawCard, isPreset = false) {
+    setCard(card: RawCard | Card, isPreset = false) {
       if (!card) return this;
 
-      const newCard = isPreset ? card : valueCard(card);
-      const activeHand = this.getActiveHand;
+      const newCard = isPreset ? card : valueCard(card as RawCard);
+      const activeHand = this.getActiveHand as PlayerHand;
 
-      this.$set(activeHand.cards, activeHand.revealed, newCard);
+      // fixme this looks sus
+      activeHand.cards.splice(activeHand.revealed, 1, newCard as Card)
+
       activeHand.revealed += 1;
 
       return this;
@@ -148,7 +150,7 @@ export default defineComponent({
     },
 
     fillBlanks() {
-      const activeHand = this.getActiveHand;
+      const activeHand = this.getActiveHand as PlayerHand;
       const hasBlank = (activeHand.cards.length > activeHand.revealed);
 
       if (!hasBlank) return Promise.resolve();
@@ -202,7 +204,7 @@ export default defineComponent({
       const isDealer = this.player.isDealer;
       this.dealRevealSet(isDealer)
       .then(() => {
-        const endImmediately = (isDealer && this.getActiveHand.score === 21);
+        const endImmediately = (isDealer && (this.getActiveHand as PlayerHand).score === 21);
 
         return (endImmediately)
           ? this.wait(this.autoTime as number, null).then(() => this.emitEndRound())
@@ -213,7 +215,7 @@ export default defineComponent({
     /* TURN 3 -------------------- */
 
     updateRules() {
-      const hand = this.getActiveHand;
+      const hand = this.getActiveHand as PlayerHand;
       const count = hand.revealed;
       const split = (count === 2 && (hand.cards[0].face === hand.cards[1].face));
       this.$store.dispatch('handCtrlRules', { count, split });
@@ -266,7 +268,7 @@ export default defineComponent({
     },
 
     split() {
-      const hand = this.getActiveHand;
+      const hand = this.getActiveHand as PlayerHand;
       const splitCard = hand.cards.splice(1)[0];
       hand.revealed -= 1;
 

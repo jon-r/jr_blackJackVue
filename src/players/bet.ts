@@ -98,7 +98,7 @@ export default defineComponent({
       if (newBet === 0) return false;
 
       const input = this.calcChips(Math.abs(newBet));
-      const args = [input, this.chips, 100];
+      const args: [number[], number[], number] = [input, this.chips, 100];
       let remaining;
 
       switch (true) {

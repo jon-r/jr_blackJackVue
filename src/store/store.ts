@@ -9,7 +9,7 @@ import { mutationSetters, mutationIncrements, actionSetters, getState, playerSet
 import { getRandom, buildDeck } from '../deckTools.ts';
 import {AppState, DoubleBetMutation, PlayerMutation} from "../types/state.ts";
 import {DEFAULT_PLAYER} from "../constants/player.ts";
-import {Card, RawCard} from "../types/card.ts";
+import {RawCard} from "../types/card.ts";
 import {NewGameOptions} from "../types/config.ts";
 
 // Vue.use(Vuex);
@@ -25,7 +25,7 @@ export default new Vuex.Store<AppState>({
     gameActivePlayer: -1,
 
     // players & dealer
-    dealer: {...DEFAULT_PLAYER, index: 0, name: 'Dealer', isDealer: true, peeked: null},
+    dealer: {...DEFAULT_PLAYER, index: 0, name: 'Dealer', isDealer: true},
     players: [
       {...DEFAULT_PLAYER, index: 0, name: 'Aaron' },
       {...DEFAULT_PLAYER, index: 1, name: 'Beth' },

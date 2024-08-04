@@ -9,7 +9,7 @@ export type Player = {
     firstBet: number;
     score: number,
     inGame: boolean,
-    peaked: null;
+    peeked: null;
 }
 
 export type Dealer = {

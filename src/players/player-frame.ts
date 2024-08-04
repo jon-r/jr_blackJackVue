@@ -54,7 +54,7 @@ template: `
   },
 
   mounted() {
-    const el = this.$refs.frameParent;
+    const el = this.$refs.frameParent as HTMLElement;
 
     this.framepos = {
       x: el.offsetLeft,
@@ -66,7 +66,7 @@ template: `
 
     diffClass() {
       this.triggerTextAnim();
-      return (this.moneyDiff > 0) ? 'good-text' : 'error-text';
+      return ((this.moneyDiff as number) > 0) ? 'good-text' : 'error-text';
     },
 
     moneyDiff() {
