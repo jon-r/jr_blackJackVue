@@ -38,6 +38,7 @@ export default defineComponent({
       aces: 0,
     };
   },
+  emits: ['update:modelValue'],
   computed: {
     enterPosition(): Position {
       const shoe = this.shoePos as Position;
@@ -57,6 +58,7 @@ export default defineComponent({
       };
     },
 
+    // fixme bug if 10 or face on soft (it doesnt update the score)
     score() {
       const cards = this.cards;
 
@@ -71,7 +73,7 @@ export default defineComponent({
         this.aces -= 1;
         newScore -= 10;
       }
-      this.$emit('input', newScore);
+      this.$emit('update:modelValue', newScore);
 
       return newScore;
     },

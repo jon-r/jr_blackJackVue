@@ -104,7 +104,7 @@ export default defineComponent({
       'gameRound',
     ]),
   },
-
+  emits: ['hide'],
   methods: {
     setNewPlayer(name: string, index: number, isDealer = false): AnyPlayer {
       return {
