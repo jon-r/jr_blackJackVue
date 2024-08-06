@@ -16,7 +16,7 @@ export default defineComponent({
         <h3 class="modal-title" >Let's Play BlackJack!</h3>
 
         <button class="text-btn modal-toggle" @click="emitCloseOptions" >
-          <i class="material-icons">close</i>
+          <i class="material-symbols-outlined">close</i>
         </button>
       </header>
 
@@ -26,32 +26,32 @@ export default defineComponent({
 
           <div v-for="(player,idx) in playerInput" :key="idx" class="input-group flex flex-column frame" >
             <input  v-model.lazy="player.name" type="text" :id="'input-' + idx" />
-            <label :for="'input-' + idx" ><i class="material-icons">person</i> Player {{idx}}</label>
+            <label :for="'input-' + idx" ><i class="material-symbols-outlined">person</i> Player {{idx}}</label>
           </div>
         </fieldset>
 
         <fieldset class="options-group" >
         <template v-if="moreOptions" >
-          <h4  class="options-title frame" @click="moreOptions = false" >Less Options <i class="material-icons text-btn">expand_less</i></h4>
+          <h4  class="options-title frame" @click="moreOptions = false" >Less Options <i class="material-symbols-outlined text-btn">expand_less</i></h4>
 
           <div class="input-group flex flex-column frame" >
             <input v-model.lazy="deckCount" type="number" id="input-deck" />
-            <label for="input-deck" ><i class="material-icons">style</i> Decks</label>
+            <label for="input-deck" ><i class="material-symbols-outlined">style</i> Decks</label>
           </div>
 
           <div class="input-group flex flex-column frame" >
             <input v-model.lazy="minBet" type="number" min="0" id="input-bet" />
-            <label for="input-bet" ><i class="material-icons">remove_circle</i> Min Bet</label>
+            <label for="input-bet" ><i class="material-symbols-outlined">remove_circle</i> Min Bet</label>
           </div>
 
           <div class="input-group flex flex-column frame" >
             <input v-model.lazy="autoTime" type="number" min="0" id="input-speed" />
-            <label for="input-speed" ><i class="material-icons">slow_motion_video</i> Deal Speed</label>
+            <label for="input-speed" ><i class="material-symbols-outlined">slow_motion_video</i> Deal Speed</label>
           </div>
 
         </template>
         <template v-else>
-          <h4 class="options-title frame" @click="moreOptions = true" >More Options <i class="material-icons text-btn">expand_more</i></h4>
+          <h4 class="options-title frame" @click="moreOptions = true" >More Options <i class="material-symbols-outlined text-btn">expand_more</i></h4>
         </template>
         </fieldset>
 

@@ -74,7 +74,8 @@ h5 { font-size: 1rem }
 }
 
 
-.material-icons {
+/* todo think this should bbe flex? */
+.material-symbols-outlined {
 /*  font-size: 1.4em;*/
   vertical-align: middle;
 }
