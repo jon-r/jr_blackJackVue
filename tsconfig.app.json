@@ -14,9 +14,6 @@
     "noEmit": true,
     "jsx": "preserve",
 
-    /* TEMP */
-    "allowJs": true,
-
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,

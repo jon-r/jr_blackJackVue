@@ -1,6 +1,8 @@
 // combine more into more ... function groups?
 // merge commonly done actions into big chains ()
-import Vuex, { StoreOptions } from "vuex";
+// @ts-expect-error bad types
+import Vuex from "vuex";
+import {StoreOptions, Store} from "vuex/types/index.d.ts";
 
 import { DEFAULT_PLAYER } from "../constants/player.ts";
 import { buildDeck, getRandom } from "../deckTools.ts";
