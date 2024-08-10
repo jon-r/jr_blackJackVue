@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) =>({
         ? {
             port: 3000,
             strictPort: true,
+          open: true,
         }
         : undefined,
 }))

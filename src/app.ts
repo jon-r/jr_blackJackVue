@@ -11,9 +11,8 @@ import {GameEvent} from "./types/state.ts";
 import {AnyPlayer} from "./types/players.ts";
 
 export default defineComponent({
-    // el: '#v-blackJack',
     template: `
-      <div id="v-blackJack" class="container flex flex-column">
+      <div class="container flex flex-column">
           <button class="text-btn modal-toggle" @click="showOptions = true" >
             <i class="material-symbols-outlined">menu</i>
           </button>
