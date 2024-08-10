@@ -2,6 +2,7 @@ import { Store } from "vuex/types/index.d.ts";
 
 import { GameConfig } from "./config.ts";
 import { Dealer, Player } from "./players.ts";
+import {GameStages} from "../constants/gamePlay.ts";
 
 export type GameEvent = {
   idx: number;
@@ -11,7 +12,7 @@ export type GameEvent = {
 
 export type AppState = {
   gameRound: number; // todo enums
-  gameStage: number;
+  gameStage: GameStages;
 
   gameActivePlayer: number;
 

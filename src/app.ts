@@ -8,6 +8,7 @@ import PlayerFrame from "./players/player-frame.ts";
 import SVGElements from "./svg-static.ts";
 import { AnyPlayer } from "./types/players.ts";
 import { GameEvent } from "./types/state.ts";
+import ActionsBar from "./components/actionsBar/ActionsBar.vue";
 
 export default defineComponent({
   template: `
@@ -38,13 +39,15 @@ export default defineComponent({
     
           </main>
     
-          <ctrl-frame :player="activePlayer" ></ctrl-frame>
+<!--          <ctrl-frame :player="activePlayer" ></ctrl-frame>-->
+        <ActionsBar :player="activePlayer" />
     
           <svg-static v-once></svg-static>
       </div>
     `,
 
   components: {
+    ActionsBar,
     "player-frame": PlayerFrame,
     "ctrl-frame": CtrlFrame,
     "svg-static": SVGElements,

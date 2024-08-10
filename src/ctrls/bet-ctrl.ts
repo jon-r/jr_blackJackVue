@@ -3,7 +3,7 @@ import { PropType, defineComponent } from "vue";
 import { mapGetters } from "vuex";
 
 import { Player } from "../types/players.ts";
-import ButtonBase from "./ButtonBase.vue";
+import ButtonBase from "../components/actionsBar/ButtonBase.vue";
 import ButtonCtrl from "./button.ts";
 import {ButtonControl} from "../types/button.ts";
 

@@ -1,4 +1,5 @@
 export type ButtonControl = {
+  id: string;
   canUse: boolean;
   label: string; // todo rename to label?
 

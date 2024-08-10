@@ -16,6 +16,7 @@ import {
   mutationSetters,
   playerSetters,
 } from "./storeTools.ts";
+import {GameStages} from "../constants/gamePlay.ts";
 
 export default new Vuex.Store<AppState>({
   strict: import.meta.env.MODE !== "production",
@@ -23,7 +24,7 @@ export default new Vuex.Store<AppState>({
   state: {
     // game stage ids
     gameRound: -1,
-    gameStage: -1,
+    gameStage: GameStages.Init,
     gameActivePlayer: -1,
 
     // players & dealer
