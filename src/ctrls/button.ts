@@ -1,4 +1,5 @@
-import {defineComponent, PropType} from 'vue';
+import { PropType, defineComponent } from "vue";
+
 /*
 canUse
 name
@@ -14,9 +15,9 @@ export type ButtonControlProps = {
   alert?: string;
   class?: string;
   onClick?: () => void;
-}
+};
 
-export default defineComponent( {
+export default defineComponent({
   props: {
     // todo split this up?
     ctrl: { type: Object as PropType<ButtonControlProps>, required: true },

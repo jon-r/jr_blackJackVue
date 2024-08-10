@@ -1,16 +1,13 @@
-import {Position} from "./types/animations.ts";
+import { Position } from "./types/animations.ts";
 
 export function setPos(el: HTMLElement, { x, y, r = 0 }: Position) {
   el.style.transform = `translate(${x}px,${y}px) rotate(${r}deg)`;
 }
 
-export function transformJiggle({
-  scale = 10,
-  offsetX = 0,
-  offsetY = 0,
-}) {
-  const [x, y, r] = [0, 0, 0]
-    .map(() => Math.round((Math.random() - 0.5) * scale));
+export function transformJiggle({ scale = 10, offsetX = 0, offsetY = 0 }) {
+  const [x, y, r] = [0, 0, 0].map(() =>
+    Math.round((Math.random() - 0.5) * scale),
+  );
 
   return {
     x: x + offsetX,
@@ -19,7 +16,11 @@ export function transformJiggle({
   };
 }
 
-export function arrayStaggeredPush<T>(toAdd: T[], array: T[], staggerTime: number) {
+export function arrayStaggeredPush<T>(
+  toAdd: T[],
+  array: T[],
+  staggerTime: number,
+) {
   if (toAdd.length === 0) return false;
 
   const item = toAdd.pop()!;
@@ -28,7 +29,11 @@ export function arrayStaggeredPush<T>(toAdd: T[], array: T[], staggerTime: numbe
   return true;
 }
 
-export function arrayStaggeredPull<T>(toRemove: T[], array: T[], staggerTime: number): T[] | false {
+export function arrayStaggeredPull<T>(
+  toRemove: T[],
+  array: T[],
+  staggerTime: number,
+): T[] | false {
   if (toRemove.length === 0) return false;
 
   const item = toRemove.pop()!;
@@ -41,6 +46,9 @@ export function arrayStaggeredPull<T>(toRemove: T[], array: T[], staggerTime: nu
     // returning the chip that cannot be found;
     return toRemove;
   }
-  setTimeout(() => arrayStaggeredPull(toRemove, array, staggerTime), staggerTime);
+  setTimeout(
+    () => arrayStaggeredPull(toRemove, array, staggerTime),
+    staggerTime,
+  );
   return false;
 }

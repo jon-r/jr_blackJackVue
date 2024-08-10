@@ -7,28 +7,27 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "vite build",
     "dev": "vite",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prettify": "prettier . --write"
   },
   "author": "Jon Richards",
   "license": "MIT",
   "type": "module",
   "devDependencies": {
     "@eslint/js": "^9.9.0",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@vitejs/plugin-vue": "^5.1.2",
     "eslint": "^9.9.0",
-    "eslint-config-airbnb": "^14.1.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^4.0.0",
-    "eslint-plugin-react": "^6.10.3",
     "eslint-plugin-vue": "^9.27.0",
     "globals": "^15.9.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.3.5"
+    "vite": "^5.3.5",
+    "vue-tsc": "^2.0.29"
   },
   "dependencies": {
-    "@vitejs/plugin-vue": "^5.1.2",
-    "typescript": "^5.5.4",
     "vue": "^3.4.35",
-    "vue-tsc": "^2.0.29",
     "vuex": "^4.1.0"
   }
 }

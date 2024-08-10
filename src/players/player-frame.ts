@@ -1,16 +1,15 @@
-// @ts-expect-error - bad types
-import { mapGetters } from 'vuex';
+import { PropType, defineComponent } from "vue";
+import { mapGetters } from "vuex";
 
-import PlayerHand from './hand.js';
-import PlayerBet from './bet.js';
-import {defineComponent, PropType} from "vue";
-import {Dealer, Player} from "../types/players.ts";
+import { Dealer, Player } from "../types/players.ts";
+import PlayerBet from "./bet.js";
+import PlayerHand from "./hand.js";
 
 export default defineComponent({
   props: {
-    'player': {type: Object as PropType<Player>, required: true}
+    player: { type: Object as PropType<Player>, required: true },
   },
-template: `
+  template: `
   <section class="player-frame flex flex-column" :class="playerClass" ref="frameParent" >
     <player-hand
       v-if="player.inGame"
@@ -40,8 +39,8 @@ template: `
 
   </section>`,
   components: {
-    'player-hand': PlayerHand,
-    'player-bet': PlayerBet,
+    "player-hand": PlayerHand,
+    "player-bet": PlayerBet,
   },
   data() {
     return {
@@ -49,7 +48,7 @@ template: `
       oldMoney: 0,
       diffFloat: true,
       framepos: {},
-      roundResult: '',
+      roundResult: "",
     };
   },
 
@@ -63,10 +62,9 @@ template: `
   },
 
   computed: {
-
     diffClass() {
       this.triggerTextAnim();
-      return ((this.moneyDiff as number) > 0) ? 'good-text' : 'error-text';
+      return (this.moneyDiff as number) > 0 ? "good-text" : "error-text";
     },
 
     moneyDiff() {
@@ -80,21 +78,16 @@ template: `
       return this.gameActivePlayer === this.player.index;
     },
 
-    ...mapGetters([
-      'gameActivePlayer',
-      'dealer',
-      'gameStage',
-      'gameRound',
-    ]),
+    ...mapGetters(["gameActivePlayer", "dealer", "gameStage", "gameRound"]),
   },
 
   methods: {
-
     turnCheck() {
       const cantBet = !this.player.inGame;
       const wontBet = this.gameStage === 0 && this.player.isDealer;
 
-      if (this.isPlayerTurn && (cantBet || wontBet)) this.$store.dispatch('nextPlayer');
+      if (this.isPlayerTurn && (cantBet || wontBet))
+        this.$store.dispatch("nextPlayer");
     },
 
     endRound(dealerScore: number) {
@@ -102,23 +95,22 @@ template: `
 
       this.roundResult = this.getScores();
 
-
       return this.emitBetChange(this.roundResult);
     },
 
     cleanUp() {
-      this.roundResult = '';
+      this.roundResult = "";
       // todo bonus: anything else can go here?
     },
 
     emitBetChange(value: string) {
       const betEvent = {
         idx: this.player.index,
-        type: 'bet',
+        type: "bet",
         value,
       };
 
-      this.$store.dispatch('doEvent', betEvent);
+      this.$store.dispatch("doEvent", betEvent);
     },
 
     getScores() {
@@ -126,14 +118,14 @@ template: `
       const playerScore = this.player.score;
 
       switch (true) {
-      case dealerScore === playerScore:
-        return 'push';
-      case playerScore > 21 || dealerScore === 21:
-        return 'lose';
-      case dealerScore > 21 || playerScore > dealerScore:
-        return 'win';
-      default: // dealerScore > playerScore
-        return 'lose';
+        case dealerScore === playerScore:
+          return "push";
+        case playerScore > 21 || dealerScore === 21:
+          return "lose";
+        case dealerScore > 21 || playerScore > dealerScore:
+          return "win";
+        default: // dealerScore > playerScore
+          return "lose";
       }
     },
 
@@ -145,8 +137,8 @@ template: `
     },
   },
   watch: {
-    'dealer.score': 'endRound',
-    isPlayerTurn: 'turnCheck',
-    gameRound: 'cleanUp',
+    "dealer.score": "endRound",
+    isPlayerTurn: "turnCheck",
+    gameRound: "cleanUp",
   },
 });

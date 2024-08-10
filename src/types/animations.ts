@@ -1,5 +1,5 @@
 export type Position = {
-    x: number;
-    y: number;
-    r?: number;
-}
+  x: number;
+  y: number;
+  r?: number;
+};

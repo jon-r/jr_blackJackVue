@@ -1,17 +1,15 @@
-import {defineComponent} from "vue";
-import PlayerFrame from "./players/player-frame.ts";
-import CtrlFrame from "./ctrls/ctrl-frame.ts";
-import SVGElements from "./svg-static.ts";
-import OptionsModal from "./ctrls/options-ctrl.ts";
-// import store from "./store/store.ts";
+import { defineComponent } from "vue";
+import { mapGetters } from "vuex";
 
-// @ts-expect-error - bad types
-import {mapGetters} from "vuex";
-import {GameEvent} from "./types/state.ts";
-import {AnyPlayer} from "./types/players.ts";
+import CtrlFrame from "./ctrls/ctrl-frame.ts";
+import OptionsModal from "./ctrls/options-ctrl.ts";
+import PlayerFrame from "./players/player-frame.ts";
+import SVGElements from "./svg-static.ts";
+import { AnyPlayer } from "./types/players.ts";
+import { GameEvent } from "./types/state.ts";
 
 export default defineComponent({
-    template: `
+  template: `
       <div class="container flex flex-column">
           <button class="text-btn modal-toggle" @click="showOptions = true" >
             <i class="material-symbols-outlined">menu</i>
@@ -45,72 +43,70 @@ export default defineComponent({
       </div>
     `,
 
-    components: {
-        'player-frame': PlayerFrame,
-        'ctrl-frame': CtrlFrame,
-        'svg-static': SVGElements,
-        'options-modal': OptionsModal,
+  components: {
+    "player-frame": PlayerFrame,
+    "ctrl-frame": CtrlFrame,
+    "svg-static": SVGElements,
+    "options-modal": OptionsModal,
+  },
+
+  data() {
+    return {
+      showOptions: true,
+      messages: [] as { text: string; idx: number }[],
+      messageIdx: 0,
+    };
+  },
+
+  // VUEX link to store
+  // store,
+
+  mounted() {
+    const el = this.$refs.theShoe as HTMLElement;
+
+    this.$store.dispatch("setShoePos", {
+      x: el.offsetLeft,
+      y: el.offsetTop,
+    });
+  },
+
+  computed: {
+    ...mapGetters([
+      "players",
+      "gameActivePlayer",
+      "newMessage",
+      "eventBus",
+      "eventID",
+      "activePlayerCount",
+    ]),
+
+    activePlayer() {
+      return (this.players as AnyPlayer[])[this.gameActivePlayer as number];
+    },
+  },
+
+  methods: {
+    newGameCheck() {
+      if ((this.eventBus as GameEvent).type === "newGame")
+        this.showOptions = true;
     },
 
-    data() {
-        return {
-            showOptions: true,
-            messages: [] as ({text: string, idx: number})[],
-            messageIdx: 0,
-        }
+    updateChat(params: string) {
+      const maxMessages = 5;
+
+      this.messageIdx += 1;
+
+      this.messages.unshift({
+        text: params,
+        idx: this.messageIdx,
+      });
+
+      if (this.messages.length > maxMessages) this.messages.pop();
     },
+  },
 
-    // VUEX link to store
-    // store,
-
-    mounted() {
-        const el = this.$refs.theShoe as HTMLElement;
-
-        this.$store.dispatch('setShoePos', {
-            x: el.offsetLeft,
-            y: el.offsetTop,
-        });
-    },
-
-    computed: {
-        ...mapGetters([
-            'players',
-            'gameActivePlayer',
-            'newMessage',
-            'eventBus',
-            'eventID',
-            'activePlayerCount',
-        ]),
-
-
-        activePlayer() {
-            return (this.players as AnyPlayer[])[this.gameActivePlayer as number];
-        },
-
-
-    },
-
-    methods: {
-        newGameCheck() {
-            if ((this.eventBus as GameEvent).type === 'newGame') this.showOptions = true;
-        },
-
-        updateChat(params: string) {
-            const maxMessages = 5;
-
-            this.messageIdx += 1;
-
-            this.messages.unshift({
-                text: params,
-                idx: this.messageIdx,
-            });
-
-            if (this.messages.length > maxMessages) this.messages.pop();
-        },
-    },
-
-    watch: {
-        newMessage: 'updateChat',
-        eventID: 'newGameCheck',
-    },
+  watch: {
+    newMessage: "updateChat",
+    eventID: "newGameCheck",
+  },
 });

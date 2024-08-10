@@ -1,16 +1,20 @@
-// @ts-expect-error - bad types
-import { mapGetters } from 'vuex';
-import { arrayStaggeredPush, arrayStaggeredPull, setPos } from '../animationTools.ts';
-import {defineComponent, PropType} from "vue";
-import {Player} from "../types/players.ts";
-import {GameEvent} from "../types/state.ts";
-import {Position} from "../types/animations.ts";
+import { PropType, defineComponent } from "vue";
+import { mapGetters } from "vuex";
+
+import {
+  arrayStaggeredPull,
+  arrayStaggeredPush,
+  setPos,
+} from "../animationTools.ts";
+import { Position } from "../types/animations.ts";
+import { Player } from "../types/players.ts";
+import { GameEvent } from "../types/state.ts";
 
 export default defineComponent({
   props: {
-    'turn': {type: Boolean, required: true},
-    'player': {type: Object as PropType<Player>, required: true},
-    'framepos': {type: Object as PropType<Position>, required: true},
+    turn: { type: Boolean, required: true },
+    player: { type: Object as PropType<Player>, required: true },
+    framepos: { type: Object as PropType<Position>, required: true },
   },
   template: `
   <div class="player-bet flex" >
@@ -39,12 +43,7 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapGetters([
-      'gameRound',
-      'eventBus',
-      'eventID',
-      'minBet',
-    ]),
+    ...mapGetters(["gameRound", "eventBus", "eventID", "minBet"]),
   },
   methods: {
     enter(el: HTMLElement) {
@@ -60,7 +59,7 @@ export default defineComponent({
     leave(el: HTMLElement, done: () => void) {
       const frame = this.framepos;
       setPos(el, { x: 0, y: -frame.y });
-      el.addEventListener('transitionend', () => {
+      el.addEventListener("transitionend", () => {
         done();
       });
     },
@@ -101,19 +100,19 @@ export default defineComponent({
       let remaining;
 
       switch (true) {
-      case (newBet < 0):
-        remaining = arrayStaggeredPull(...args);
-        return (remaining) ? this.splitChips(remaining) : true;
-      case (newBet > 0):
-        return arrayStaggeredPush(...args);
-      default: // no change
-        return false;
+        case newBet < 0:
+          remaining = arrayStaggeredPull(...args);
+          return remaining ? this.splitChips(remaining) : true;
+        case newBet > 0:
+          return arrayStaggeredPush(...args);
+        default: // no change
+          return false;
       }
     },
 
     splitChips(toRemove: number[]) {
       const removeTotal = toRemove.reduce((sum, value) => sum + value, 0);
-      const chipsFilter = this.chips.filter(chip => chip > removeTotal);
+      const chipsFilter = this.chips.filter((chip) => chip > removeTotal);
       const lowestChip = Math.min(...chipsFilter); // the lowest chip that can be broken down;
       const newChips = this.calcChips(lowestChip - removeTotal);
 
@@ -126,8 +125,8 @@ export default defineComponent({
 
     adjustBet() {
       const { idx, type, value } = this.eventBus as GameEvent;
-      const isBetEvent = (idx === this.player.index) && (type === 'bet');
-      const hasNoBet = (this.bet === 0 && value !== 'addBet');
+      const isBetEvent = idx === this.player.index && type === "bet";
+      const hasNoBet = this.bet === 0 && value !== "addBet";
 
       if (!isBetEvent || hasNoBet || this.alreadyEnded) return this;
 
@@ -142,7 +141,8 @@ export default defineComponent({
 
       this.showChips();
 
-      if (value === 'blackJack' || value === 'forfeit') this.alreadyEnded = true;
+      if (value === "blackJack" || value === "forfeit")
+        this.alreadyEnded = true;
 
       // @ts-expect-error - will be enum
       const bet = this.player.firstBet * betAdjust[value];
@@ -162,7 +162,10 @@ export default defineComponent({
         this.bet = 0;
 
         if (this.player.money < (this.minBet as number)) {
-          this.$store.dispatch('playerEndGame', { idx: this.player.index, value: false });
+          this.$store.dispatch("playerEndGame", {
+            idx: this.player.index,
+            value: false,
+          });
         }
       });
 
@@ -176,12 +179,11 @@ export default defineComponent({
     emitMoneyChange(value: number) {
       const idx = this.player.index;
       const betVals = { idx, value };
-      return this.$store.dispatch('playerUpdateMoney', betVals);
+      return this.$store.dispatch("playerUpdateMoney", betVals);
     },
-
   },
   watch: {
-    gameRound: 'cashIn',
-    eventID: 'adjustBet',
+    gameRound: "cashIn",
+    eventID: "adjustBet",
   },
 });

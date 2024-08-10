@@ -1,13 +1,18 @@
-import {AppState, PlayerMutation} from "../types/state.ts";
-import {Player} from "../types/players.ts";
-import type {ActionTree, GetterTree} from "vuex/types/index.d.ts";
+import type { ActionTree, GetterTree } from "vuex/types/index.d.ts";
+
+import { Player } from "../types/players.ts";
+import { AppState, PlayerMutation } from "../types/state.ts";
+
 // import {Store} from "vuex/types/index.d.ts";
 
-type MutationSetterProps = { [key: string]: keyof AppState; }
-type MutationSetterFunction = <Key extends keyof AppState>(state: AppState, value: AppState[Key]) => void;
+type MutationSetterProps = { [key: string]: keyof AppState };
+type MutationSetterFunction = <Key extends keyof AppState>(
+  state: AppState,
+  value: AppState[Key],
+) => void;
 
 export function mutationSetters(mutations: MutationSetterProps) {
-  const out: Record<string, MutationSetterFunction>  = {};
+  const out: Record<string, MutationSetterFunction> = {};
 
   Object.keys(mutations).forEach((mutation) => {
     const key = mutations[mutation];
@@ -21,7 +26,7 @@ export function mutationSetters(mutations: MutationSetterProps) {
   return out;
 }
 
-type PlayerSetterProps = { [key: string]: keyof Player; }
+type PlayerSetterProps = { [key: string]: keyof Player };
 type PlayerSetterFunction = (state: AppState, mutation: PlayerMutation) => void;
 
 export function playerSetters(mutations: PlayerSetterProps) {
@@ -47,16 +52,16 @@ type MutationIncrementProps = {
     reset: keyof AppState | false;
     value: keyof AppState;
   };
-}
+};
 
 type MutationIncrementFunction = (state: AppState) => void;
 
 export function mutationIncrements(mutations: MutationIncrementProps) {
-  const out: Record<string,MutationIncrementFunction> = {};
+  const out: Record<string, MutationIncrementFunction> = {};
 
   Object.keys(mutations).forEach((mutation) => {
     const { value, reset } = mutations[mutation];
-   // const reset = mutations[mutation].reset;
+    // const reset = mutations[mutation].reset;
 
     out[mutation] = (state) => {
       // @ts-expect-error - not sure how to type
@@ -70,7 +75,6 @@ export function mutationIncrements(mutations: MutationIncrementProps) {
   return out;
 }
 
-
 export function actionSetters(actions: Record<string, string>) {
   const out: ActionTree<AppState, AppState> = {};
 
@@ -78,7 +82,7 @@ export function actionSetters(actions: Record<string, string>) {
     const mutation = actions[action];
 
     out[action] = ({ commit }, i) => {
-      commit(mutation, i)
+      commit(mutation, i);
     };
   });
 

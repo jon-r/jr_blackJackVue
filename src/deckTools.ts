@@ -1,4 +1,4 @@
-import {Card, RawCard} from "./types/card.ts";
+import { Card, RawCard } from "./types/card.ts";
 
 export function getRandom(range: number): number {
   return Math.floor(Math.random() * range);
@@ -21,17 +21,17 @@ export function buildDeck(decks: number) {
 }
 
 export function valueCard(cardRaw: RawCard): Card {
-  const suits = ['hearts', 'diamonds', 'spades', 'clubs'];
-  const faces = { 1: 'A', 11: 'J', 12: 'Q', 13: 'K' };
+  const suits = ["hearts", "diamonds", "spades", "clubs"];
+  const faces = { 1: "A", 11: "J", 12: "Q", 13: "K" };
   const value = cardRaw[0];
   const suit = cardRaw[1];
 
   return {
     // @ts-expect-error do this better
-    face: (value in faces) ? faces[value] : value,
+    face: value in faces ? faces[value] : value,
     score: value === 1 ? 11 : Math.min(10, value),
     suit: suits[suit],
   };
 }
 
-export const blankCard = { face: '', score: 0, suit: 'blank' };
+export const blankCard = { face: "", score: 0, suit: "blank" };

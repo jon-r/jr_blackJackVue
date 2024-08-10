@@ -19,17 +19,60 @@ fix
 */
 
 /*! minireset.css v0.0.3 | MIT License | github.com/jgthms/minireset.css */
-html,body,p,ul,li,h1,h2,h3,h4,h5,h6{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input{margin:0}html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}
+html,
+body,
+p,
+ul,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 100%;
+  font-weight: normal;
+}
+ul {
+  list-style: none;
+}
+button,
+input {
+  margin: 0;
+}
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
 
 /* type --------------------------------------------------------------------- */
 
 body {
-  font: normal 12px/1.2 Roboto, Helvetica, Arial, sans-serif;
+  font:
+    normal 12px/1.2 Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
   color: #fff;
 }
 
-
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-weight: 400;
   line-height: 1.1;
   white-space: nowrap;
@@ -37,10 +80,18 @@ h1, h2, h3, h4 {
   overflow: hidden;
 }
 
-h2 { font-size: calc(0.5vw + 1.92rem) }
-h3 { font-size: calc(0.5vw + 1.28rem) }
-h4 { font-size: calc(0.5vw + .64rem) }
-h5 { font-size: 1rem }
+h2 {
+  font-size: calc(0.5vw + 1.92rem);
+}
+h3 {
+  font-size: calc(0.5vw + 1.28rem);
+}
+h4 {
+  font-size: calc(0.5vw + 0.64rem);
+}
+h5 {
+  font-size: 1rem;
+}
 
 .good-text {
   color: #4caf50;
@@ -67,22 +118,22 @@ h5 { font-size: 1rem }
   cursor: pointer;
 }
 
-.text-btn:hover, .text-btn:focus {
+.text-btn:hover,
+.text-btn:focus {
   color: #00c853;
   transition: color 200ms;
   outline: none;
 }
 
-
 /* todo think this should bbe flex? */
 .material-symbols-outlined {
-/*  font-size: 1.4em;*/
+  /*  font-size: 1.4em;*/
   vertical-align: middle;
 }
 
 /* flex settings ------------------------------------------------------------ */
 
-.flex{
+.flex {
   display: flex;
 }
 
@@ -112,7 +163,10 @@ h5 { font-size: 1rem }
 }
 
 .shadow-light {
-  box-shadow:  0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }
 
 @media screen and (min-width: 980px) {
@@ -131,7 +185,8 @@ h5 { font-size: 1rem }
 
 /* landing page ------------------------------------------------------------- */
 .site-body {
-  background-image: radial-gradient(circle, #1d570f 50%, #133a0a), url(./felt-tiled.jpg);
+  background-image: radial-gradient(circle, #1d570f 50%, #133a0a),
+    url(./felt-tiled.jpg);
   background-blend-mode: multiply;
 }
 .site-header {
@@ -144,7 +199,7 @@ h5 { font-size: 1rem }
 }
 .site-content {
   width: 100%;
-  max-width:1056px;
+  max-width: 1056px;
   padding: 16px;
   border: 8px solid rgba(249, 168, 37, 0.3);
   border-radius: 16px;
@@ -198,7 +253,9 @@ h5 { font-size: 1rem }
 }
 
 .message {
-  transition: transform 0.3s ease-in-out, color 1s ease-out;
+  transition:
+    transform 0.3s ease-in-out,
+    color 1s ease-out;
   transform-origin: top left;
 }
 
@@ -214,7 +271,9 @@ h5 { font-size: 1rem }
 
 .messages-leave-to {
   opacity: 0;
-  transition: opacity 5s, transform 0.5s ease-out;
+  transition:
+    opacity 5s,
+    transform 0.5s ease-out;
 }
 
 @media screen and (min-width: 980px) {
@@ -251,7 +310,7 @@ h5 { font-size: 1rem }
   right: 0;
   z-index: 30;
   padding: 32px;
-  background-color: rgba(0,0,0,.2);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .modal {
@@ -259,7 +318,10 @@ h5 { font-size: 1rem }
   width: 100%;
   max-width: 512px;
   background-color: #fafafa;
-  box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 9px 46px 8px rgba(0, 0, 0, 0.14),
+    0 11px 15px -7px rgba(0, 0, 0, 0.12),
+    0 24px 38px 3px rgba(0, 0, 0, 0.2);
 }
 
 .modal-header {
@@ -279,7 +341,6 @@ h5 { font-size: 1rem }
   max-width: calc(100% - 64px);
 }
 
-
 .options-group {
   border: none;
   margin: 8px 0;
@@ -296,13 +357,11 @@ h5 { font-size: 1rem }
   color: #666;
 }
 
-
 .input-group input {
   border-width: 0 0 2px;
   height: 24px;
   font-size: 1em;
   background: none;
-
 }
 
 .input-group input:focus {
@@ -315,7 +374,6 @@ h5 { font-size: 1rem }
   color: #00c853;
   transition: color 200ms;
 }
-
 
 /* ctrl frame-------------------------------------------------------------- */
 
@@ -371,12 +429,12 @@ h5 { font-size: 1rem }
 
 .btn-good {
   background-color: #2e7d32;
-
 }
 .btn-good:hover {
   background-color: #4caf50;
 }
-.ctrl-btn:disabled, .ctrl-btn:disabled:hover {
+.ctrl-btn:disabled,
+.ctrl-btn:disabled:hover {
   background-color: #4c4c4c;
   color: #828282;
 }
@@ -401,7 +459,6 @@ h5 { font-size: 1rem }
     align-self: center;
     min-width: 0;
     max-width: 33%;
-
   }
 }
 
@@ -414,14 +471,32 @@ h5 { font-size: 1rem }
   height: 25%;
   max-height: 208px;
 }
-.player-0 { top: 25%; left: 5%; }
-.player-1 { top: 50%; left: 5%; }
-.player-2 { top: 75%; left: 35%; }
-.player-3 { top: 50%; right: 5%; }
-.player-4 { top: 25%; right: 5%; }
+.player-0 {
+  top: 25%;
+  left: 5%;
+}
+.player-1 {
+  top: 50%;
+  left: 5%;
+}
+.player-2 {
+  top: 75%;
+  left: 35%;
+}
+.player-3 {
+  top: 50%;
+  right: 5%;
+}
+.player-4 {
+  top: 25%;
+  right: 5%;
+}
 
 /*dealer*/
-.player-5 { top: 2%; left: 30%; }
+.player-5 {
+  top: 2%;
+  left: 30%;
+}
 
 .player-frame-title {
   background-color: #1b5e20;
@@ -437,13 +512,14 @@ h5 { font-size: 1rem }
   border-bottom-color: #f9a825;
 }
 
-.player-name, .player-money {
+.player-name,
+.player-money {
   display: inline-block;
 }
 
 .player-money span {
-    position: absolute;
-    top: 0;
+  position: absolute;
+  top: 0;
 }
 
 @keyframes fade-up {
@@ -457,16 +533,32 @@ h5 { font-size: 1rem }
   animation: fade-up 2s forwards;
 }
 
-
 @media screen and (min-width: 980px) {
-
-  .player-0 { top: 33%; left: 1%; }
-  .player-1 { top: 63%; left: 15%; }
-  .player-2 { top: 71%; left: 40%; }
-  .player-3 { top: 63%; right: 15%; }
-  .player-4 { top: 33%; right: 1%; }
+  .player-0 {
+    top: 33%;
+    left: 1%;
+  }
+  .player-1 {
+    top: 63%;
+    left: 15%;
+  }
+  .player-2 {
+    top: 71%;
+    left: 40%;
+  }
+  .player-3 {
+    top: 63%;
+    right: 15%;
+  }
+  .player-4 {
+    top: 33%;
+    right: 1%;
+  }
   /*dealer*/
-  .player-5 { top: 7%; left: 42%; }
+  .player-5 {
+    top: 7%;
+    left: 42%;
+  }
 }
 
 /* player-hand -------------------------------------------------------------- */
@@ -513,9 +605,15 @@ h5 { font-size: 1rem }
 }
 
 @keyframes pop {
-  from { transform: translateY(-8px) scale(0.3) }
-  60% { transform: scale(1.5) }
-  to { transform: none; }
+  from {
+    transform: translateY(-8px) scale(0.3);
+  }
+  60% {
+    transform: scale(1.5);
+  }
+  to {
+    transform: none;
+  }
 }
 
 /* player-bet --------------------------------------------------------------- */
@@ -529,14 +627,15 @@ h5 { font-size: 1rem }
   font-size: 0.8em;
 }
 
-
 .chip-stack {
   flex-direction: column-reverse;
   padding-bottom: 16px;
   z-index: 5;
   transform: translate(150px, 32px);
   opacity: 0;
-  transition: transform 300ms ease-in, opacity 300ms 500ms;
+  transition:
+    transform 300ms ease-in,
+    opacity 300ms 500ms;
 }
 
 .chip-stack.show {
@@ -546,17 +645,29 @@ h5 { font-size: 1rem }
 }
 
 .chip-stack li {
-  transition:  transform 150ms ease-in;
+  transition: transform 150ms ease-in;
   width: 32px;
   height: 8px;
 }
 
-.chip-10 .token { filter: url(#blue) }
-.chip-25 .token { filter: url(#green) }
-.chip-100 .token { filter: url(#black) }
-.chip-500 .token { filter: url(#pink) }
-.chip-1000 .token { filter: url(#yellow) }
-.betting-chip:disabled .token { filter: url(#grey) }
+.chip-10 .token {
+  filter: url(#blue);
+}
+.chip-25 .token {
+  filter: url(#green);
+}
+.chip-100 .token {
+  filter: url(#black);
+}
+.chip-500 .token {
+  filter: url(#pink);
+}
+.chip-1000 .token {
+  filter: url(#yellow);
+}
+.betting-chip:disabled .token {
+  filter: url(#grey);
+}
 
 /* cards -------------------------------------------------------------------- */
 
@@ -568,7 +679,6 @@ h5 { font-size: 1rem }
   transition: 300ms;
   transform: translateY(-10px);
 }
-
 
 .player-cards.active-hand {
   opacity: 1;
@@ -597,52 +707,67 @@ h5 { font-size: 1rem }
 }
 
 .card.stacked {
-  box-shadow: 0 3px 0 0 #984b4b, 2px 6px 6px 3px #09210c;
+  box-shadow:
+    0 3px 0 0 #984b4b,
+    2px 6px 6px 3px #09210c;
 }
 
 .card.blank {
-  background: url(./card-back.svg) center/cover , #c97272;
+  background:
+    url(./card-back.svg) center/cover,
+    #c97272;
 }
 
-.hearts .card, .diamonds .card {
-  color:red;
+.hearts .card,
+.diamonds .card {
+  color: red;
 }
-.card.clubs, .card.spades {
+.card.clubs,
+.card.spades {
   color: black;
 }
 
 @keyframes flip {
-  from { background-image: url(./card-back.svg); }
+  from {
+    background-image: url(./card-back.svg);
+  }
   50% {
     background-image: url(./card-back.svg);
     transform: rotateY(90deg);
   }
-  51%, to {
+  51%,
+  to {
     background-image: none;
   }
 }
 @keyframes reveal {
-  from, 50% { opacity: 0 }
-  to, 51% { opacity: 1 }
+  from,
+  50% {
+    opacity: 0;
+  }
+  to,
+  51% {
+    opacity: 1;
+  }
 }
 
 .card:not(.blank) {
-  animation: flip .3s both;
+  animation: flip 0.3s both;
 }
 
-.card:not(.blank)::after, .card:not(.blank) span {
-  animation: reveal .3s both;
+.card:not(.blank)::after,
+.card:not(.blank) span {
+  animation: reveal 0.3s both;
 }
 
 .card:not(.blank)::after {
   content: "";
   position: absolute;
   right: -10px;
-  bottom:-5px;
+  bottom: -5px;
   height: 40px;
   width: 40px;
   background: url(./card.min.svg) 0/200%;
-
 }
 
 .card.hearts::after {

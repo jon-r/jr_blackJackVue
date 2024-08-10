@@ -1,11 +1,9 @@
-// @ts-expect-error - bad types
-import { mapGetters } from 'vuex';
+import { defineComponent } from "vue";
+import { mapGetters } from "vuex";
 
-import { getRandom } from '../deckTools.ts';
-
-import {defineComponent} from "vue";
-import {AnyPlayer, Player} from "../types/players.ts";
-import {GameConfig, NewGameOptions} from "../types/config.ts";
+import { getRandom } from "../deckTools.ts";
+import { GameConfig, NewGameOptions } from "../types/config.ts";
+import { AnyPlayer, Player } from "../types/players.ts";
 
 export default defineComponent({
   template: `
@@ -82,7 +80,8 @@ export default defineComponent({
 
     // enable demo mode
     const params = location.search;
-    if (params.includes('demo') && (this.gameRound as number) < 0) this.skipBets();
+    if (params.includes("demo") && (this.gameRound as number) < 0)
+      this.skipBets();
   },
 
   // todo. cleanly linking the options with the state
@@ -91,20 +90,18 @@ export default defineComponent({
   computed: {
     playerInput() {
       // clones the players stored, and fills in the blanks
-      const players = (this.players as AnyPlayer[]).filter(player => !player.isDealer).slice(0);
+      const players = (this.players as AnyPlayer[])
+        .filter((player) => !player.isDealer)
+        .slice(0);
       const empties = new Array(5 - players.length);
       players.push(...empties);
 
-      return players.map(player => ({ name: player.name || false }));
+      return players.map((player) => ({ name: player.name || false }));
     },
 
-    ...mapGetters([
-      'players',
-      'config',
-      'gameRound',
-    ]),
+    ...mapGetters(["players", "config", "gameRound"]),
   },
-  emits: ['hide'],
+  emits: ["hide"],
   methods: {
     setNewPlayer(name: string, index: number, isDealer = false): AnyPlayer {
       return {
@@ -115,7 +112,7 @@ export default defineComponent({
         firstBet: 0,
         score: 0,
         inGame: true,
-        peeked: null
+        peeked: null,
       } as AnyPlayer;
     },
     getOptions(): NewGameOptions {
@@ -125,10 +122,11 @@ export default defineComponent({
         autoTime: this.autoTime,
       };
 
-      const players = (this.playerInput as Player[])
-        .map((player, index) => this.setNewPlayer(player.name, index));
+      const players = (this.playerInput as Player[]).map((player, index) =>
+        this.setNewPlayer(player.name, index),
+      );
 
-      const dealer = this.setNewPlayer('Dealer', players.length, true);
+      const dealer = this.setNewPlayer("Dealer", players.length, true);
 
       players.push(dealer);
 
@@ -139,7 +137,7 @@ export default defineComponent({
 
       this.emitCloseOptions();
 
-      this.$store.dispatch('newGame', options);
+      this.$store.dispatch("newGame", options);
     },
     skipBets() {
       const options = this.getOptions();
@@ -147,10 +145,11 @@ export default defineComponent({
 
       this.emitCloseOptions();
 
-      store.dispatch('newGame', options)
+      store
+        .dispatch("newGame", options)
         .then(() => this.autoBet(0, options.players.length - 1))
-        .then(() => store.dispatch('nextPlayerPromise'))
-        .then(() => store.dispatch('nextStage'));
+        .then(() => store.dispatch("nextPlayerPromise"))
+        .then(() => store.dispatch("nextStage"));
     },
 
     autoBet(idx: number, max: number): Promise<void> {
@@ -165,19 +164,19 @@ export default defineComponent({
       };
       const betEvent = {
         idx,
-        type: 'bet',
-        value: 'addBet',
+        type: "bet",
+        value: "addBet",
       };
       const nextIdx = idx + 1;
 
-      return store.dispatch('playerSetBet', betVals)
-        .then(() => store.dispatch('doEvent', betEvent))
+      return store
+        .dispatch("playerSetBet", betVals)
+        .then(() => store.dispatch("doEvent", betEvent))
         .then(() => this.autoBet(nextIdx, max));
     },
 
     emitCloseOptions() {
-      this.$emit('hide');
+      this.$emit("hide");
     },
-
   },
 });

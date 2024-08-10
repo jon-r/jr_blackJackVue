@@ -1,20 +1,19 @@
-// @ts-expect-error - bad types
-import { mapGetters } from 'vuex';
-import { valueCard, blankCard } from '../deckTools.ts';
+import { PropType, defineComponent } from "vue";
+import { mapGetters } from "vuex";
 
-import PlayerCards from './cards.ts';
-import {defineComponent, PropType} from "vue";
-import {Position} from "../types/animations.ts";
-import {Dealer, Player} from "../types/players.ts";
-import {Card, PlayerHand, RawCard} from "../types/card.ts";
-import {GameEvent} from "../types/state.ts";
+import { blankCard, valueCard } from "../deckTools.ts";
+import { Position } from "../types/animations.ts";
+import { Card, PlayerHand, RawCard } from "../types/card.ts";
+import { Dealer, Player } from "../types/players.ts";
+import { GameEvent } from "../types/state.ts";
+import PlayerCards from "./cards.ts";
 
 export default defineComponent({
   props: {
-    'turn': {type: Boolean, required: true},
-    'player': {type: Object as PropType<Player>, required: true},
-    'framepos': {type: Object as PropType<Position>, required: true},
-    'result': {type: String, required: true}
+    turn: { type: Boolean, required: true },
+    player: { type: Object as PropType<Player>, required: true },
+    framepos: { type: Object as PropType<Position>, required: true },
+    result: { type: String, required: true },
   },
   template: `
   <div class="player-hand frame flex-auto flex flex-column" >
@@ -34,17 +33,16 @@ export default defineComponent({
   </div>
   `,
   components: {
-    'player-cards': PlayerCards,
+    "player-cards": PlayerCards,
   },
   data() {
     return {
       hands: [] as PlayerHand[],
       activeHand: -1,
-      message: '',
+      message: "",
     };
   },
   computed: {
-
     getActiveHand(): PlayerHand | undefined {
       return this.hands[this.activeHand];
     },
@@ -58,12 +56,12 @@ export default defineComponent({
 
       if (score > 21) {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.message = 'Bust!';
-        this.emitBetChange('lose');
+        this.message = "Bust!";
+        this.emitBetChange("lose");
       } else if (score === 21 && hand.revealed === 2) {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.message = 'BlackJack!';
-        this.emitBetChange('blackJack');
+        this.message = "BlackJack!";
+        this.emitBetChange("blackJack");
       }
 
       this.cardMessage(hand, this.message);
@@ -71,22 +69,21 @@ export default defineComponent({
     },
 
     roundResult() {
-      return this.message || this.result || '';
+      return this.message || this.result || "";
     },
 
     ...mapGetters([
-      'gameRound',
-      'gameStage',
-      'dealer',
-      'autoTime',
-      'eventBus',
-      'eventID',
+      "gameRound",
+      "gameStage",
+      "dealer",
+      "autoTime",
+      "eventBus",
+      "eventID",
     ]),
   },
   methods: {
-
     wait<T>(time: number, resolved: T): Promise<T> {
-      return new Promise(resolve =>
+      return new Promise((resolve) =>
         setTimeout(() => resolve(resolved), time),
       );
     },
@@ -118,7 +115,6 @@ export default defineComponent({
 
     /* card methods */
 
-
     addBlankCard() {
       const hand = this.getActiveHand as PlayerHand;
       hand.cards.push(blankCard);
@@ -126,9 +122,12 @@ export default defineComponent({
     },
 
     revealCard(mayPeek = false): Promise<RawCard> {
-      const drawType = mayPeek ? 'deckDrawPeek' : 'deckDrawRandom';
+      const drawType = mayPeek ? "deckDrawPeek" : "deckDrawRandom";
 
-      return this.$store.dispatch(drawType, (this.getActiveHand as PlayerHand).score);
+      return this.$store.dispatch(
+        drawType,
+        (this.getActiveHand as PlayerHand).score,
+      );
     },
 
     setCard(card: RawCard | Card, isPreset = false) {
@@ -138,7 +137,7 @@ export default defineComponent({
       const activeHand = this.getActiveHand as PlayerHand;
 
       // fixme this looks sus
-      activeHand.cards.splice(activeHand.revealed, 1, newCard as Card)
+      activeHand.cards.splice(activeHand.revealed, 1, newCard as Card);
 
       activeHand.revealed += 1;
 
@@ -146,20 +145,21 @@ export default defineComponent({
     },
 
     dealRevealSet(mayPeek = false) {
-      return this.addBlankCard().revealCard(mayPeek)
-        .then(rawCard => this.wait(this.autoTime as number, rawCard))
-        .then(rawCard => this.setCard(rawCard));
+      return this.addBlankCard()
+        .revealCard(mayPeek)
+        .then((rawCard) => this.wait(this.autoTime as number, rawCard))
+        .then((rawCard) => this.setCard(rawCard));
     },
 
     fillBlanks() {
       const activeHand = this.getActiveHand as PlayerHand;
-      const hasBlank = (activeHand.cards.length > activeHand.revealed);
+      const hasBlank = activeHand.cards.length > activeHand.revealed;
 
       if (!hasBlank) return Promise.resolve();
 
       return this.revealCard()
-        .then(rawCard => this.wait(this.autoTime as number, rawCard))
-        .then(rawCard => this.setCard(rawCard));
+        .then((rawCard) => this.wait(this.autoTime as number, rawCard))
+        .then((rawCard) => this.setCard(rawCard));
     },
 
     /* turn setting -------------- */
@@ -171,7 +171,7 @@ export default defineComponent({
         [2, this.dealOutSecond],
         [3, this.playerActions],
         [4, this.dealOutLast],
- //       [5, this.roundResult],
+        //       [5, this.roundResult],
       ]);
 
       const fn = actions.get(this.gameStage as number);
@@ -182,8 +182,10 @@ export default defineComponent({
     /* TURN 0 ------------------ */
 
     clearTable() {
-      this.hands.forEach((hand) => { hand.cards = []; });
-      this.message = '';
+      this.hands.forEach((hand) => {
+        hand.cards = [];
+      });
+      this.message = "";
 
       setTimeout(() => {
         this.hands = [];
@@ -195,7 +197,8 @@ export default defineComponent({
 
     dealOutFirst() {
       this.activeHand = 0;
-      this.addHand().wait(100, null)
+      this.addHand()
+        .wait(100, null)
         .then(() => this.dealRevealSet())
         .then(() => this.emitEndTurn());
     },
@@ -204,12 +207,14 @@ export default defineComponent({
 
     dealOutSecond() {
       const isDealer = this.player.isDealer;
-      this.dealRevealSet(isDealer)
-      .then(() => {
-        const endImmediately = (isDealer && (this.getActiveHand as PlayerHand).score === 21);
+      this.dealRevealSet(isDealer).then(() => {
+        const endImmediately =
+          isDealer && (this.getActiveHand as PlayerHand).score === 21;
 
-        return (endImmediately)
-          ? this.wait(this.autoTime as number, null).then(() => this.emitEndRound())
+        return endImmediately
+          ? this.wait(this.autoTime as number, null).then(() =>
+              this.emitEndRound(),
+            )
           : this.emitEndTurn();
       });
     },
@@ -219,8 +224,8 @@ export default defineComponent({
     updateRules() {
       const hand = this.getActiveHand as PlayerHand;
       const count = hand.revealed;
-      const split = (count === 2 && (hand.cards[0].face === hand.cards[1].face));
-      this.$store.dispatch('handCtrlRules', { count, split });
+      const split = count === 2 && hand.cards[0].face === hand.cards[1].face;
+      this.$store.dispatch("handCtrlRules", { count, split });
     },
 
     scoreCheck() {
@@ -228,15 +233,15 @@ export default defineComponent({
       if (!this.allowPlay) this.nextHand();
     },
 
-
     playerActions() {
       if (!this.player.isDealer) {
         return this.scoreCheck();
       }
 
-      const peekedCard = (this.dealer as Dealer).peeked
+      const peekedCard = (this.dealer as Dealer).peeked;
       if (peekedCard) {
-        return this.setCard(peekedCard).wait(0, null)
+        return this.setCard(peekedCard)
+          .wait(0, null)
           .then(() => this.autoHit());
       }
 
@@ -245,7 +250,7 @@ export default defineComponent({
 
     doCtrl() {
       const { idx, type, value } = this.eventBus as GameEvent;
-      const isHandEvent = (idx === this.player.index) && (type === 'card');
+      const isHandEvent = idx === this.player.index && type === "card";
 
       // @ts-expect-error - do this better
       if (isHandEvent) this[value]();
@@ -274,7 +279,7 @@ export default defineComponent({
       const splitCard = hand.cards.splice(1)[0];
       hand.revealed -= 1;
 
-      this.emitBetChange('addBet')
+      this.emitBetChange("addBet")
         .then(() => this.dealRevealSet())
         .then(() => this.addSplitHand(splitCard))
         .then(() => this.wait(100, null))
@@ -283,27 +288,28 @@ export default defineComponent({
     },
 
     surrender() {
-      this.emitBetChange('forfeit')
-        .then(() => this.emitEndTurn());
+      this.emitBetChange("forfeit").then(() => this.emitEndTurn());
     },
 
     double() {
-      this.addBlankCard().emitBetChange('addBet')
-        .then(() => this.$store.dispatch('playerDoubleBet', { idx: this.player.index })) // needed to change the bet AFTER adding. to avoid double dipping
+      this.addBlankCard()
+        .emitBetChange("addBet")
+        .then(() =>
+          this.$store.dispatch("playerDoubleBet", { idx: this.player.index }),
+        ) // needed to change the bet AFTER adding. to avoid double dipping
         .then(() => this.emitEndTurn());
     },
 
     /* TURN 4 ------------------------- */
 
     dealOutLast() {
-      this.fillBlanks()
-        .then(() => this.setFinalScores().emitEndTurn());
+      this.fillBlanks().then(() => this.setFinalScores().emitEndTurn());
     },
 
     setFinalScores() {
       // also filtering out any bust scores
       const bestScore = this.hands
-        .map(hand => hand.score)
+        .map((hand) => hand.score)
         .reduce((max, cur) => (cur > 21 ? max : Math.max(max, cur)), -1);
 
       this.emitFinalScore(bestScore);
@@ -314,44 +320,43 @@ export default defineComponent({
     /* emits -------------------------------------------------------------*/
 
     emitEndTurn() {
-      this.$store.dispatch('nextPlayer');
+      this.$store.dispatch("nextPlayer");
     },
 
     emitEndRound() {
       const store = this.$store;
-      store.dispatch('setStage', 3);
-      store.dispatch('nextPlayer');
+      store.dispatch("setStage", 3);
+      store.dispatch("nextPlayer");
     },
 
     emitBetChange(value: string) {
       const betEvent = {
         idx: this.player.index,
-        type: 'bet',
+        type: "bet",
         value,
       };
 
-      return this.$store.dispatch('doEvent', betEvent);
+      return this.$store.dispatch("doEvent", betEvent);
     },
 
     emitFinalScore(value: number) {
       const idx = this.player.index;
-      this.$store.dispatch('playerSetScore', { idx, value });
+      this.$store.dispatch("playerSetScore", { idx, value });
     },
 
     /* messenger ---------------------------------------------------------*/
 
     cardMessage(hand: PlayerHand, outcome: string) {
-      const has = (hand.revealed === 2) ? 'starts with' : 'now has';
+      const has = hand.revealed === 2 ? "starts with" : "now has";
 
       const msg = `${this.player.name} ${has} ${hand.score}. ${outcome}`;
 
-      this.$store.dispatch('setNewMessage', msg);
+      this.$store.dispatch("setNewMessage", msg);
     },
-
   },
   watch: {
-    gameRound: 'clearTable',
-    turn: 'startTurn',
-    eventID: 'doCtrl',
+    gameRound: "clearTable",
+    turn: "startTurn",
+    eventID: "doCtrl",
   },
 });

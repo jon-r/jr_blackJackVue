@@ -1,15 +1,15 @@
-// @ts-expect-error - bad types
-import { mapGetters } from 'vuex';
-import { transformJiggle, setPos } from '../animationTools.ts';
-import {defineComponent, PropType} from "vue";
-import {Position} from "../types/animations.ts";
-import {Card} from "../types/card.ts";
+import { PropType, defineComponent } from "vue";
+import { mapGetters } from "vuex";
+
+import { setPos, transformJiggle } from "../animationTools.ts";
+import { Position } from "../types/animations.ts";
+import { Card } from "../types/card.ts";
 
 export default defineComponent({
   props: {
-    'cards': { type: Object as PropType<Card[]>, required: true },
-    'framepos': { type: Object as PropType<Position>, required: true },
-    'active': { type: Boolean, required: true },
+    cards: { type: Object as PropType<Card[]>, required: true },
+    framepos: { type: Object as PropType<Position>, required: true },
+    active: { type: Boolean, required: true },
   },
   template: `
   <div class="player-cards" :class="{ 'active-hand': active }" >
@@ -38,7 +38,7 @@ export default defineComponent({
       aces: 0,
     };
   },
-  emits: ['update:modelValue'],
+  emits: ["update:modelValue"],
   computed: {
     enterPosition(): Position {
       const shoe = this.shoePos as Position;
@@ -66,7 +66,10 @@ export default defineComponent({
       if (cards.length === 0) return 0;
 
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.aces = cards.reduce((count, card) => count + Number(card.face === 'A'), 0);
+      this.aces = cards.reduce(
+        (count, card) => count + Number(card.face === "A"),
+        0,
+      );
 
       let newScore = cards.reduce((score, card) => score + card.score, 0);
 
@@ -76,7 +79,7 @@ export default defineComponent({
         this.aces -= 1;
         newScore -= 10;
       }
-      this.$emit('update:modelValue', newScore);
+      this.$emit("update:modelValue", newScore);
 
       return newScore;
     },
@@ -85,20 +88,18 @@ export default defineComponent({
       const score = this.score as number;
 
       switch (true) {
-      case (score > 21):
-        return 'Bust';
-      case (score === 21 && this.cards.length < 3):
-        return 'BlackJack';
-      case (this.aces > 0):
-        return 'Soft';
-      default:
-        return '';
+        case score > 21:
+          return "Bust";
+        case score === 21 && this.cards.length < 3:
+          return "BlackJack";
+        case this.aces > 0:
+          return "Soft";
+        default:
+          return "";
       }
     },
 
-    ...mapGetters([
-      'shoePos',
-    ]),
+    ...mapGetters(["shoePos"]),
   },
   methods: {
     // fixme card transitions seem to be problematic. maybe can be handled with just css?
@@ -114,8 +115,7 @@ export default defineComponent({
     leave(el: HTMLElement, done: () => void) {
       setPos(el, this.leavePosition as Position);
 
-      el.addEventListener('transitionend', done);
+      el.addEventListener("transitionend", done);
     },
   },
-
 });

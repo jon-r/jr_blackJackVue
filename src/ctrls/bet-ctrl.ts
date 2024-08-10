@@ -1,15 +1,15 @@
-// @ts-expect-error - bad types
-import { mapGetters } from 'vuex';
-import {defineComponent, PropType} from "vue";
-import {Player} from "../types/players.ts";
-import ButtonCtrl, {ButtonControlProps} from "./button.ts";
+import { PropType, defineComponent } from "vue";
+import { mapGetters } from "vuex";
+
+import { Player } from "../types/players.ts";
+import ButtonCtrl, { ButtonControlProps } from "./button.ts";
 
 export default defineComponent({
   components: {
-    'button-ctrl': ButtonCtrl
+    "button-ctrl": ButtonCtrl,
   },
   props: {
-    player: {type: Object as PropType<Player>, required: true}
+    player: { type: Object as PropType<Player>, required: true },
   },
   template: `
   <div class="ctrl-menu frame flex flex-wrap" >
@@ -37,7 +37,7 @@ export default defineComponent({
   },
   computed: {
     ctrlBets() {
-      const maxChips = (this.player.money - this.currChipValue);
+      const maxChips = this.player.money - this.currChipValue;
 
       return this.chips.map((chip) => {
         const canUse = chip <= maxChips;
@@ -45,7 +45,7 @@ export default defineComponent({
           ref: chip,
           name: `£${chip}`,
           class: `betting-chip chip-${chip}`,
-          svg: '#chip',
+          svg: "#chip",
           canUse,
           onClick: this.addChip,
         };
@@ -54,22 +54,32 @@ export default defineComponent({
 
     ctrlSubmits(): ButtonControlProps[] {
       const bet = this.currChipValue;
-      const canUse = (bet >= (this.minBet as number));
+      const canUse = bet >= (this.minBet as number);
       const betStr = `Submit: £${bet}`;
       const alert = `Min: £${this.minBet}`;
 
       return [
-        { name: betStr, class: 'btn-good', icon: 'publish', canUse, onClick: this.emitBet, alert },
-        { name: 'Undo', class: 'btn-alert', icon: 'undo', canUse: bet > 0, onClick: this.removeChip },
+        {
+          name: betStr,
+          class: "btn-good",
+          icon: "publish",
+          canUse,
+          onClick: this.emitBet,
+          alert,
+        },
+        {
+          name: "Undo",
+          class: "btn-alert",
+          icon: "undo",
+          canUse: bet > 0,
+          onClick: this.removeChip,
+        },
       ];
     },
 
-    ...mapGetters([
-      'minBet',
-    ]),
+    ...mapGetters(["minBet"]),
   },
   methods: {
-
     addChip(chip: number) {
       this.currChipValue += chip;
       this.currChips.push(chip);
@@ -92,19 +102,20 @@ export default defineComponent({
       };
       const betEvent = {
         idx,
-        type: 'bet',
-        value: 'addBet',
+        type: "bet",
+        value: "addBet",
       };
 
       this.currChips = [];
       this.currChipValue = 0;
 
       // todo bonus combine these in store?
-      store.dispatch('setNewMessage', `${player.name} bets £${bet}`);
+      store.dispatch("setNewMessage", `${player.name} bets £${bet}`);
 
-      store.dispatch('playerSetBet', betVals)
-        .then(() => store.dispatch('doEvent', betEvent))
-        .then(() => store.dispatch('nextPlayer'));
+      store
+        .dispatch("playerSetBet", betVals)
+        .then(() => store.dispatch("doEvent", betEvent))
+        .then(() => store.dispatch("nextPlayer"));
     },
   },
 });

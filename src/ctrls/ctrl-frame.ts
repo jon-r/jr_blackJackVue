@@ -1,15 +1,14 @@
-// @ts-expect-error - bad types
-import { mapGetters } from 'vuex';
+import { PropType, defineComponent } from "vue";
+import { mapGetters } from "vuex";
 
-import HandCtrl from './hand-ctrl.ts';
-import BetCtrl from './bet-ctrl.ts';
-import EndGameCtrl from './end-game-ctrl.ts';
-import {defineComponent, PropType} from "vue";
-import {Player} from "../types/players.ts";
+import { Player } from "../types/players.ts";
+import BetCtrl from "./bet-ctrl.ts";
+import EndGameCtrl from "./end-game-ctrl.ts";
+import HandCtrl from "./hand-ctrl.ts";
 
 export default defineComponent({
   props: {
-    player: {type: Object as PropType<Player>, required: false}
+    player: { type: Object as PropType<Player>, required: false },
   },
   template: `
   <section class="ctrl-bar flex" >
@@ -29,48 +28,44 @@ export default defineComponent({
   </section>`,
 
   components: {
-    'hand-ctrl': HandCtrl,
-    'bet-ctrl': BetCtrl,
-    'end-game-ctrl': EndGameCtrl,
+    "hand-ctrl": HandCtrl,
+    "bet-ctrl": BetCtrl,
+    "end-game-ctrl": EndGameCtrl,
   },
 
   computed: {
-
     tips() {
       const player = this.player;
       const stage = this.gameStage as number;
       const out = new Map([
         [0, `Current money: £${player?.money}. Min Bet: £${this.minBet}.`],
-        [5, 'Round Over. Keep on playing?'],
+        [5, "Round Over. Keep on playing?"],
         // todo bonus = more tips?
       ]);
 
-      return out.has(stage) ? out.get(stage) : '';
+      return out.has(stage) ? out.get(stage) : "";
     },
 
-    ...mapGetters([
-      'gameStage',
-      'minBet',
-    ]),
+    ...mapGetters(["gameStage", "minBet"]),
   },
 
   methods: {
     // todo stage to enum
     postMessage(stage: number) {
       const out = new Map([
-        [0, 'Please place Your bets'],
-        [1, 'All bets are in, dealing out the first cards.'],
-        [5, 'Round Over'],
+        [0, "Please place Your bets"],
+        [1, "All bets are in, dealing out the first cards."],
+        [5, "Round Over"],
       ]);
 
       if (!out.has(stage)) return false;
 
       const msg = out.get(stage);
 
-      return this.$store.dispatch('setNewMessage', msg);
+      return this.$store.dispatch("setNewMessage", msg);
     },
   },
   watch: {
-    gameStage: 'postMessage',
+    gameStage: "postMessage",
   },
 });
