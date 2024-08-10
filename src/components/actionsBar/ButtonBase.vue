@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import {ButtonControl} from "../../types/button.ts";
+import { ButtonControl } from "../../types/button.ts";
 
-type ButtonControlProps = Omit<ButtonControl, "onClick" | "id">
+type ButtonControlProps = Omit<ButtonControl, "onClick" | "id">;
 
 const props = defineProps<ButtonControlProps>();
-
 </script>
 <template>
-  <button type="button" class="ctrl-btn flex-auto" :disabled="!props.canUse" :class="props.className">
+  <button
+    type="button"
+    class="ctrl-btn flex-auto"
+    :disabled="!props.canUse"
+    :class="props.className"
+  >
     <span class="ctrl-btn-title">{{ props.label }}</span>
 
     <svg v-if="props.svg" viewBox="0 0 100 100">
@@ -18,6 +22,8 @@ const props = defineProps<ButtonControlProps>();
       {{ props.icon }}
     </i>
 
-    <span class="ctrl-btn-alert alert-text" v-if="props.alert">{{ props.alert }}</span>
+    <span class="ctrl-btn-alert alert-text" v-if="props.alert">{{
+      props.alert
+    }}</span>
   </button>
 </template>

@@ -2,13 +2,13 @@ import { defineComponent } from "vue";
 // @ts-expect-error bad types
 import { mapGetters } from "vuex";
 
+import ActionsBar from "./components/actionsBar/ActionsBar.vue";
 import CtrlFrame from "./ctrls/ctrl-frame.ts";
 import OptionsModal from "./ctrls/options-ctrl.ts";
 import PlayerFrame from "./players/player-frame.ts";
 import SVGElements from "./svg-static.ts";
 import { AnyPlayer } from "./types/players.ts";
 import { GameEvent } from "./types/state.ts";
-import ActionsBar from "./components/actionsBar/ActionsBar.vue";
 
 export default defineComponent({
   template: `

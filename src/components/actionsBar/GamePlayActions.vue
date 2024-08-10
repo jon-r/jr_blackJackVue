@@ -1,26 +1,25 @@
 <script setup lang="ts">
-import {useStore} from "vuex";
-import {Player} from "../../types/players.ts";
-import {computed} from "vue";
-import {ButtonControl} from "../../types/button.ts";
-import {GamePlayActionTypes} from "../../constants/gamePlay.ts";
+import { computed } from "vue";
+
+import { GamePlayActionTypes } from "../../constants/gamePlay.ts";
+import { useAppStore } from "../../store/store.ts";
+import { ButtonControl } from "../../types/button.ts";
+import { Player } from "../../types/players.ts";
 import ButtonBase from "./ButtonBase.vue";
 
 type GamePlayActionsProps = {
-  player: Player
-}
+  player: Player;
+};
 
-const store = useStore()
-const props = defineProps<GamePlayActionsProps>()
-
-// const handRules = store.state.handRules;
+const store = useAppStore();
+const props = defineProps<GamePlayActionsProps>();
 
 const actionButtons = computed<ButtonControl[]>(() => {
-  const {split: canSplit, count: cardCount} = store.state.handRules;
+  const { split: canSplit, count: cardCount } = store.state.handRules;
   const isFirstAction = cardCount < 3;
-  const {money, firstBet} = props.player;
+  const { money, firstBet } = props.player;
 
-  const canAfford = money >= firstBet
+  const canAfford = money >= firstBet;
 
   return [
     {
@@ -47,7 +46,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
       label: GamePlayActionTypes.Surrender,
       canUse: isFirstAction,
       icon: "flag",
-      alert: `+ £${firstBet / 2}`
+      alert: `+ £${firstBet / 2}`,
     },
     {
       id: "play-double",
@@ -56,22 +55,25 @@ const actionButtons = computed<ButtonControl[]>(() => {
       icon: "monetization_on",
       alert: `- £${firstBet}`,
     },
-  ]
-})
+  ];
+});
 
 function handleAction(action: GamePlayActionTypes) {
-  const {index: idx, name, firstBet} = props.player
+  const { index: idx, name, firstBet } = props.player;
 
   const handEvent = {
     idx,
-    type: 'card',
-    value: action
-  }
+    type: "card",
+    value: action,
+  };
 
-  store.dispatch('doEvent', handEvent);
-  store.dispatch('setNewMessage', `${name} ${action}s`)
+  store.dispatch("doEvent", handEvent);
+  store.dispatch("setNewMessage", `${name} ${action}s`);
 
-  if (action === GamePlayActionTypes.Split || action === GamePlayActionTypes.Double) {
+  if (
+    action === GamePlayActionTypes.Split ||
+    action === GamePlayActionTypes.Double
+  ) {
     const betVals = {
       idx,
       value: -firstBet,
@@ -82,13 +84,12 @@ function handleAction(action: GamePlayActionTypes) {
 }
 </script>
 <template>
-  <section class="ctrl-menu frame flex flex-wrap" >
+  <section class="ctrl-menu frame flex flex-wrap">
     <ButtonBase
-        v-for="actionButton in actionButtons"
-        :key="actionButton.id"
-        v-bind="actionButton"
-
-        @click="() => handleAction(actionButton.label as GamePlayActionTypes)" >
-    </ButtonBase>
+      v-for="actionButton in actionButtons"
+      :key="actionButton.id"
+      v-bind="actionButton"
+      @click="() => handleAction(actionButton.label as GamePlayActionTypes)"
+    />
   </section>
 </template>

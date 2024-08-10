@@ -1,9 +1,10 @@
 // combine more into more ... function groups?
 // merge commonly done actions into big chains ()
-// @ts-expect-error bad types
-import Vuex from "vuex";
-import {StoreOptions, Store} from "vuex/types/index.d.ts";
+import { InjectionKey } from "vue";
+import { createStore, useStore } from "vuex";
+import { Store } from "vuex/types/index.d.ts";
 
+import { GameStages } from "../constants/gamePlay.ts";
 import { DEFAULT_PLAYER } from "../constants/player.ts";
 import { buildDeck, getRandom } from "../deckTools.ts";
 import { RawCard } from "../types/card.ts";
@@ -16,9 +17,14 @@ import {
   mutationSetters,
   playerSetters,
 } from "./storeTools.ts";
-import {GameStages} from "../constants/gamePlay.ts";
 
-export default new Vuex.Store<AppState>({
+export const storeKey: InjectionKey<Store<AppState>> = Symbol();
+
+export function useAppStore() {
+  return useStore(storeKey);
+}
+
+export default createStore<AppState>({
   strict: import.meta.env.MODE !== "production",
 
   state: {
@@ -265,4 +271,4 @@ export default new Vuex.Store<AppState>({
       "config",
     ]),
   },
-} satisfies StoreOptions<AppState>);
+});

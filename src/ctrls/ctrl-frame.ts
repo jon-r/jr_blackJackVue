@@ -2,13 +2,13 @@ import { PropType, defineComponent } from "vue";
 // @ts-expect-error bad types
 import { mapGetters } from "vuex";
 
+import BettingActions from "../components/actionsBar/BettingActions.vue";
+import EndGameActions from "../components/actionsBar/EndGameActions.vue";
+import GamePlayActions from "../components/actionsBar/GamePlayActions.vue";
 import { Player } from "../types/players.ts";
 import BetCtrl from "./bet-ctrl.ts";
 import EndGameCtrl from "./end-game-ctrl.ts";
 import HandCtrl from "./hand-ctrl.ts";
-import BettingActions from "../components/actionsBar/BettingActions.vue";
-import GamePlayActions from "../components/actionsBar/GamePlayActions.vue";
-import EndGameActions from "../components/actionsBar/EndGameActions.vue";
 
 export default defineComponent({
   props: {

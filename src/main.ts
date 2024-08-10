@@ -2,10 +2,10 @@ import { createApp } from "vue";
 
 import App from "./app.ts";
 import "./assets/style.css";
-import store from "./store/store.ts";
+import store, { storeKey } from "./store/store.ts";
 
 const app = createApp(App);
 
-app.use(store);
+app.use(store, storeKey);
 
 app.mount("#app");

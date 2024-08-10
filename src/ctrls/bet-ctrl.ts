@@ -2,10 +2,10 @@ import { PropType, defineComponent } from "vue";
 // @ts-expect-error - bad types
 import { mapGetters } from "vuex";
 
-import { Player } from "../types/players.ts";
 import ButtonBase from "../components/actionsBar/ButtonBase.vue";
+import { ButtonControl } from "../types/button.ts";
+import { Player } from "../types/players.ts";
 import ButtonCtrl from "./button.ts";
-import {ButtonControl} from "../types/button.ts";
 
 export default defineComponent({
   components: {
@@ -75,7 +75,7 @@ export default defineComponent({
           icon: "publish",
           canUse: bet >= (this.minBet as number),
           onClick: this.emitBet,
-          alert:  `Min: £${this.minBet}`,
+          alert: `Min: £${this.minBet}`,
         },
         {
           label: "Undo",
