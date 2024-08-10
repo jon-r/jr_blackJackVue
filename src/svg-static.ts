@@ -1,4 +1,6 @@
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   template: `
   <svg height="0" width="0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" >
     <defs>
@@ -64,4 +66,4 @@ export default {
     </defs>
   </svg>
   `,
-};
+});

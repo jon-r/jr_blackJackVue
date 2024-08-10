@@ -1,11 +1,14 @@
-// import Vue from 'vue';
-import { mapGetters } from 'vuex';
+import { PropType, defineComponent } from "vue";
+import { mapGetters } from "vuex";
 
-import PlayerHand from './hand';
-import PlayerBet from './bet';
+import { Dealer, Player } from "../types/players.ts";
+import PlayerBet from "./bet.js";
+import PlayerHand from "./hand.js";
 
-export default {
-  props: ['player'],
+export default defineComponent({
+  props: {
+    player: { type: Object as PropType<Player>, required: true },
+  },
   template: `
   <section class="player-frame flex flex-column" :class="playerClass" ref="frameParent" >
     <player-hand
@@ -36,8 +39,8 @@ export default {
 
   </section>`,
   components: {
-    'player-hand': PlayerHand,
-    'player-bet': PlayerBet,
+    "player-hand": PlayerHand,
+    "player-bet": PlayerBet,
   },
   data() {
     return {
@@ -45,12 +48,12 @@ export default {
       oldMoney: 0,
       diffFloat: true,
       framepos: {},
-      roundResult: '',
+      roundResult: "",
     };
   },
 
   mounted() {
-    const el = this.$refs.frameParent;
+    const el = this.$refs.frameParent as HTMLElement;
 
     this.framepos = {
       x: el.offsetLeft,
@@ -59,14 +62,14 @@ export default {
   },
 
   computed: {
-
     diffClass() {
       this.triggerTextAnim();
-      return (this.moneyDiff > 0) ? 'good-text' : 'error-text';
+      return (this.moneyDiff as number) > 0 ? "good-text" : "error-text";
     },
 
     moneyDiff() {
       const out = this.player.money - this.oldMoney;
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.oldMoney = this.player.money;
       return out;
     },
@@ -75,60 +78,54 @@ export default {
       return this.gameActivePlayer === this.player.index;
     },
 
-    ...mapGetters([
-      'gameActivePlayer',
-      'dealer',
-      'gameStage',
-      'gameRound',
-    ]),
+    ...mapGetters(["gameActivePlayer", "dealer", "gameStage", "gameRound"]),
   },
 
   methods: {
-
     turnCheck() {
       const cantBet = !this.player.inGame;
       const wontBet = this.gameStage === 0 && this.player.isDealer;
 
-      if (this.isPlayerTurn && (cantBet || wontBet)) this.$store.dispatch('nextPlayer');
+      if (this.isPlayerTurn && (cantBet || wontBet))
+        this.$store.dispatch("nextPlayer");
     },
 
-    endRound(dealerScore) {
+    endRound(dealerScore: number) {
       if (!dealerScore) return false;
 
       this.roundResult = this.getScores();
-
 
       return this.emitBetChange(this.roundResult);
     },
 
     cleanUp() {
-      this.roundResult = '';
+      this.roundResult = "";
       // todo bonus: anything else can go here?
     },
 
-    emitBetChange(value) {
+    emitBetChange(value: string) {
       const betEvent = {
         idx: this.player.index,
-        type: 'bet',
+        type: "bet",
         value,
       };
 
-      this.$store.dispatch('doEvent', betEvent);
+      this.$store.dispatch("doEvent", betEvent);
     },
 
     getScores() {
-      const dealerScore = this.dealer.score;
+      const dealerScore = (this.dealer as Dealer).score;
       const playerScore = this.player.score;
 
       switch (true) {
-      case dealerScore === playerScore:
-        return 'push';
-      case playerScore > 21 || dealerScore === 21:
-        return 'lose';
-      case dealerScore > 21 || playerScore > dealerScore:
-        return 'win';
-      default: // dealerScore > playerScore
-        return 'lose';
+        case dealerScore === playerScore:
+          return "push";
+        case playerScore > 21 || dealerScore === 21:
+          return "lose";
+        case dealerScore > 21 || playerScore > dealerScore:
+          return "win";
+        default: // dealerScore > playerScore
+          return "lose";
       }
     },
 
@@ -140,8 +137,8 @@ export default {
     },
   },
   watch: {
-    'dealer.score': 'endRound',
-    isPlayerTurn: 'turnCheck',
-    gameRound: 'cleanUp',
+    "dealer.score": "endRound",
+    isPlayerTurn: "turnCheck",
+    gameRound: "cleanUp",
   },
-};
+});

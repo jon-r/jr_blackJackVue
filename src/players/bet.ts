@@ -1,8 +1,21 @@
-import { mapGetters } from 'vuex';
-import { arrayStaggeredPush, arrayStaggeredPull, setPos } from '../animationTools';
+import { PropType, defineComponent } from "vue";
+import { mapGetters } from "vuex";
 
-export default {
-  props: ['turn', 'player', 'framepos'],
+import {
+  arrayStaggeredPull,
+  arrayStaggeredPush,
+  setPos,
+} from "../animationTools.ts";
+import { Position } from "../types/animations.ts";
+import { Player } from "../types/players.ts";
+import { GameEvent } from "../types/state.ts";
+
+export default defineComponent({
+  props: {
+    turn: { type: Boolean, required: true },
+    player: { type: Object as PropType<Player>, required: true },
+    framepos: { type: Object as PropType<Position>, required: true },
+  },
   template: `
   <div class="player-bet flex" >
     <transition-group class="chip-stack flex" name="bets" tag="ul" :class="{ show : quidsIn }"
@@ -25,34 +38,28 @@ export default {
     return {
       bet: 0,
       quidsIn: false,
-      chips: [],
+      chips: [] as number[],
       alreadyEnded: false,
     };
   },
   computed: {
-    ...mapGetters([
-      'gameRound',
-      'eventBus',
-      'eventID',
-      'minBet',
-    ]),
+    ...mapGetters(["gameRound", "eventBus", "eventID", "minBet"]),
   },
   methods: {
-
-    enter(el) {
+    enter(el: HTMLElement) {
       setPos(el, { x: 0, y: -200 });
     },
 
-    enterTo(el, done) {
+    enterTo(el: HTMLElement) {
       requestAnimationFrame(() => {
         setPos(el, { x: 0, y: 0 });
       });
     },
 
-    leave(el, done) {
+    leave(el: HTMLElement, done: () => void) {
       const frame = this.framepos;
       setPos(el, { x: 0, y: -frame.y });
-      el.addEventListener('transitionend', () => {
+      el.addEventListener("transitionend", () => {
         done();
       });
     },
@@ -65,7 +72,7 @@ export default {
       this.quidsIn = false;
     },
 
-    calcChips(value) {
+    calcChips(value: number) {
       const chips = [1000, 500, 100, 25, 10, 5];
       const out = [];
 
@@ -85,27 +92,27 @@ export default {
     },
 
     // todo bonus: make this a computed based on the bet?
-    adjustChips(newBet) {
+    adjustChips(newBet: number) {
       if (newBet === 0) return false;
 
       const input = this.calcChips(Math.abs(newBet));
-      const args = [input, this.chips, 100];
+      const args: [number[], number[], number] = [input, this.chips, 100];
       let remaining;
 
       switch (true) {
-      case (newBet < 0):
-        remaining = arrayStaggeredPull(...args);
-        return (remaining) ? this.splitChips(remaining) : true;
-      case (newBet > 0):
-        return arrayStaggeredPush(...args);
-      default: // no change
-        return false;
+        case newBet < 0:
+          remaining = arrayStaggeredPull(...args);
+          return remaining ? this.splitChips(remaining) : true;
+        case newBet > 0:
+          return arrayStaggeredPush(...args);
+        default: // no change
+          return false;
       }
     },
 
-    splitChips(toRemove) {
+    splitChips(toRemove: number[]) {
       const removeTotal = toRemove.reduce((sum, value) => sum + value, 0);
-      const chipsFilter = this.chips.filter(chip => chip > removeTotal);
+      const chipsFilter = this.chips.filter((chip) => chip > removeTotal);
       const lowestChip = Math.min(...chipsFilter); // the lowest chip that can be broken down;
       const newChips = this.calcChips(lowestChip - removeTotal);
 
@@ -117,9 +124,9 @@ export default {
     },
 
     adjustBet() {
-      const { idx, type, value } = this.eventBus;
-      const isBetEvent = (idx === this.player.index) && (type === 'bet');
-      const hasNoBet = (this.bet === 0 && value !== 'addBet');
+      const { idx, type, value } = this.eventBus as GameEvent;
+      const isBetEvent = idx === this.player.index && type === "bet";
+      const hasNoBet = this.bet === 0 && value !== "addBet";
 
       if (!isBetEvent || hasNoBet || this.alreadyEnded) return this;
 
@@ -134,8 +141,10 @@ export default {
 
       this.showChips();
 
-      if (value === 'blackJack' || value === 'forfeit') this.alreadyEnded = true;
+      if (value === "blackJack" || value === "forfeit")
+        this.alreadyEnded = true;
 
+      // @ts-expect-error - will be enum
       const bet = this.player.firstBet * betAdjust[value];
 
       this.adjustChips(bet);
@@ -144,7 +153,7 @@ export default {
       return true;
     },
 
-    cashIn(bet) {
+    cashIn() {
       this.hideChips();
 
       this.alreadyEnded = false;
@@ -152,8 +161,11 @@ export default {
       this.emitMoneyChange(this.bet).then(() => {
         this.bet = 0;
 
-        if (this.player.money < this.minBet) {
-          this.$store.dispatch('playerEndGame', { idx: this.player.index, value: false });
+        if (this.player.money < (this.minBet as number)) {
+          this.$store.dispatch("playerEndGame", {
+            idx: this.player.index,
+            value: false,
+          });
         }
       });
 
@@ -164,15 +176,14 @@ export default {
       return true;
     },
 
-    emitMoneyChange(value) {
+    emitMoneyChange(value: number) {
       const idx = this.player.index;
       const betVals = { idx, value };
-      return this.$store.dispatch('playerUpdateMoney', betVals);
+      return this.$store.dispatch("playerUpdateMoney", betVals);
     },
-
   },
   watch: {
-    gameRound: 'cashIn',
-    eventID: 'adjustBet',
+    gameRound: "cashIn",
+    eventID: "adjustBet",
   },
-};
+});
