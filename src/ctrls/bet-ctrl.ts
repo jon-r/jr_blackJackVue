@@ -17,13 +17,13 @@ export default defineComponent({
     <button-ctrl
       v-for="(ctrl,i) in ctrlBets"
       :key="i" :ctrl="ctrl"
-      @click.native="addChip(ctrl.ref)" >
+      @click="addChip(ctrl.ref)" >
     </button-ctrl>
 
     <button-ctrl
       v-for="(ctrl,j) in ctrlSubmits"
       :key="j" :ctrl="ctrl"
-      @click.native="ctrl.onClick()" >
+      @click="ctrl.onClick()" >
     </button-ctrl>
 
   </div>
@@ -55,7 +55,7 @@ export default defineComponent({
     ctrlSubmits(): ButtonControlProps[] {
       const bet = this.currChipValue;
       const canUse = (bet >= (this.minBet as number));
-      const betStr = canUse ? `Submit: £${bet}` : 'Submit';
+      const betStr = `Submit: £${bet}`;
       const alert = `Min: £${this.minBet}`;
 
       return [

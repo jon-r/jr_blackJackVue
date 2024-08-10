@@ -47,7 +47,6 @@ export default defineComponent({
     ]),
   },
   methods: {
-
     enter(el: HTMLElement) {
       setPos(el, { x: 0, y: -200 });
     },

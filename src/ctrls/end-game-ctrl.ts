@@ -16,7 +16,7 @@ export default defineComponent({
     <button-ctrl
       v-for="(ctrl,j) in ctrls"
       :key="j" :ctrl="ctrl"
-      @click.native="setTurn(ctrl.name)" >
+      @click="setTurn(ctrl.name)" >
     </button-ctrl>
   </div>
   `,

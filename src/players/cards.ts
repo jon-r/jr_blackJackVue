@@ -98,6 +98,7 @@ export default defineComponent({
     ]),
   },
   methods: {
+    // fixme card transitions seem to be problematic. maybe can be handled with just css?
     enter(el: HTMLElement) {
       setPos(el, this.enterPosition as Position);
     },
