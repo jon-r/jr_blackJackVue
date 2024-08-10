@@ -10,7 +10,7 @@ export function buildDeck(decks: number) {
   const nSuits = new Array(4).fill(0);
   const nFaces = new Array(13).fill(0);
 
-  nDecks.forEach((_x, _i) => {
+  nDecks.forEach(() => {
     nSuits.forEach((_y, j) => {
       nFaces.forEach((_z, k) => {
         cards.push([k + 1, j]);

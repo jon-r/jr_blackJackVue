@@ -71,6 +71,7 @@ template: `
 
     moneyDiff() {
       const out = this.player.money - this.oldMoney;
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.oldMoney = this.player.money;
       return out;
     },

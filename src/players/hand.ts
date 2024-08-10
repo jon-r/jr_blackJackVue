@@ -57,9 +57,11 @@ export default defineComponent({
       const max = this.player.isDealer ? 17 : 21;
 
       if (score > 21) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.message = 'Bust!';
         this.emitBetChange('lose');
       } else if (score === 21 && hand.revealed === 2) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.message = 'BlackJack!';
         this.emitBetChange('blackJack');
       }

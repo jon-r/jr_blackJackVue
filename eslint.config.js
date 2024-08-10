@@ -5,6 +5,7 @@ import pluginVue from "eslint-plugin-vue";
 
 // todo reenable airbnb (and prettier)
 export default [
+  {ignores: ["dist"]},
   {files: ["**/*.{js,mjs,cjs,ts,vue}"]},
   {languageOptions: { globals: globals.browser }},
   pluginJs.configs.recommended,

@@ -59,17 +59,20 @@ export default defineComponent({
     },
 
     // fixme bug if 10 or face on soft (it doesnt update the score)
+    // also remove the aces side-effect
     score() {
       const cards = this.cards;
 
       if (cards.length === 0) return 0;
 
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.aces = cards.reduce((count, card) => count + Number(card.face === 'A'), 0);
 
       let newScore = cards.reduce((score, card) => score + card.score, 0);
 
       // reduces as many aces as needed (if possible) to keep the score down
       while (newScore > 21 && this.aces > 0) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.aces -= 1;
         newScore -= 10;
       }
