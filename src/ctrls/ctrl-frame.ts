@@ -1,6 +1,10 @@
 import { PropType, defineComponent } from "vue";
+// @ts-expect-error bad types
 import { mapGetters } from "vuex";
 
+import BettingActions from "../components/actionsBar/BettingActions.vue";
+import EndGameActions from "../components/actionsBar/EndGameActions.vue";
+import GamePlayActions from "../components/actionsBar/GamePlayActions.vue";
 import { Player } from "../types/players.ts";
 import BetCtrl from "./bet-ctrl.ts";
 import EndGameCtrl from "./end-game-ctrl.ts";
@@ -17,17 +21,20 @@ export default defineComponent({
         <h2>{{player.name}}</h2>
         <p>{{tips}}</p>
       </div>
+      
+      <BettingActions v-if="gameStage === 0" :player="player" />
 
-      <bet-ctrl v-if="gameStage === 0" :player="player" ></bet-ctrl>
+      <GamePlayActions v-else-if="gameStage === 3" :player="player" />
 
-      <hand-ctrl v-else-if="gameStage === 3" :player="player" ></hand-ctrl>
-
-      <end-game-ctrl v-else-if="gameStage > 4" :player="player" ></end-game-ctrl>
+      <EndGameActions v-else-if="gameStage > 4" :player="player" />
 
     </template>
   </section>`,
 
   components: {
+    EndGameActions,
+    GamePlayActions,
+    BettingActions,
     "hand-ctrl": HandCtrl,
     "bet-ctrl": BetCtrl,
     "end-game-ctrl": EndGameCtrl,

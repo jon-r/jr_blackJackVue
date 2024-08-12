@@ -1,12 +1,15 @@
 import { PropType, defineComponent } from "vue";
+// @ts-expect-error bad types
 import { mapGetters } from "vuex";
 
+import PlayerCards from "../components/playerFrame/PlayerCards.vue";
 import { blankCard, valueCard } from "../deckTools.ts";
 import { Position } from "../types/animations.ts";
 import { Card, PlayerHand, RawCard } from "../types/card.ts";
 import { Dealer, Player } from "../types/players.ts";
 import { GameEvent } from "../types/state.ts";
-import PlayerCards from "./cards.ts";
+
+// import PlayerCards from "./cards.ts";
 
 export default defineComponent({
   props: {
@@ -21,9 +24,9 @@ export default defineComponent({
     <player-cards
       v-for="(hand, idx) in hands"
       :key="idx"
-      :framepos="framepos"
+      :frame-pos="framepos"
       :cards="hand.cards"
-      :active="idx === activeHand"
+      :is-active="idx === activeHand"
       v-model="hand.score" >
     </player-cards>
     <div class="round-alert alert-text" v-if="roundResult && !player.isDealer" >

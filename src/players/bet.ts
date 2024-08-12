@@ -1,4 +1,5 @@
 import { PropType, defineComponent } from "vue";
+// @ts-expect-error bad types
 import { mapGetters } from "vuex";
 
 import {
@@ -12,7 +13,7 @@ import { GameEvent } from "../types/state.ts";
 
 export default defineComponent({
   props: {
-    turn: { type: Boolean, required: true },
+    // turn: { type: Boolean, required: true },
     player: { type: Object as PropType<Player>, required: true },
     framepos: { type: Object as PropType<Position>, required: true },
   },

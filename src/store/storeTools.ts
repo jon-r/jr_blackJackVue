@@ -89,7 +89,9 @@ export function actionSetters(actions: Record<string, string>) {
   return out;
 }
 
-export function getState(getters: (keyof AppState)[]) {
+export function getState<Keys = (keyof AppState)[]>(
+  getters: Keys,
+): GetterTree<AppState, AppState> {
   const out: GetterTree<AppState, AppState> = {};
   // const out: SimpleGetterTree = {};
 

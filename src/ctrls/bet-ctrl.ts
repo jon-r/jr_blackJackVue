@@ -1,11 +1,15 @@
 import { PropType, defineComponent } from "vue";
+// @ts-expect-error - bad types
 import { mapGetters } from "vuex";
 
+import ButtonBase from "../components/actionsBar/ButtonBase.vue";
+import { ButtonControl } from "../types/button.ts";
 import { Player } from "../types/players.ts";
-import ButtonCtrl, { ButtonControlProps } from "./button.ts";
+import ButtonCtrl from "./button.ts";
 
 export default defineComponent({
   components: {
+    ButtonBase,
     "button-ctrl": ButtonCtrl,
   },
   props: {
@@ -14,17 +18,27 @@ export default defineComponent({
   template: `
   <div class="ctrl-menu frame flex flex-wrap" >
 
-    <button-ctrl
-      v-for="(ctrl,i) in ctrlBets"
-      :key="i" :ctrl="ctrl"
-      @click="addChip(ctrl.ref)" >
-    </button-ctrl>
+    <ButtonBase
+      v-for="ctrl in ctrlBets"
+      :key="ctrl.label"
+      :can-use="ctrl.canUse"
+      :label="ctrl.label"
+      :svg="ctrl.svg"
+      :class-name="ctrl.className"
+      
+      @click="ctrl.onClick" >
+    </ButtonBase>
 
-    <button-ctrl
-      v-for="(ctrl,j) in ctrlSubmits"
-      :key="j" :ctrl="ctrl"
-      @click="ctrl.onClick()" >
-    </button-ctrl>
+    <ButtonBase
+      v-for="ctrl in ctrlSubmits"
+      :key="ctrl.icon"
+      :can-use="ctrl.canUse"
+      :label="ctrl.label"
+      :icon="ctrl.icon"
+      :class-name="ctrl.className"
+      
+      @click="ctrl.onClick" >
+    </ButtonBase>
 
   </div>
   `,
@@ -39,37 +53,33 @@ export default defineComponent({
     ctrlBets() {
       const maxChips = this.player.money - this.currChipValue;
 
-      return this.chips.map((chip) => {
+      return this.chips.map((chip): ButtonControl => {
         const canUse = chip <= maxChips;
         return {
-          ref: chip,
-          name: `£${chip}`,
-          class: `betting-chip chip-${chip}`,
+          label: `£${chip}`,
+          className: `betting-chip chip-${chip}`,
           svg: "#chip",
           canUse,
-          onClick: this.addChip,
+          onClick: () => this.addChip(chip),
         };
       });
     },
 
-    ctrlSubmits(): ButtonControlProps[] {
+    ctrlSubmits(): ButtonControl[] {
       const bet = this.currChipValue;
-      const canUse = bet >= (this.minBet as number);
-      const betStr = `Submit: £${bet}`;
-      const alert = `Min: £${this.minBet}`;
 
       return [
         {
-          name: betStr,
-          class: "btn-good",
+          label: `Submit: £${bet}`,
+          className: "btn-good",
           icon: "publish",
-          canUse,
+          canUse: bet >= (this.minBet as number),
           onClick: this.emitBet,
-          alert,
+          alert: `Min: £${this.minBet}`,
         },
         {
-          name: "Undo",
-          class: "btn-alert",
+          label: "Undo",
+          className: "btn-alert",
           icon: "undo",
           canUse: bet > 0,
           onClick: this.removeChip,

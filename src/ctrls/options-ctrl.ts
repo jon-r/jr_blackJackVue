@@ -1,4 +1,5 @@
 import { defineComponent } from "vue";
+// @ts-expect-error bad types
 import { mapGetters } from "vuex";
 
 import { getRandom } from "../deckTools.ts";

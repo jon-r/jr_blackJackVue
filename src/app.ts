@@ -1,12 +1,19 @@
 import { defineComponent } from "vue";
+// @ts-expect-error bad types
 import { mapGetters } from "vuex";
 
-import CtrlFrame from "./ctrls/ctrl-frame.ts";
-import OptionsModal from "./ctrls/options-ctrl.ts";
-import PlayerFrame from "./players/player-frame.ts";
-import SVGElements from "./svg-static.ts";
+import SvgStatic from "./components/SvgStatic.vue";
+import ActionsBar from "./components/actionsBar/ActionsBar.vue";
+import OptionsModal from "./components/options/OptionsModal.vue";
+import PlayerFrame from "./components/playerFrame/PlayerFrame.vue";
+// import CtrlFrame from "./ctrls/ctrl-frame.ts";
+// import PlayerFrame from "./players/player-frame.ts";
+// import SvgStatic from "./svg-static.ts";
 import { AnyPlayer } from "./types/players.ts";
 import { GameEvent } from "./types/state.ts";
+
+// import PlayerFrame from "./players/player-frame.ts";
+// import SvgStatic from "./svg-static.ts";
 
 export default defineComponent({
   template: `
@@ -14,10 +21,9 @@ export default defineComponent({
           <button class="text-btn modal-toggle" @click="showOptions = true" >
             <i class="material-symbols-outlined">menu</i>
           </button>
-    
-          <options-modal v-if="showOptions" @hide="showOptions = false" >
-          </options-modal>
-    
+        
+        <OptionsModal v-if="showOptions" @close-modal="showOptions = false" />
+
           <main class="blackjack-table flex-auto" >
     
             <transition-group class="announcement frame" name="messages" tag="ul" >
@@ -28,26 +34,27 @@ export default defineComponent({
               <div class="card blank stacked" ></div>
             </div>
     
-            <player-frame
+            <PlayerFrame
                 v-if="activePlayerCount > 0"
                 v-for="player in players"
                 :key="player.index"
-                :player="player" >
-            </player-frame>
+                :player="player" />
+            
     
           </main>
+
+        <ActionsBar :player="activePlayer" />
     
-          <ctrl-frame :player="activePlayer" ></ctrl-frame>
-    
-          <svg-static v-once></svg-static>
+          <SvgStatic v-once/>
       </div>
     `,
 
   components: {
-    "player-frame": PlayerFrame,
-    "ctrl-frame": CtrlFrame,
-    "svg-static": SVGElements,
-    "options-modal": OptionsModal,
+    SvgStatic,
+    PlayerFrame,
+
+    ActionsBar,
+    OptionsModal,
   },
 
   data() {
