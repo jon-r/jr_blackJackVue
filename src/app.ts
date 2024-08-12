@@ -4,11 +4,15 @@ import { mapGetters } from "vuex";
 
 import ActionsBar from "./components/actionsBar/ActionsBar.vue";
 import OptionsModal from "./components/options/OptionsModal.vue";
-import CtrlFrame from "./ctrls/ctrl-frame.ts";
-import PlayerFrame from "./players/player-frame.ts";
-import SvgStatic from "./svg-static.ts";
+// import CtrlFrame from "./ctrls/ctrl-frame.ts";
+// import PlayerFrame from "./players/player-frame.ts";
+// import SvgStatic from "./svg-static.ts";
 import { AnyPlayer } from "./types/players.ts";
 import { GameEvent } from "./types/state.ts";
+import PlayerFrame from './components/playerFrame/PlayerFrame.vue'
+import  SvgStatic from './components/SvgStatic.vue'
+// import PlayerFrame from "./players/player-frame.ts";
+// import SvgStatic from "./svg-static.ts";
 
 export default defineComponent({
   template: `
@@ -29,12 +33,12 @@ export default defineComponent({
               <div class="card blank stacked" ></div>
             </div>
     
-            <player-frame
+            <PlayerFrame
                 v-if="activePlayerCount > 0"
                 v-for="player in players"
                 :key="player.index"
-                :player="player" >
-            </player-frame>
+                :player="player" />
+            
     
           </main>
 
@@ -46,11 +50,11 @@ export default defineComponent({
 
   components: {
     SvgStatic,
+    PlayerFrame,
+
     ActionsBar,
     OptionsModal,
 
-    "player-frame": PlayerFrame,
-    "ctrl-frame": CtrlFrame,
   },
 
   data() {

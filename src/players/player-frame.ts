@@ -2,9 +2,11 @@ import { PropType, defineComponent } from "vue";
 // @ts-expect-error bad types
 import { mapGetters } from "vuex";
 
+import ActiveBets from "../components/playerFrame/ActiveBets.vue";
 import { Dealer, Player } from "../types/players.ts";
-import PlayerBet from "./bet.js";
-import PlayerHand from "./hand.js";
+import PlayerHand from "../components/playerFrame/PlayerHand.vue";
+// import PlayerBet from "./bet.js";
+// import PlayerHand from "./hand.js";
 
 export default defineComponent({
   props: {
@@ -12,20 +14,18 @@ export default defineComponent({
   },
   template: `
   <section class="player-frame flex flex-column" :class="playerClass" ref="frameParent" >
-    <player-hand
+    <PlayerHand
       v-if="player.inGame"
       :result="roundResult"
       :player="player"
-      :framepos="framepos"
-      :turn="isPlayerTurn" >
-    </player-hand>
-
-    <player-bet
+      :frame-pos="framepos"
+      :is-current-turn="isPlayerTurn" />
+    
+    <ActiveBets
       v-if="!player.isDealer"
       :player="player"
-      :framepos="framepos"
-      :turn="isPlayerTurn" >
-    </player-bet>
+      :frame-pos="framepos" />
+
 
     <header class="player-frame-title flex frame shadow-light" v-if="!player.isDealer" :class="{ 'is-active' : isPlayerTurn  }" >
       <h4 class="player-name" :class="{ 'alert-text': isPlayerTurn, 'error-text': !this.player.inGame }" >{{player.name}}</h4>
@@ -40,8 +40,8 @@ export default defineComponent({
 
   </section>`,
   components: {
-    "player-hand": PlayerHand,
-    "player-bet": PlayerBet,
+    PlayerHand,
+    ActiveBets,
   },
   data() {
     return {

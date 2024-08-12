@@ -17,29 +17,35 @@ const props = defineProps<ActionsBarProps>();
 
 const tipsMessage = computed(() => {
   const money = props.player?.money;
-  const { stage, config } = store.getters;
+  const { gameStage, config } = store.getters;
   const out = new Map([
-    [0, `Current money: £${money}. Min Bet: £${config.minBet}.`],
-    [5, "Round Over. Keep on playing?"],
+    [
+      GameStages.PlaceBets,
+      `Current money: £${money}. Min Bet: £${config.minBet}.`,
+    ],
+    [GameStages.EndRound, "Round Over. Keep on playing?"],
     // todo bonus = more tips?
   ]);
 
-  return out.has(stage) ? out.get(stage) : "";
+  return out.has(gameStage) ? out.get(gameStage) : "";
 });
 
-watch(store.getters.gameStage, (stage: GameStages) => {
-  const out = new Map([
-    [GameStages.Init, "Please place Your bets"],
-    [GameStages.DealOne, "All bets are in, dealing out the first cards."],
-    [GameStages.EndRound, "Round Over"],
-  ]);
+watch(
+  () => store.getters.gameStage,
+  function updateStageMessage(stage: GameStages) {
+    const out = new Map([
+      [GameStages.PlaceBets, "Please place Your bets"],
+      [GameStages.DealOne, "All bets are in, dealing out the first cards."],
+      [GameStages.EndRound, "Round Over"],
+    ]);
 
-  if (!out.has(stage)) return false;
+    if (!out.has(stage)) return false;
 
-  const msg = out.get(stage);
+    const msg = out.get(stage);
 
-  return store.dispatch("setNewMessage", msg);
-});
+    return store.dispatch("setNewMessage", msg);
+  },
+);
 </script>
 
 <template>
