@@ -1,5 +1,10 @@
 import { RawCard } from "./card.ts";
 
+export type PlayerInputStub = {
+  index: number;
+  name: string;
+};
+
 export type Player = {
   isDealer: false;
 

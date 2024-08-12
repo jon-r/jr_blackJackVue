@@ -17,7 +17,7 @@ const props = defineProps<ActionsBarProps>();
 
 const tipsMessage = computed(() => {
   const money = props.player?.money;
-  const { stage, config } = store.state;
+  const { stage, config } = store.getters;
   const out = new Map([
     [0, `Current money: £${money}. Min Bet: £${config.minBet}.`],
     [5, "Round Over. Keep on playing?"],
@@ -27,7 +27,7 @@ const tipsMessage = computed(() => {
   return out.has(stage) ? out.get(stage) : "";
 });
 
-watch(store.state.gameStage, (stage: GameStages) => {
+watch(store.getters.gameStage, (stage: GameStages) => {
   const out = new Map([
     [GameStages.Init, "Please place Your bets"],
     [GameStages.DealOne, "All bets are in, dealing out the first cards."],
@@ -51,17 +51,17 @@ watch(store.state.gameStage, (stage: GameStages) => {
       </div>
 
       <BettingActions
-        v-if="store.state.gameStage === GameStages.PlaceBets"
+        v-if="store.getters.gameStage === GameStages.PlaceBets"
         :player="player"
       />
 
       <GamePlayActions
-        v-else-if="store.state.gameStage === GameStages.PlayerActions"
+        v-else-if="store.getters.gameStage === GameStages.PlayerActions"
         :player="player"
       />
 
       <EndGameActions
-        v-else-if="store.state.gameStage === GameStages.EndRound"
+        v-else-if="store.getters.gameStage === GameStages.EndRound"
       />
     </template>
   </section>

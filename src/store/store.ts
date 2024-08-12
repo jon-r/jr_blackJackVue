@@ -4,12 +4,11 @@ import { InjectionKey } from "vue";
 import { createStore, useStore } from "vuex";
 import { Store } from "vuex/types/index.d.ts";
 
-import { GameStages } from "../constants/gamePlay.ts";
-import { DEFAULT_PLAYER } from "../constants/player.ts";
 import { buildDeck, getRandom } from "../deckTools.ts";
 import { RawCard } from "../types/card.ts";
 import { NewGameOptions } from "../types/config.ts";
 import { AppState, DoubleBetMutation, PlayerMutation } from "../types/state.ts";
+import { createAppState } from "./state.ts";
 import {
   actionSetters,
   getState,
@@ -24,51 +23,10 @@ export function useAppStore() {
   return useStore(storeKey);
 }
 
-export default createStore<AppState>({
+export default createStore({
   strict: import.meta.env.MODE !== "production",
 
-  state: {
-    // game stage ids
-    gameRound: -1,
-    gameStage: GameStages.Init,
-    gameActivePlayer: -1,
-
-    // players & dealer
-    dealer: { ...DEFAULT_PLAYER, index: 5, name: "Dealer", isDealer: true },
-    players: [
-      { ...DEFAULT_PLAYER, index: 0, name: "Aaron" },
-      { ...DEFAULT_PLAYER, index: 1, name: "Beth" },
-      { ...DEFAULT_PLAYER, index: 2, name: "Chris" },
-      { ...DEFAULT_PLAYER, index: 3, name: "Denise" },
-      { ...DEFAULT_PLAYER, index: 4, name: "Ethan" },
-    ],
-    activePlayerCount: 5,
-
-    // deck and cards
-    deck: [],
-    shoePos: {},
-
-    // other options
-    config: {
-      minBet: 100,
-      autoTime: 250,
-      deckCount: 6,
-    },
-
-    newMessage: "",
-
-    handRules: {
-      count: 0,
-      split: false,
-    },
-
-    eventID: 0,
-    eventBus: {
-      idx: -1,
-      type: false,
-      value: "",
-    },
-  },
+  state: createAppState,
 
   mutations: {
     // players & dealer

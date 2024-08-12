@@ -10,7 +10,7 @@ const store = useAppStore();
 
 const actionButtons = computed<ButtonControl[]>(() => {
   // todo can do this with filter maybe
-  const hasPlayers = store.state.activePlayerCount > 0;
+  const hasPlayers = store.getters.activePlayerCount > 0;
 
   return [
     {

@@ -15,7 +15,7 @@ const store = useAppStore();
 const props = defineProps<GamePlayActionsProps>();
 
 const actionButtons = computed<ButtonControl[]>(() => {
-  const { split: canSplit, count: cardCount } = store.state.handRules;
+  const { split: canSplit, count: cardCount } = store.getters.handRules;
   const isFirstAction = cardCount < 3;
   const { money, firstBet } = props.player;
 

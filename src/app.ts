@@ -3,10 +3,10 @@ import { defineComponent } from "vue";
 import { mapGetters } from "vuex";
 
 import ActionsBar from "./components/actionsBar/ActionsBar.vue";
+import OptionsModal from "./components/options/OptionsModal.vue";
 import CtrlFrame from "./ctrls/ctrl-frame.ts";
-import OptionsModal from "./ctrls/options-ctrl.ts";
 import PlayerFrame from "./players/player-frame.ts";
-import SVGElements from "./svg-static.ts";
+import SvgStatic from "./svg-static.ts";
 import { AnyPlayer } from "./types/players.ts";
 import { GameEvent } from "./types/state.ts";
 
@@ -16,10 +16,9 @@ export default defineComponent({
           <button class="text-btn modal-toggle" @click="showOptions = true" >
             <i class="material-symbols-outlined">menu</i>
           </button>
-    
-          <options-modal v-if="showOptions" @hide="showOptions = false" >
-          </options-modal>
-    
+        
+        <OptionsModal v-if="showOptions" @close-modal="showOptions = false" />
+
           <main class="blackjack-table flex-auto" >
     
             <transition-group class="announcement frame" name="messages" tag="ul" >
@@ -38,20 +37,20 @@ export default defineComponent({
             </player-frame>
     
           </main>
-    
-<!--          <ctrl-frame :player="activePlayer" ></ctrl-frame>-->
+
         <ActionsBar :player="activePlayer" />
     
-          <svg-static v-once></svg-static>
+          <SvgStatic v-once/>
       </div>
     `,
 
   components: {
+    SvgStatic,
     ActionsBar,
+    OptionsModal,
+
     "player-frame": PlayerFrame,
     "ctrl-frame": CtrlFrame,
-    "svg-static": SVGElements,
-    "options-modal": OptionsModal,
   },
 
   data() {

@@ -34,7 +34,7 @@ const chipButtons = computed<ButtonControl[]>(() => {
 });
 
 const actionButtons = computed<ButtonControl[]>(() => {
-  const { minBet } = store.state.config;
+  const { minBet } = store.getters.config;
   return [
     {
       id: "bet-submit",
