@@ -2,15 +2,16 @@ import { defineComponent } from "vue";
 // @ts-expect-error bad types
 import { mapGetters } from "vuex";
 
+import SvgStatic from "./components/SvgStatic.vue";
 import ActionsBar from "./components/actionsBar/ActionsBar.vue";
 import OptionsModal from "./components/options/OptionsModal.vue";
+import PlayerFrame from "./components/playerFrame/PlayerFrame.vue";
 // import CtrlFrame from "./ctrls/ctrl-frame.ts";
 // import PlayerFrame from "./players/player-frame.ts";
 // import SvgStatic from "./svg-static.ts";
 import { AnyPlayer } from "./types/players.ts";
 import { GameEvent } from "./types/state.ts";
-import PlayerFrame from './components/playerFrame/PlayerFrame.vue'
-import  SvgStatic from './components/SvgStatic.vue'
+
 // import PlayerFrame from "./players/player-frame.ts";
 // import SvgStatic from "./svg-static.ts";
 
@@ -54,7 +55,6 @@ export default defineComponent({
 
     ActionsBar,
     OptionsModal,
-
   },
 
   data() {

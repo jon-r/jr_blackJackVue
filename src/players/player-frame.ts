@@ -3,8 +3,9 @@ import { PropType, defineComponent } from "vue";
 import { mapGetters } from "vuex";
 
 import ActiveBets from "../components/playerFrame/ActiveBets.vue";
-import { Dealer, Player } from "../types/players.ts";
 import PlayerHand from "../components/playerFrame/PlayerHand.vue";
+import { Dealer, Player } from "../types/players.ts";
+
 // import PlayerBet from "./bet.js";
 // import PlayerHand from "./hand.js";
 
