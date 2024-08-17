@@ -1,26 +1,28 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { computed, watch } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
 import { useAppStore } from "../../store/store.ts";
-import { Player } from "../../types/players.ts";
+import { GamePlayState, useGamePlayStore } from "../../stores/gamePlayStore.ts";
+import { usePlayersStore } from "../../stores/playersStore.ts";
+// import { Player } from "../../types/players.ts";
 import BettingActions from "./BettingActions.vue";
 import EndGameActions from "./EndGameActions.vue";
 import GamePlayActions from "./GamePlayActions.vue";
-import {GamePlayState, useGamePlayStore} from "../../stores/gamePlayStore.ts";
-import {storeToRefs} from "pinia";
 
-type ActionsBarProps = {
-  player?: Player;
-};
+// type ActionsBarProps = {
+//   player?: Player;
+// };
 
-const {dispatch} = useAppStore();
-const gamePlayStore = useGamePlayStore()
-const {config, activeStage}: GamePlayState = storeToRefs(gamePlayStore)
-const props = defineProps<ActionsBarProps>();
+const { dispatch } = useAppStore();
+const playersStore = usePlayersStore();
+const gamePlayStore = useGamePlayStore();
+const { config, activeStage }: GamePlayState = storeToRefs(gamePlayStore);
+// const props = defineProps<ActionsBarProps>();
 
 const tipsMessage = computed(() => {
-  const money = props.player?.money;
+  const money = playersStore.currentPlayer?.money;
 
   // const { gameStage, config } = store.getters;
   const out = new Map<GameStages, string>([
@@ -35,7 +37,7 @@ const tipsMessage = computed(() => {
   return out.get(activeStage) ?? "";
 });
 
-// todo can move to store
+// todo can move to store (gameplay?)
 watch(
   () => activeStage,
   function updateStageMessage(stage: GameStages) {
@@ -56,25 +58,23 @@ watch(
 
 <template>
   <section class="ctrl-bar flex">
-    <template v-if="player">
+    <template v-if="playersStore.currentPlayer">
       <div class="player-info frame text-right flex-auto">
-        <h2>{{ player.name }}</h2>
+        <h2>{{ playersStore.currentPlayer }}</h2>
         <p>{{ tipsMessage }}</p>
       </div>
 
       <BettingActions
         v-if="activeStage === GameStages.PlaceBets"
-        :player="player"
+        :player="playersStore.currentPlayer"
       />
 
       <GamePlayActions
         v-else-if="activeStage === GameStages.PlayerActions"
-        :player="player"
+        :player="playersStore.currentPlayer"
       />
 
-      <EndGameActions
-        v-else-if="activeStage === GameStages.EndRound"
-      />
+      <EndGameActions v-else-if="activeStage === GameStages.EndRound" />
     </template>
   </section>
 </template>

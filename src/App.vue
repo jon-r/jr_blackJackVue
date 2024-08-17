@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { computed, onMounted, ref, watch } from "vue";
 
 import SvgStatic from "./components/SvgStatic.vue";
@@ -10,13 +11,15 @@ import OptionsModal from "./components/options/OptionsModal.vue";
 import PlayerFrame from "./components/playerFrame/PlayerFrame.vue";
 import { useAppStore } from "./store/store.ts";
 import { Card } from "./types/card.ts";
+import { GamePlayState, useGamePlayStore } from "./stores/gamePlayStore.ts";
+import { PlayersState, usePlayersStore } from "./stores/playersStore.ts";
 import { GameEvent } from "./types/state.ts";
-import {GamePlayState, useGamePlayStore} from "./stores/gamePlayStore.ts";
-import {storeToRefs} from "pinia";
 
 const store = useAppStore();
-const gamePlayStore = useGamePlayStore()
-const {activePlayerId}: GamePlayState = storeToRefs(gamePlayStore)
+const playersStore = usePlayersStore();
+const { players, activePlayersCount }: PlayersState = storeToRefs(playersStore);
+// const gamePlayStore = useGamePlayStore()
+// const {activePlayerId}: GamePlayState = storeToRefs(gamePlayStore)
 
 const showOptions = ref(true);
 const messages = ref<{ text: string; idx: number }[]>([]);
@@ -30,9 +33,9 @@ const blankCard: Card = {
   score: 0,
 };
 
-const activePlayer = computed(
-  () => store.getters.players[activePlayerId],
-);
+// const activePlayer = computed(
+//   () => store.getters.players[activePlayerId],
+// );
 
 onMounted(() => {
   const { offsetTop, offsetLeft } = shoeRef.value;
@@ -89,14 +92,14 @@ watch(
       </div>
 
       <PlayerFrame
-        v-if="store.getters.activePlayerCount > 0"
-        v-for="player in store.getters.players"
+        v-if="activePlayersCount > 0"
+        v-for="player in players"
         :key="player.index"
         :player="player"
       />
     </main>
 
-    <ActionsBar :player="activePlayer" />
+    <ActionsBar />
 
     <SvgStatic v-once />
   </div>

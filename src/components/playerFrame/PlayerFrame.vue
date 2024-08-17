@@ -1,22 +1,25 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
 import { useAppStore } from "../../store/store.ts";
+import { GamePlayState, useGamePlayStore } from "../../stores/gamePlayStore.ts";
+import { usePlayersStore } from "../../stores/playersStore.ts";
 import { Position } from "../../types/animations.ts";
-import { Dealer, Player } from "../../types/players.ts";
+import { Player } from "../../types/players.ts";
 import ActiveBets from "./ActiveBets.vue";
 import PlayerHand from "./PlayerHand.vue";
-import {GamePlayState, useGamePlayStore} from "../../stores/gamePlayStore.ts";
-import {storeToRefs} from "pinia";
 
 type PlayerFrameProps = {
   player: Player;
 };
 
-const store = useAppStore();
-const gamePlayStore = useGamePlayStore()
-const {activePlayerId, activeStage, gameRound}: GamePlayState = storeToRefs(gamePlayStore);
+const { dispatch } = useAppStore();
+const playersStore = usePlayersStore();
+const gamePlayStore = useGamePlayStore();
+const { activePlayerId, activeStage, gameRound }: GamePlayState =
+  storeToRefs(gamePlayStore);
 const props = defineProps<PlayerFrameProps>();
 
 const playerClass = `player-${props.player.index}`;
@@ -57,13 +60,13 @@ watch(isPlayerTurn, function turnCheck() {
   const wontBet = activeStage === GameStages.PlaceBets && props.player.isDealer;
 
   if (isPlayerTurn.value && (cantBet || wontBet)) {
-    gamePlayStore.nextPlayer()
+    gamePlayStore.nextPlayer();
     // store.dispatch("nextPlayer");
   }
 });
 
 watch(
-  () => store.getters.dealer.score,
+  () => playersStore.dealer.score,
   function endRound(dealerScore: number) {
     if (!dealerScore) return false;
 
@@ -88,11 +91,11 @@ function emitBetChange(value: string) {
     value,
   };
 
-  store.dispatch("doEvent", betEvent);
+  dispatch("doEvent", betEvent);
 }
 
 function getScores() {
-  const dealerScore = (store.getters.dealer as Dealer).score;
+  const dealerScore = playersStore.dealer.score;
   const playerScore = props.player.score;
 
   switch (true) {

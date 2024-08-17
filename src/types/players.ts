@@ -1,32 +1,21 @@
 import { RawCard } from "./card.ts";
 
-export type PlayerInputStub = {
-  index: number;
-  name: string;
-};
-
 export type Player = {
-  isDealer: false;
-
+  isDealer: boolean;
   index: number;
   name: string;
   money: number;
   firstBet: number;
   score: number;
   inGame: boolean;
-  peeked: null;
+  peeked: RawCard | null;
 };
 
-export type Dealer = {
+export type PlayerInputStub = Pick<Player, "name">;
+
+export type Dealer = Player & {
   isDealer: true;
   peeked: RawCard | null;
-
-  index: number;
-  name: string;
-  money: number;
-  firstBet: number;
-  score: number;
-  inGame: boolean;
 };
 
-export type AnyPlayer = Dealer | Player;
+// export type AnyPlayer = Dealer | Player;

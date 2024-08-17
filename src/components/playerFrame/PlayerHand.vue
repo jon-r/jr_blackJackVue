@@ -1,16 +1,17 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { computed, ref, watch } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
 import { blankCard, valueCard } from "../../deckTools.ts";
 import { useAppStore } from "../../store/store.ts";
+import { GamePlayState, useGamePlayStore } from "../../stores/gamePlayStore.ts";
+import { usePlayersStore } from "../../stores/playersStore.ts";
 import { Position } from "../../types/animations.ts";
 import { Card, PlayerHand, RawCard } from "../../types/card.ts";
 import { Dealer, Player } from "../../types/players.ts";
 import { GameEvent } from "../../types/state.ts";
 import PlayerCards from "./PlayerCards.vue";
-import {GamePlayState, useGamePlayStore} from "../../stores/gamePlayStore.ts";
-import {storeToRefs} from "pinia";
 
 type PlayerHandProps = {
   isCurrentTurn: boolean;
@@ -19,8 +20,13 @@ type PlayerHandProps = {
   result: string;
 };
 const store = useAppStore();
-const gamePlayStore = useGamePlayStore()
-const {activeStage, gameRound, config: {autoTime}}: GamePlayState = storeToRefs(gamePlayStore);
+const playersStore = usePlayersStore();
+const gamePlayStore = useGamePlayStore();
+const {
+  activeStage,
+  gameRound,
+  config: { autoTime },
+}: GamePlayState = storeToRefs(gamePlayStore);
 const props = defineProps<PlayerHandProps>();
 
 const hands = ref<PlayerHand[]>([]);
@@ -208,7 +214,7 @@ async function playerActions() {
     return scoreCheck();
   }
 
-  const peekedCard = (store.getters.dealer as Dealer).peeked;
+  const peekedCard = playersStore.dealer.peeked;
   if (peekedCard) {
     setCard(peekedCard);
     // .wait(0, null) todo why wait here?
@@ -306,7 +312,7 @@ function setFinalScores() {
 /* emits -------------------------------------------------------------*/
 
 function emitEndTurn() {
-  gamePlayStore.nextPlayer()
+  gamePlayStore.nextPlayer();
   // store.dispatch("nextPlayer");
 }
 

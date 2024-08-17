@@ -1,30 +1,38 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { ref } from "vue";
 
-import { DEFAULT_PLAYER } from "../../constants/player.ts";
+// import { DEFAULT_PLAYER } from "../../constants/player.ts";
 import { getRandom } from "../../deckTools.ts";
 import { useAppStore } from "../../store/store.ts";
-import { GameConfig } from "../../types/config.ts";
-import { AnyPlayer, Player, PlayerInputStub } from "../../types/players.ts";
+import { GamePlayState, useGamePlayStore } from "../../stores/gamePlayStore.ts";
+import { usePlayersStore } from "../../stores/playersStore.ts";
+// import { GameConfig } from "../../types/config.ts";
+import { Player, PlayerInputStub } from "../../types/players.ts";
 import TextButton from "../common/TextButton.vue";
 import InputField from "./InputField.vue";
 import ModalContainer from "./ModalContainer.vue";
-import {GamePlayState, useGamePlayStore} from "../../stores/gamePlayStore.ts";
-import {storeToRefs} from "pinia";
 
-const store = useAppStore();
-const gamePlayStore = useGamePlayStore()
-const {config: {deckCount, minBet, autoTime}}: GamePlayState = storeToRefs(gamePlayStore)
+const { dispatch } = useAppStore();
+const gamePlayStore = useGamePlayStore();
+const playersStore = usePlayersStore();
+const {
+  config: { deckCount, minBet, autoTime },
+}: GamePlayState = storeToRefs(gamePlayStore);
+
 const emit = defineEmits(["closeModal"]);
 
-function setupPlayerInput(input: Player[]): PlayerInputStub[] {
-  return Array.from({ ...input, length: 5 }, (item, index) => ({
-    name: item?.name ?? "",
-    index,
+function setupPlayerInput(players: Player[]): PlayerInputStub[] {
+  const playersWithoutDealer = players
+    .filter((player) => !player.isDealer)
+    .map((player) => ({ name: player.name }));
+
+  return Array.from({ ...playersWithoutDealer, length: 5 }, (player) => ({
+    name: player.name ?? "",
   }));
 }
 
-const playerInput = ref(setupPlayerInput(store.getters.players));
+const playerInput = ref(setupPlayerInput(playersStore.players));
 
 // const deckCount = ref(store.getters.config.deckCount);
 // const minBet = ref(store.getters.config.minBet);
@@ -34,6 +42,7 @@ const isMoreOptionsOpen = ref(false);
 
 // todo move new player functionality to the state
 async function newGame() {
+  /*
   const players: AnyPlayer[] = playerInput.value.map((player) => ({
     ...DEFAULT_PLAYER,
     ...player,
@@ -50,13 +59,14 @@ async function newGame() {
     deckCount: deckCount,
     minBet: minBet,
     autoTime: autoTime,
-    playerCount: players.length // todo maybe -1 to count without dealer
+    playerCount: players.length, // todo maybe -1 to count without dealer
   };
 
   const options = { players, config: newConfig };
 
   await store.dispatch("newGame", options);
-  gamePlayStore.setConfig(newConfig)
+  gamePlayStore.setConfig(newConfig);
+*/
 
   emit("closeModal");
 }
@@ -66,8 +76,8 @@ async function newDemo() {
   await newGame();
   await autoBet(0, playerInput.value.length - 1);
   // await store.dispatch("nextPlayerPromise");
-  gamePlayStore.nextPlayer()
-  gamePlayStore.nextStage()
+  gamePlayStore.nextPlayer();
+  gamePlayStore.nextStage();
   // await store.dispatch("nextStage");
 }
 
@@ -87,8 +97,8 @@ async function autoBet(idx: number, max: number) {
   };
   const nextIdx = idx + 1;
 
-  await store.dispatch("playerSetBet", betVals);
-  await store.dispatch("doEvent", betEvent);
+  await dispatch("playerSetBet", betVals);
+  await dispatch("doEvent", betEvent);
   await autoBet(nextIdx, max);
 }
 </script>
@@ -103,7 +113,7 @@ async function autoBet(idx: number, max: number) {
 
         <InputField
           v-for="(player, i) in playerInput"
-          :key="player.index"
+          :key="i"
           v-model="player.name"
           type="text"
           :input-id="'p-' + i"
