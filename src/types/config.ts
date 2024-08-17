@@ -1,4 +1,4 @@
-import { AnyPlayer } from "./players.ts";
+import { Player } from "./players.ts";
 
 export type GameConfig = {
   minBet: number;
@@ -8,6 +8,6 @@ export type GameConfig = {
 };
 
 export type NewGameOptions = {
-  players: AnyPlayer[];
+  players: Player[];
   config: GameConfig;
 };

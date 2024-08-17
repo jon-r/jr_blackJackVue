@@ -8,7 +8,7 @@ import {
   setPos,
 } from "../../animationTools.ts";
 import { useAppStore } from "../../store/store.ts";
-import { GamePlayState, useGamePlayStore } from "../../stores/gamePlayStore.ts";
+import { CoreState, useCoreStore } from "../../stores/coreStore.ts";
 import { Position } from "../../types/animations.ts";
 import { Player } from "../../types/players.ts";
 import { GameEvent } from "../../types/state.ts";
@@ -22,11 +22,11 @@ type ActiveBetProps = {
 };
 
 const { dispatch } = useAppStore();
-const gamePlayStore = useGamePlayStore();
+const coreStore = useCoreStore();
 const {
   gameRound,
   config: { minBet },
-}: GamePlayState = storeToRefs(gamePlayStore);
+}: CoreState = storeToRefs(coreStore);
 const props = defineProps<ActiveBetProps>();
 
 const bet = ref(0);

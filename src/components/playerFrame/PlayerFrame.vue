@@ -4,7 +4,7 @@ import { computed, nextTick, onMounted, ref, watch } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
 import { useAppStore } from "../../store/store.ts";
-import { GamePlayState, useGamePlayStore } from "../../stores/gamePlayStore.ts";
+import { CoreState, useCoreStore } from "../../stores/coreStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
 import { Position } from "../../types/animations.ts";
 import { Player } from "../../types/players.ts";
@@ -17,9 +17,9 @@ type PlayerFrameProps = {
 
 const { dispatch } = useAppStore();
 const playersStore = usePlayersStore();
-const gamePlayStore = useGamePlayStore();
-const { activePlayerId, activeStage, gameRound }: GamePlayState =
-  storeToRefs(gamePlayStore);
+const coreStore = useCoreStore();
+const { activePlayerId, activeStage, gameRound }: CoreState =
+  storeToRefs(coreStore);
 const props = defineProps<PlayerFrameProps>();
 
 const playerClass = `player-${props.player.index}`;
@@ -60,7 +60,7 @@ watch(isPlayerTurn, function turnCheck() {
   const wontBet = activeStage === GameStages.PlaceBets && props.player.isDealer;
 
   if (isPlayerTurn.value && (cantBet || wontBet)) {
-    gamePlayStore.nextPlayer();
+    coreStore.nextPlayer();
     // store.dispatch("nextPlayer");
   }
 });

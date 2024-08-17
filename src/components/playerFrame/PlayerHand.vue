@@ -10,11 +10,11 @@ import {
 import { GameStages } from "../../constants/gamePlay.ts";
 import { blankCard, valueCard } from "../../deckTools.ts";
 // import { useAppStore } from "../../store/store.ts";
-import { GamePlayState, useGamePlayStore } from "../../stores/gamePlayStore.ts";
+import { CoreState, useCoreStore } from "../../stores/coreStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
 import { Position } from "../../types/animations.ts";
 import { Card, Hand, RawCard } from "../../types/card.ts";
-import { Dealer, Player } from "../../types/players.ts";
+import { Player } from "../../types/players.ts";
 import { GameEvent } from "../../types/state.ts";
 import PlayerCards from "./PlayerCards.vue";
 
@@ -27,12 +27,12 @@ type PlayerHandProps = {
 
 // const playersStore = usePlayersStore();
 // const {} = storeToRefs(playersStore)
-const gamePlayStore = useGamePlayStore();
+const coreStore = useCoreStore();
 const {
   activeStage,
   gameRound,
   config: { autoTime },
-}: GamePlayState = storeToRefs(gamePlayStore);
+}: CoreState = storeToRefs(coreStore);
 const props = defineProps<PlayerHandProps>();
 
 // const hands = ref<PlayerHandOld[]>([]);

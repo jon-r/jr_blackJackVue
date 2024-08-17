@@ -9,10 +9,10 @@ import PlayingCard from "./components/common/PlayingCard.vue";
 import TextButton from "./components/common/TextButton.vue";
 import OptionsModal from "./components/options/OptionsModal.vue";
 import PlayerFrame from "./components/playerFrame/PlayerFrame.vue";
-import { useDeckStore } from "./stores/deckStore.ts";
 // import { useAppStore } from "./store/store.ts";
 import { Card } from "./types/card.ts";
-import { GamePlayState, useGamePlayStore } from "./stores/gamePlayStore.ts";
+import { CoreState, useCoreStore } from "./stores/coreStore.ts";
+import { useDeckStore } from "./stores/deckStore.ts";
 import { PlayersState, usePlayersStore } from "./stores/playersStore.ts";
 import { GameEvent } from "./types/state.ts";
 
@@ -20,8 +20,8 @@ import { GameEvent } from "./types/state.ts";
 
 const playersStore = usePlayersStore();
 const { players, activePlayersCount }: PlayersState = storeToRefs(playersStore);
-const gamePlayStore = useGamePlayStore();
-const { notifications }: GamePlayState = storeToRefs(gamePlayStore);
+const coreStore = useCoreStore();
+const { notifications }: CoreState = storeToRefs(coreStore);
 const deckStore = useDeckStore();
 
 const showOptions = ref(true);

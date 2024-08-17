@@ -4,7 +4,7 @@ import { GameStages } from "../constants/gamePlay.ts";
 import { Position } from "./animations.ts";
 import { RawCardOld } from "./card.ts";
 import { GameConfig } from "./config.ts";
-import { Dealer, Player } from "./players.ts";
+import { Player } from "./players.ts";
 
 export type GameEvent = {
   idx: number;
@@ -18,7 +18,7 @@ export type AppState = {
 
   gameActivePlayer: number;
 
-  dealer: Dealer; // todo use the 'isDealer' to split types?
+  dealer: Player; // todo use the 'isDealer' to split types?
   players: Player[];
   // activePlayerCount: number;
 

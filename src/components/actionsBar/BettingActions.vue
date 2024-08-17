@@ -1,22 +1,22 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 
 import { useAppStore } from "../../store/store.ts";
+import { CoreState, useCoreStore } from "../../stores/coreStore.ts";
 import { ButtonControl } from "../../types/button.ts";
 import { Player } from "../../types/players.ts";
 import BettingChip from "../common/BettingChip.vue";
 import MdIcon from "../common/MdIcon.vue";
 import ActionButton from "./ActionButton.vue";
-import {GamePlayState, useGamePlayStore} from "../../stores/gamePlayStore.ts";
-import {storeToRefs} from "pinia";
 
 type BettingActionsProps = {
   player: Player;
 };
 
-const {dispatch} = useAppStore();
-const gamePlayStore = useGamePlayStore();
-const {config}: GamePlayState = storeToRefs(gamePlayStore);
+const { dispatch } = useAppStore();
+const coreStore = useCoreStore();
+const { config }: CoreState = storeToRefs(coreStore);
 const props = defineProps<BettingActionsProps>();
 
 const chips = [5, 10, 25, 100, 500, 1000];
@@ -85,10 +85,7 @@ function submitBet() {
   chipsToPlace.value = [];
 
   // todo bonus combine these in store?
-  dispatch(
-    "setNewMessage",
-    `${props.player.name} bets £${betToPlace.value}`,
-  );
+  dispatch("setNewMessage", `${props.player.name} bets £${betToPlace.value}`);
   dispatch("playerSetBet", betVals)
     .then(() => dispatch("doEvent", betEvent))
     .then(() => dispatch("nextPlayer"));

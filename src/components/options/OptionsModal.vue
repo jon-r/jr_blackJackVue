@@ -5,7 +5,7 @@ import { ref } from "vue";
 // import { DEFAULT_PLAYER } from "../../constants/player.ts";
 import { getRandom } from "../../deckTools.ts";
 import { useAppStore } from "../../store/store.ts";
-import { GamePlayState, useGamePlayStore } from "../../stores/gamePlayStore.ts";
+import { CoreState, useCoreStore } from "../../stores/coreStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
 // import { GameConfig } from "../../types/config.ts";
 import { Player, PlayerInputStub } from "../../types/players.ts";
@@ -14,11 +14,11 @@ import InputField from "./InputField.vue";
 import ModalContainer from "./ModalContainer.vue";
 
 const { dispatch } = useAppStore();
-const gamePlayStore = useGamePlayStore();
+const coreStore = useCoreStore();
 const playersStore = usePlayersStore();
 const {
   config: { deckCount, minBet, autoTime },
-}: GamePlayState = storeToRefs(gamePlayStore);
+}: CoreState = storeToRefs(coreStore);
 
 const emit = defineEmits(["closeModal"]);
 
@@ -76,8 +76,8 @@ async function newDemo() {
   await newGame();
   await autoBet(0, playerInput.value.length - 1);
   // await store.dispatch("nextPlayerPromise");
-  gamePlayStore.nextPlayer();
-  gamePlayStore.nextStage();
+  coreStore.nextPlayer();
+  coreStore.nextStage();
   // await store.dispatch("nextStage");
 }
 

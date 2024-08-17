@@ -5,7 +5,7 @@ import { ref } from "vue";
 import { Position } from "../types/animations.ts";
 import { RawCardOld } from "../types/card.ts";
 
-// import {useGamePlayStore} from "./gamePlayStore.ts";
+// import {useGamePlayStore} from "./coreStore.ts";
 
 export type DeckState = {
   cards: RawCardOld[];

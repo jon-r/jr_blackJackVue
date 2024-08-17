@@ -4,7 +4,7 @@ import { computed, watch } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
 import { useAppStore } from "../../store/store.ts";
-import { GamePlayState, useGamePlayStore } from "../../stores/gamePlayStore.ts";
+import { CoreState, useCoreStore } from "../../stores/coreStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
 // import { Player } from "../../types/players.ts";
 import BettingActions from "./BettingActions.vue";
@@ -17,8 +17,8 @@ import GamePlayActions from "./GamePlayActions.vue";
 
 const { dispatch } = useAppStore();
 const playersStore = usePlayersStore();
-const gamePlayStore = useGamePlayStore();
-const { config, activeStage }: GamePlayState = storeToRefs(gamePlayStore);
+const coreStore = useCoreStore();
+const { config, activeStage }: CoreState = storeToRefs(coreStore);
 // const props = defineProps<ActionsBarProps>();
 
 const tipsMessage = computed(() => {

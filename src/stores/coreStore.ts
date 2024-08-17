@@ -4,7 +4,7 @@ import { ref } from "vue";
 import { GameStages } from "../constants/gamePlay.ts";
 import { GameConfig } from "../types/config.ts";
 
-export type GamePlayState = {
+export type CoreState = {
   config: GameConfig;
   gameRound: number;
   activeStage: GameStages;
@@ -12,7 +12,7 @@ export type GamePlayState = {
   notifications: string[];
 };
 
-export const useGamePlayStore = defineStore("gamePlay", () => {
+export const useCoreStore = defineStore("core", () => {
   const config = ref<GameConfig>({
     minBet: 100,
     autoTime: 250,

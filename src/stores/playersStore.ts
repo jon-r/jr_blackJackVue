@@ -2,8 +2,8 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
 import { DEFAULT_PLAYER } from "../constants/player.ts";
-import { Dealer, Player } from "../types/players.ts";
-import { useGamePlayStore } from "./gamePlayStore.ts";
+import { Player } from "../types/players.ts";
+import { useCoreStore } from "./coreStore.ts";
 
 export type PlayersState = {
   players: Player[];
@@ -17,7 +17,7 @@ function createDefaultState(): PlayersState {
     index,
     name,
   }));
-  const dealer: Dealer = {
+  const dealer: Player = {
     ...DEFAULT_PLAYER,
     name: "Dealer",
     index: 5,
@@ -30,12 +30,12 @@ function createDefaultState(): PlayersState {
 
 export const usePlayersStore = defineStore("players", () => {
   const defaultState = createDefaultState();
-  const gamePlayStore = useGamePlayStore();
+  const gamePlayStore = useCoreStore();
 
   const players = ref(defaultState.players);
 
   const dealer = computed(
-    () => players.value.find((player) => player.isDealer) as Dealer,
+    () => players.value.find((player) => player.isDealer) as Player,
   );
 
   const activePlayersCount = computed(
