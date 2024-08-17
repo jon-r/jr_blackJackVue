@@ -1,10 +1,10 @@
 import { Store } from "vuex/types/index.d.ts";
 
 import { GameStages } from "../constants/gamePlay.ts";
+import { Position } from "./animations.ts";
+import { RawCardOld } from "./card.ts";
 import { GameConfig } from "./config.ts";
 import { Dealer, Player } from "./players.ts";
-import {RawCard} from "./card.ts";
-import {Position} from "./animations.ts";
 
 export type GameEvent = {
   idx: number;
@@ -22,7 +22,7 @@ export type AppState = {
   players: Player[];
   // activePlayerCount: number;
 
-  deck: RawCard[]; // todo probably card
+  deck: RawCardOld[]; // todo probably card
   shoePos: Position;
 
   config: GameConfig;

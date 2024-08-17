@@ -9,21 +9,24 @@ import PlayingCard from "./components/common/PlayingCard.vue";
 import TextButton from "./components/common/TextButton.vue";
 import OptionsModal from "./components/options/OptionsModal.vue";
 import PlayerFrame from "./components/playerFrame/PlayerFrame.vue";
-import { useAppStore } from "./store/store.ts";
+import { useDeckStore } from "./stores/deckStore.ts";
+// import { useAppStore } from "./store/store.ts";
 import { Card } from "./types/card.ts";
 import { GamePlayState, useGamePlayStore } from "./stores/gamePlayStore.ts";
 import { PlayersState, usePlayersStore } from "./stores/playersStore.ts";
 import { GameEvent } from "./types/state.ts";
 
-const store = useAppStore();
+// const store = useAppStore();
+
 const playersStore = usePlayersStore();
 const { players, activePlayersCount }: PlayersState = storeToRefs(playersStore);
-// const gamePlayStore = useGamePlayStore()
-// const {activePlayerId}: GamePlayState = storeToRefs(gamePlayStore)
+const gamePlayStore = useGamePlayStore();
+const { notifications }: GamePlayState = storeToRefs(gamePlayStore);
+const deckStore = useDeckStore();
 
 const showOptions = ref(true);
-const messages = ref<{ text: string; idx: number }[]>([]);
-const messageIndex = ref(0);
+// const messages = ref<{ text: string; idx: number }[]>([]);
+// const messageIndex = ref(0);
 
 const shoeRef = ref<HTMLDivElement>();
 
@@ -40,36 +43,36 @@ const blankCard: Card = {
 onMounted(() => {
   const { offsetTop, offsetLeft } = shoeRef.value;
 
-  store.dispatch("setShoePos", {
+  deckStore.setShoePosition({
     x: offsetLeft,
     y: offsetTop,
   });
 });
 
-watch(
-  () => store.getters.eventBus,
-  function newGameCheck(event: GameEvent) {
-    if (event.type === "newGame") {
-      showOptions.value = true;
-    }
-  },
-);
+// watch(
+//   () => store.getters.eventBus,
+//   function newGameCheck(event: GameEvent) {
+//     if (event.type === "newGame") {
+//       showOptions.value = true;
+//     }
+//   },
+// );
 
-watch(
-  () => store.getters.newMessage,
-  function updateChat(params: string) {
-    const maxMessages = 5;
-
-    messageIndex.value += 1;
-
-    messages.value.unshift({
-      text: params,
-      idx: messageIndex.value,
-    });
-
-    if (messages.value.length > maxMessages) messages.value.pop();
-  },
-);
+// watch(
+//   () => notifications,
+//   function updateChat(params: string[]) {
+//     const maxMessages = 5;
+//
+//     messageIndex.value += 1;
+//
+//     messages.value.unshift({
+//       text: params,
+//       idx: messageIndex.value,
+//     });
+//
+//     if (messages.value.length > maxMessages) messages.value.pop();
+//   },
+// );
 </script>
 
 <template>
@@ -82,8 +85,8 @@ watch(
 
     <main class="blackjack-table flex-auto">
       <TransitionGroup class="announcement frame" name="messages" tag="ul">
-        <li class="message" v-for="msg in messages" :key="msg.idx">
-          {{ msg.text }}
+        <li class="message" v-for="(msg, i) in notifications" :key="i">
+          {{ msg }}
         </li>
       </TransitionGroup>
 

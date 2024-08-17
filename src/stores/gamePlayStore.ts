@@ -9,6 +9,7 @@ export type GamePlayState = {
   gameRound: number;
   activeStage: GameStages;
   activePlayerId: number;
+  notifications: string[];
 };
 
 export const useGamePlayStore = defineStore("gamePlay", () => {
@@ -21,6 +22,7 @@ export const useGamePlayStore = defineStore("gamePlay", () => {
   const gameRound = ref(-1);
   const activeStage = ref(GameStages.Init);
   const activePlayerId = ref(-1);
+  const notifications = ref<string[]>([]);
 
   function setConfig(newConfig: GameConfig) {
     config.value = newConfig;
@@ -53,6 +55,8 @@ export const useGamePlayStore = defineStore("gamePlay", () => {
     gameRound,
     activeStage,
     activePlayerId,
+    notifications,
+
     nextPlayer,
     nextStage,
     endAllPlayerTurns,

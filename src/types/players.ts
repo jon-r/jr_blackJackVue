@@ -1,4 +1,4 @@
-import { RawCard } from "./card.ts";
+import { Hand, RawCard } from "./card.ts";
 
 export type Player = {
   isDealer: boolean;
@@ -8,7 +8,9 @@ export type Player = {
   firstBet: number;
   score: number;
   inGame: boolean;
-  peeked: RawCard | null;
+  // peeked: never;
+  hands: Hand[];
+  activeHandId: number;
 };
 
 export type PlayerInputStub = Pick<Player, "name">;

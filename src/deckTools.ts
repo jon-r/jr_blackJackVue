@@ -1,11 +1,11 @@
-import { Card, RawCard } from "./types/card.ts";
+import { Card, RawCardOld } from "./types/card.ts";
 
 export function getRandom(range: number): number {
   return Math.floor(Math.random() * range);
 }
 
 export function buildDeck(decks: number) {
-  const cards: RawCard[] = [];
+  const cards: RawCardOld[] = [];
   const nDecks = new Array(decks).fill(0);
   const nSuits = new Array(4).fill(0);
   const nFaces = new Array(13).fill(0);
@@ -20,7 +20,7 @@ export function buildDeck(decks: number) {
   return cards;
 }
 
-export function valueCard(cardRaw: RawCard): Card {
+export function valueCard(cardRaw: RawCardOld): Card {
   const suits = ["hearts", "diamonds", "spades", "clubs"];
   const faces = { 1: "A", 11: "J", 12: "Q", 13: "K" };
   const value = cardRaw[0];

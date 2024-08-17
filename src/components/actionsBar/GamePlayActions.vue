@@ -2,6 +2,7 @@
 import { computed } from "vue";
 
 import { GamePlayActionTypes } from "../../constants/gamePlay.ts";
+import { getHandRules } from "../../helpers/cards.ts";
 import { useAppStore } from "../../store/store.ts";
 import { ButtonControl } from "../../types/button.ts";
 import { Player } from "../../types/players.ts";
@@ -12,15 +13,12 @@ type GamePlayActionsProps = {
   player: Player;
 };
 
-const store = useAppStore();
+const { dispatch } = useAppStore();
 const props = defineProps<GamePlayActionsProps>();
 
 const actionButtons = computed<ButtonControl[]>(() => {
-  const { split: canSplit, count: cardCount } = store.getters.handRules;
-  const isFirstAction = cardCount < 3;
-  const { money, firstBet } = props.player;
-
-  const canAfford = money >= firstBet;
+  const { canSplit, canAfford, isFirstPlay } = getHandRules(props.player);
+  const { firstBet } = props.player;
 
   return [
     {
@@ -43,14 +41,14 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "play-surrender",
       label: GamePlayActionTypes.Surrender,
-      disabled: !isFirstAction,
+      disabled: !isFirstPlay,
       icon: "flag",
       alert: `+ £${firstBet / 2}`,
     },
     {
       id: "play-double",
       label: GamePlayActionTypes.Double,
-      disabled: !(canAfford && isFirstAction),
+      disabled: !(canAfford && isFirstPlay),
       icon: "monetization_on",
       alert: `- £${firstBet}`,
     },
@@ -66,8 +64,8 @@ function handleAction(action: GamePlayActionTypes) {
     value: action,
   };
 
-  store.dispatch("doEvent", handEvent);
-  store.dispatch("setNewMessage", `${name} ${action}s`);
+  dispatch("doEvent", handEvent);
+  dispatch("setNewMessage", `${name} ${action}s`);
 
   if (
     action === GamePlayActionTypes.Split ||
@@ -78,7 +76,7 @@ function handleAction(action: GamePlayActionTypes) {
       value: -firstBet,
     };
 
-    store.dispatch("playerUpdateMoney", betVals);
+    dispatch("playerUpdateMoney", betVals);
   }
 }
 </script>

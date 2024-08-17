@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { ref, watch } from "vue";
 
 import {
@@ -7,6 +8,7 @@ import {
   setPos,
 } from "../../animationTools.ts";
 import { useAppStore } from "../../store/store.ts";
+import { GamePlayState, useGamePlayStore } from "../../stores/gamePlayStore.ts";
 import { Position } from "../../types/animations.ts";
 import { Player } from "../../types/players.ts";
 import { GameEvent } from "../../types/state.ts";
@@ -19,9 +21,12 @@ type ActiveBetProps = {
   framePos: Position;
 };
 
-const store = useAppStore();
+const { dispatch } = useAppStore();
 const gamePlayStore = useGamePlayStore();
-const {gameRound, config: {minBet}}: GamePlayState = storeToRefs(gamePlayStore)
+const {
+  gameRound,
+  config: { minBet },
+}: GamePlayState = storeToRefs(gamePlayStore);
 const props = defineProps<ActiveBetProps>();
 
 const bet = ref(0);
@@ -107,7 +112,7 @@ function splitChips(toRemove: number[]) {
 }
 
 watch(
-  () => store.getters.eventBus,
+  () => null, //store.getters.eventBus,
   function adjustBet(eventBus: GameEvent) {
     const { idx, type, value } = eventBus;
     const isBetEvent = idx === props.player.index && type === "bet";
@@ -149,7 +154,7 @@ watch(
       bet.value = 0;
 
       if (props.player.money < minBet) {
-        store.dispatch("playerEndGame", {
+        dispatch("playerEndGame", {
           idx: props.player.index,
           value: false,
         });
@@ -165,7 +170,7 @@ watch(
 function emitMoneyChange(value: number) {
   const idx = props.player.index;
   const betVals = { idx, value };
-  return store.dispatch("playerUpdateMoney", betVals);
+  return dispatch("playerUpdateMoney", betVals);
 }
 </script>
 <template>

@@ -38,11 +38,6 @@ export const usePlayersStore = defineStore("players", () => {
     () => players.value.find((player) => player.isDealer) as Dealer,
   );
 
-  const currentPlayer = computed(() =>
-    players.value.find(
-      (player) => player.index === gamePlayStore.activePlayerId,
-    ),
-  );
   const activePlayersCount = computed(
     () =>
       players.value.filter(
@@ -50,5 +45,53 @@ export const usePlayersStore = defineStore("players", () => {
       ).length - 1,
   );
 
-  return { players, dealer, currentPlayer, activePlayersCount };
+  const currentPlayer = computed(() =>
+    players.value.find(
+      (player) => player.index === gamePlayStore.activePlayerId,
+    ),
+  );
+  // const currentPlayerHand = computed(
+  //   () => currentPlayer.value?.hands[currentPlayer.value.activeHandId],
+  // );
+
+  function updateCurrentPlayer(update: Partial<Player>) {
+    const updatedPlayers = [...players.value];
+    const updatedPlayerIndex = updatedPlayers.findIndex(
+      (player) => player.index === gamePlayStore.activePlayerId,
+    );
+
+    if (updatedPlayerIndex === -1) {
+      return;
+    }
+
+    const updatedPlayer = updatedPlayers.at(updatedPlayerIndex)!;
+
+    updatedPlayers[updatedPlayerIndex] = {
+      ...updatedPlayer,
+      ...update,
+    };
+
+    players.value = updatedPlayers;
+  }
+
+  function setPlayerNextHand(activeHandId: number) {
+    if (
+      currentPlayer.value &&
+      activeHandId >= currentPlayer.value.hands.length
+    ) {
+      return gamePlayStore.nextPlayer();
+    }
+
+    updateCurrentPlayer({ activeHandId });
+  }
+
+  return {
+    players,
+    dealer,
+    currentPlayer,
+    activePlayersCount,
+    // currentPlayerHand,
+
+    setPlayerNextHand,
+  };
 });

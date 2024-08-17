@@ -2,27 +2,39 @@
 import { computed } from "vue";
 
 import { setPos, transformJiggle } from "../../animationTools.ts";
-import { useAppStore } from "../../store/store.ts";
+import {
+  ACE_SCORE,
+  BLACKJACK_SCORE,
+  FaceValues,
+} from "../../constants/cards.ts";
+import { formatCard } from "../../helpers/cards.ts";
+import { useDeckStore } from "../../stores/deckStore.ts";
+// import { useAppStore } from "../../store/store.ts";
 import { Position } from "../../types/animations.ts";
-import { Card } from "../../types/card.ts";
+import { RawCard } from "../../types/card.ts";
 import PlayingCard from "../common/PlayingCard.vue";
 
 type PlayerCardsProps = {
-  cards: Card[];
+  cards: RawCard[];
   framePos: Position;
   isActive: boolean;
 };
 
-const store = useAppStore();
+// const store = useAppStore();
+const deckStore = useDeckStore();
 const props = defineProps<PlayerCardsProps>();
 const emit = defineEmits(["update:modelValue"]);
 
-const aces = computed(
-  () => props.cards.filter((card) => card.face === "A").length,
+const formattedCards = computed(() => props.cards.map(formatCard));
+
+const acesCount = computed(
+  () =>
+    props.cards.filter(([faceValue]: RawCard) => faceValue === FaceValues.Ace)
+      .length,
 );
 
 const enterPosition = computed<Position>(() => {
-  const shoe = store.getters.shoePos;
+  const shoe = deckStore.shoePosition;
 
   return {
     x: shoe.x - props.framePos.x - 36,
@@ -48,16 +60,19 @@ const score = computed(() => {
       0,
   );*/
 
-  let newScore = props.cards.reduce((score, card) => score + card.score, 0);
+  let newScore = props.cards.reduce(
+    (score, [faceValue]: RawCard) => score + faceValue,
+    0,
+  );
 
-  let currentAces = aces.value;
+  let currentAces = acesCount.value;
   // reduces as many aces as needed (if possible) to keep the score down
   while (newScore > 21 && currentAces > 0) {
     currentAces -= 1;
-    newScore -= 10;
+    newScore -= ACE_SCORE;
   }
 
-  // fixme remove side effect
+  // fixme remove side effect. move this score stuff to elsewhere
   emit("update:modelValue", newScore);
 
   return newScore;
@@ -65,11 +80,12 @@ const score = computed(() => {
 
 const scoreString = computed(() => {
   switch (true) {
-    case score.value > 21:
+    case score.value > BLACKJACK_SCORE:
       return "Bust";
-    case score.value === 21 && props.cards.length < 3:
+    case score.value === BLACKJACK_SCORE && props.cards.length === 2:
       return "BlackJack";
-    case aces.value > 0:
+    // fixme soft is more complex than this
+    case acesCount.value > 0:
       return "Soft";
     default:
       return "";
@@ -94,7 +110,10 @@ function leave(el: HTMLElement, done: () => void) {
 
 <template>
   <div class="player-cards" :class="{ 'active-hand': isActive }">
-    <div class="hand-score shadow-light" :class="{ 'error-text': score > 21 }">
+    <div
+      class="hand-score shadow-light"
+      :class="{ 'error-text': score > BLACKJACK_SCORE }"
+    >
       {{ score }} {{ scoreString }}
     </div>
 
@@ -108,7 +127,7 @@ function leave(el: HTMLElement, done: () => void) {
     >
       <!-- FIXME fully revisit how cards + chips style works -->
       <PlayingCard
-        v-for="(card, idx) in cards"
+        v-for="(card, idx) in formattedCards"
         :key="idx"
         :card="card"
         :data-index="idx"
