@@ -7,12 +7,16 @@ import { Player } from "../../types/players.ts";
 import BettingChip from "../common/BettingChip.vue";
 import MdIcon from "../common/MdIcon.vue";
 import ActionButton from "./ActionButton.vue";
+import {GamePlayState, useGamePlayStore} from "../../stores/gamePlayStore.ts";
+import {storeToRefs} from "pinia";
 
 type BettingActionsProps = {
   player: Player;
 };
 
-const store = useAppStore();
+const {dispatch} = useAppStore();
+const gamePlayStore = useGamePlayStore();
+const {config}: GamePlayState = storeToRefs(gamePlayStore);
 const props = defineProps<BettingActionsProps>();
 
 const chips = [5, 10, 25, 100, 500, 1000];
@@ -35,16 +39,16 @@ const chipButtons = computed<ButtonControl[]>(() => {
 });
 
 const actionButtons = computed<ButtonControl[]>(() => {
-  const { minBet } = store.getters.config;
+  // const { minBet } = store.getters.config;
   return [
     {
       id: "bet-submit",
       label: `Submit: £${betToPlace.value}`,
       class: "btn-good",
       icon: "publish",
-      disabled: betToPlace.value < minBet,
+      canUse: betToPlace.value >= config.minBet,
       onClick: submitBet,
-      alert: `Min: £${minBet}`,
+      alert: `Min: £${config.minBet}`,
     },
     {
       id: "bet-undo",
@@ -63,6 +67,8 @@ function addChip(value: number) {
 function removeChip() {
   chipsToPlace.value.pop();
 }
+
+// todo move to store
 function submitBet() {
   const idx = props.player.index;
 
@@ -79,14 +85,13 @@ function submitBet() {
   chipsToPlace.value = [];
 
   // todo bonus combine these in store?
-  store.dispatch(
+  dispatch(
     "setNewMessage",
     `${props.player.name} bets £${betToPlace.value}`,
   );
-  store
-    .dispatch("playerSetBet", betVals)
-    .then(() => store.dispatch("doEvent", betEvent))
-    .then(() => store.dispatch("nextPlayer"));
+  dispatch("playerSetBet", betVals)
+    .then(() => dispatch("doEvent", betEvent))
+    .then(() => dispatch("nextPlayer"));
 }
 </script>
 

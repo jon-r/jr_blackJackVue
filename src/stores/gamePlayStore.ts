@@ -3,6 +3,13 @@ import {GameStages} from "../constants/gamePlay.ts";
 import {defineStore} from "pinia";
 import {ref} from "vue";
 
+export type GamePlayState = {
+  config: GameConfig
+  gameRound: number
+  activeStage: GameStages
+  activePlayerId: number
+}
+
 export const useGamePlayStore = defineStore('gamePlay',  () => {
   const config = ref<GameConfig>({
     minBet: 100,
@@ -34,6 +41,10 @@ export const useGamePlayStore = defineStore('gamePlay',  () => {
       activeStage.value += 1
     }
   }
+  function endAllPlayerTurns() {
+    activeStage.value = GameStages.DealerActions
+    nextPlayer()
+  }
 
-  return {config, setConfig, gameRound, activeStage, activePlayer, nextPlayer, nextStage};
+  return {config, setConfig, gameRound, activeStage, activePlayer, nextPlayer, nextStage, endAllPlayerTurns};
 })

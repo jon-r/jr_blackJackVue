@@ -7,18 +7,23 @@ import { Player } from "../../types/players.ts";
 import BettingActions from "./BettingActions.vue";
 import EndGameActions from "./EndGameActions.vue";
 import GamePlayActions from "./GamePlayActions.vue";
+import {GamePlayState, useGamePlayStore} from "../../stores/gamePlayStore.ts";
+import {storeToRefs} from "pinia";
 
 type ActionsBarProps = {
   player?: Player;
 };
 
-const store = useAppStore();
+const {dispatch} = useAppStore();
+const gamePlayStore = useGamePlayStore()
+const {config, activeStage}: GamePlayState = storeToRefs(gamePlayStore)
 const props = defineProps<ActionsBarProps>();
 
 const tipsMessage = computed(() => {
   const money = props.player?.money;
-  const { gameStage, config } = store.getters;
-  const out = new Map([
+
+  // const { gameStage, config } = store.getters;
+  const out = new Map<GameStages, string>([
     [
       GameStages.PlaceBets,
       `Current money: £${money}. Min Bet: £${config.minBet}.`,
@@ -27,13 +32,14 @@ const tipsMessage = computed(() => {
     // todo bonus = more tips?
   ]);
 
-  return out.has(gameStage) ? out.get(gameStage) : "";
+  return out.get(activeStage) ?? "";
 });
 
+// todo can move to store
 watch(
-  () => store.getters.gameStage,
+  () => activeStage,
   function updateStageMessage(stage: GameStages) {
-    const out = new Map([
+    const out = new Map<GameStages, string>([
       [GameStages.PlaceBets, "Please place Your bets"],
       [GameStages.DealOne, "All bets are in, dealing out the first cards."],
       [GameStages.EndRound, "Round Over"],
@@ -43,7 +49,7 @@ watch(
 
     const msg = out.get(stage);
 
-    return store.dispatch("setNewMessage", msg);
+    return dispatch("setNewMessage", msg);
   },
 );
 </script>
@@ -57,17 +63,17 @@ watch(
       </div>
 
       <BettingActions
-        v-if="store.getters.gameStage === GameStages.PlaceBets"
+        v-if="activeStage === GameStages.PlaceBets"
         :player="player"
       />
 
       <GamePlayActions
-        v-else-if="store.getters.gameStage === GameStages.PlayerActions"
+        v-else-if="activeStage === GameStages.PlayerActions"
         :player="player"
       />
 
       <EndGameActions
-        v-else-if="store.getters.gameStage === GameStages.EndRound"
+        v-else-if="activeStage === GameStages.EndRound"
       />
     </template>
   </section>

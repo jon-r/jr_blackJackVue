@@ -11,8 +11,12 @@ import PlayerFrame from "./components/playerFrame/PlayerFrame.vue";
 import { useAppStore } from "./store/store.ts";
 import { Card } from "./types/card.ts";
 import { GameEvent } from "./types/state.ts";
+import {GamePlayState, useGamePlayStore} from "./stores/gamePlayStore.ts";
+import {storeToRefs} from "pinia";
 
 const store = useAppStore();
+const gamePlayStore = useGamePlayStore()
+const {activePlayerId}: GamePlayState = storeToRefs(gamePlayStore)
 
 const showOptions = ref(true);
 const messages = ref<{ text: string; idx: number }[]>([]);
@@ -27,7 +31,7 @@ const blankCard: Card = {
 };
 
 const activePlayer = computed(
-  () => store.getters.players[store.getters.gameActivePlayer],
+  () => store.getters.players[activePlayerId],
 );
 
 onMounted(() => {

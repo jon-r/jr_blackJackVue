@@ -11,6 +11,8 @@ import { Position } from "../../types/animations.ts";
 import { Player } from "../../types/players.ts";
 import { GameEvent } from "../../types/state.ts";
 import BettingChip from "../common/BettingChip.vue";
+import {GamePlayState, useGamePlayStore} from "../../stores/gamePlayStore.ts";
+import {storeToRefs} from "pinia";
 
 type ActiveBetProps = {
   player: Player;
@@ -18,6 +20,8 @@ type ActiveBetProps = {
 };
 
 const store = useAppStore();
+const gamePlayStore = useGamePlayStore();
+const {gameRound, config: {minBet}}: GamePlayState = storeToRefs(gamePlayStore)
 const props = defineProps<ActiveBetProps>();
 
 const bet = ref(0);
@@ -135,7 +139,7 @@ watch(
 );
 
 watch(
-  () => store.getters.gameRound,
+  () => gameRound,
   function cashIn() {
     hideChips();
 
@@ -144,7 +148,7 @@ watch(
     emitMoneyChange(bet.value).then(() => {
       bet.value = 0;
 
-      if (props.player.money < store.getters.config.minBet) {
+      if (props.player.money < minBet) {
         store.dispatch("playerEndGame", {
           idx: props.player.index,
           value: false,

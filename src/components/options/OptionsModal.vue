@@ -9,8 +9,12 @@ import { AnyPlayer, Player, PlayerInputStub } from "../../types/players.ts";
 import TextButton from "../common/TextButton.vue";
 import InputField from "./InputField.vue";
 import ModalContainer from "./ModalContainer.vue";
+import {GamePlayState, useGamePlayStore} from "../../stores/gamePlayStore.ts";
+import {storeToRefs} from "pinia";
 
 const store = useAppStore();
+const gamePlayStore = useGamePlayStore()
+const {config: {deckCount, minBet, autoTime}}: GamePlayState = storeToRefs(gamePlayStore)
 const emit = defineEmits(["closeModal"]);
 
 function setupPlayerInput(input: Player[]): PlayerInputStub[] {
@@ -22,19 +26,14 @@ function setupPlayerInput(input: Player[]): PlayerInputStub[] {
 
 const playerInput = ref(setupPlayerInput(store.getters.players));
 
-const deckCount = ref(store.getters.config.deckCount);
-const minBet = ref(store.getters.config.minBet);
-const autoTime = ref(store.getters.config.autoTime);
+// const deckCount = ref(store.getters.config.deckCount);
+// const minBet = ref(store.getters.config.minBet);
+// const autoTime = ref(store.getters.config.autoTime);
 
 const isMoreOptionsOpen = ref(false);
 
+// todo move new player functionality to the state
 async function newGame() {
-  const config: GameConfig = {
-    deckCount: deckCount.value,
-    minBet: minBet.value,
-    autoTime: autoTime.value,
-  };
-
   const players: AnyPlayer[] = playerInput.value.map((player) => ({
     ...DEFAULT_PLAYER,
     ...player,
@@ -47,9 +46,18 @@ async function newGame() {
     isDealer: true,
   });
 
-  const options = { players, config };
+  const newConfig: GameConfig = {
+    deckCount: deckCount,
+    minBet: minBet,
+    autoTime: autoTime,
+    playerCount: players.length // todo maybe -1 to count without dealer
+  };
+
+  const options = { players, config: newConfig };
 
   await store.dispatch("newGame", options);
+  gamePlayStore.setConfig(newConfig)
+
   emit("closeModal");
 }
 
@@ -57,8 +65,10 @@ async function newGame() {
 async function newDemo() {
   await newGame();
   await autoBet(0, playerInput.value.length - 1);
-  await store.dispatch("nextPlayerPromise");
-  await store.dispatch("nextStage");
+  // await store.dispatch("nextPlayerPromise");
+  gamePlayStore.nextPlayer()
+  gamePlayStore.nextStage()
+  // await store.dispatch("nextStage");
 }
 
 async function autoBet(idx: number, max: number) {

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { b } from "vite/dist/node/types.d-aGj9QkWt.js";
 import { computed, ref, watch } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
@@ -10,6 +9,8 @@ import { Card, PlayerHand, RawCard } from "../../types/card.ts";
 import { Dealer, Player } from "../../types/players.ts";
 import { GameEvent } from "../../types/state.ts";
 import PlayerCards from "./PlayerCards.vue";
+import {GamePlayState, useGamePlayStore} from "../../stores/gamePlayStore.ts";
+import {storeToRefs} from "pinia";
 
 type PlayerHandProps = {
   isCurrentTurn: boolean;
@@ -18,6 +19,8 @@ type PlayerHandProps = {
   result: string;
 };
 const store = useAppStore();
+const gamePlayStore = useGamePlayStore()
+const {activeStage, gameRound, config: {autoTime}}: GamePlayState = storeToRefs(gamePlayStore);
 const props = defineProps<PlayerHandProps>();
 
 const hands = ref<PlayerHand[]>([]);
@@ -106,7 +109,7 @@ function setCard(card: RawCard | Card, isPreset = false) {
 async function dealRevealSet(mayPeek = false) {
   addBlankCard();
   const rawCard = await revealCard(mayPeek);
-  await wait(store.getters.autoTime, null);
+  await wait(autoTime, null);
   setCard(rawCard);
 }
 
@@ -116,7 +119,7 @@ async function fillBlanks() {
   if (!hasBlank) return;
 
   const rawCard = await revealCard();
-  await wait(store.getters.autoTime, null);
+  await wait(autoTime, null);
   setCard(rawCard);
 }
 
@@ -126,7 +129,7 @@ watch(
   function startTurn(turn: boolean) {
     if (!turn) return false;
 
-    const actions = new Map([
+    const actions = new Map<GameStages, () => void>([
       [GameStages.DealOne, dealOutFirst],
       [GameStages.DealTwo, dealOutSecond],
       [GameStages.PlayerActions, playerActions],
@@ -134,15 +137,15 @@ watch(
       //       [5, this.roundResult],
     ]);
 
-    const fn = actions.get(store.getters.gameStage);
+    const fn = actions.get(activeStage);
 
-    return fn ? fn() : false;
+    return fn?.();
   },
 );
 
 /* TURN 0 ------------------ */
 watch(
-  () => store.getters.gameRound,
+  () => gameRound,
   function clearTable() {
     hands.value.forEach((hand) => {
       hand.cards = [];
@@ -176,7 +179,7 @@ async function dealOutSecond() {
   const endImmediately = isDealer && activeHand.value.score === 21;
 
   if (endImmediately) {
-    await wait(store.getters.autoTime, null);
+    await wait(autoTime, null);
     emitEndRound();
   } else {
     emitEndTurn();
@@ -243,7 +246,7 @@ async function hit() {
 async function autoHit() {
   if (allowPlay.value) {
     await dealRevealSet();
-    await wait(store.getters.autoTime, null);
+    await wait(autoTime, null);
     await autoHit();
   } else {
     emitEndTurn();
@@ -303,12 +306,15 @@ function setFinalScores() {
 /* emits -------------------------------------------------------------*/
 
 function emitEndTurn() {
-  store.dispatch("nextPlayer");
+  gamePlayStore.nextPlayer()
+  // store.dispatch("nextPlayer");
 }
 
 function emitEndRound() {
-  store.dispatch("setStage", 3);
-  store.dispatch("nextPlayer");
+  // store.dispatch("setStage", 3);
+  // store.dispatch("nextPlayer");
+  // gamePlayStore.nextPlayer()
+  gamePlayStore.endAllPlayerTurns();
 }
 
 function emitBetChange(value: string) {

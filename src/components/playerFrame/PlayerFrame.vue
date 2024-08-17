@@ -7,12 +7,16 @@ import { Position } from "../../types/animations.ts";
 import { Dealer, Player } from "../../types/players.ts";
 import ActiveBets from "./ActiveBets.vue";
 import PlayerHand from "./PlayerHand.vue";
+import {GamePlayState, useGamePlayStore} from "../../stores/gamePlayStore.ts";
+import {storeToRefs} from "pinia";
 
 type PlayerFrameProps = {
   player: Player;
 };
 
 const store = useAppStore();
+const gamePlayStore = useGamePlayStore()
+const {activePlayerId, activeStage, gameRound}: GamePlayState = storeToRefs(gamePlayStore);
 const props = defineProps<PlayerFrameProps>();
 
 const playerClass = `player-${props.player.index}`;
@@ -45,16 +49,16 @@ const moneyDiff = computed(() => {
 });
 
 const isPlayerTurn = computed(() => {
-  return store.getters.gameActivePlayer === props.player.index;
+  return activePlayerId === props.player.index;
 });
 
 watch(isPlayerTurn, function turnCheck() {
   const cantBet = !props.player.inGame;
-  const wontBet =
-    store.getters.gameStage === GameStages.PlaceBets && props.player.isDealer;
+  const wontBet = activeStage === GameStages.PlaceBets && props.player.isDealer;
 
   if (isPlayerTurn.value && (cantBet || wontBet)) {
-    store.dispatch("nextPlayer");
+    gamePlayStore.nextPlayer()
+    // store.dispatch("nextPlayer");
   }
 });
 
@@ -70,7 +74,7 @@ watch(
 );
 
 watch(
-  () => store.getters.gameRound,
+  () => gameRound,
   function cleanUp() {
     roundResult.value = "";
     // todo bonus: anything else can go here?
