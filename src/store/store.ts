@@ -65,7 +65,7 @@ export default createStore({
       SET_STAGE: "gameStage",
       SET_ACTIVE_PLAYER: "gameActivePlayer",
       SET_PLAYERS: "players",
-      SET_PLAYER_COUNT: "activePlayerCount",
+      // SET_PLAYER_COUNT: "activePlayerCount",
       SET_DEALER: "dealer",
       SET_ROUND: "gameRound",
       SET_DECK: "deck",

@@ -4,6 +4,7 @@ export type GameConfig = {
   minBet: number;
   autoTime: number;
   deckCount: number;
+  playerCount?: number; // todo temp optional till its removed elsewhere
 };
 
 export type NewGameOptions = {

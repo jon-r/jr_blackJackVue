@@ -3,6 +3,8 @@ import { Store } from "vuex/types/index.d.ts";
 import { GameStages } from "../constants/gamePlay.ts";
 import { GameConfig } from "./config.ts";
 import { Dealer, Player } from "./players.ts";
+import {RawCard} from "./card.ts";
+import {Position} from "./animations.ts";
 
 export type GameEvent = {
   idx: number;
@@ -18,10 +20,10 @@ export type AppState = {
 
   dealer: Dealer; // todo use the 'isDealer' to split types?
   players: Player[];
-  activePlayerCount: number;
+  // activePlayerCount: number;
 
-  deck: number[][]; // todo probably card
-  shoePos: unknown; //??
+  deck: RawCard[]; // todo probably card
+  shoePos: Position;
 
   config: GameConfig;
 

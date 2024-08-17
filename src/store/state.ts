@@ -18,11 +18,11 @@ export function createAppState(): AppState {
       { ...DEFAULT_PLAYER, index: 3, name: "Denise" },
       { ...DEFAULT_PLAYER, index: 4, name: "Ethan" },
     ],
-    activePlayerCount: 5,
+    // activePlayerCount: 5,
 
     // deck and cards
     deck: [],
-    shoePos: {},
+    shoePos: {x: 0, y: 0},
 
     // other options
     config: {
