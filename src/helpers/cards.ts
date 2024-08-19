@@ -1,8 +1,11 @@
 import {
   ACE_SCORE,
+  CARDS_PER_SUIT,
   CARD_FACES,
   FACE_SCORE,
   FaceValues,
+  SUITS_COUNT,
+  SUIT_LIST,
 } from "../constants/cards.ts";
 import { Card, HandRules, RawCard } from "../types/card.ts";
 import { Player } from "../types/players.ts";
@@ -41,4 +44,21 @@ export function formatCard(rawCard: RawCard): Card {
     score: getCardScore(rawCard), // todo unused here
     suit,
   };
+}
+
+export function buildDeck(decks: number): RawCard[] {
+  const cards: RawCard[] = [];
+  const nDecks = new Array(decks).fill(0);
+  const nSuits = new Array(SUITS_COUNT).fill(0);
+  const nFaces = new Array(CARDS_PER_SUIT).fill(0);
+
+  nDecks.forEach(() => {
+    nSuits.forEach((_y, j) => {
+      nFaces.forEach((_z, k) => {
+        cards.push([k + 1, SUIT_LIST[j]]);
+      });
+    });
+  });
+
+  return cards;
 }

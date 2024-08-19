@@ -11,3 +11,9 @@ export const DEFAULT_PLAYER: Omit<Player, "name" | "index"> = {
   hands: [EMPTY_HAND],
   activeHandId: 0,
 };
+
+export const DEALER: Omit<Player, "index"> = {
+  ...DEFAULT_PLAYER,
+  name: "Dealer",
+  isDealer: true,
+};

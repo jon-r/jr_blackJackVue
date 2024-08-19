@@ -20,3 +20,5 @@ export enum EndGameActionTypes {
   New = "new game",
   Next = "next round",
 }
+
+export const CHIP_VALUES = [1000, 500, 100, 25, 10, 5] as const;

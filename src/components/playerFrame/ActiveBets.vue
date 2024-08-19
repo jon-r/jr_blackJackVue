@@ -1,38 +1,55 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { ref, watch } from "vue";
+// import { storeToRefs } from "pinia";
+import { computed, ref, watch } from "vue";
 
 import {
-  arrayStaggeredPull,
-  arrayStaggeredPush,
+  // arrayStaggeredPull,
+  // arrayStaggeredPush,
   setPos,
 } from "../../animationTools.ts";
-import { useAppStore } from "../../store/store.ts";
-import { CoreState, useCoreStore } from "../../stores/coreStore.ts";
+import { CHIP_VALUES } from "../../constants/gamePlay.ts";
+// import { useAppStore } from "../../store/store.ts";
+import { useCoreStore } from "../../stores/coreStore.ts";
 import { Position } from "../../types/animations.ts";
-import { Player } from "../../types/players.ts";
+// import { Player } from "../../types/players.ts";
 import { GameEvent } from "../../types/state.ts";
 import BettingChip from "../common/BettingChip.vue";
 import {GamePlayState, useGamePlayStore} from "../../stores/gamePlayStore.ts";
 import {storeToRefs} from "pinia";
 
 type ActiveBetProps = {
-  player: Player;
+  // player: Player;
+  bet: number;
   framePos: Position;
 };
 
-const { dispatch } = useAppStore();
+// const { dispatch } = useAppStore();
 const coreStore = useCoreStore();
-const {
-  gameRound,
-  config: { minBet },
-}: CoreState = storeToRefs(coreStore);
+// const {
+//   gameRound,
+//   config: { minBet },
+// }: CoreState = storeToRefs(coreStore);
 const props = defineProps<ActiveBetProps>();
 
-const bet = ref(0);
-const quidsIn = ref(false);
-const chips = ref<number[]>([]);
-const hasEnded = ref(false);
+// const bet = ref(0);
+const quidsIn = ref(true);
+// const chips = ref<number[]>([]);
+// const hasEnded = ref(false);
+
+const betAsChips = computed<number[]>(() => {
+  let chipsValue = props.bet;
+  const chips = [];
+  while (chipsValue > 0) {
+    const bestChip = CHIP_VALUES.find((value) => value <= chipsValue);
+
+    if (!bestChip) break;
+
+    chipsValue -= bestChip;
+    chips.push(bestChip);
+  }
+
+  return chips;
+});
 
 function enter(el: HTMLElement) {
   setPos(el, { x: 0, y: -200 });
@@ -51,127 +68,127 @@ function leave(el: HTMLElement, done: () => void) {
     done();
   });
 }
+//
+// function showChips() {
+//   quidsIn.value = true;
+// }
+//
+// function hideChips() {
+//   quidsIn.value = false;
+// }
 
-function showChips() {
-  quidsIn.value = true;
-}
-
-function hideChips() {
-  quidsIn.value = false;
-}
-
-function calcChips(value: number) {
-  const chips = [1000, 500, 100, 25, 10, 5];
-  const out = [];
-
-  let i = 0;
-  let remainder = value;
-
-  while (i < chips.length) {
-    const chip = chips[i];
-    if (chip <= remainder) {
-      out.push(chip);
-      remainder -= chip;
-    } else {
-      i += 1;
-    }
-  }
-  return out;
-}
+// function calcChips(value: number) {
+//   const chips = [1000, 500, 100, 25, 10, 5];
+//   const out = [];
+//
+//   let i = 0;
+//   let remainder = value;
+//
+//   while (i < chips.length) {
+//     const chip = chips[i];
+//     if (chip <= remainder) {
+//       out.push(chip);
+//       remainder -= chip;
+//     } else {
+//       i += 1;
+//     }
+//   }
+//   return out;
+// }
 
 // todo bonus: make this a computed based on the bet?
 function adjustChips(newBet: number) {
-  if (newBet === 0) return false;
-
-  const input = calcChips(Math.abs(newBet));
-  const args: [number[], number[], number] = [input, chips.value, 100];
-  let remaining;
-
-  switch (true) {
-    case newBet < 0:
-      remaining = arrayStaggeredPull(...args);
-      return remaining ? splitChips(remaining) : true;
-    case newBet > 0:
-      return arrayStaggeredPush(...args);
-    default: // no change
-      return false;
-  }
+  // if (newBet === 0) return false;
+  //
+  // const input = calcChips(Math.abs(newBet));
+  // const args: [number[], number[], number] = [input, chips.value, 100];
+  // let remaining;
+  //
+  // switch (true) {
+  //   case newBet < 0:
+  //     remaining = arrayStaggeredPull(...args);
+  //     return remaining ? splitChips(remaining) : true;
+  //   case newBet > 0:
+  //     return arrayStaggeredPush(...args);
+  //   default: // no change
+  //     return false;
+  // }
 }
 
 function splitChips(toRemove: number[]) {
-  const removeTotal = toRemove.reduce((sum, value) => sum + value, 0);
-  const chipsFilter = chips.value.filter((chip) => chip > removeTotal);
-  const lowestChip = Math.min(...chipsFilter); // the lowest chip that can be broken down;
-  const newChips = calcChips(lowestChip - removeTotal);
-
-  const rm = chips.value.indexOf(lowestChip);
-  chips.value.splice(rm, 1);
-  setTimeout(() => {
-    arrayStaggeredPush(newChips, chips.value, 100);
-  }, 100);
+  // const removeTotal = toRemove.reduce((sum, value) => sum + value, 0);
+  // const chipsFilter = chips.value.filter((chip) => chip > removeTotal);
+  // const lowestChip = Math.min(...chipsFilter); // the lowest chip that can be broken down;
+  // const newChips = calcChips(lowestChip - removeTotal);
+  //
+  // const rm = chips.value.indexOf(lowestChip);
+  // chips.value.splice(rm, 1);
+  // setTimeout(() => {
+  //   arrayStaggeredPush(newChips, chips.value, 100);
+  // }, 100);
 }
 
 watch(
   () => null, //store.getters.eventBus,
   function adjustBet(eventBus: GameEvent) {
-    const { idx, type, value } = eventBus;
-    const isBetEvent = idx === props.player.index && type === "bet";
-    const hasNoBet = bet.value === 0 && value !== "addBet";
-
-    if (!isBetEvent || hasNoBet || hasEnded.value) return;
-
-    const betAdjust = {
-      addBet: 1,
-      forfeit: -0.5,
-      lose: -1,
-      push: 0,
-      win: 1,
-      blackJack: 1.5,
-    };
-
-    showChips();
-
-    if (value === "blackJack" || value === "forfeit") {
-      hasEnded.value = true;
-    }
-
-    // @ts-expect-error - will be enum
-    const newBet = props.player.firstBet * betAdjust[value];
-
-    adjustChips(newBet);
-    bet.value += newBet;
+    // const { idx, type, value } = eventBus;
+    // const isBetEvent = idx === props.player.index && type === "bet";
+    // const hasNoBet = bet.value === 0 && value !== "addBet";
+    //
+    // if (!isBetEvent || hasNoBet || hasEnded.value) return;
+    //
+    // const betAdjust = {
+    //   addBet: 1,
+    //   forfeit: -0.5,
+    //   lose: -1,
+    //   push: 0,
+    //   win: 1,
+    //   blackJack: 1.5,
+    // };
+    //
+    // showChips();
+    //
+    // if (value === "blackJack" || value === "forfeit") {
+    //   hasEnded.value = true;
+    // }
+    //
+    // // @ts-expect-error - will be enum
+    // const newBet = props.player.firstBet * betAdjust[value];
+    //
+    // adjustChips(newBet);
+    // bet.value += newBet;
   },
 );
 
 watch(
-  () => gameRound,
+  () => coreStore.gameRound,
   function cashIn() {
-    hideChips();
-
-    hasEnded.value = false;
-
-    emitMoneyChange(bet.value).then(() => {
-      bet.value = 0;
-
-      if (props.player.money < minBet) {
-        dispatch("playerEndGame", {
-          idx: props.player.index,
-          value: false,
-        });
-      }
-    });
-
-    setTimeout(() => {
-      chips.value = [];
-    }, 1000);
+    // hideChips();
+    //
+    // hasEnded.value = false;
+    //
+    // emitMoneyChange(bet.value).then(() => {
+    //   bet.value = 0;
+    //
+    //   if (props.player.money < coreStore.config.minBet) {
+    //     dispatch("playerEndGame", {
+    //       idx: props.player.index,
+    //       value: false,
+    //     });
+    //   }
+    // });
+    //
+    // setTimeout(() => {
+    //   chips.value = [];
+    // }, 1000);
   },
 );
 
-function emitMoneyChange(value: number) {
-  const idx = props.player.index;
-  const betVals = { idx, value };
-  return dispatch("playerUpdateMoney", betVals);
-}
+// function emitMoneyChange(value: number) {
+//   const idx = props.player.index;
+//   const betVals = { idx, value };
+//   return dispatch("playerUpdateMoney", betVals);
+// }
 </script>
 <template>
   <div class="player-bet flex">
@@ -185,7 +202,7 @@ function emitMoneyChange(value: number) {
       @leave="leave"
     >
       <BettingChip
-        v-for="(chip, idx) in chips"
+        v-for="(chip, idx) in betAsChips"
         :key="idx"
         :value="chip"
         is-stacked

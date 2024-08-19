@@ -18,8 +18,8 @@ type PlayerFrameProps = {
 const { dispatch } = useAppStore();
 const playersStore = usePlayersStore();
 const coreStore = useCoreStore();
-const { activePlayerId, activeStage, gameRound }: CoreState =
-  storeToRefs(coreStore);
+// const { activePlayerId, activeStage, gameRound }: CoreState =
+//   storeToRefs(coreStore);
 const props = defineProps<PlayerFrameProps>();
 
 const playerClass = `player-${props.player.index}`;
@@ -52,12 +52,13 @@ const moneyDiff = computed(() => {
 });
 
 const isPlayerTurn = computed(() => {
-  return activePlayerId === props.player.index;
+  return coreStore.activePlayerId === props.player.index;
 });
 
 watch(isPlayerTurn, function turnCheck() {
   const cantBet = !props.player.inGame;
-  const wontBet = activeStage === GameStages.PlaceBets && props.player.isDealer;
+  const wontBet =
+    coreStore.activeStage === GameStages.PlaceBets && props.player.isDealer;
 
   if (isPlayerTurn.value && (cantBet || wontBet)) {
     coreStore.nextPlayer();
@@ -77,7 +78,7 @@ watch(
 );
 
 watch(
-  () => gameRound,
+  () => coreStore.gameRound,
   function cleanUp() {
     roundResult.value = "";
     // todo bonus: anything else can go here?
@@ -134,7 +135,7 @@ function triggerTextAnim() {
 
     <ActiveBets
       v-if="!props.player.isDealer"
-      :player="props.player"
+      :bet="props.player.firstBet"
       :frame-pos="framePos"
     />
 

@@ -5,13 +5,13 @@ import { computed, ref, watch } from "vue";
 import {
   BLACKJACK_SCORE,
   DEALER_STAND_SCORE,
-  FACE_VALUE,
+  FACE_SCORE,
 } from "../../constants/cards.ts";
-import { GameStages } from "../../constants/gamePlay.ts";
-import { blankCard, valueCard } from "../../deckTools.ts";
+// import { GameStages } from "../../constants/gamePlay.ts";
+// import { blankCard, valueCard } from "../../deckTools.ts";
 // import { useAppStore } from "../../store/store.ts";
 import { CoreState, useCoreStore } from "../../stores/coreStore.ts";
-import { usePlayersStore } from "../../stores/playersStore.ts";
+// import { usePlayersStore } from "../../stores/playersStore.ts";
 import { Position } from "../../types/animations.ts";
 import { Card, Hand, RawCard } from "../../types/card.ts";
 import { Player } from "../../types/players.ts";
@@ -24,6 +24,7 @@ type PlayerHandProps = {
   framePos: Position;
   result: string;
 };
+const props = defineProps<PlayerHandProps>();
 
 // const playersStore = usePlayersStore();
 // const {} = storeToRefs(playersStore)
@@ -33,7 +34,6 @@ const {
   gameRound,
   config: { autoTime },
 }: CoreState = storeToRefs(coreStore);
-const props = defineProps<PlayerHandProps>();
 
 // const hands = ref<PlayerHandOld[]>([]);
 // const activeHandId = ref(-1);
@@ -49,7 +49,7 @@ const activeScore = computed(() => {
   }
   return activeHand.value.cards.reduce((acc: number, card) => {
     const [value] = card;
-    return acc + Math.min(value[0], FACE_VALUE);
+    return acc + Math.min(value[0], FACE_SCORE);
   }, 0);
 });
 

@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-import { DEFAULT_PLAYER } from "../constants/player.ts";
-import { Player } from "../types/players.ts";
+import { DEALER, DEFAULT_PLAYER } from "../constants/player.ts";
+import { Player, PlayerInputStub } from "../types/players.ts";
 import { useCoreStore } from "./coreStore.ts";
 
 export type PlayersState = {
@@ -30,7 +30,7 @@ function createDefaultState(): PlayersState {
 
 export const usePlayersStore = defineStore("players", () => {
   const defaultState = createDefaultState();
-  const gamePlayStore = useCoreStore();
+  const coreStore = useCoreStore();
 
   const players = ref(defaultState.players);
 
@@ -40,49 +40,23 @@ export const usePlayersStore = defineStore("players", () => {
 
   const activePlayersCount = computed(
     () =>
-      players.value.filter(
-        (player) => player.money > gamePlayStore.config.minBet,
-      ).length - 1,
+      players.value.filter((player) => player.money > coreStore.config.minBet)
+        .length - 1,
   );
 
   const currentPlayer = computed(() =>
-    players.value.find(
-      (player) => player.index === gamePlayStore.activePlayerId,
-    ),
+    players.value.find((player) => player.index === coreStore.activePlayerId),
   );
-  // const currentPlayerHand = computed(
-  //   () => currentPlayer.value?.hands[currentPlayer.value.activeHandId],
-  // );
 
-  function updateCurrentPlayer(update: Partial<Player>) {
-    const updatedPlayers = [...players.value];
-    const updatedPlayerIndex = updatedPlayers.findIndex(
-      (player) => player.index === gamePlayStore.activePlayerId,
-    );
+  function resetPlayers(stubs: PlayerInputStub[]) {
+    const newPlayers: Player[] = stubs.map(({ name }, index) => ({
+      ...DEFAULT_PLAYER,
+      name,
+      index,
+    }));
+    newPlayers.push({ ...DEALER, index: newPlayers.length });
 
-    if (updatedPlayerIndex === -1) {
-      return;
-    }
-
-    const updatedPlayer = updatedPlayers.at(updatedPlayerIndex)!;
-
-    updatedPlayers[updatedPlayerIndex] = {
-      ...updatedPlayer,
-      ...update,
-    };
-
-    players.value = updatedPlayers;
-  }
-
-  function setPlayerNextHand(activeHandId: number) {
-    if (
-      currentPlayer.value &&
-      activeHandId >= currentPlayer.value.hands.length
-    ) {
-      return gamePlayStore.nextPlayer();
-    }
-
-    updateCurrentPlayer({ activeHandId });
+    players.value = newPlayers;
   }
 
   return {
@@ -90,8 +64,7 @@ export const usePlayersStore = defineStore("players", () => {
     dealer,
     currentPlayer,
     activePlayersCount,
-    // currentPlayerHand,
 
-    setPlayerNextHand,
+    resetPlayers,
   };
 });

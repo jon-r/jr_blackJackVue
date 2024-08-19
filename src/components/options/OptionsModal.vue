@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
+// import { storeToRefs } from "pinia";
 import { ref } from "vue";
 
 // import { DEFAULT_PLAYER } from "../../constants/player.ts";
 import { getRandom } from "../../deckTools.ts";
 import { useAppStore } from "../../store/store.ts";
-import { CoreState, useCoreStore } from "../../stores/coreStore.ts";
+import {
+  /*CoreState,*/
+  useCoreStore,
+} from "../../stores/coreStore.ts";
+import { useGamePlayStore } from "../../stores/gamePlayStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
-// import { GameConfig } from "../../types/config.ts";
+import { GameConfig } from "../../types/config.ts";
 import { Player, PlayerInputStub } from "../../types/players.ts";
 import TextButton from "../common/TextButton.vue";
 import InputField from "./InputField.vue";
@@ -16,9 +20,10 @@ import ModalContainer from "./ModalContainer.vue";
 const { dispatch } = useAppStore();
 const coreStore = useCoreStore();
 const playersStore = usePlayersStore();
-const {
-  config: { deckCount, minBet, autoTime },
-}: CoreState = storeToRefs(coreStore);
+// const {
+//   config: { deckCount, minBet, autoTime },
+// }: ToRefs<CoreState> = storeToRefs(coreStore);
+const gamePlayStore = useGamePlayStore();
 
 const emit = defineEmits(["closeModal"]);
 
@@ -34,14 +39,22 @@ function setupPlayerInput(players: Player[]): PlayerInputStub[] {
 
 const playerInput = ref(setupPlayerInput(playersStore.players));
 
-// const deckCount = ref(store.getters.config.deckCount);
-// const minBet = ref(store.getters.config.minBet);
-// const autoTime = ref(store.getters.config.autoTime);
+const deckCount = ref(coreStore.config.deckCount);
+const minBet = ref(coreStore.config.minBet);
+const autoTime = ref(coreStore.config.autoTime);
 
 const isMoreOptionsOpen = ref(false);
 
 // todo move new player functionality to the state
-async function newGame() {
+function newGame() {
+  const newConfig: GameConfig = {
+    deckCount: deckCount.value,
+    minBet: minBet.value,
+    autoTime: autoTime.value,
+    playerCount: playerInput.value.length, // todo maybe -1 to count without dealer
+  };
+
+  gamePlayStore.newGame(playerInput.value, newConfig);
   /*
   const players: AnyPlayer[] = playerInput.value.map((player) => ({
     ...DEFAULT_PLAYER,

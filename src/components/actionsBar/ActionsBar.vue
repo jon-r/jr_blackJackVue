@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { computed, watch } from "vue";
+import { ToRefs, computed, watch } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
 import { useAppStore } from "../../store/store.ts";
@@ -18,28 +18,26 @@ import GamePlayActions from "./GamePlayActions.vue";
 const { dispatch } = useAppStore();
 const playersStore = usePlayersStore();
 const coreStore = useCoreStore();
-const { config, activeStage }: CoreState = storeToRefs(coreStore);
+// todo remove storeToRefs
+const { config, activeStage }: ToRefs<CoreState> = storeToRefs(coreStore);
 // const props = defineProps<ActionsBarProps>();
 
 const tipsMessage = computed(() => {
-  const money = playersStore.currentPlayer?.money;
-
-  // const { gameStage, config } = store.getters;
-  const out = new Map<GameStages, string>([
-    [
-      GameStages.PlaceBets,
-      `Current money: £${money}. Min Bet: £${config.minBet}.`,
-    ],
-    [GameStages.EndRound, "Round Over. Keep on playing?"],
-    // todo bonus = more tips?
-  ]);
-
-  return out.get(activeStage) ?? "";
+  switch (activeStage.value) {
+    case GameStages.PlaceBets: {
+      const money = playersStore.currentPlayer?.money;
+      return `Current money: £${money}. Min Bet: £${config.value.minBet}.`;
+    }
+    case GameStages.EndRound:
+      return "Round Over. Keep on playing?";
+    default:
+      return "";
+  }
 });
 
 // todo can move to store (gameplay?)
 watch(
-  () => activeStage,
+  () => activeStage.value,
   function updateStageMessage(stage: GameStages) {
     const out = new Map<GameStages, string>([
       [GameStages.PlaceBets, "Please place Your bets"],
@@ -60,7 +58,7 @@ watch(
   <section class="ctrl-bar flex">
     <template v-if="playersStore.currentPlayer">
       <div class="player-info frame text-right flex-auto">
-        <h2>{{ playersStore.currentPlayer }}</h2>
+        <h2>{{ playersStore.currentPlayer.name }}</h2>
         <p>{{ tipsMessage }}</p>
       </div>
 

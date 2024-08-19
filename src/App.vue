@@ -94,12 +94,13 @@ onMounted(() => {
         <PlayingCard v-once :card="blankCard" class="stacked" />
       </div>
 
-      <PlayerFrame
-        v-if="activePlayersCount > 0"
-        v-for="player in players"
-        :key="player.index"
-        :player="player"
-      />
+      <div v-if="activePlayersCount > 0">
+        <PlayerFrame
+          v-for="player in players"
+          :key="player.index"
+          :player="player"
+        />
+      </div>
     </main>
 
     <ActionsBar />

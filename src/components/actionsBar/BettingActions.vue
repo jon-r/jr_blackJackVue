@@ -1,9 +1,20 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { computed, ref } from "vue";
+// import { storeToRefs } from "pinia";
+import {
+  /*ToRefs, */
+  computed,
+  ref,
+} from "vue";
 
-import { useAppStore } from "../../store/store.ts";
-import { CoreState, useCoreStore } from "../../stores/coreStore.ts";
+import { CHIP_VALUES } from "../../constants/gamePlay.ts";
+// import { useAppStore } from "../../store/store.ts";
+import {
+  /*CoreState,*/
+  useCoreStore,
+} from "../../stores/coreStore.ts";
+// import {usePlayersStore} from "../../stores/playersStore.ts";
+import { usePlayerBetsStore } from "../../stores/playerBetsStore.ts";
+// import { usePlayerCardsStore } from "../../stores/playerCardsStore.ts";
 import { ButtonControl } from "../../types/button.ts";
 import { Player } from "../../types/players.ts";
 import BettingChip from "../common/BettingChip.vue";
@@ -13,13 +24,15 @@ import ActionButton from "./ActionButton.vue";
 type BettingActionsProps = {
   player: Player;
 };
-
-const { dispatch } = useAppStore();
-const coreStore = useCoreStore();
-const { config }: CoreState = storeToRefs(coreStore);
 const props = defineProps<BettingActionsProps>();
 
-const chips = [5, 10, 25, 100, 500, 1000];
+// const { dispatch } = useAppStore();
+const coreStore = useCoreStore();
+// const { config }: ToRefs<CoreState> = storeToRefs(coreStore);
+// const playersStore = usePlayersStore();
+const playerBetsStore = usePlayerBetsStore();
+
+// const chips = [5, 10, 25, 100, 500, 1000];
 
 const chipsToPlace = ref<number[]>([]);
 const betToPlace = computed(() =>
@@ -30,7 +43,7 @@ const chipButtons = computed<ButtonControl[]>(() => {
   const maxChips = props.player.money - betToPlace.value;
 
   // todo tidy types
-  return chips.map((chip) => ({
+  return CHIP_VALUES.map((chip) => ({
     id: `${chip}`,
     label: `£${chip}`,
     disabled: chip > maxChips,
@@ -39,16 +52,17 @@ const chipButtons = computed<ButtonControl[]>(() => {
 });
 
 const actionButtons = computed<ButtonControl[]>(() => {
-  // const { minBet } = store.getters.config;
+  const { minBet } = coreStore.config;
+
   return [
     {
       id: "bet-submit",
       label: `Submit: £${betToPlace.value}`,
       class: "btn-good",
       icon: "publish",
-      canUse: betToPlace.value >= config.minBet,
+      canUse: betToPlace.value >= minBet,
       onClick: submitBet,
-      alert: `Min: £${config.minBet}`,
+      alert: `Min: £${minBet}`,
     },
     {
       id: "bet-undo",
@@ -68,27 +82,26 @@ function removeChip() {
   chipsToPlace.value.pop();
 }
 
-// todo move to store
 function submitBet() {
-  const idx = props.player.index;
+  // const idx = props.player.index;
 
-  const betVals = {
-    idx,
-    value: betToPlace.value,
-  };
-  const betEvent = {
-    idx,
-    type: "bet",
-    value: "addBet",
-  };
+  // const betVals = {
+  //   idx,
+  //   value: betToPlace.value,
+  // };
+  // const betEvent = {
+  //   idx,
+  //   type: "bet",
+  //   value: "addBet",
+  // };
+
+  playerBetsStore.placeBet(betToPlace.value);
 
   chipsToPlace.value = [];
-
-  // todo bonus combine these in store?
-  dispatch("setNewMessage", `${props.player.name} bets £${betToPlace.value}`);
-  dispatch("playerSetBet", betVals)
-    .then(() => dispatch("doEvent", betEvent))
-    .then(() => dispatch("nextPlayer"));
+  // dispatch("setNewMessage", `${props.player.name} bets £${betToPlace.value}`);
+  // dispatch("playerSetBet", betVals)
+  //   .then(() => dispatch("doEvent", betEvent))
+  //   .then(() => dispatch("nextPlayer"));
 }
 </script>
 
