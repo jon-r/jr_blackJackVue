@@ -2,14 +2,13 @@
 // import { storeToRefs } from "pinia";
 import { ref } from "vue";
 
+import { GameStages } from "../../constants/gamePlay.ts";
 // import { DEFAULT_PLAYER } from "../../constants/player.ts";
-import { getRandom } from "../../deckTools.ts";
-import { useAppStore } from "../../store/store.ts";
-import {
-  /*CoreState,*/
-  useCoreStore,
-} from "../../stores/coreStore.ts";
-import { useGamePlayStore } from "../../stores/gamePlayStore.ts";
+// import { useAppStore } from "../../store/store.ts";
+import { useBetActions } from "../../stores/actions/bets.ts";
+import { useGameProgressActions } from "../../stores/actions/gameProgress.ts";
+import { useCoreStore } from "../../stores/coreStore.ts";
+// import { useGamePlayStore } from "../../stores/gamePlayStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
 import { GameConfig } from "../../types/config.ts";
 import { Player, PlayerInputStub } from "../../types/players.ts";
@@ -17,13 +16,15 @@ import TextButton from "../common/TextButton.vue";
 import InputField from "./InputField.vue";
 import ModalContainer from "./ModalContainer.vue";
 
-const { dispatch } = useAppStore();
+// const { dispatch } = useAppStore();
 const coreStore = useCoreStore();
 const playersStore = usePlayersStore();
 // const {
 //   config: { deckCount, minBet, autoTime },
 // }: ToRefs<CoreState> = storeToRefs(coreStore);
-const gamePlayStore = useGamePlayStore();
+// const gamePlayStore = useGamePlayStore();
+const gameProgressActions = useGameProgressActions();
+const betActions = useBetActions();
 
 const emit = defineEmits(["closeModal"]);
 
@@ -54,7 +55,7 @@ function newGame() {
     playerCount: playerInput.value.length, // todo maybe -1 to count without dealer
   };
 
-  gamePlayStore.newGame(playerInput.value, newConfig);
+  gameProgressActions.newGame(playerInput.value, newConfig);
   /*
   const players: AnyPlayer[] = playerInput.value.map((player) => ({
     ...DEFAULT_PLAYER,
@@ -84,36 +85,47 @@ function newGame() {
   emit("closeModal");
 }
 
-// todo demo automatically (based on url query). also move this (and many actions) to the state
-async function newDemo() {
-  await newGame();
-  await autoBet(0, playerInput.value.length - 1);
+// todo demo automatically (based on url query)
+function newDemo() {
+  newGame();
+
+  betActions.placeRandomBets();
+  coreStore.jumpToStage(GameStages.DealOne);
+  // autoBet();
+  // coreStore.activePlayerId = 0;
+  // coreStore.activeStage = GameStages.DealOne;
   // await store.dispatch("nextPlayerPromise");
-  coreStore.nextPlayer();
-  coreStore.nextStage();
+  // coreStore.nextPlayer();
+  // coreStore.nextStage();
   // await store.dispatch("nextStage");
 }
 
-async function autoBet(idx: number, max: number) {
-  if (idx > max) return Promise.resolve();
-
-  const rngBet = (getRandom(10) + 1) * 100;
-
-  const betVals = {
-    idx,
-    value: rngBet,
-  };
-  const betEvent = {
-    idx,
-    type: "bet",
-    value: "addBet",
-  };
-  const nextIdx = idx + 1;
-
-  await dispatch("playerSetBet", betVals);
-  await dispatch("doEvent", betEvent);
-  await autoBet(nextIdx, max);
-}
+// function autoBet() {
+//   playersStore.players
+//     .filter((player) => !player.isDealer)
+//     .forEach((player) => {
+//       const rngBet = (getRandom(10) + 1) * 100;
+//
+//       betActions.placeBet(rngBet, player.id);
+//     });
+//
+//   // if (idx > max) return Promise.resolve();
+//
+//   // const betVals = {
+//   //   idx,
+//   //   value: rngBet,
+//   // };
+//   // const betEvent = {
+//   //   idx,
+//   //   type: "bet",
+//   //   value: "addBet",
+//   // };
+//   // const nextIdx = idx + 1;
+//   //
+//   // await dispatch("playerSetBet", betVals);
+//   // await dispatch("doEvent", betEvent);
+//   // await autoBet(nextIdx, max);
+// }
 </script>
 <template>
   <ModalContainer

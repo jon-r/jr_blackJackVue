@@ -35,10 +35,16 @@ export const useCoreStore = defineStore("core", () => {
     config.value = newConfig;
   }
 
+  function jumpToStage(stage: GameStages) {
+    activePlayerId.value = 0;
+    activeStage.value = stage;
+  }
+
   function startRound() {
     gameRound.value += 1;
-    activeStage.value = GameStages.PlaceBets;
-    activePlayerId.value = 0;
+    jumpToStage(GameStages.PlaceBets);
+    // activeStage.value = GameStages.PlaceBets;
+    // activePlayerId.value = 0;
   }
 
   function nextPlayer() {
@@ -49,6 +55,7 @@ export const useCoreStore = defineStore("core", () => {
       activePlayerId.value += 1;
     }
   }
+
   function nextStage() {
     if (activeStage.value === GameStages.EndRound) {
       gameRound.value += 1;
@@ -56,11 +63,13 @@ export const useCoreStore = defineStore("core", () => {
     } else {
       activeStage.value += 1;
     }
+    console.log(GameStages[activeStage.value]);
   }
-  function endAllPlayerTurns() {
-    activeStage.value = GameStages.DealerActions;
-    nextPlayer();
-  }
+
+  // function endAllPlayerTurns() {
+  //   activeStage.value = GameStages.DealerActions;
+  //   nextPlayer();
+  // }
 
   return {
     config,
@@ -73,7 +82,8 @@ export const useCoreStore = defineStore("core", () => {
     sendMessage,
     startRound,
     nextPlayer,
+    jumpToStage,
     nextStage,
-    endAllPlayerTurns,
+    // endAllPlayerTurns,
   };
 });

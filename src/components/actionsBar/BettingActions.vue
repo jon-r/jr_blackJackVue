@@ -7,13 +7,14 @@ import {
 } from "vue";
 
 import { CHIP_VALUES } from "../../constants/gamePlay.ts";
+import { useBetActions } from "../../stores/actions/bets.ts";
 // import { useAppStore } from "../../store/store.ts";
 import {
   /*CoreState,*/
   useCoreStore,
 } from "../../stores/coreStore.ts";
 // import {usePlayersStore} from "../../stores/playersStore.ts";
-import { usePlayerBetsStore } from "../../stores/playerBetsStore.ts";
+// import { usePlayerBetsStore } from "../../stores/playerBetsStore.ts";
 // import { usePlayerCardsStore } from "../../stores/playerCardsStore.ts";
 import { ButtonControl } from "../../types/button.ts";
 import { Player } from "../../types/players.ts";
@@ -30,7 +31,7 @@ const props = defineProps<BettingActionsProps>();
 const coreStore = useCoreStore();
 // const { config }: ToRefs<CoreState> = storeToRefs(coreStore);
 // const playersStore = usePlayersStore();
-const playerBetsStore = usePlayerBetsStore();
+const betActions = useBetActions();
 
 // const chips = [5, 10, 25, 100, 500, 1000];
 
@@ -95,7 +96,7 @@ function submitBet() {
   //   value: "addBet",
   // };
 
-  playerBetsStore.placeBet(betToPlace.value);
+  betActions.placeBet(betToPlace.value);
 
   chipsToPlace.value = [];
   // dispatch("setNewMessage", `${props.player.name} bets £${betToPlace.value}`);

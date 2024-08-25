@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch, watchEffect } from "vue";
 
 import SvgStatic from "./components/SvgStatic.vue";
 import ActionsBar from "./components/actionsBar/ActionsBar.vue";
@@ -9,6 +9,8 @@ import PlayingCard from "./components/common/PlayingCard.vue";
 import TextButton from "./components/common/TextButton.vue";
 import OptionsModal from "./components/options/OptionsModal.vue";
 import PlayerFrame from "./components/playerFrame/PlayerFrame.vue";
+import { GameStages } from "./constants/gamePlay.ts";
+import { useGameProgressActions } from "./stores/actions/gameProgress.ts";
 // import { useAppStore } from "./store/store.ts";
 import { Card } from "./types/card.ts";
 import { CoreState, useCoreStore } from "./stores/coreStore.ts";
@@ -19,10 +21,12 @@ import { GameEvent } from "./types/state.ts";
 // const store = useAppStore();
 
 const playersStore = usePlayersStore();
-const { players, activePlayersCount }: PlayersState = storeToRefs(playersStore);
+// const { players, activePlayersCount }: PlayersState = storeToRefs(playersStore);
 const coreStore = useCoreStore();
 const { notifications }: CoreState = storeToRefs(coreStore);
 const deckStore = useDeckStore();
+
+const gameProgress = useGameProgressActions();
 
 const showOptions = ref(true);
 // const messages = ref<{ text: string; idx: number }[]>([]);
@@ -73,6 +77,19 @@ onMounted(() => {
 //     if (messages.value.length > maxMessages) messages.value.pop();
 //   },
 // );
+
+watch(
+  () => coreStore.activeStage,
+  () => {
+    switch (coreStore.activeStage) {
+      case GameStages.DealOne:
+        console.log("deal one");
+        return gameProgress.dealFirstCards();
+      case GameStages.DealTwo:
+        return gameProgress.dealSecondCards();
+    }
+  },
+);
 </script>
 
 <template>
@@ -94,9 +111,9 @@ onMounted(() => {
         <PlayingCard v-once :card="blankCard" class="stacked" />
       </div>
 
-      <div v-if="activePlayersCount > 0">
+      <div v-if="playersStore.activePlayersCount > 0">
         <PlayerFrame
-          v-for="player in players"
+          v-for="player in playersStore.players"
           :key="player.index"
           :player="player"
         />

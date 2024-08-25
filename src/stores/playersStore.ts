@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
 import { DEALER, DEFAULT_PLAYER } from "../constants/player.ts";
+import { wait } from "../helpers/time.ts";
 import { Player, PlayerInputStub } from "../types/players.ts";
 import { useCoreStore } from "./coreStore.ts";
 
@@ -30,6 +31,7 @@ function createDefaultState(): PlayersState {
 
 export const usePlayersStore = defineStore("players", () => {
   const defaultState = createDefaultState();
+
   const coreStore = useCoreStore();
 
   const players = ref(defaultState.players);
@@ -59,6 +61,17 @@ export const usePlayersStore = defineStore("players", () => {
     players.value = newPlayers;
   }
 
+  async function dealCard() {
+    const targetPlayer = players.value[coreStore.activePlayerId];
+
+    if (!targetPlayer) {
+      return;
+    }
+
+    console.log(`deal to ${targetPlayer.name}`);
+    await wait(300);
+  }
+
   return {
     players,
     dealer,
@@ -66,5 +79,6 @@ export const usePlayersStore = defineStore("players", () => {
     activePlayersCount,
 
     resetPlayers,
+    dealCard,
   };
 });
