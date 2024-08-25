@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
+// import { storeToRefs } from "pinia";
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
 import { useAppStore } from "../../store/store.ts";
-import { CoreState, useCoreStore } from "../../stores/coreStore.ts";
+import { useCoreStore } from "../../stores/coreStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
 import { Position } from "../../types/animations.ts";
 import { Player } from "../../types/players.ts";

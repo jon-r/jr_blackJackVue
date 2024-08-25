@@ -11,7 +11,7 @@ export type PlayersState = {
 };
 
 const defaultNames = ["Aaron", "Beth", "Chris", "Denise", "Ethan"];
-function createDefaultState(): PlayersState {
+function createDefaultPlayers(): Player[] {
   // todo maybe can move default pLayer here?
   const players: Player[] = defaultNames.map((name, index) => ({
     ...DEFAULT_PLAYER,
@@ -26,15 +26,15 @@ function createDefaultState(): PlayersState {
   };
   players.push(dealer);
 
-  return { players };
+  return players;
 }
 
 export const usePlayersStore = defineStore("players", () => {
-  const defaultState = createDefaultState();
+  // const defaultState = createDefaultPlayers();
 
   const coreStore = useCoreStore();
 
-  const players = ref(defaultState.players);
+  const players = ref(createDefaultPlayers());
 
   const dealer = computed(
     () => players.value.find((player) => player.isDealer) as Player,

@@ -4,14 +4,6 @@ import { ref } from "vue";
 import { GameStages } from "../constants/gamePlay.ts";
 import { GameConfig } from "../types/config.ts";
 
-export type CoreState = {
-  config: GameConfig;
-  gameRound: number;
-  activeStage: GameStages;
-  activePlayerId: number;
-  notifications: string[];
-};
-
 const MAX_MESSAGES = 5;
 
 export const useCoreStore = defineStore("core", () => {

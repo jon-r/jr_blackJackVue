@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { computed, onMounted, ref, watch, watchEffect } from "vue";
+// import { storeToRefs } from "pinia";
+import { onMounted, ref, watch } from "vue";
 
 import SvgStatic from "./components/SvgStatic.vue";
 import ActionsBar from "./components/actionsBar/ActionsBar.vue";
@@ -13,17 +13,18 @@ import { GameStages } from "./constants/gamePlay.ts";
 import { useGameProgressActions } from "./stores/actions/gameProgress.ts";
 // import { useAppStore } from "./store/store.ts";
 import { Card } from "./types/card.ts";
-import { CoreState, useCoreStore } from "./stores/coreStore.ts";
+import { useCoreStore } from "./stores/coreStore.ts";
 import { useDeckStore } from "./stores/deckStore.ts";
-import { PlayersState, usePlayersStore } from "./stores/playersStore.ts";
-import { GameEvent } from "./types/state.ts";
+import { usePlayersStore } from "./stores/playersStore.ts";
+
+// import { GameEvent } from "./types/state.ts";
 
 // const store = useAppStore();
 
 const playersStore = usePlayersStore();
 // const { players, activePlayersCount }: PlayersState = storeToRefs(playersStore);
 const coreStore = useCoreStore();
-const { notifications }: CoreState = storeToRefs(coreStore);
+// const { notifications }: CoreState = storeToRefs(coreStore);
 const deckStore = useDeckStore();
 
 const gameProgress = useGameProgressActions();
@@ -102,7 +103,11 @@ watch(
 
     <main class="blackjack-table flex-auto">
       <TransitionGroup class="announcement frame" name="messages" tag="ul">
-        <li class="message" v-for="(msg, i) in notifications" :key="i">
+        <li
+          class="message"
+          v-for="(msg, i) in coreStore.notifications"
+          :key="i"
+        >
           {{ msg }}
         </li>
       </TransitionGroup>
