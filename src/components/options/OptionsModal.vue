@@ -28,7 +28,12 @@ const betActions = useBetActions();
 
 const emit = defineEmits(["closeModal"]);
 
+const defaultNames = ["Aaron", "Beth", "Chris", "Denise", "Ethan"];
 function setupPlayerInput(players: Player[]): PlayerInputStub[] {
+  if (!players.length) {
+    return defaultNames.map((name) => ({ name }));
+  }
+
   const playersWithoutDealer = players
     .filter((player) => !player.isDealer)
     .map((player) => ({ name: player.name }));

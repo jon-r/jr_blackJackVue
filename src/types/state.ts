@@ -18,7 +18,7 @@ export type AppState = {
 
   gameActivePlayer: number;
 
-  dealer: Player; // todo use the 'isDealer' to split types?
+  // dealer: Player; // todo use the 'isDealer' to split types?
   players: Player[];
   // activePlayerCount: number;
 

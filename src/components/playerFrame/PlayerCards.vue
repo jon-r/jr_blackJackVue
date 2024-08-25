@@ -121,7 +121,7 @@ function leave(el: HTMLElement, done: () => void) {
       appear
       name="cards"
       tag="div"
-      @enter="enter"
+      @before-enter="enter"
       @after-enter="enterTo"
       @leave="leave"
     >

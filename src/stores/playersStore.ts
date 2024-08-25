@@ -1,49 +1,66 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-import { DEALER, DEFAULT_PLAYER } from "../constants/player.ts";
+import { CardSuits } from "../constants/cards.ts";
+// import { EMPTY_HAND, UNKNOWN_CARD } from "../constants/cards.ts";
+// import { GameStages } from "../constants/gamePlay.ts";
+// import { DEALER, DEFAULT_PLAYER } from "../constants/player.ts";
 import { wait } from "../helpers/time.ts";
+import { Hand } from "../types/card.ts";
 import { Player, PlayerInputStub } from "../types/players.ts";
 import { useCoreStore } from "./coreStore.ts";
+import { useDeckStore } from "./deckStore.ts";
 
-export type PlayersState = {
-  players: Player[];
-};
+// export type PlayersState = {
+//   players: Player[];
+// };
 
-const defaultNames = ["Aaron", "Beth", "Chris", "Denise", "Ethan"];
-function createDefaultPlayers(): Player[] {
-  // todo maybe can move default pLayer here?
-  const players: Player[] = defaultNames.map((name, index) => ({
-    ...DEFAULT_PLAYER,
+export function createEmptyHand(): Hand {
+  return { cards: [], revealed: 0 };
+}
+export function createPlayer(name: string, index: number) {
+  return {
     index,
     name,
-  }));
-  const dealer: Player = {
-    ...DEFAULT_PLAYER,
-    name: "Dealer",
-    index: 5,
-    isDealer: true,
+    money: 1000,
+    firstBet: 0,
+    isDealer: false,
+    score: 0,
+    inGame: true,
+    peeked: null,
+    hands: [createEmptyHand()],
+    activeHandId: 0,
   };
-  players.push(dealer);
-
-  return players;
 }
 
+// const defaultNames = ["Aaron", "Beth", "Chris", "Denise", "Ethan"];
+// function createDefaultPlayers(): Player[] {
+//   const players: Player[] = defaultNames.map(createPlayer);
+//   const dealer: Player = {
+//     ...createPlayer("Dealer", players.length),
+//     isDealer: true,
+//   };
+//   players.push(dealer);
+//
+//   return players;
+// }
+
 export const usePlayersStore = defineStore("players", () => {
-  // const defaultState = createDefaultPlayers();
-
   const coreStore = useCoreStore();
+  const deckStore = useDeckStore();
 
-  const players = ref(createDefaultPlayers());
+  const players = ref<Player[]>([]);
 
   const dealer = computed(
     () => players.value.find((player) => player.isDealer) as Player,
   );
+  // const realPlayers = computed(() => players.value.filter((player) => !player.isDealer));
 
   const activePlayersCount = computed(
     () =>
-      players.value.filter((player) => player.money > coreStore.config.minBet)
-        .length - 1,
+      players.value.filter(
+        (player) => !player.isDealer && player.money > coreStore.config.minBet,
+      ).length,
   );
 
   const currentPlayer = computed(() =>
@@ -51,25 +68,50 @@ export const usePlayersStore = defineStore("players", () => {
   );
 
   function resetPlayers(stubs: PlayerInputStub[]) {
-    const newPlayers: Player[] = stubs.map(({ name }, index) => ({
-      ...DEFAULT_PLAYER,
-      name,
-      index,
-    }));
-    newPlayers.push({ ...DEALER, index: newPlayers.length });
+    const newPlayers: Player[] = stubs.map(({ name }, index) =>
+      createPlayer(name, index),
+    );
+    newPlayers.push({
+      ...createPlayer("Dealer", newPlayers.length),
+      isDealer: true,
+    });
 
     players.value = newPlayers;
   }
 
-  async function dealCard() {
-    const targetPlayer = players.value[coreStore.activePlayerId];
+  // function addPlayerHand() {
+  //   players.value[coreStore.activePlayerId]?.hands.push(EMPTY_HAND);
+  // }
 
-    if (!targetPlayer) {
+  async function takeCard() {
+    const targetPlayer = players.value[coreStore.activePlayerId];
+    const targetHand = targetPlayer?.hands[targetPlayer.activeHandId];
+
+    console.log({ targetPlayer, targetHand });
+
+    if (!targetHand) {
+      return;
+    }
+    //
+    console.log(`deal to ${currentPlayer.value?.name}`);
+
+    targetHand.cards.push([0, CardSuits.Blank]);
+    // players.value[coreStore.activePlayerId]?.hands[targetHandId]?.cards.push(
+    //   UNKNOWN_CARD,
+    // );
+    await wait(coreStore.config.autoTime);
+  }
+
+  function revealCard() {
+    const targetPlayer = players.value[coreStore.activePlayerId];
+    const targetHand = targetPlayer?.hands[targetPlayer.activeHandId];
+
+    if (!targetHand) {
       return;
     }
 
-    console.log(`deal to ${targetPlayer.name}`);
-    await wait(300);
+    targetHand.cards[targetHand.revealed] = deckStore.drawCard();
+    targetHand.revealed += 1;
   }
 
   return {
@@ -79,6 +121,8 @@ export const usePlayersStore = defineStore("players", () => {
     activePlayersCount,
 
     resetPlayers,
-    dealCard,
+    // addPlayerHand,
+    takeCard,
+    revealCard,
   };
 });

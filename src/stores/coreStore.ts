@@ -9,7 +9,7 @@ const MAX_MESSAGES = 5;
 export const useCoreStore = defineStore("core", () => {
   const config = ref<GameConfig>({
     minBet: 100,
-    autoTime: 250,
+    autoTime: 500,
     deckCount: 6,
     playerCount: 5,
   });

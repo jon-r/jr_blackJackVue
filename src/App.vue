@@ -27,7 +27,7 @@ const coreStore = useCoreStore();
 // const { notifications }: CoreState = storeToRefs(coreStore);
 const deckStore = useDeckStore();
 
-const gameProgress = useGameProgressActions();
+const gameProgressActions = useGameProgressActions();
 
 const showOptions = ref(true);
 // const messages = ref<{ text: string; idx: number }[]>([]);
@@ -85,9 +85,9 @@ watch(
     switch (coreStore.activeStage) {
       case GameStages.DealOne:
         console.log("deal one");
-        return gameProgress.dealFirstCards();
+        return gameProgressActions.dealFirstCards();
       case GameStages.DealTwo:
-        return gameProgress.dealSecondCards();
+        return gameProgressActions.dealSecondCards();
     }
   },
 );

@@ -20,13 +20,17 @@ export function useGameProgressActions() {
 
   async function dealFirstCards() {
     while (coreStore.activeStage === GameStages.DealOne) {
-      await playersStore.dealCard();
+      await playersStore.takeCard();
+      playersStore.revealCard();
+
       coreStore.nextPlayer();
     }
   }
+
   async function dealSecondCards() {
     while (coreStore.activeStage === GameStages.DealTwo) {
-      await playersStore.dealCard();
+      await playersStore.takeCard();
+      // todo dealer may peek
       coreStore.nextPlayer();
     }
   }

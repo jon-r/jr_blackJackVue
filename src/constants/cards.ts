@@ -1,5 +1,3 @@
-import { Hand, RawCard } from "../types/card.ts";
-
 export enum FaceValues {
   Ace = 1,
   Jack = 11,
@@ -25,17 +23,17 @@ export const SUIT_LIST = [
   CardSuits.Hearts,
   CardSuits.Diamonds,
   CardSuits.Spades,
-  CardSuits.Blank,
+  CardSuits.Clubs,
 ] as const;
 
 export const SUITS_COUNT = SUIT_LIST.length;
 export const CARDS_PER_SUIT = 13;
 
-export const UNKNOWN_CARD: RawCard = [0, CardSuits.Blank] as const;
+// export const UNKNOWN_CARD: RawCard = [0, CardSuits.Blank] as const;
 
 export const FACE_SCORE = 10;
 export const ACE_SCORE = 11;
 export const BLACKJACK_SCORE = 21;
 export const DEALER_STAND_SCORE = 17;
 
-export const EMPTY_HAND: Hand = { cards: [], revealed: 0 };
+// export const EMPTY_HAND: Hand = { cards: [], revealed: 0 };
