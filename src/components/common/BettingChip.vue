@@ -3,13 +3,14 @@ import { computed } from "vue";
 
 type BettingChipProps = {
   value: string | number;
-  isStacked?: boolean
-}
+  isStacked?: boolean;
+};
 
-const props = defineProps<BettingChipProps>()
-const viewBox = computed(() => props.isStacked ? '0 0 100 60' : '0 0 100 100')
-const href = computed(() => props.isStacked ? '#chip-tilt' : '#chip');
-
+const props = defineProps<BettingChipProps>();
+const viewBox = computed(() =>
+  props.isStacked ? "0 0 100 60" : "0 0 100 100",
+);
+const href = computed(() => (props.isStacked ? "#chip-tilt" : "#chip"));
 </script>
 <!--todo maybe can redo this so just styles in one element? -->
 <template>

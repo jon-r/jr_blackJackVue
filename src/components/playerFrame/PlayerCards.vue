@@ -106,20 +106,14 @@ function leave(el: HTMLElement, done: () => void) {
       @after-enter="enterTo"
       @leave="leave"
     >
-<!--      todo remove card-outer? fully revisit how cards style works -->
-      <PlayingCard v-for="(card, idx) in cards" :key="idx" :card="card" :data-index="idx" class="card-outer" />
-
-<!--      <div-->
-<!--        v-for="(card, idx) in cards"-->
-<!--        class="card-outer"-->
-<!--        :class="card.suit"-->
-<!--        :key="idx"-->
-<!--        :data-index="idx"-->
-<!--      >-->
-<!--        <div class="card shadow-light" :class="card.suit">-->
-<!--          <span>{{ card.face }}</span>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!-- FIXME fully revisit how cards + chips style works -->
+      <PlayingCard
+        v-for="(card, idx) in cards"
+        :key="idx"
+        :card="card"
+        :data-index="idx"
+        class="card-outer"
+      />
     </TransitionGroup>
   </div>
 </template>

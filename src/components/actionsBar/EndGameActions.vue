@@ -4,8 +4,8 @@ import { computed } from "vue";
 import { EndGameActionTypes } from "../../constants/gamePlay.ts";
 import { useAppStore } from "../../store/store.ts";
 import { ButtonControl } from "../../types/button.ts";
-import ActionButton from "./ActionButton.vue";
 import MdIcon from "../common/MdIcon.vue";
+import ActionButton from "./ActionButton.vue";
 
 const store = useAppStore();
 

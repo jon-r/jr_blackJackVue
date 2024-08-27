@@ -175,22 +175,12 @@ function emitMoneyChange(value: number) {
       @enter="enter"
       @leave="leave"
     >
-<!--      <li-->
-<!--        v-for="(chip, idx) in chips"-->
-<!--        :class="'chip-' + chip"-->
-<!--        :key="idx"-->
-<!--        :data-key="idx"-->
-<!--      >-->
-        <BettingChip
-          v-for="(chip, idx) in chips"
-          :key="idx"
-          :value="chip"
-          is-stacked
-        />
-<!--        <svg viewBox="0 0 100 60">
-          <use class="token" xlink:href="#chip-tilt" />
-        </svg>-->
-<!--      </li>-->
+      <BettingChip
+        v-for="(chip, idx) in chips"
+        :key="idx"
+        :value="chip"
+        is-stacked
+      />
     </TransitionGroup>
 
     <span v-show="bet > 0">Bet: £{{ bet }}</span>

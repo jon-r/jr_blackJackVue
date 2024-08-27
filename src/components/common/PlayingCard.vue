@@ -3,8 +3,8 @@ import { Card } from "../../types/card.ts";
 
 type PlayingCardProps = {
   card: Card;
-}
-const props = defineProps<PlayingCardProps>()
+};
+const props = defineProps<PlayingCardProps>();
 </script>
 
 <template>

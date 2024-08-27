@@ -3,14 +3,14 @@ import { computed, onMounted, ref, watch } from "vue";
 
 import SvgStatic from "./components/SvgStatic.vue";
 import ActionsBar from "./components/actionsBar/ActionsBar.vue";
+import MdIcon from "./components/common/MdIcon.vue";
+import PlayingCard from "./components/common/PlayingCard.vue";
+import TextButton from "./components/common/TextButton.vue";
 import OptionsModal from "./components/options/OptionsModal.vue";
 import PlayerFrame from "./components/playerFrame/PlayerFrame.vue";
 import { useAppStore } from "./store/store.ts";
-import { GameEvent } from "./types/state.ts";
-import PlayingCard from "./components/common/PlayingCard.vue";
 import { Card } from "./types/card.ts";
-import TextButton from "./components/common/TextButton.vue";
-import MdIcon from "./components/common/MdIcon.vue";
+import { GameEvent } from "./types/state.ts";
 
 const store = useAppStore();
 
@@ -21,10 +21,10 @@ const messageIndex = ref(0);
 const shoeRef = ref<HTMLDivElement>();
 
 const blankCard: Card = {
-  suit: 'blank',
+  suit: "blank",
   face: 0,
   score: 0,
-}
+};
 
 const activePlayer = computed(
   () => store.getters.players[store.getters.gameActivePlayer],
@@ -68,7 +68,6 @@ watch(
 <template>
   <div class="container flex flex-column">
     <TextButton class="modal-toggle" @click="showOptions = true">
-<!--      <i class="material-symbols-outlined">menu</i>-->
       <MdIcon name="menu" />
     </TextButton>
 

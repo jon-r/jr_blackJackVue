@@ -4,9 +4,9 @@ import { computed, ref } from "vue";
 import { useAppStore } from "../../store/store.ts";
 import { ButtonControl } from "../../types/button.ts";
 import { Player } from "../../types/players.ts";
-import ActionButton from "./ActionButton.vue";
 import BettingChip from "../common/BettingChip.vue";
 import MdIcon from "../common/MdIcon.vue";
+import ActionButton from "./ActionButton.vue";
 
 type BettingActionsProps = {
   player: Player;
@@ -29,12 +29,8 @@ const chipButtons = computed<ButtonControl[]>(() => {
   return chips.map((chip) => ({
     id: `${chip}`,
     label: `£${chip}`,
-
-    // className: `betting-chip chip-${chip}`,
-    // svg: `${chip}`, //"#chip",
     disabled: chip > maxChips,
     onClick: () => addChip(chip),
-    // chipValue: chip <= maxChips ? chip : 0,
   }));
 });
 
