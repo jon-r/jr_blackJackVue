@@ -439,6 +439,7 @@ h5 {
   color: #828282;
 }
 
+/* todo handle this style better? only affects md-icons */
 .ctrl-btn-icon {
   display: block;
   margin: auto;

@@ -48,7 +48,7 @@ function nextRound() {
       v-bind="actionButton"
       @click="actionButton.onClick"
     >
-      <MdIcon v-if="actionButton.icon" :name="actionButton.icon" />
+      <MdIcon class="ctrl-btn-icon" :name="actionButton.icon!" />
     </ActionButton>
   </section>
 </template>

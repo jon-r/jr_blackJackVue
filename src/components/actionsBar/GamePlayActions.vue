@@ -90,7 +90,7 @@ function handleAction(action: GamePlayActionTypes) {
       v-bind="actionButton"
       @click="() => handleAction(actionButton.label as GamePlayActionTypes)"
     >
-      <MdIcon v-if="actionButton.icon" :name="actionButton.icon" />
+      <MdIcon class="ctrl-btn-icon" :name="actionButton.icon!" />
     </ActionButton>
   </section>
 </template>

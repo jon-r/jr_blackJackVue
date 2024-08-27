@@ -75,11 +75,11 @@ watch(
     <OptionsModal v-if="showOptions" @close-modal="showOptions = false" />
 
     <main class="blackjack-table flex-auto">
-      <transition-group class="announcement frame" name="messages" tag="ul">
+      <TransitionGroup class="announcement frame" name="messages" tag="ul">
         <li class="message" v-for="msg in messages" :key="msg.idx">
           {{ msg.text }}
         </li>
-      </transition-group>
+      </TransitionGroup>
 
       <div class="deck" ref="shoeRef">
         <PlayingCard v-once :card="blankCard" class="stacked" />

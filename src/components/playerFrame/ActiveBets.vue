@@ -166,7 +166,7 @@ function emitMoneyChange(value: number) {
 </script>
 <template>
   <div class="player-bet flex">
-    <transition-group
+    <TransitionGroup
       class="chip-stack flex"
       name="bets"
       tag="ul"
@@ -191,7 +191,7 @@ function emitMoneyChange(value: number) {
           <use class="token" xlink:href="#chip-tilt" />
         </svg>-->
 <!--      </li>-->
-    </transition-group>
+    </TransitionGroup>
 
     <span v-show="bet > 0">Bet: £{{ bet }}</span>
   </div>
