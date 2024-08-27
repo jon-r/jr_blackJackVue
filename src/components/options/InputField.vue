@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import MdIcon from "../common/MdIcon.vue";
+
 type InputProps = {
   inputId: string;
   label: string;
@@ -22,7 +24,7 @@ const model = defineModel();
       :min="props.min"
     />
     <label :for="props.inputId">
-      <i class="material-symbols-outlined">{{ props.icon }}</i>
+      <MdIcon :name="props.icon" />
       {{ props.label }}
     </label>
   </div>

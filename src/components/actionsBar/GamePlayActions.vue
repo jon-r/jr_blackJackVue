@@ -5,7 +5,8 @@ import { GamePlayActionTypes } from "../../constants/gamePlay.ts";
 import { useAppStore } from "../../store/store.ts";
 import { ButtonControl } from "../../types/button.ts";
 import { Player } from "../../types/players.ts";
-import ButtonBase from "./ButtonBase.vue";
+import MdIcon from "../common/MdIcon.vue";
+import ActionButton from "./ActionButton.vue";
 
 type GamePlayActionsProps = {
   player: Player;
@@ -25,33 +26,31 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "play-hit",
       label: GamePlayActionTypes.Hit,
-      canUse: true,
       icon: "touch_app",
     },
     {
       id: "play-stand",
       label: GamePlayActionTypes.Stand,
-      canUse: true,
       icon: "pan_tool",
     },
     {
       id: "play-split",
       label: GamePlayActionTypes.Split,
-      canUse: canAfford && canSplit,
+      disabled: !(canAfford && canSplit),
       icon: "call_split",
       alert: `- £${firstBet}`,
     },
     {
       id: "play-surrender",
       label: GamePlayActionTypes.Surrender,
-      canUse: isFirstAction,
+      disabled: !isFirstAction,
       icon: "flag",
       alert: `+ £${firstBet / 2}`,
     },
     {
       id: "play-double",
       label: GamePlayActionTypes.Double,
-      canUse: canAfford && isFirstAction,
+      disabled: !(canAfford && isFirstAction),
       icon: "monetization_on",
       alert: `- £${firstBet}`,
     },
@@ -85,11 +84,13 @@ function handleAction(action: GamePlayActionTypes) {
 </script>
 <template>
   <section class="ctrl-menu frame flex flex-wrap">
-    <ButtonBase
+    <ActionButton
       v-for="actionButton in actionButtons"
       :key="actionButton.id"
       v-bind="actionButton"
       @click="() => handleAction(actionButton.label as GamePlayActionTypes)"
-    />
+    >
+      <MdIcon class="ctrl-btn-icon" :name="actionButton.icon!" />
+    </ActionButton>
   </section>
 </template>

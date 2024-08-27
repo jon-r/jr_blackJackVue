@@ -6,6 +6,7 @@ import { getRandom } from "../../deckTools.ts";
 import { useAppStore } from "../../store/store.ts";
 import { GameConfig } from "../../types/config.ts";
 import { AnyPlayer, Player, PlayerInputStub } from "../../types/players.ts";
+import TextButton from "../common/TextButton.vue";
 import InputField from "./InputField.vue";
 import ModalContainer from "./ModalContainer.vue";
 
@@ -103,9 +104,12 @@ async function autoBet(idx: number, max: number) {
 
       <fieldset class="options-group">
         <template v-if="isMoreOptionsOpen">
-          <h4 class="options-title frame" @click="isMoreOptionsOpen = false">
-            Less Options
-            <i class="material-symbols-outlined text-btn">expand_less</i>
+          <h4 class="options-title">
+            <TextButton @click.prevent="isMoreOptionsOpen = false">
+              Less Options
+
+              <MdIcon name="expand_less" />
+            </TextButton>
           </h4>
 
           <InputField
@@ -131,18 +135,19 @@ async function autoBet(idx: number, max: number) {
           />
         </template>
         <template v-else>
-          <h4 class="options-title frame" @click="isMoreOptionsOpen = true">
-            More Options
-            <i class="material-symbols-outlined text-btn">expand_more</i>
+          <h4 class="options-title">
+            <TextButton @click.prevent="isMoreOptionsOpen = true">
+              More Options
+
+              <MdIcon name="expand_more" />
+            </TextButton>
           </h4>
         </template>
       </fieldset>
 
       <div class="modal-footer frame-thick text-right">
-        <button type="submit" class="text-btn options-submit">NEW GAME</button>
-        <button type="button" class="text-btn options-submit" @click="newDemo">
-          SKIP BETS (DEMO)
-        </button>
+        <TextButton type="submit">NEW GAME</TextButton>
+        <TextButton @click.prevent="newDemo">SKIP BETS (DEMO)</TextButton>
       </div>
     </form>
   </ModalContainer>

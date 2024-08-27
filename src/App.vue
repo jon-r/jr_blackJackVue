@@ -3,9 +3,13 @@ import { computed, onMounted, ref, watch } from "vue";
 
 import SvgStatic from "./components/SvgStatic.vue";
 import ActionsBar from "./components/actionsBar/ActionsBar.vue";
+import MdIcon from "./components/common/MdIcon.vue";
+import PlayingCard from "./components/common/PlayingCard.vue";
+import TextButton from "./components/common/TextButton.vue";
 import OptionsModal from "./components/options/OptionsModal.vue";
 import PlayerFrame from "./components/playerFrame/PlayerFrame.vue";
 import { useAppStore } from "./store/store.ts";
+import { Card } from "./types/card.ts";
 import { GameEvent } from "./types/state.ts";
 
 const store = useAppStore();
@@ -15,6 +19,12 @@ const messages = ref<{ text: string; idx: number }[]>([]);
 const messageIndex = ref(0);
 
 const shoeRef = ref<HTMLDivElement>();
+
+const blankCard: Card = {
+  suit: "blank",
+  face: 0,
+  score: 0,
+};
 
 const activePlayer = computed(
   () => store.getters.players[store.getters.gameActivePlayer],
@@ -57,21 +67,21 @@ watch(
 
 <template>
   <div class="container flex flex-column">
-    <button class="text-btn modal-toggle" @click="showOptions = true">
-      <i class="material-symbols-outlined">menu</i>
-    </button>
+    <TextButton class="modal-toggle" @click="showOptions = true">
+      <MdIcon name="menu" />
+    </TextButton>
 
     <OptionsModal v-if="showOptions" @close-modal="showOptions = false" />
 
     <main class="blackjack-table flex-auto">
-      <transition-group class="announcement frame" name="messages" tag="ul">
+      <TransitionGroup class="announcement frame" name="messages" tag="ul">
         <li class="message" v-for="msg in messages" :key="msg.idx">
           {{ msg.text }}
         </li>
-      </transition-group>
+      </TransitionGroup>
 
-      <div v-once class="deck" ref="shoeRef">
-        <div class="card blank stacked"></div>
+      <div class="deck" ref="shoeRef">
+        <PlayingCard v-once :card="blankCard" class="stacked" />
       </div>
 
       <PlayerFrame

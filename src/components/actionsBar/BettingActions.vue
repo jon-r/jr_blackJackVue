@@ -4,7 +4,9 @@ import { computed, ref } from "vue";
 import { useAppStore } from "../../store/store.ts";
 import { ButtonControl } from "../../types/button.ts";
 import { Player } from "../../types/players.ts";
-import ButtonBase from "./ButtonBase.vue";
+import BettingChip from "../common/BettingChip.vue";
+import MdIcon from "../common/MdIcon.vue";
+import ActionButton from "./ActionButton.vue";
 
 type BettingActionsProps = {
   player: Player;
@@ -23,12 +25,11 @@ const betToPlace = computed(() =>
 const chipButtons = computed<ButtonControl[]>(() => {
   const maxChips = props.player.money - betToPlace.value;
 
+  // todo tidy types
   return chips.map((chip) => ({
-    id: `bet-${chip}`,
+    id: `${chip}`,
     label: `£${chip}`,
-    className: `betting-chip chip-${chip}`,
-    svg: "#chip",
-    canUse: chip <= maxChips,
+    disabled: chip > maxChips,
     onClick: () => addChip(chip),
   }));
 });
@@ -39,16 +40,16 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "bet-submit",
       label: `Submit: £${betToPlace.value}`,
-      className: "btn-good",
+      class: "btn-good",
       icon: "publish",
-      canUse: betToPlace.value >= minBet,
+      disabled: betToPlace.value < minBet,
       onClick: submitBet,
       alert: `Min: £${minBet}`,
     },
     {
       id: "bet-undo",
       label: "Undo",
-      className: "btn-alert",
+      class: "btn-alert",
       icon: "undo",
       canUse: betToPlace.value > 0,
       onClick: removeChip,
@@ -91,18 +92,22 @@ function submitBet() {
 
 <template>
   <section class="ctrl-menu frame flex flex-wrap">
-    <ButtonBase
+    <ActionButton
       v-for="chipButton in chipButtons"
       :key="chipButton.id"
       v-bind="chipButton"
       @click="chipButton.onClick"
-    />
+    >
+      <BettingChip :value="chipButton.disabled ? 0 : chipButton.id" />
+    </ActionButton>
 
-    <ButtonBase
+    <ActionButton
       v-for="actionButton in actionButtons"
       :key="actionButton.id"
       v-bind="actionButton"
       @click="actionButton.onClick"
-    />
+    >
+      <MdIcon class="ctrl-btn-icon" :name="actionButton.icon!" />
+    </ActionButton>
   </section>
 </template>

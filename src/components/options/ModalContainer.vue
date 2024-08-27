@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import MdIcon from "../common/MdIcon.vue";
+import TextButton from "../common/TextButton.vue";
+
 type ModalContainerProps = {
   title: string;
 };
@@ -14,12 +17,9 @@ const props = defineProps<ModalContainerProps>();
       <header class="modal-header frame-thick">
         <h3 class="modal-title">{{ props.title }}</h3>
 
-        <button
-          class="text-btn modal-toggle"
-          @click="() => $emit('closeModal')"
-        >
-          <i class="material-symbols-outlined">close</i>
-        </button>
+        <TextButton class="modal-toggle" @click="() => $emit('closeModal')">
+          <MdIcon name="close" />
+        </TextButton>
       </header>
 
       <slot />

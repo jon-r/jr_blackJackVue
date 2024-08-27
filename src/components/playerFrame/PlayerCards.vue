@@ -5,6 +5,7 @@ import { setPos, transformJiggle } from "../../animationTools.ts";
 import { useAppStore } from "../../store/store.ts";
 import { Position } from "../../types/animations.ts";
 import { Card } from "../../types/card.ts";
+import PlayingCard from "../common/PlayingCard.vue";
 
 type PlayerCardsProps = {
   cards: Card[];
@@ -97,7 +98,7 @@ function leave(el: HTMLElement, done: () => void) {
       {{ score }} {{ scoreString }}
     </div>
 
-    <transition-group
+    <TransitionGroup
       appear
       name="cards"
       tag="div"
@@ -105,17 +106,14 @@ function leave(el: HTMLElement, done: () => void) {
       @after-enter="enterTo"
       @leave="leave"
     >
-      <div
+      <!-- FIXME fully revisit how cards + chips style works -->
+      <PlayingCard
         v-for="(card, idx) in cards"
-        class="card-outer"
-        :class="card.suit"
         :key="idx"
+        :card="card"
         :data-index="idx"
-      >
-        <div class="card shadow-light" :class="card.suit">
-          <span>{{ card.face }}</span>
-        </div>
-      </div>
-    </transition-group>
+        class="card-outer"
+      />
+    </TransitionGroup>
   </div>
 </template>

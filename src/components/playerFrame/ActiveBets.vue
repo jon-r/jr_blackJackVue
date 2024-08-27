@@ -10,6 +10,7 @@ import { useAppStore } from "../../store/store.ts";
 import { Position } from "../../types/animations.ts";
 import { Player } from "../../types/players.ts";
 import { GameEvent } from "../../types/state.ts";
+import BettingChip from "../common/BettingChip.vue";
 
 type ActiveBetProps = {
   player: Player;
@@ -165,7 +166,7 @@ function emitMoneyChange(value: number) {
 </script>
 <template>
   <div class="player-bet flex">
-    <transition-group
+    <TransitionGroup
       class="chip-stack flex"
       name="bets"
       tag="ul"
@@ -174,17 +175,13 @@ function emitMoneyChange(value: number) {
       @enter="enter"
       @leave="leave"
     >
-      <li
+      <BettingChip
         v-for="(chip, idx) in chips"
-        :class="'chip-' + chip"
         :key="idx"
-        :data-key="idx"
-      >
-        <svg viewBox="0 0 100 60">
-          <use class="token" xlink:href="#chip-tilt" />
-        </svg>
-      </li>
-    </transition-group>
+        :value="chip"
+        is-stacked
+      />
+    </TransitionGroup>
 
     <span v-show="bet > 0">Bet: £{{ bet }}</span>
   </div>
