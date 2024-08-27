@@ -10,6 +10,7 @@ import { useAppStore } from "../../store/store.ts";
 import { Position } from "../../types/animations.ts";
 import { Player } from "../../types/players.ts";
 import { GameEvent } from "../../types/state.ts";
+import BettingChip from "../common/BettingChip.vue";
 
 type ActiveBetProps = {
   player: Player;
@@ -174,16 +175,22 @@ function emitMoneyChange(value: number) {
       @enter="enter"
       @leave="leave"
     >
-      <li
-        v-for="(chip, idx) in chips"
-        :class="'chip-' + chip"
-        :key="idx"
-        :data-key="idx"
-      >
-        <svg viewBox="0 0 100 60">
+<!--      <li-->
+<!--        v-for="(chip, idx) in chips"-->
+<!--        :class="'chip-' + chip"-->
+<!--        :key="idx"-->
+<!--        :data-key="idx"-->
+<!--      >-->
+        <BettingChip
+          v-for="(chip, idx) in chips"
+          :key="idx"
+          :value="chip"
+          is-stacked
+        />
+<!--        <svg viewBox="0 0 100 60">
           <use class="token" xlink:href="#chip-tilt" />
-        </svg>
-      </li>
+        </svg>-->
+<!--      </li>-->
     </transition-group>
 
     <span v-show="bet > 0">Bet: £{{ bet }}</span>

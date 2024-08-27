@@ -4,7 +4,7 @@ import { computed } from "vue";
 import { EndGameActionTypes } from "../../constants/gamePlay.ts";
 import { useAppStore } from "../../store/store.ts";
 import { ButtonControl } from "../../types/button.ts";
-import ButtonBase from "./ButtonBase.vue";
+import ActionButton from "./ActionButton.vue";
 
 const store = useAppStore();
 
@@ -16,14 +16,13 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "end-new",
       label: EndGameActionTypes.New,
-      canUse: true,
       icon: "skip_previous",
       onClick: newGame,
     },
     {
       id: "end-next",
       label: EndGameActionTypes.Next,
-      canUse: hasPlayers,
+      disabled: !hasPlayers,
       icon: "skip_next",
       onClick: nextRound,
     },
@@ -42,7 +41,7 @@ function nextRound() {
 
 <template>
   <section class="ctrl-menu frame flex flex-wrap">
-    <ButtonBase
+    <ActionButton
       v-for="actionButton in actionButtons"
       :key="actionButton.id"
       v-bind="actionButton"

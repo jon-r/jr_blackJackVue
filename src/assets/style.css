@@ -644,7 +644,7 @@ h5 {
   transition: none;
 }
 
-.chip-stack li {
+.chip-stack > svg {
   transition: transform 150ms ease-in;
   width: 32px;
   height: 8px;
@@ -665,7 +665,9 @@ h5 {
 .chip-1000 .token {
   filter: url(#yellow);
 }
-.betting-chip:disabled .token {
+
+/* disabled */
+.chip-0 .token {
   filter: url(#grey);
 }
 

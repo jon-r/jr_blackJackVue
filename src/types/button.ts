@@ -1,12 +1,12 @@
 export type ButtonControl = {
   id: string;
-  canUse: boolean;
-  label: string; // todo rename to label?
+  // canUse: boolean;
+  label: string;
 
   icon?: string;
   alert?: string;
-  className?: string;
-  svg?: string;
+  class?: string;
+  disabled?: boolean;
 
   onClick?: () => void;
 };
