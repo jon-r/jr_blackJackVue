@@ -10,6 +10,7 @@ import { GameEvent } from "./types/state.ts";
 import PlayingCard from "./components/common/PlayingCard.vue";
 import { Card } from "./types/card.ts";
 import TextButton from "./components/common/TextButton.vue";
+import MdIcon from "./components/common/MdIcon.vue";
 
 const store = useAppStore();
 
@@ -67,7 +68,8 @@ watch(
 <template>
   <div class="container flex flex-column">
     <TextButton class="modal-toggle" @click="showOptions = true">
-      <i class="material-symbols-outlined">menu</i>
+<!--      <i class="material-symbols-outlined">menu</i>-->
+      <MdIcon name="menu" />
     </TextButton>
 
     <OptionsModal v-if="showOptions" @close-modal="showOptions = false" />

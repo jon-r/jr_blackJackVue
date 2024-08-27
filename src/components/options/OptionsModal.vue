@@ -108,7 +108,8 @@ async function autoBet(idx: number, max: number) {
           <h4 class="options-title">
             <TextButton @click.prevent="isMoreOptionsOpen = false">
               Less Options
-              <i class="material-symbols-outlined">expand_less</i>
+
+              <MdIcon name="expand_less" />
             </TextButton>
           </h4>
 
@@ -138,7 +139,8 @@ async function autoBet(idx: number, max: number) {
           <h4 class="options-title">
             <TextButton @click.prevent="isMoreOptionsOpen = true">
               More Options
-              <i class="material-symbols-outlined">expand_more</i>
+
+              <MdIcon name="expand_more" />
             </TextButton>
           </h4>
 

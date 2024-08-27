@@ -6,6 +6,7 @@ import { useAppStore } from "../../store/store.ts";
 import { ButtonControl } from "../../types/button.ts";
 import { Player } from "../../types/players.ts";
 import ActionButton from "./ActionButton.vue";
+import MdIcon from "../common/MdIcon.vue";
 
 type GamePlayActionsProps = {
   player: Player;
@@ -88,6 +89,8 @@ function handleAction(action: GamePlayActionTypes) {
       :key="actionButton.id"
       v-bind="actionButton"
       @click="() => handleAction(actionButton.label as GamePlayActionTypes)"
-    />
+    >
+      <MdIcon v-if="actionButton.icon" :name="actionButton.icon" />
+    </ActionButton>
   </section>
 </template>

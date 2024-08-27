@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import TextButton from "../common/TextButton.vue";
+import MdIcon from "../common/MdIcon.vue"
 
 type ModalContainerProps = {
   title: string;
@@ -20,7 +21,7 @@ const props = defineProps<ModalContainerProps>();
           class="modal-toggle"
           @click="() => $emit('closeModal')"
         >
-          <i class="material-symbols-outlined">close</i>
+          <MdIcon name="close" />
         </TextButton>
       </header>
 

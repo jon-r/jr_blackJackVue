@@ -5,6 +5,7 @@ import { EndGameActionTypes } from "../../constants/gamePlay.ts";
 import { useAppStore } from "../../store/store.ts";
 import { ButtonControl } from "../../types/button.ts";
 import ActionButton from "./ActionButton.vue";
+import MdIcon from "../common/MdIcon.vue";
 
 const store = useAppStore();
 
@@ -46,7 +47,9 @@ function nextRound() {
       :key="actionButton.id"
       v-bind="actionButton"
       @click="actionButton.onClick"
-    />
+    >
+      <MdIcon v-if="actionButton.icon" :name="actionButton.icon" />
+    </ActionButton>
   </section>
 </template>
 

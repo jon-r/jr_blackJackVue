@@ -6,6 +6,7 @@ import { ButtonControl } from "../../types/button.ts";
 import { Player } from "../../types/players.ts";
 import ActionButton from "./ActionButton.vue";
 import BettingChip from "../common/BettingChip.vue";
+import MdIcon from "../common/MdIcon.vue";
 
 type BettingActionsProps = {
   player: Player;
@@ -109,6 +110,8 @@ function submitBet() {
       :key="actionButton.id"
       v-bind="actionButton"
       @click="actionButton.onClick"
-    />
+    >
+      <MdIcon v-if="actionButton.icon" :name="actionButton.icon" />
+    </ActionButton>
   </section>
 </template>

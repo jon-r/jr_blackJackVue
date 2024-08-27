@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ButtonControl } from "../../types/button.ts";
-import BettingChip from "../common/BettingChip.vue";
 
-type ButtonControlProps = Omit<ButtonControl, "onClick" | "id">;
+type ButtonControlProps = Omit<ButtonControl, "onClick" | "id" | 'icon'>;
 
 const props = defineProps<ButtonControlProps>();
 </script>
@@ -15,12 +14,8 @@ const props = defineProps<ButtonControlProps>();
 
     <slot />
 
-    <i v-if="props.icon" class="material-symbols-outlined ctrl-btn-icon">
-      {{ props.icon }}
-    </i>
-
-    <span class="ctrl-btn-alert alert-text" v-if="props.alert">{{
-      props.alert
-    }}</span>
+    <span v-if="props.alert" class="ctrl-btn-alert alert-text" >
+      {{props.alert}}
+    </span>
   </button>
 </template>
