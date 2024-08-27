@@ -5,6 +5,7 @@ import { setPos, transformJiggle } from "../../animationTools.ts";
 import { useAppStore } from "../../store/store.ts";
 import { Position } from "../../types/animations.ts";
 import { Card } from "../../types/card.ts";
+import PlayingCard from "../common/PlayingCard.vue";
 
 type PlayerCardsProps = {
   cards: Card[];
@@ -97,7 +98,7 @@ function leave(el: HTMLElement, done: () => void) {
       {{ score }} {{ scoreString }}
     </div>
 
-    <transition-group
+    <TransitionGroup
       appear
       name="cards"
       tag="div"
@@ -105,17 +106,20 @@ function leave(el: HTMLElement, done: () => void) {
       @after-enter="enterTo"
       @leave="leave"
     >
-      <div
-        v-for="(card, idx) in cards"
-        class="card-outer"
-        :class="card.suit"
-        :key="idx"
-        :data-index="idx"
-      >
-        <div class="card shadow-light" :class="card.suit">
-          <span>{{ card.face }}</span>
-        </div>
-      </div>
-    </transition-group>
+<!--      todo remove card-outer? fully revisit how cards style works -->
+      <PlayingCard v-for="(card, idx) in cards" :key="idx" :card="card" :data-index="idx" class="card-outer" />
+
+<!--      <div-->
+<!--        v-for="(card, idx) in cards"-->
+<!--        class="card-outer"-->
+<!--        :class="card.suit"-->
+<!--        :key="idx"-->
+<!--        :data-index="idx"-->
+<!--      >-->
+<!--        <div class="card shadow-light" :class="card.suit">-->
+<!--          <span>{{ card.face }}</span>-->
+<!--        </div>-->
+<!--      </div>-->
+    </TransitionGroup>
   </div>
 </template>

@@ -7,6 +7,8 @@ import OptionsModal from "./components/options/OptionsModal.vue";
 import PlayerFrame from "./components/playerFrame/PlayerFrame.vue";
 import { useAppStore } from "./store/store.ts";
 import { GameEvent } from "./types/state.ts";
+import PlayingCard from "./components/common/PlayingCard.vue";
+import { Card } from "./types/card.ts";
 
 const store = useAppStore();
 
@@ -15,6 +17,12 @@ const messages = ref<{ text: string; idx: number }[]>([]);
 const messageIndex = ref(0);
 
 const shoeRef = ref<HTMLDivElement>();
+
+const blankCard: Card = {
+  suit: 'blank',
+  face: 0,
+  score: 0,
+}
 
 const activePlayer = computed(
   () => store.getters.players[store.getters.gameActivePlayer],
@@ -70,8 +78,8 @@ watch(
         </li>
       </transition-group>
 
-      <div v-once class="deck" ref="shoeRef">
-        <div class="card blank stacked"></div>
+      <div class="deck" ref="shoeRef">
+        <PlayingCard v-once :card="blankCard" class="stacked" />
       </div>
 
       <PlayerFrame
