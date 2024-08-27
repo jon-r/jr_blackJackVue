@@ -21,19 +21,19 @@ const betToPlace = computed(() =>
   chipsToPlace.value.reduce((a, b) => a + b, 0),
 );
 
-const chipButtons = computed(() => {
+const chipButtons = computed<ButtonControl[]>(() => {
   const maxChips = props.player.money - betToPlace.value;
 
   // todo tidy types
   return chips.map((chip) => ({
-    id: `bet-${chip}`,
+    id: `${chip}`,
     label: `£${chip}`,
 
     // className: `betting-chip chip-${chip}`,
     // svg: `${chip}`, //"#chip",
     disabled: chip > maxChips,
     onClick: () => addChip(chip),
-    chipValue: chip <= maxChips ? chip : 0,
+    // chipValue: chip <= maxChips ? chip : 0,
   }));
 });
 
@@ -101,7 +101,7 @@ function submitBet() {
       v-bind="chipButton"
       @click="chipButton.onClick"
     >
-      <BettingChip :value="chipButton.chipValue" />
+      <BettingChip :value="chipButton.disabled ? 0 : chipButton.id" />
     </ActionButton>
 
     <ActionButton

@@ -9,6 +9,7 @@ import { useAppStore } from "./store/store.ts";
 import { GameEvent } from "./types/state.ts";
 import PlayingCard from "./components/common/PlayingCard.vue";
 import { Card } from "./types/card.ts";
+import TextButton from "./components/common/TextButton.vue";
 
 const store = useAppStore();
 
@@ -65,9 +66,9 @@ watch(
 
 <template>
   <div class="container flex flex-column">
-    <button class="text-btn modal-toggle" @click="showOptions = true">
+    <TextButton class="modal-toggle" @click="showOptions = true">
       <i class="material-symbols-outlined">menu</i>
-    </button>
+    </TextButton>
 
     <OptionsModal v-if="showOptions" @close-modal="showOptions = false" />
 

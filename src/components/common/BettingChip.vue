@@ -2,7 +2,7 @@
 import { computed } from "vue";
 
 type BettingChipProps = {
-  value: number;
+  value: string | number;
   isStacked?: boolean
 }
 

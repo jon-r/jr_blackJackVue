@@ -8,6 +8,7 @@ import { GameConfig } from "../../types/config.ts";
 import { AnyPlayer, Player, PlayerInputStub } from "../../types/players.ts";
 import InputField from "./InputField.vue";
 import ModalContainer from "./ModalContainer.vue";
+import TextButton from "../common/TextButton.vue";
 
 const store = useAppStore();
 const emit = defineEmits(["closeModal"]);
@@ -15,7 +16,7 @@ const emit = defineEmits(["closeModal"]);
 function setupPlayerInput(input: Player[]): PlayerInputStub[] {
   return Array.from({ ...input, length: 5 }, (item, index) => ({
     name: item?.name ?? "",
-    index,
+    index
   }));
 }
 
@@ -31,19 +32,19 @@ async function newGame() {
   const config: GameConfig = {
     deckCount: deckCount.value,
     minBet: minBet.value,
-    autoTime: autoTime.value,
+    autoTime: autoTime.value
   };
 
   const players: AnyPlayer[] = playerInput.value.map((player) => ({
     ...DEFAULT_PLAYER,
-    ...player,
+    ...player
   }));
 
   players.push({
     ...DEFAULT_PLAYER,
     name: "Dealer",
     index: players.length,
-    isDealer: true,
+    isDealer: true
   });
 
   const options = { players, config };
@@ -67,12 +68,12 @@ async function autoBet(idx: number, max: number) {
 
   const betVals = {
     idx,
-    value: rngBet,
+    value: rngBet
   };
   const betEvent = {
     idx,
     type: "bet",
-    value: "addBet",
+    value: "addBet"
   };
   const nextIdx = idx + 1;
 
@@ -103,9 +104,12 @@ async function autoBet(idx: number, max: number) {
 
       <fieldset class="options-group">
         <template v-if="isMoreOptionsOpen">
-          <h4 class="options-title frame" @click="isMoreOptionsOpen = false">
-            Less Options
-            <i class="material-symbols-outlined text-btn">expand_less</i>
+
+          <h4 class="options-title">
+            <TextButton @click.prevent="isMoreOptionsOpen = false">
+              Less Options
+              <i class="material-symbols-outlined">expand_less</i>
+            </TextButton>
           </h4>
 
           <InputField
@@ -131,18 +135,24 @@ async function autoBet(idx: number, max: number) {
           />
         </template>
         <template v-else>
-          <h4 class="options-title frame" @click="isMoreOptionsOpen = true">
-            More Options
-            <i class="material-symbols-outlined text-btn">expand_more</i>
+          <h4 class="options-title">
+            <TextButton @click.prevent="isMoreOptionsOpen = true">
+              More Options
+              <i class="material-symbols-outlined">expand_more</i>
+            </TextButton>
           </h4>
+
         </template>
       </fieldset>
 
       <div class="modal-footer frame-thick text-right">
-        <button type="submit" class="text-btn options-submit">NEW GAME</button>
-        <button type="button" class="text-btn options-submit" @click="newDemo">
-          SKIP BETS (DEMO)
-        </button>
+        <TextButton type="submit">NEW GAME</TextButton>
+        <TextButton @click.prevent="newDemo">SKIP BETS (DEMO)</TextButton>
+
+        <!--        <button type="submit" class="text-btn options-submit">NEW GAME</button>-->
+        <!--        <button type="button" class="text-btn options-submit" @click="newDemo">-->
+        <!--          SKIP BETS (DEMO)-->
+        <!--        </button>-->
       </div>
     </form>
   </ModalContainer>
