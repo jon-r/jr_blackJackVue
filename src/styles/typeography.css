@@ -1,0 +1,37 @@
+body {
+  font-size: 16px;
+  font-family: "Noto Sans", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: "Noto Serif", serif;
+}
+
+/* https://m2.material.io/design/typography/the-type-system.html#type-scale */
+h1 {
+  font-size: 2.986rem;
+}
+h2 {
+  font-size: 2.488rem;
+}
+h3 {
+  font-size: 2.074rem;
+}
+h4 {
+  font-size: 1.728rem;
+}
+h5 {
+  font-size: 1.44rem;
+}
+
+.material-symbols-rounded {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}

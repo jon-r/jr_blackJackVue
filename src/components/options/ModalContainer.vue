@@ -9,10 +9,7 @@ type ModalContainerProps = {
 const props = defineProps<ModalContainerProps>();
 </script>
 <template>
-  <div
-    class="modal-container flex flex-centre"
-    @click.self="() => $emit('closeModal')"
-  >
+  <div class="modal-backing" @click.self="() => $emit('closeModal')">
     <div class="modal">
       <header class="modal-header frame-thick">
         <h3 class="modal-title">{{ props.title }}</h3>
@@ -26,3 +23,9 @@ const props = defineProps<ModalContainerProps>();
     </div>
   </div>
 </template>
+<style>
+.modal {
+  background-color: var(--dialogue-container);
+  color: var(--dialogue-text);
+}
+</style>
