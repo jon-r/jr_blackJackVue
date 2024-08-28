@@ -87,9 +87,9 @@ async function autoBet(idx: number, max: number) {
 </script>
 
 <template>
-  <form class="options-modal" @submit.prevent="newGame">
-    <fieldset class="options-group">
-      <h4 class="options-title frame">Player Names</h4>
+  <form class="options-form" @submit.prevent="newGame">
+    <fieldset class="options-form__group">
+      <h4 class="options-form__group-title">Player Names</h4>
 
       <InputField
         v-for="(player, i) in playerInput"
@@ -102,16 +102,17 @@ async function autoBet(idx: number, max: number) {
       />
     </fieldset>
 
-    <fieldset class="options-group">
+    <fieldset class="options-form__group">
+      <h4
+        class="options-form__group-title options-form__group-title--toggleable"
+        @click.prevent="isMoreOptionsOpen = !isMoreOptionsOpen"
+      >
+        In Game Options
+        <TextButton icon-only>
+          <MdIcon :name="isMoreOptionsOpen ? 'expand_less' : 'expand_more'" />
+        </TextButton>
+      </h4>
       <template v-if="isMoreOptionsOpen">
-        <h4 class="options-title">
-          <TextButton @click.prevent="isMoreOptionsOpen = false">
-            Less Options
-
-            <MdIcon name="expand_less" />
-          </TextButton>
-        </h4>
-
         <InputField
           v-model.number="deckCount"
           input-id="deck"
@@ -134,20 +135,58 @@ async function autoBet(idx: number, max: number) {
           type="number"
         />
       </template>
-      <template v-else>
-        <h4 class="options-title">
-          <TextButton @click.prevent="isMoreOptionsOpen = true">
-            More Options
-
-            <MdIcon name="expand_more" />
-          </TextButton>
-        </h4>
-      </template>
     </fieldset>
 
-    <div class="modal-footer frame-thick text-right">
-      <TextButton type="submit">NEW GAME</TextButton>
-      <TextButton @click.prevent="newDemo">SKIP BETS (DEMO)</TextButton>
-    </div>
+    <footer class="options-form__footer">
+      <TextButton @click.prevent="newDemo">New Demo (Skip Bets)</TextButton>
+      <TextButton class="options-form__new-game" type="submit"
+        >New Game</TextButton
+      >
+    </footer>
   </form>
 </template>
+
+<style>
+.options-form {
+  &__group {
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--md-sys-color-surface-container-highest);
+    padding: var(--gap-sm);
+
+    display: grid;
+    grid-gap: var(--gap-sm);
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: var(--gap-sm);
+  }
+
+  &__group-title {
+    grid-column: span 2;
+    font-size: 0.75rem;
+    color: var(--md-sys-color-on-surface-variant);
+
+    &--toggleable {
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    color: var(--md-sys-color-primary);
+  }
+
+  &__new-game {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+
+    &:hover {
+      background-color: var(--md-sys-color-on-primary-fixed-variant);
+      color: var(--md-sys-color-on-primary);
+    }
+  }
+}
+</style>

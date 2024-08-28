@@ -10,22 +10,54 @@ const props = defineProps<ModalContainerProps>();
 </script>
 <template>
   <div class="modal-backing" @click.self="() => $emit('closeModal')">
-    <div class="modal">
-      <header class="modal-header frame-thick">
-        <h3 class="modal-title">{{ props.title }}</h3>
+    <section class="modal">
+      <header class="modal__header">
+        <h3 class="modal__title">{{ props.title }}</h3>
 
-        <TextButton class="modal-toggle" @click="() => $emit('closeModal')">
+        <TextButton
+          class="modal__close"
+          @click="() => $emit('closeModal')"
+          icon-only
+        >
           <MdIcon name="close" />
         </TextButton>
       </header>
 
       <slot />
-    </div>
+    </section>
   </div>
 </template>
 <style>
+.modal-backing {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background-color: rgb(0 0 0 / 10%);
+}
+
 .modal {
-  background-color: var(--dialogue-container);
-  color: var(--dialogue-text);
+  background-color: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface-variant);
+  border-radius: var(--border-radius);
+  padding: var(--gap-md);
+
+  width: calc(100% - var(--gap-md));
+  max-width: 560px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--gap-sm);
+    align-items: center;
+  }
+
+  &__title {
+    color: var(--md-sys-color-on-surface);
+  }
+
+  &__close {
+    color: var(--md-sys-color-secondary);
+  }
 }
 </style>

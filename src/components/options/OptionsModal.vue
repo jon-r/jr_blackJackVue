@@ -23,7 +23,7 @@ watch(
 */
 </script>
 <template>
-  <TextButton class="modal-toggle" @click="isOptionsModalOpen = true">
+  <TextButton class="modal__open" @click="isOptionsModalOpen = true" icon-only>
     <MdIcon name="menu" />
   </TextButton>
 
@@ -36,4 +36,11 @@ watch(
   </ModalContainer>
 </template>
 
-<style></style>
+<style>
+/* todo maybe update this style later */
+.modal__open {
+  position: absolute;
+  top: var(--gap-md);
+  right: var(--gap-md);
+}
+</style>

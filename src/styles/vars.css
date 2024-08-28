@@ -105,11 +105,17 @@
   --md-sys-color-surface-container-highest: rgb(226 227 216);
 }
 
-body {
-  --dialogue-container: var(--md-sys-color-surface);
-  --dialogue-text: var(--md-sys-color-on-surface);
+:root {
+  --border-radius: 1.5rem;
+  --gap-md: 1.5rem;
+  --gap-sm: 1rem;
 
-  --dialogue-border-radius: 1.5rem;
-  --padding-md: 1.5rem;
-  --padding-sm: 1rem;
+  /* custom md colours */
+  .dark {
+    --md-sys-color-surface-container-low-hover: rgb(26 28 22 / 50%);
+  }
+
+  .light {
+    --md-sys-color-surface-container-low-hover: rgb(243 245 233 / 50%);
+  }
 }
