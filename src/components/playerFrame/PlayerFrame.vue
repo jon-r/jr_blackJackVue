@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
+
+import PlayerLabel from "~/components/playerFrame/PlayerLabel.vue";
 
 import { isNotDealer } from "../../helpers/players.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
@@ -15,9 +17,9 @@ type PlayerFrameProps = {
 const props = defineProps<PlayerFrameProps>();
 const coreStore = useCoreStore();
 
-const playerClass = `player-${props.player.index}`;
-const oldMoney = ref(0);
-const diffFloat = ref(true);
+// const playerClass = `player-${props.player.index}`;
+// const oldMoney = ref(0);
+// const diffFloat = ref(true);
 const framePos = ref<Position>({ x: 0, y: 0 });
 
 const frameParent = ref<HTMLElement>();
@@ -30,37 +32,40 @@ onMounted(() => {
   };
 });
 
-const diffClass = computed(() => {
-  // todo sideffect bad
-  triggerTextAnim();
-  return moneyDiff.value > 0 ? "good-text" : "error-text";
-});
+// const diffClass = computed(() => {
+//   // todo sideffect bad
+//   triggerTextAnim();
+//   return moneyDiff.value > 0 ? "good-text" : "error-text";
+// });
 
 const notDealer = computed(() => isNotDealer(props.player));
 
-const moneyDiff = computed(() => {
-  const out = props.player.money - oldMoney.value;
-  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-  oldMoney.value = props.player.money;
-  return out;
-});
+// const moneyDiff = computed(() => {
+//   const out = props.player.money - oldMoney.value;
+//   // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+//   oldMoney.value = props.player.money;
+//   return out;
+// });
 
 const isPlayerTurn = computed(() => {
   return coreStore.activePlayerId === props.player.index;
 });
 
-function triggerTextAnim() {
-  diffFloat.value = false;
-  nextTick(() => {
-    diffFloat.value = true;
-  });
-}
+// function triggerTextAnim() {
+//   diffFloat.value = false;
+//   nextTick(() => {
+//     diffFloat.value = true;
+//   });
+// }
 </script>
 
 <template>
   <section
-    class="player-frame flex flex-column"
-    :class="playerClass"
+    class="player-frame"
+    :class="[
+      'player-frame--' + props.player.index,
+      props.player.isDealer && 'player-frame--dealer',
+    ]"
     ref="frameParent"
   >
     <PlayerHand
@@ -76,27 +81,40 @@ function triggerTextAnim() {
       :frame-pos="framePos"
     />
 
-    <header
-      class="player-frame-title flex frame shadow-light"
+    <PlayerLabel
       v-if="notDealer"
-      :class="{ 'is-active': isPlayerTurn }"
-    >
-      <h4
-        class="player-name"
-        :class="{
-          'alert-text': isPlayerTurn,
-          'error-text': !props.player.inGame,
-        }"
-      >
-        {{ props.player.name }}
-      </h4>
-
-      <h5 class="player-money">
-        £{{ props.player.money }}
-        <span :class="[diffClass, { 'diff-float': diffFloat }]">
-          £{{ moneyDiff }}
-        </span>
-      </h5>
-    </header>
+      :is-focused="isPlayerTurn"
+      :player="props.player"
+    />
   </section>
 </template>
+<style>
+.player-frame {
+  border: solid 1px red;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 196px;
+  width: 196px;
+
+  &--0 {
+    transform: translate(16px, 190px);
+  }
+  &--1 {
+    transform: translate(150px, 380px);
+  }
+  &--2 {
+    transform: translate(414px, 420px);
+  }
+  &--3 {
+    transform: translate(662px, 380px);
+  }
+  &--4 {
+    transform: translate(812px, 190px);
+  }
+
+  &--dealer {
+    transform: translate(414px, 20px);
+  }
+}
+</style>

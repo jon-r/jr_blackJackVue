@@ -108,6 +108,7 @@
 /* todo rename using token style names */
 :root {
   --border-radius: 1.5rem;
+  --border-radius-sm: 0.5rem;
   --gap-md: 1.5rem;
   --gap-sm: 1rem;
 
@@ -122,6 +123,12 @@
 
     --md-sys-color-disabled: rgb(226 227 216 / 12%);
     --md-sys-color-on-disabled: rgb(226 227 216 / 38%);
+
+    --md-sys-color-primary-container-opacity: rgb(51 78 23 / 20%);
+
+    /* todo pick a nice color for dark */
+    --playing-card-back: hotpink; /*rgb(201, 114, 114)*/
+    --playing-card-back-variant: hotpink; /*rgb(201, 114, 114)*/
   }
 
   .light {
@@ -132,8 +139,13 @@
     --md-sys-color-secondary-hover-opacity: rgb(87 98 74 / 8%);
     --md-sys-color-tertiary-hover: rgb(56 102 100 / 92%);
 
+    --md-sys-color-primary-container-opacity: rgb(203 238 165 / 20%);
+
     --md-sys-color-disabled: rgb(26 28 22 / 12%);
     --md-sys-color-on-disabled: rgb(26 28 22 / 38%);
+
+    --playing-card-back: rgb(201, 114, 114);
+    --playing-card-back-variant: rgb(152, 75, 75);
   }
 
   .dark,

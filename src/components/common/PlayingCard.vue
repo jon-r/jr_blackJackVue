@@ -14,15 +14,33 @@ const visualCard = computed(() => {
 
   return {
     face: CARD_FACES[faceValue] || faceValue,
-    suit,
+    suit, // todo make class here
   };
 });
 </script>
 
 <template>
-  <div class="card" :class="visualCard.suit">
+  <div class="playing-card" :class="'playing-card--' + visualCard.suit">
     <span v-if="visualCard.face">
       {{ visualCard.face }}
     </span>
   </div>
 </template>
+
+<style>
+.playing-card {
+  --card-back-bg: url(src/assets/card-back.svg);
+
+  width: 50px;
+  height: 70px;
+  background: var(--md-sys-color-surface-container-low);
+  border-radius: 3px;
+  padding: 2px;
+
+  &--blank {
+    background:
+      var(--card-back-bg) center/cover,
+      var(--playing-card-back);
+  }
+}
+</style>

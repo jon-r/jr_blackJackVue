@@ -53,12 +53,11 @@ watch(
       </li>
     </TransitionGroup>
 
-    <section class="deck" ref="shoeRef">
+    <section class="blackjack-table__deck" ref="shoeRef">
       <PlayingCard v-once :card="blankCard" class="stacked" />
     </section>
 
     <PlayerFrame
-      v-if="store.getters.activePlayerCount > 0"
       v-for="player in store.getters.players"
       :key="player.index"
       :player="player"
@@ -68,9 +67,17 @@ watch(
 <style>
 .blackjack-table {
   flex: 1;
+  background: url(../assets/table-print.svg) center/contain no-repeat;
+  position: relative;
 
-  > * {
-    display: none;
+  &__deck {
+    position: absolute;
+    top: 40px;
+    right: 25%;
+    border-radius: 0 0 3px 3px;
+    box-shadow:
+      0 4px 0 0 var(--playing-card-back-variant),
+      var(--shadow-level2);
   }
 }
 </style>
