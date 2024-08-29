@@ -32,7 +32,7 @@ const props = defineProps<ModalContainerProps>();
   inset: 0;
   display: grid;
   place-items: center;
-  background-color: var(--md-sys-color-scrim)
+  background-color: var(--md-sys-color-scrim);
 }
 
 .modal {

@@ -108,7 +108,7 @@ async function autoBet(idx: number, max: number) {
       >
         <span>In Game Options</span>
 
-        <MdIcon  :name="isMoreOptionsOpen ? 'expand_less' : 'expand_more'" />
+        <MdIcon :name="isMoreOptionsOpen ? 'expand_less' : 'expand_more'" />
       </h4>
       <template v-if="isMoreOptionsOpen">
         <InputField
@@ -136,8 +136,6 @@ async function autoBet(idx: number, max: number) {
     </fieldset>
 
     <footer class="options-form__footer">
-
-
       <button
         type="button"
         class="button-reset options-form__footer-button"

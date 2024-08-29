@@ -23,7 +23,11 @@ watch(
 */
 </script>
 <template>
-  <button type="button" class="button-reset modal__open" @click="isOptionsModalOpen = true">
+  <button
+    type="button"
+    class="button-reset modal__open"
+    @click="isOptionsModalOpen = true"
+  >
     <MdIcon name="menu" />
   </button>
 
