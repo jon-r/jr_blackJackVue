@@ -49,23 +49,41 @@ function leave(el: HTMLElement, done: () => void) {
 }
 </script>
 <template>
-  <div class="player-bet flex">
-    <TransitionGroup
+  <div class="current-bet">
+    <!--    <TransitionGroup
       class="chip-stack flex show"
       name="bets"
       tag="ul"
       @after-enter="enterTo"
       @enter="enter"
       @leave="leave"
-    >
+    >-->
+    <ul class="current-bet__chips">
       <BettingChip
         v-for="(chip, idx) in betAsChips"
         :key="idx"
         :value="chip"
         is-stacked
+        class="current-bet__chip-stack"
       />
-    </TransitionGroup>
+    </ul>
+    <!--    </TransitionGroup>-->
 
-    <span v-show="bet > 0">Bet: £{{ bet }}</span>
+    <span v-show="bet > 0">Placed Bet: £{{ bet }}</span>
   </div>
 </template>
+
+<style>
+.current-bet {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  &__chips {
+    list-style: none;
+    width: 2rem;
+    padding: 0;
+    margin: 0;
+  }
+}
+</style>

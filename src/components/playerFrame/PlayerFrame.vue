@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 
-import PlayerLabel from "~/components/playerFrame/PlayerLabel.vue";
+import { Position } from "~/types/animations.ts";
+import { Player } from "~/types/players.ts";
 
 import { isNotDealer } from "../../helpers/players.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
-import { Position } from "../../types/animations.ts";
-import { Player } from "../../types/players.ts";
-import ActiveBets from "./ActiveBets.vue";
+import CurrentBet from "./CurrentBet.vue";
 import PlayerHand from "./PlayerHand.vue";
+import PlayerLabel from "./PlayerLabel.vue";
 
 type PlayerFrameProps = {
   player: Player;
@@ -75,7 +75,7 @@ const isPlayerTurn = computed(() => {
       :is-current-turn="isPlayerTurn"
     />
 
-    <ActiveBets
+    <CurrentBet
       v-if="notDealer"
       :bet="props.player.openBet"
       :frame-pos="framePos"
@@ -97,24 +97,28 @@ const isPlayerTurn = computed(() => {
   height: 196px;
   width: 196px;
 
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* flex end may not be needed? */
+
   &--0 {
-    transform: translate(16px, 190px);
+    transform: translate(26px, 190px);
   }
   &--1 {
-    transform: translate(150px, 380px);
+    transform: translate(160px, 380px);
   }
   &--2 {
-    transform: translate(414px, 420px);
+    transform: translate(424px, 420px);
   }
   &--3 {
-    transform: translate(662px, 380px);
+    transform: translate(672px, 380px);
   }
   &--4 {
-    transform: translate(812px, 190px);
+    transform: translate(822px, 190px);
   }
 
   &--dealer {
-    transform: translate(414px, 20px);
+    transform: translate(424px, 20px);
   }
 }
 </style>
