@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import MdIcon from "../common/MdIcon.vue";
-import TextButton from "../common/TextButton.vue";
 
 type ModalContainerProps = {
   title: string;
@@ -14,13 +13,13 @@ const props = defineProps<ModalContainerProps>();
       <header class="modal__header">
         <h3 class="modal__title">{{ props.title }}</h3>
 
-        <TextButton
-          class="modal__close"
+        <button
+          type="button"
+          class="button-reset modal__close"
           @click="() => $emit('closeModal')"
-          icon-only
         >
           <MdIcon name="close" />
-        </TextButton>
+        </button>
       </header>
 
       <slot />
@@ -33,7 +32,7 @@ const props = defineProps<ModalContainerProps>();
   inset: 0;
   display: grid;
   place-items: center;
-  background-color: rgb(0 0 0 / 10%);
+  background-color: var(--md-sys-color-scrim)
 }
 
 .modal {
@@ -41,6 +40,7 @@ const props = defineProps<ModalContainerProps>();
   color: var(--md-sys-color-on-surface-variant);
   border-radius: var(--border-radius);
   padding: var(--gap-md);
+  box-shadow: var(--shadow-level3);
 
   width: calc(100% - var(--gap-md));
   max-width: 560px;
@@ -57,7 +57,17 @@ const props = defineProps<ModalContainerProps>();
   }
 
   &__close {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 2rem;
     color: var(--md-sys-color-secondary);
+
+    border-radius: var(--border-radius);
+    transition: background-color 300ms;
+
+    &:hover {
+      background-color: var(--md-sys-color-secondary-hover-opacity);
+    }
   }
 }
 </style>

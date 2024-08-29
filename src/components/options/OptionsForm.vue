@@ -8,7 +8,6 @@ import { GameConfig } from "~/types/config.ts";
 import { AnyPlayer, Player, PlayerInputStub } from "~/types/players.ts";
 
 import MdIcon from "../common/MdIcon.vue";
-import TextButton from "../common/TextButton.vue";
 import InputField from "./InputField.vue";
 
 const store = useAppStore();
@@ -107,10 +106,9 @@ async function autoBet(idx: number, max: number) {
         class="options-form__group-title options-form__group-title--toggleable"
         @click.prevent="isMoreOptionsOpen = !isMoreOptionsOpen"
       >
-        In Game Options
-        <TextButton icon-only>
-          <MdIcon :name="isMoreOptionsOpen ? 'expand_less' : 'expand_more'" />
-        </TextButton>
+        <span>In Game Options</span>
+
+        <MdIcon  :name="isMoreOptionsOpen ? 'expand_less' : 'expand_more'" />
       </h4>
       <template v-if="isMoreOptionsOpen">
         <InputField
@@ -138,10 +136,21 @@ async function autoBet(idx: number, max: number) {
     </fieldset>
 
     <footer class="options-form__footer">
-      <TextButton @click.prevent="newDemo">New Demo (Skip Bets)</TextButton>
-      <TextButton class="options-form__new-game" type="submit"
-        >New Game</TextButton
+
+
+      <button
+        type="button"
+        class="button-reset options-form__footer-button"
+        @click.prevent="newDemo"
       >
+        New Demo (Skip Bets)
+      </button>
+      <button
+        class="button-reset options-form__footer-button options-form__footer-button--filled"
+        type="submit"
+      >
+        New Game
+      </button>
     </footer>
   </form>
 </template>
@@ -179,13 +188,27 @@ async function autoBet(idx: number, max: number) {
     color: var(--md-sys-color-primary);
   }
 
-  &__new-game {
-    background-color: var(--md-sys-color-primary);
-    color: var(--md-sys-color-on-primary);
+  &__footer-button {
+    height: 40px;
+    padding: 0 var(--gap-md);
+    border-radius: var(--border-radius);
+    margin-left: var(--gap-sm);
+
+    color: var(--md-sys-color-primary);
 
     &:hover {
-      background-color: var(--md-sys-color-on-primary-fixed-variant);
+      background-color: var(--md-sys-color-primary-hover-opacity);
+    }
+
+    &--filled {
+      background-color: var(--md-sys-color-primary);
       color: var(--md-sys-color-on-primary);
+
+      &:hover {
+        background-color: var(--md-sys-color-primary-hover);
+        color: var(--md-sys-color-on-primary);
+        box-shadow: var(--shadow-level1);
+      }
     }
   }
 }

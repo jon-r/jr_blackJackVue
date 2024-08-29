@@ -2,7 +2,7 @@
 import { ref, watch } from "vue";
 
 import { useCoreStore } from "../../stores/coreStore.ts";
-import TextButton from "../common/TextButton.vue";
+import MdIcon from "../common/MdIcon.vue";
 import ModalContainer from "./ModalContainer.vue";
 import OptionsForm from "./OptionsForm.vue";
 
@@ -23,9 +23,9 @@ watch(
 */
 </script>
 <template>
-  <TextButton class="modal__open" @click="isOptionsModalOpen = true" icon-only>
+  <button type="button" class="button-reset modal__open" @click="isOptionsModalOpen = true">
     <MdIcon name="menu" />
-  </TextButton>
+  </button>
 
   <ModalContainer
     v-if="isOptionsModalOpen"
@@ -37,10 +37,20 @@ watch(
 </template>
 
 <style>
-/* todo maybe update this style later */
 .modal__open {
   position: absolute;
-  top: var(--gap-md);
-  right: var(--gap-md);
+  top: var(--gap-sm);
+  right: var(--gap-sm);
+  width: 56px;
+  height: 56px;
+  border-radius: var(--gap-sm);
+  box-shadow: var(--shadow-level2);
+
+  background-color: var(--md-sys-color-tertiary);
+  color: var(--md-sys-color-on-tertiary);
+
+  &:hover {
+    background-color: var(--md-sys-color-on-tertiary-container);
+  }
 }
 </style>

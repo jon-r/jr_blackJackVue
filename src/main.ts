@@ -3,6 +3,7 @@ import { createApp } from "vue";
 
 // prettier-ignore -> keep reset first
 import "~/styles/reset.css";
+import "~/styles/util.css";
 import "~/styles/typography.css";
 import "~/styles/vars.css";
 
