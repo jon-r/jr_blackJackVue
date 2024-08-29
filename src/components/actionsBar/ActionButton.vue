@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ButtonControl } from "./button.ts";
+import MdIcon from "~/components/common/MdIcon.vue";
 
-type ButtonControlProps = Omit<ButtonControl, "onClick" | "id" | "icon">;
+type ButtonControlProps = Omit<ButtonControl, "onClick" | "id">;
 
 const props = defineProps<ButtonControlProps>();
 </script>
+<!-- todo action button tooltips -->
 <template>
   <button
     type="button"
@@ -15,6 +17,8 @@ const props = defineProps<ButtonControlProps>();
     <strong class="action-button__label">{{ props.label }}</strong>
 
     <slot />
+
+    <MdIcon v-if="props.icon" class="action-button__icon" :name="props.icon" />
 
     <em
       v-if="props.alert && !props.disabled"
@@ -46,32 +50,52 @@ const props = defineProps<ButtonControlProps>();
   }
 
   &:hover {
-    background-color: var(--md-sys-color-secondary-hover);
+    background-color: var(--md-sys-color-secondary-container-hover);
   }
   &:disabled {
     background-color: var(--md-sys-color-disabled);
+    color: var(--md-sys-color-on-disabled);
     opacity: 0.7;
     cursor: not-allowed;
   }
+  &:disabled &__icon {
+    color: var(--md-sys-color-on-disabled);
+  }
+
   &--wider {
     flex: 1.5;
   }
-  &--good {
+  &--emphasis {
     background-color: var(--md-sys-color-secondary);
     color: var(--md-sys-color-on-secondary);
+
+    &:hover {
+      background-color: var(--md-sys-color-secondary-hover);
+    }
   }
-  &--alert {
+
+  &--emphasis-variant {
     /* todo maybe need to tone these colours down a bit? */
-    background-color: var(--md-sys-color-error-container);
-    color: var(--md-sys-color-on-error-container);
+    background-color: var(--md-sys-color-tertiary);
+    color: var(--md-sys-color-on-tertiary);
+
+    &:hover {
+      background-color: var(--md-sys-color-tertiary-hover);
+    }
+  }
+
+  &__label {
+    min-height: 2rem;
   }
 
   &__icon {
-    margin: auto;
+    font-size: 2rem;
+    opacity: 0.8;
   }
 
   &__alert {
-    color: var(--md-sys-color-on-error);
+    margin-top: auto;
+    color: var(--md-sys-color-on-error-container);
     font-size: 0.75rem;
   }
 }

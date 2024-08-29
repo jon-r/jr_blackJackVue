@@ -41,9 +41,9 @@ const actionButtons = computed<ButtonControl[]>(() => {
 
   return [
     {
-      id: "bet-submit",
-      label: `Submit: £${betToPlace.value}`,
-      className: "action-button--wider action-button--good",
+      id: "bet-place",
+      label: `Place Bet: £${betToPlace.value}`,
+      className: "action-button--wider action-button--emphasis",
       icon: "publish",
       disabled: betToPlace.value < minBet,
       onClick: submitBet,
@@ -52,7 +52,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "bet-undo",
       label: "Undo",
-      className: "action-button--alert",
+      className: "action-button--emphasis-variant",
       icon: "undo",
       disabled: betToPlace.value === 0,
       onClick: removeChip,
@@ -92,8 +92,6 @@ function submitBet() {
     :key="actionButton.id"
     v-bind="actionButton"
     @click="actionButton.onClick"
-  >
-    <MdIcon class="action-button__icon" :name="actionButton.icon!" />
-  </ActionButton>
+  />
   <!--  </section>-->
 </template>

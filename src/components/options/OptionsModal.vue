@@ -54,7 +54,7 @@ watch(
   color: var(--md-sys-color-on-tertiary);
 
   &:hover {
-    background-color: var(--md-sys-color-on-tertiary-container);
+    background-color: var(--md-sys-color-tertiary-hover);
   }
 }
 </style>

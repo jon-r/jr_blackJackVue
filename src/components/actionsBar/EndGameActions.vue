@@ -4,7 +4,6 @@ import { computed } from "vue";
 import { EndGameActionTypes } from "../../constants/gamePlay.ts";
 import { useGameActions } from "../../stores/actions/game.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
-import MdIcon from "../common/MdIcon.vue";
 import ActionButton from "./ActionButton.vue";
 import { ButtonControl } from "./button.ts";
 
@@ -22,6 +21,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "end-next",
       label: EndGameActionTypes.Next,
+      className: "action-button--emphasis",
       disabled: playersStore.activePlayers.length === 0,
       icon: "skip_next",
       onClick: gameActions.nextRound,
@@ -37,9 +37,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
     :key="actionButton.id"
     v-bind="actionButton"
     @click="actionButton.onClick"
-  >
-    <MdIcon class="ctrl-btn-icon" :name="actionButton.icon!" />
-  </ActionButton>
+  />
   <!--  </section>-->
 </template>
 

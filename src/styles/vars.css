@@ -105,6 +105,7 @@
   --md-sys-color-surface-container-highest: rgb(226 227 216);
 }
 
+/* todo rename using token style names */
 :root {
   --border-radius: 1.5rem;
   --gap-md: 1.5rem;
@@ -114,18 +115,25 @@
     --md-sys-color-primary-hover: rgb(176 209 139 / 92%);
     --md-sys-color-primary-hover-opacity: rgb(176 209 139 / 8%);
     --md-sys-color-secondary-hover: rgb(191 203 173 / 92%);
+    /* test this v */
+    --md-sys-color-secondary-container-hover: rgb(64 74 52 / 50%);
     --md-sys-color-secondary-hover-opacity: rgb(191 203 173 / 8%);
+    --md-sys-color-tertiary-hover: rgb(160 207 204 / 92%);
 
-    --md-sys-color-disabled: rgb(226 227 216 / 12%)
+    --md-sys-color-disabled: rgb(226 227 216 / 12%);
+    --md-sys-color-on-disabled: rgb(226 227 216 / 38%);
   }
 
   .light {
     --md-sys-color-primary-hover: rgb(74 103 45 / 92%);
     --md-sys-color-primary-hover-opacity: rgb(74 103 45 / 8%);
-    --md-sys-color-secondary-hover: rgb(191 203 173 / 92%);
-    --md-sys-color-secondary-hover-opacity: rgb(191 203 173 / 8%);
+    --md-sys-color-secondary-hover: rgb(87 98 74 / 92%);
+    --md-sys-color-secondary-container-hover: rgb(219 231 200 / 50%);
+    --md-sys-color-secondary-hover-opacity: rgb(87 98 74 / 8%);
+    --md-sys-color-tertiary-hover: rgb(56 102 100 / 92%);
 
-    --md-sys-color-disabled: rgb(26 28 22 / 12%)
+    --md-sys-color-disabled: rgb(26 28 22 / 12%);
+    --md-sys-color-on-disabled: rgb(26 28 22 / 38%);
   }
 
   .dark,

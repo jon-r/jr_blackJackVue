@@ -67,8 +67,6 @@ const actionButtons = computed<ButtonControl[]>(() => {
     :key="actionButton.id"
     v-bind="actionButton"
     @click="actionButton.onClick"
-  >
-    <MdIcon class="ctrl-btn-icon" :name="actionButton.icon!" />
-  </ActionButton>
+  />
   <!--  </section>-->
 </template>
