@@ -46,7 +46,7 @@ watch(
 );
 </script>
 <template>
-  <main class="blackjack-table flex-auto">
+  <main class="blackjack-table">
     <TransitionGroup class="announcement frame" name="messages" tag="ul">
       <li class="message" v-for="msg in messages" :key="msg.idx">
         {{ msg.text }}
@@ -65,3 +65,12 @@ watch(
     />
   </main>
 </template>
+<style>
+.blackjack-table {
+  flex: 1;
+
+  > * {
+    display: none;
+  }
+}
+</style>

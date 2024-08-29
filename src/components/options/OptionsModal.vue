@@ -25,7 +25,7 @@ watch(
 <template>
   <button
     type="button"
-    class="button-reset modal__open"
+    class="button-base modal__open"
     @click="isOptionsModalOpen = true"
   >
     <MdIcon name="menu" />

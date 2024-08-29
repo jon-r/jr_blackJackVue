@@ -138,13 +138,13 @@ async function autoBet(idx: number, max: number) {
     <footer class="options-form__footer">
       <button
         type="button"
-        class="button-reset options-form__footer-button"
+        class="button-base options-form__footer-button"
         @click.prevent="newDemo"
       >
         New Demo (Skip Bets)
       </button>
       <button
-        class="button-reset options-form__footer-button options-form__footer-button--filled"
+        class="button-base options-form__footer-button options-form__footer-button--filled"
         type="submit"
       >
         New Game

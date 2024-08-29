@@ -1,6 +1,6 @@
 /* https://material-foundation.github.io/material-theme-builder/ */
 /* primary colour = #86E307 */
-/* fixme remove any that arent used*/
+/* fixme remove any that arent used (maybe some postcss thing) */
 .dark {
   --md-sys-color-primary: rgb(176 209 139);
   --md-sys-color-surface-tint: rgb(176 209 139);
@@ -113,13 +113,19 @@
   .dark {
     --md-sys-color-primary-hover: rgb(176 209 139 / 92%);
     --md-sys-color-primary-hover-opacity: rgb(176 209 139 / 8%);
+    --md-sys-color-secondary-hover: rgb(191 203 173 / 92%);
     --md-sys-color-secondary-hover-opacity: rgb(191 203 173 / 8%);
+
+    --md-sys-color-disabled: rgb(226 227 216 / 12%)
   }
 
   .light {
     --md-sys-color-primary-hover: rgb(74 103 45 / 92%);
     --md-sys-color-primary-hover-opacity: rgb(74 103 45 / 8%);
+    --md-sys-color-secondary-hover: rgb(191 203 173 / 92%);
     --md-sys-color-secondary-hover-opacity: rgb(191 203 173 / 8%);
+
+    --md-sys-color-disabled: rgb(26 28 22 / 12%)
   }
 
   .dark,

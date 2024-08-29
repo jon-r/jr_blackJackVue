@@ -43,7 +43,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "bet-submit",
       label: `Submit: £${betToPlace.value}`,
-      className: "btn-good",
+      className: "action-button--wider action-button--good",
       icon: "publish",
       disabled: betToPlace.value < minBet,
       onClick: submitBet,
@@ -52,7 +52,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "bet-undo",
       label: "Undo",
-      className: "btn-alert",
+      className: "action-button--alert",
       icon: "undo",
       disabled: betToPlace.value === 0,
       onClick: removeChip,
@@ -77,23 +77,23 @@ function submitBet() {
 </script>
 
 <template>
-  <section class="ctrl-menu frame flex flex-wrap">
-    <ActionButton
-      v-for="chipButton in chipButtons"
-      :key="chipButton.id"
-      v-bind="chipButton"
-      @click="chipButton.onClick"
-    >
-      <BettingChip :value="chipButton.disabled ? 0 : chipButton.id" />
-    </ActionButton>
+  <!--  <section class="ctrl-menu frame flex flex-wrap">-->
+  <ActionButton
+    v-for="chipButton in chipButtons"
+    :key="chipButton.id"
+    v-bind="chipButton"
+    @click="chipButton.onClick"
+  >
+    <BettingChip :value="chipButton.disabled ? 'nil' : chipButton.id" />
+  </ActionButton>
 
-    <ActionButton
-      v-for="actionButton in actionButtons"
-      :key="actionButton.id"
-      v-bind="actionButton"
-      @click="actionButton.onClick"
-    >
-      <MdIcon class="ctrl-btn-icon" :name="actionButton.icon!" />
-    </ActionButton>
-  </section>
+  <ActionButton
+    v-for="actionButton in actionButtons"
+    :key="actionButton.id"
+    v-bind="actionButton"
+    @click="actionButton.onClick"
+  >
+    <MdIcon class="action-button__icon" :name="actionButton.icon!" />
+  </ActionButton>
+  <!--  </section>-->
 </template>

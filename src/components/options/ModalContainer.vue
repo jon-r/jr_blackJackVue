@@ -15,7 +15,7 @@ const props = defineProps<ModalContainerProps>();
 
         <button
           type="button"
-          class="button-reset modal__close"
+          class="button-base modal__close"
           @click="() => $emit('closeModal')"
         >
           <MdIcon name="close" />

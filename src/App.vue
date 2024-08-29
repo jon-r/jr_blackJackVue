@@ -14,3 +14,16 @@ import OptionsModal from "~/components/options/OptionsModal.vue";
   <OptionsModal />
   <SvgStatic v-once />
 </template>
+<style>
+.app-container {
+  height: 100vh;
+  max-height: 768px;
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  background-color: var(--md-sys-color-primary);
+}
+</style>

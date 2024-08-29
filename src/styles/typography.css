@@ -35,6 +35,9 @@ h5 {
   font-size: 1.44rem;
   font-weight: 400;
 }
+p {
+  margin: 0;
+}
 
 .material-symbols-rounded {
   font-variation-settings:
