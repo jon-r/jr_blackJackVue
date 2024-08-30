@@ -1,18 +1,9 @@
-import { Player } from "../types/players.ts";
+export const DEALER_NAME = "Dealer";
 
-export const DEFAULT_PLAYER: Omit<Player, "name" | "index"> = {
-  money: 1000,
-  firstBet: 0,
-  isDealer: false,
-  score: 0,
-  inGame: true,
-  peeked: null,
-  hands: [],
-  activeHandId: 0,
-};
-
-export const DEALER: Omit<Player, "index"> = {
-  ...DEFAULT_PLAYER,
-  name: "Dealer",
-  isDealer: true,
-};
+export const DEFAULT_PLAYER_NAMES = Object.freeze([
+  "Aaron",
+  "Beth",
+  "Chris",
+  "Denise",
+  "Ethan",
+]);

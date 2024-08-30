@@ -3,7 +3,8 @@ import { computed } from "vue";
 
 import { GamePlayActionTypes } from "../../constants/gamePlay.ts";
 import { getHandRules } from "../../helpers/cards.ts";
-import { useAppStore } from "../../store/store.ts";
+import { usePlayerActions } from "../../stores/actions/player.ts";
+// import { useAppStore } from "../../store/store.ts";
 import { ButtonControl } from "../../types/button.ts";
 import { Player } from "../../types/players.ts";
 import MdIcon from "../common/MdIcon.vue";
@@ -13,8 +14,9 @@ type GamePlayActionsProps = {
   player: Player;
 };
 
-const { dispatch } = useAppStore();
+// const { dispatch } = useAppStore();
 const props = defineProps<GamePlayActionsProps>();
+const playerActions = usePlayerActions();
 
 const actionButtons = computed<ButtonControl[]>(() => {
   const { canSplit, canAfford, isFirstPlay } = getHandRules(props.player);
@@ -25,11 +27,13 @@ const actionButtons = computed<ButtonControl[]>(() => {
       id: "play-hit",
       label: GamePlayActionTypes.Hit,
       icon: "touch_app",
+      onClick: playerActions.hit,
     },
     {
       id: "play-stand",
       label: GamePlayActionTypes.Stand,
       icon: "pan_tool",
+      onClick: playerActions.stand,
     },
     {
       id: "play-split",
@@ -37,6 +41,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
       disabled: !(canAfford && canSplit),
       icon: "call_split",
       alert: `- £${firstBet}`,
+      onClick: playerActions.split,
     },
     {
       id: "play-surrender",
@@ -44,6 +49,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
       disabled: !isFirstPlay,
       icon: "flag",
       alert: `+ £${firstBet / 2}`,
+      onClick: playerActions.surrender,
     },
     {
       id: "play-double",
@@ -51,11 +57,12 @@ const actionButtons = computed<ButtonControl[]>(() => {
       disabled: !(canAfford && isFirstPlay),
       icon: "monetization_on",
       alert: `- £${firstBet}`,
+      onClick: playerActions.double,
     },
   ];
 });
 
-function handleAction(action: GamePlayActionTypes) {
+/*function handleAction(action: GamePlayActionTypes) {
   const { index: idx, name, firstBet } = props.player;
 
   const handEvent = {
@@ -78,7 +85,7 @@ function handleAction(action: GamePlayActionTypes) {
 
     dispatch("playerUpdateMoney", betVals);
   }
-}
+}*/
 </script>
 <template>
   <section class="ctrl-menu frame flex flex-wrap">
@@ -86,7 +93,7 @@ function handleAction(action: GamePlayActionTypes) {
       v-for="actionButton in actionButtons"
       :key="actionButton.id"
       v-bind="actionButton"
-      @click="() => handleAction(actionButton.label as GamePlayActionTypes)"
+      @click="actionButton.onClick"
     >
       <MdIcon class="ctrl-btn-icon" :name="actionButton.icon!" />
     </ActionButton>

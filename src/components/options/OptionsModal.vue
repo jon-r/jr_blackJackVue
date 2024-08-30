@@ -3,10 +3,11 @@
 import { ref } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
+import { DEFAULT_PLAYER_NAMES } from "../../constants/player.ts";
 // import { DEFAULT_PLAYER } from "../../constants/player.ts";
 // import { useAppStore } from "../../store/store.ts";
 import { useBetActions } from "../../stores/actions/bets.ts";
-import { useGameProgressActions } from "../../stores/actions/gameProgress.ts";
+import { useGameActions } from "../../stores/actions/game.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
 // import { useGamePlayStore } from "../../stores/gamePlayStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
@@ -23,15 +24,14 @@ const playersStore = usePlayersStore();
 //   config: { deckCount, minBet, autoTime },
 // }: ToRefs<CoreState> = storeToRefs(coreStore);
 // const gamePlayStore = useGamePlayStore();
-const gameProgressActions = useGameProgressActions();
+const gameActions = useGameActions();
 const betActions = useBetActions();
 
 const emit = defineEmits(["closeModal"]);
 
-const defaultNames = ["Aaron", "Beth", "Chris", "Denise", "Ethan"];
 function setupPlayerInput(players: Player[]): PlayerInputStub[] {
   if (!players.length) {
-    return defaultNames.map((name) => ({ name }));
+    return DEFAULT_PLAYER_NAMES.map((name) => ({ name }));
   }
 
   const playersWithoutDealer = players
@@ -60,7 +60,7 @@ function newGame() {
     playerCount: playerInput.value.length, // todo maybe -1 to count without dealer
   };
 
-  gameProgressActions.newGame(playerInput.value, newConfig);
+  gameActions.newGame(playerInput.value, newConfig);
   /*
   const players: AnyPlayer[] = playerInput.value.map((player) => ({
     ...DEFAULT_PLAYER,
@@ -141,6 +141,7 @@ function newDemo() {
       <fieldset class="options-group">
         <h4 class="options-title frame">Player Names</h4>
 
+        <!-- todo add/remove players -->
         <InputField
           v-for="(player, i) in playerInput"
           :key="i"

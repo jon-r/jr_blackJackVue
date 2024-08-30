@@ -1,11 +1,12 @@
 import { GameStages } from "../../constants/gamePlay.ts";
+import { wait } from "../../helpers/time.ts";
 import { GameConfig } from "../../types/config.ts";
 import { PlayerInputStub } from "../../types/players.ts";
 import { useCoreStore } from "../coreStore.ts";
 import { useDeckStore } from "../deckStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
 
-export function useGameProgressActions() {
+export function useGameActions() {
   const coreStore = useCoreStore();
   const playersStore = usePlayersStore();
   const deckStore = useDeckStore();
@@ -18,22 +19,18 @@ export function useGameProgressActions() {
     coreStore.startRound();
   }
 
-  async function dealFirstCards() {
-    while (coreStore.activeStage === GameStages.DealOne) {
-      await playersStore.takeCard();
-      playersStore.revealCard();
-
-      coreStore.nextPlayer();
+  // todo handle players that arent playing
+  async function dealInitialCards() {
+    for (let i = 0; i < playersStore.players.length; i++) {
+      playersStore.dealCard(i);
+      await wait(coreStore.config.autoTime);
     }
+    for (let j = 0; j < playersStore.players.length; j++) {
+      playersStore.dealOrPeek(j);
+      await wait(coreStore.config.autoTime);
+    }
+    coreStore.jumpToStage(GameStages.PlayerActions);
   }
 
-  async function dealSecondCards() {
-    while (coreStore.activeStage === GameStages.DealTwo) {
-      await playersStore.takeCard();
-      // todo dealer may peek
-      coreStore.nextPlayer();
-    }
-  }
-
-  return { newGame, dealFirstCards, dealSecondCards };
+  return { newGame, dealInitialCards };
 }

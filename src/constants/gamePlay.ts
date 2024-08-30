@@ -2,7 +2,7 @@ export enum GameStages {
   Init = -1,
   PlaceBets = 0,
   DealOne = 1,
-  DealTwo = 2,
+  DealTwo = 2, // todo remove dealTwo
   PlayerActions = 3,
   DealerActions = 4,
   EndRound = 5,

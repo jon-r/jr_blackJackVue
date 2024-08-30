@@ -1,19 +1,23 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-import { CardSuits } from "../constants/cards.ts";
+import {
+  ACE_SCORE,
+  BLACKJACK_SCORE,
+  DEALER_STAND_SCORE,
+  FACE_SCORE,
+  UNKNOWN_CARD,
+} from "../constants/cards.ts";
+import { DEALER_NAME } from "../constants/player.ts";
+import { getCardScore, getHandScore } from "../helpers/cards.ts";
 // import { EMPTY_HAND, UNKNOWN_CARD } from "../constants/cards.ts";
 // import { GameStages } from "../constants/gamePlay.ts";
 // import { DEALER, DEFAULT_PLAYER } from "../constants/player.ts";
-import { wait } from "../helpers/time.ts";
-import { Hand } from "../types/card.ts";
+// import { wait } from "../helpers/time.ts";
+import { Hand, RawCard } from "../types/card.ts";
 import { Player, PlayerInputStub } from "../types/players.ts";
 import { useCoreStore } from "./coreStore.ts";
 import { useDeckStore } from "./deckStore.ts";
-
-// export type PlayersState = {
-//   players: Player[];
-// };
 
 export function createEmptyHand(): Hand {
   return { cards: [], revealed: 0 };
@@ -58,9 +62,8 @@ export const usePlayersStore = defineStore("players", () => {
 
   const activePlayersCount = computed(
     () =>
-      players.value.filter(
-        (player) => !player.isDealer && player.money > coreStore.config.minBet,
-      ).length,
+      players.value.filter((player) => !player.isDealer && player.inGame)
+        .length,
   );
 
   const currentPlayer = computed(() =>
@@ -72,46 +75,168 @@ export const usePlayersStore = defineStore("players", () => {
       createPlayer(name, index),
     );
     newPlayers.push({
-      ...createPlayer("Dealer", newPlayers.length),
+      ...createPlayer(DEALER_NAME, newPlayers.length),
       isDealer: true,
     });
 
     players.value = newPlayers;
   }
 
-  // function addPlayerHand() {
-  //   players.value[coreStore.activePlayerId]?.hands.push(EMPTY_HAND);
-  // }
-
-  async function takeCard() {
-    const targetPlayer = players.value[coreStore.activePlayerId];
-    const targetHand = targetPlayer?.hands[targetPlayer.activeHandId];
-
-    console.log({ targetPlayer, targetHand });
-
-    if (!targetHand) {
-      return;
-    }
-    //
-    console.log(`deal to ${currentPlayer.value?.name}`);
-
-    targetHand.cards.push([0, CardSuits.Blank]);
-    // players.value[coreStore.activePlayerId]?.hands[targetHandId]?.cards.push(
-    //   UNKNOWN_CARD,
-    // );
-    await wait(coreStore.config.autoTime);
+  function addHand() {
+    players.value[coreStore.activePlayerId]?.hands.push(createEmptyHand());
   }
 
-  function revealCard() {
-    const targetPlayer = players.value[coreStore.activePlayerId];
-    const targetHand = targetPlayer?.hands[targetPlayer.activeHandId];
+  function nextHand(playerId = coreStore.activePlayerId) {
+    const targetPlayer = players.value[playerId];
 
-    if (!targetHand) {
+    if (!targetPlayer) {
       return;
     }
 
-    targetHand.cards[targetHand.revealed] = deckStore.drawCard();
+    const nextHand = targetPlayer.activeHandId + 1;
+
+    if (nextHand === targetPlayer.hands.length) {
+      return coreStore.nextPlayer();
+    }
+
+    targetPlayer.activeHandId = nextHand;
+  }
+
+  function getPlayerWithHand(
+    playerId = coreStore.activePlayerId,
+    handId?: number,
+  ): [Player?, Hand?] {
+    const targetPlayer = players.value[playerId];
+    if (!targetPlayer?.inGame) {
+      return [undefined, undefined];
+    }
+
+    return [
+      targetPlayer,
+      targetPlayer.hands[handId ?? targetPlayer.activeHandId],
+    ];
+  }
+
+  // function takeCard(playerId?: number, handId?: number) {
+  //   const [, targetHand] = getPlayerWithHand(playerId, handId);
+  //
+  //   if (!targetHand) {
+  //     return;
+  //   }
+  //
+  //   if (targetHand.cards.length > targetHand.revealed) {
+  //     // already have a blank card
+  //     return;
+  //   }
+  //
+  //   targetHand.cards.push(UNKNOWN_CARD);
+  // }
+
+  // async function revealCard(playerId?: number, handId?: number) {
+  //   const [, targetHand] = getPlayerWithHand(playerId, handId);
+  //
+  //   if (!targetHand) {
+  //     return;
+  //   }
+  //
+  //   await wait(coreStore.config.autoTime);
+  //
+  //   const newCard = deckStore.drawCard();
+  //   targetHand.cards[targetHand.revealed] = newCard;
+  //   targetHand.revealed += 1;
+  //
+  //   return newCard;
+  // }
+
+  function dealerPeekCard(dealerHand: Hand): RawCard {
+    const currentHandValue = getHandScore(dealerHand);
+
+    if (ACE_SCORE !== currentHandValue && FACE_SCORE !== currentHandValue) {
+      return UNKNOWN_CARD;
+    }
+
+    const newCard = deckStore.drawCard();
+    if (getCardScore(newCard) + currentHandValue !== BLACKJACK_SCORE) {
+      deckStore.returnCard(newCard);
+
+      return UNKNOWN_CARD;
+    }
+
+    return newCard;
+  }
+
+  // async function revealOrPeek(playerId?: number, handId?: number) {
+  //   const [player, targetHand] = getPlayerWithHand(playerId, handId);
+  //
+  //   if (!player || !targetHand) {
+  //     return UNKNOWN_CARD; // shouldnt happen, maybe throw error?
+  //   }
+  //
+  //   if (player.isDealer) {
+  //     return dealerPeekCard(targetHand);
+  //   } else {
+  //     return revealCard(playerId);
+  //   }
+  // }
+
+  // todo have this return the card (for use in messages/checks)
+  // async function dealThenReveal(playerId?: number, handId?: number) {
+  //   takeCard(playerId, handId);
+  //   revealCard(playerId, handId);
+  // }
+
+  function checkCanContinue(playerId?: number, handId?: number) {
+    const [player, targetHand] = getPlayerWithHand(playerId, handId);
+
+    const playerMustStand = player?.isDealer
+      ? DEALER_STAND_SCORE
+      : BLACKJACK_SCORE;
+    if (!targetHand || getHandScore(targetHand) >= playerMustStand) {
+      coreStore.nextPlayer();
+    }
+  }
+
+  function dealCard(playerId?: number, handId?: number) {
+    const [, targetHand] = getPlayerWithHand(playerId, handId);
+
+    if (!targetHand) {
+      return; // shouldnt happen, maybe throw error?
+    }
+
+    const newCard = deckStore.drawCard();
+    targetHand.cards[targetHand.revealed] = newCard;
     targetHand.revealed += 1;
+
+    return newCard;
+  }
+
+  function dealBlank(playerId?: number, handId?: number) {
+    const [, targetHand] = getPlayerWithHand(playerId, handId);
+
+    if (!targetHand) {
+      return; // shouldnt happen, maybe throw error?
+    }
+
+    const newCard = UNKNOWN_CARD;
+    targetHand.cards[targetHand.revealed] = newCard;
+
+    return newCard;
+  }
+
+  function dealOrPeek(playerId?: number) {
+    const [player, targetHand] = getPlayerWithHand(playerId);
+
+    if (!targetHand || !player) {
+      return; // shouldnt happen, maybe throw error?
+    }
+
+    const newCard = player.isDealer
+      ? dealerPeekCard(targetHand)
+      : deckStore.drawCard();
+    targetHand.cards[targetHand.revealed] = newCard;
+    targetHand.revealed += 1;
+
+    return newCard;
   }
 
   return {
@@ -122,7 +247,15 @@ export const usePlayersStore = defineStore("players", () => {
 
     resetPlayers,
     // addPlayerHand,
-    takeCard,
-    revealCard,
+    // takeCard,
+    // revealCard,
+    // revealOrPeek,
+    // dealThenReveal,
+    dealBlank,
+    checkCanContinue,
+    dealCard,
+    dealOrPeek,
+    addHand,
+    nextHand,
   };
 });

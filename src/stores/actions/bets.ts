@@ -1,4 +1,5 @@
 import { getRandom } from "../../deckTools.ts";
+import { wait } from "../../helpers/time.ts";
 import { useCoreStore } from "../coreStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
 
@@ -15,8 +16,20 @@ export function useBetActions() {
 
     targetPlayer.money -= value;
     targetPlayer.firstBet += value;
-    coreStore.sendMessage(`${targetPlayer.name} bets £${value}`);
-    coreStore.nextPlayer();
+    // coreStore.sendMessage(`${targetPlayer.name} bets £${value}`);
+    // coreStore.nextPlayer();
+  }
+
+  function updateBet(multiplier: number, targetId = coreStore.activePlayerId) {
+    const targetPlayer = playersStore.players[targetId];
+
+    if (!targetPlayer) {
+      return;
+    }
+
+    const extraBet = targetPlayer.firstBet * multiplier;
+
+    placeBet(extraBet, targetId);
   }
 
   function placeRandomBets() {
@@ -29,5 +42,23 @@ export function useBetActions() {
       });
   }
 
-  return { placeBet, placeRandomBets };
+  async function settleBet(
+    multiplier: number,
+    targetId = coreStore.activePlayerId,
+  ) {
+    const targetPlayer = playersStore.players[targetId];
+
+    if (!targetPlayer) {
+      return;
+    }
+
+    targetPlayer.firstBet = targetPlayer.firstBet * multiplier;
+
+    await wait(coreStore.config.autoTime);
+
+    targetPlayer.money += targetPlayer.firstBet;
+    targetPlayer.firstBet = 0;
+  }
+
+  return { placeBet, placeRandomBets, updateBet, settleBet };
 }

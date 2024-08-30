@@ -10,7 +10,7 @@ import TextButton from "./components/common/TextButton.vue";
 import OptionsModal from "./components/options/OptionsModal.vue";
 import PlayerFrame from "./components/playerFrame/PlayerFrame.vue";
 import { GameStages } from "./constants/gamePlay.ts";
-import { useGameProgressActions } from "./stores/actions/gameProgress.ts";
+import { useGameActions } from "./stores/actions/game.ts";
 // import { useAppStore } from "./store/store.ts";
 import { Card } from "./types/card.ts";
 import { useCoreStore } from "./stores/coreStore.ts";
@@ -27,7 +27,7 @@ const coreStore = useCoreStore();
 // const { notifications }: CoreState = storeToRefs(coreStore);
 const deckStore = useDeckStore();
 
-const gameProgressActions = useGameProgressActions();
+const gameActions = useGameActions();
 
 const showOptions = ref(true);
 // const messages = ref<{ text: string; idx: number }[]>([]);
@@ -84,10 +84,11 @@ watch(
   () => {
     switch (coreStore.activeStage) {
       case GameStages.DealOne:
-        console.log("deal one");
-        return gameProgressActions.dealFirstCards();
-      case GameStages.DealTwo:
-        return gameProgressActions.dealSecondCards();
+        return gameActions.dealInitialCards();
+      // case GameStages.DealTwo:
+      //   return gameProgressActions.dealSecondCards();
+      // case GameStages.PlayerActions:
+      //   return playersStore.checkCanContinue();
     }
   },
 );

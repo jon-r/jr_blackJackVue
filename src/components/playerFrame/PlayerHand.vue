@@ -11,6 +11,7 @@ import {
 // import { blankCard, valueCard } from "../../deckTools.ts";
 // import { useAppStore } from "../../store/store.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
+import { usePlayersStore } from "../../stores/playersStore.ts";
 // import { usePlayersStore } from "../../stores/playersStore.ts";
 import { Position } from "../../types/animations.ts";
 import { Card, Hand, RawCard } from "../../types/card.ts";
@@ -26,7 +27,7 @@ type PlayerHandProps = {
 };
 const props = defineProps<PlayerHandProps>();
 
-// const playersStore = usePlayersStore();
+const playersStore = usePlayersStore();
 // const {} = storeToRefs(playersStore)
 const coreStore = useCoreStore();
 // const {

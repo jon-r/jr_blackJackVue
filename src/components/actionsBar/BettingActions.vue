@@ -96,7 +96,9 @@ function submitBet() {
   //   value: "addBet",
   // };
 
+  coreStore.sendMessage(`${props.player.name} bets £${betToPlace.value}`);
   betActions.placeBet(betToPlace.value);
+  coreStore.nextPlayer();
 
   chipsToPlace.value = [];
   // dispatch("setNewMessage", `${props.player.name} bets £${betToPlace.value}`);

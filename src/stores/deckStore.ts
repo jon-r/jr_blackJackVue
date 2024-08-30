@@ -31,5 +31,16 @@ export const useDeckStore = defineStore("deck", () => {
     return newCard;
   }
 
-  return { deck, shoePosition, setShoePosition, rebuildDeck, drawCard };
+  function returnCard(card: RawCard) {
+    deck.value.push(card);
+  }
+
+  return {
+    deck,
+    shoePosition,
+    setShoePosition,
+    rebuildDeck,
+    drawCard,
+    returnCard,
+  };
 });

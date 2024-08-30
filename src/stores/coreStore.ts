@@ -28,6 +28,7 @@ export const useCoreStore = defineStore("core", () => {
   }
 
   function jumpToStage(stage: GameStages) {
+    // todo skip player if they cant play
     activePlayerId.value = 0;
     activeStage.value = stage;
   }
@@ -40,6 +41,7 @@ export const useCoreStore = defineStore("core", () => {
   }
 
   function nextPlayer() {
+    // todo skip player if they cant play
     if (activePlayerId.value === config.value.playerCount) {
       nextStage();
       activePlayerId.value = 0;

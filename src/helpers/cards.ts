@@ -7,7 +7,7 @@ import {
   SUITS_COUNT,
   SUIT_LIST,
 } from "../constants/cards.ts";
-import { Card, HandRules, RawCard } from "../types/card.ts";
+import { Card, Hand, HandRules, RawCard } from "../types/card.ts";
 import { Player } from "../types/players.ts";
 
 export function getHandRules(player: Player): HandRules {
@@ -22,8 +22,8 @@ export function getHandRules(player: Player): HandRules {
 
   const canAfford = money >= firstBet;
   const isFirstPlay = cards.length === 2;
-  const hasPair = cards[0][0] === cards[1][0];
-  const canSplit = isFirstPlay && hasPair;
+  const hasMatch = getCardScore(cards[0]) === getCardScore(cards[1]);
+  const canSplit = isFirstPlay && hasMatch;
 
   return { canAfford, canSplit, isFirstPlay };
 }
@@ -44,6 +44,17 @@ export function formatCard(rawCard: RawCard): Card {
     score: getCardScore(rawCard), // todo unused here
     suit,
   };
+}
+
+export function getHandScore(hand: Hand): number {
+  return hand.cards.reduce((score, card) => {
+    let cardScore = getCardScore(card);
+    if (cardScore === ACE_SCORE && score > FACE_SCORE) {
+      cardScore = 1;
+    }
+
+    return score + cardScore;
+  }, 0);
 }
 
 export function buildDeck(decks: number): RawCard[] {
