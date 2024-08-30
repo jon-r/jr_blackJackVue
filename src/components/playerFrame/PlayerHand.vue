@@ -377,7 +377,7 @@ function cardMessage(hand: Hand, outcome: string) {
       v-for="(hand, idx) in player.hands"
       :key="idx"
       :frame-pos="props.framePos"
-      :cards="hand.cards"
+      :hand="hand"
       :is-active="idx === player.activeHandId"
     >
     </PlayerCards>

@@ -7,15 +7,15 @@ import {
   BLACKJACK_SCORE,
   FaceValues,
 } from "../../constants/cards.ts";
-import { formatCard } from "../../helpers/cards.ts";
+import { formatCard, getHandScore } from "../../helpers/cards.ts";
 import { useDeckStore } from "../../stores/deckStore.ts";
 // import { useAppStore } from "../../store/store.ts";
 import { Position } from "../../types/animations.ts";
-import { RawCard } from "../../types/card.ts";
+import { Hand, RawCard } from "../../types/card.ts";
 import PlayingCard from "../common/PlayingCard.vue";
 
 type PlayerCardsProps = {
-  cards: RawCard[];
+  hand: Hand;
   framePos: Position;
   isActive: boolean;
 };
@@ -23,14 +23,15 @@ type PlayerCardsProps = {
 // const store = useAppStore();
 const deckStore = useDeckStore();
 const props = defineProps<PlayerCardsProps>();
-const emit = defineEmits(["update:modelValue"]);
+// const emit = defineEmits(["update:modelValue"]);
 
-const formattedCards = computed(() => props.cards.map(formatCard));
+const formattedCards = computed(() => props.hand.cards.map(formatCard));
 
 const acesCount = computed(
   () =>
-    props.cards.filter(([faceValue]: RawCard) => faceValue === FaceValues.Ace)
-      .length,
+    props.hand.cards.filter(
+      ([faceValue]: RawCard) => faceValue === FaceValues.Ace,
+    ).length,
 );
 
 const enterPosition = computed<Position>(() => {
@@ -50,39 +51,40 @@ const leavePosition = computed<Position>(() => ({
 // fixme bug if 10 or face on soft (it doesnt update the score)
 // also remove the aces side-effect
 const score = computed(() => {
-  // const cards = this.cards;
-
-  if (props.cards.length === 0) return 0;
-
-  /*  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-  this.aces = cards.reduce(
-      (count, card) => count + Number(card.face === "A"),
-      0,
-  );*/
-
-  let newScore = props.cards.reduce(
-    (score, [faceValue]: RawCard) => score + faceValue,
-    0,
-  );
-
-  let currentAces = acesCount.value;
-  // reduces as many aces as needed (if possible) to keep the score down
-  while (newScore > 21 && currentAces > 0) {
-    currentAces -= 1;
-    newScore -= ACE_SCORE;
-  }
-
-  // fixme remove side effect. move this score stuff to elsewhere
-  emit("update:modelValue", newScore);
-
-  return newScore;
+  return getHandScore(props.hand);
+  // // const cards = this.cards;
+  //
+  // if (props.cards.length === 0) return 0;
+  //
+  // /*  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+  // this.aces = cards.reduce(
+  //     (count, card) => count + Number(card.face === "A"),
+  //     0,
+  // );*/
+  //
+  // let newScore = props.cards.reduce(
+  //   (score, [faceValue]: RawCard) => score + faceValue,
+  //   0,
+  // );
+  //
+  // let currentAces = acesCount.value;
+  // // reduces as many aces as needed (if possible) to keep the score down
+  // while (newScore > 21 && currentAces > 0) {
+  //   currentAces -= 1;
+  //   newScore -= ACE_SCORE;
+  // }
+  //
+  // // fixme remove side effect. move this score stuff to elsewhere
+  // emit("update:modelValue", newScore);
+  //
+  // return newScore;
 });
 
 const scoreString = computed(() => {
   switch (true) {
     case score.value > BLACKJACK_SCORE:
       return "Bust";
-    case score.value === BLACKJACK_SCORE && props.cards.length === 2:
+    case score.value === BLACKJACK_SCORE && props.hand.cards.length === 2:
       return "BlackJack";
     // fixme soft is more complex than this
     case acesCount.value > 0:

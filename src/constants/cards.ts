@@ -1,3 +1,5 @@
+import {RawCard} from "../types/card.ts";
+
 export enum FaceValues {
   Ace = 1,
   Jack = 11,

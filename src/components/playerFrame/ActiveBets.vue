@@ -36,6 +36,7 @@ const quidsIn = ref(true);
 // const chips = ref<number[]>([]);
 // const hasEnded = ref(false);
 
+// todo animate this with a watch function and stagger in tokens
 const betAsChips = computed<number[]>(() => {
   let chipsValue = props.bet;
   const chips = [];
