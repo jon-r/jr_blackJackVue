@@ -42,7 +42,7 @@ watch(
   function updateStageMessage(stage: GameStages) {
     const out = new Map<GameStages, string>([
       [GameStages.PlaceBets, "Please place Your bets"],
-      [GameStages.DealOne, "All bets are in, dealing out the first cards."],
+      [GameStages.DealCards, "All bets are in, dealing out the first cards."],
       [GameStages.EndRound, "Round Over"],
     ]);
 

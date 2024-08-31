@@ -1,18 +1,15 @@
-import { wait } from "../../helpers/time.ts";
 import { useCoreStore } from "../coreStore.ts";
-// import { useDeckStore } from "../deckStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
 import { useBetActions } from "./bets.ts";
 
 export function usePlayerActions() {
   const coreStore = useCoreStore();
   const playersStore = usePlayersStore();
-  // const deckStore = useDeckStore();
   const betActions = useBetActions();
 
-  function hit() {
-    playersStore.dealCard();
-    playersStore.checkCanContinue();
+  async function hit() {
+    await playersStore.dealCard();
+    playersStore.checkPlayerScore();
   }
 
   function stand() {
@@ -28,21 +25,14 @@ export function usePlayerActions() {
     // check for outcome?
   }
 
-  async function surrender() {
-    // cash in (half bet)
-    // betActions.updateBet(-0.5);
-    await betActions.settleBet(0.5);
-    // next player
+  function surrender() {
+    betActions.settleBet(0.5);
     coreStore.nextPlayer();
   }
 
-  async function double() {
-    // add second bet
+  function double() {
     betActions.updateBet(1);
-    await wait(coreStore.config.autoTime);
-    // deal (blank) card
     playersStore.dealBlank();
-    // next player
     coreStore.nextPlayer();
   }
 

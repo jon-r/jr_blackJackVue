@@ -1,5 +1,6 @@
+import { DEALER_STAND_SCORE } from "../../constants/cards.ts";
 import { GameStages } from "../../constants/gamePlay.ts";
-import { wait } from "../../helpers/time.ts";
+import { DEALER_ID } from "../../constants/player.ts";
 import { GameConfig } from "../../types/config.ts";
 import { PlayerInputStub } from "../../types/players.ts";
 import { useCoreStore } from "../coreStore.ts";
@@ -16,21 +17,40 @@ export function useGameActions() {
     playersStore.resetPlayers(players);
     deckStore.rebuildDeck(config.deckCount);
 
-    coreStore.startRound();
+    coreStore.newRound();
   }
 
-  // todo handle players that arent playing
+  function goToFirstPlayer() {
+    const firstPlayer = playersStore.players.find(
+      (player) => player.inGame && !player.isDealer,
+    );
+
+    // fixme end game if no players (no bang)
+    coreStore.jumpToPlayer(firstPlayer!.index);
+  }
+
   async function dealInitialCards() {
-    for (let i = 0; i < playersStore.players.length; i++) {
-      playersStore.dealCard(i);
-      await wait(coreStore.config.autoTime);
-    }
-    for (let j = 0; j < playersStore.players.length; j++) {
-      playersStore.dealOrPeek(j);
-      await wait(coreStore.config.autoTime);
-    }
+    await playersStore.dealAllPlayersCards();
+    await playersStore.dealCard(DEALER_ID);
+    // await wait(coreStore.config.autoTime);
+
+    await playersStore.dealAllPlayersCards();
+    await playersStore.dealOrPeek(DEALER_ID);
+
     coreStore.jumpToStage(GameStages.PlayerActions);
   }
 
-  return { newGame, dealInitialCards };
+  async function dealFinalCards() {
+    let dealerMayContinue = true;
+    while (dealerMayContinue) {
+      await playersStore.dealCard(DEALER_ID);
+      dealerMayContinue = playersStore.dealerScore < DEALER_STAND_SCORE;
+    }
+
+    await playersStore.revealAllBlankCards();
+
+    coreStore.jumpToStage(GameStages.EndRound);
+  }
+
+  return { newGame, goToFirstPlayer, dealInitialCards, dealFinalCards };
 }

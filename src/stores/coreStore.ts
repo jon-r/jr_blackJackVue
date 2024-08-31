@@ -33,7 +33,11 @@ export const useCoreStore = defineStore("core", () => {
     activeStage.value = stage;
   }
 
-  function startRound() {
+  function jumpToPlayer(playerId: number) {
+    activePlayerId.value = playerId;
+  }
+
+  function newRound() {
     gameRound.value += 1;
     jumpToStage(GameStages.PlaceBets);
     // activeStage.value = GameStages.PlaceBets;
@@ -44,18 +48,16 @@ export const useCoreStore = defineStore("core", () => {
     // todo skip player if they cant play
     if (activePlayerId.value === config.value.playerCount) {
       nextStage();
-      activePlayerId.value = 0;
     } else {
-      activePlayerId.value += 1;
+      jumpToPlayer(activePlayerId.value + 1);
     }
   }
 
   function nextStage() {
     if (activeStage.value === GameStages.EndRound) {
-      gameRound.value += 1;
-      activeStage.value = GameStages.PlaceBets;
+      newRound();
     } else {
-      activeStage.value += 1;
+      jumpToStage(activeStage.value + 1);
     }
     console.log(GameStages[activeStage.value]);
   }
@@ -74,9 +76,10 @@ export const useCoreStore = defineStore("core", () => {
     notifications,
 
     sendMessage,
-    startRound,
+    newRound,
     nextPlayer,
     jumpToStage,
+    jumpToPlayer,
     nextStage,
     // endAllPlayerTurns,
   };

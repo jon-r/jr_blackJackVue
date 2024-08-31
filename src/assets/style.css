@@ -471,30 +471,32 @@ h5 {
   max-width: 208px;
   height: 25%;
   max-height: 208px;
+
+  border:solid 1px red;
 }
-.player-0 {
+.player-1 {
   top: 25%;
   left: 5%;
 }
-.player-1 {
+.player-2 {
   top: 50%;
   left: 5%;
 }
-.player-2 {
+.player-3 {
   top: 75%;
   left: 35%;
 }
-.player-3 {
+.player-4 {
   top: 50%;
   right: 5%;
 }
-.player-4 {
+.player-5 {
   top: 25%;
   right: 5%;
 }
 
 /*dealer*/
-.player-5 {
+.player-0 {
   top: 2%;
   left: 30%;
 }
@@ -535,28 +537,28 @@ h5 {
 }
 
 @media screen and (min-width: 980px) {
-  .player-0 {
+  .player-1 {
     top: 33%;
     left: 1%;
   }
-  .player-1 {
+  .player-2 {
     top: 63%;
     left: 15%;
   }
-  .player-2 {
+  .player-3 {
     top: 71%;
     left: 40%;
   }
-  .player-3 {
+  .player-4 {
     top: 63%;
     right: 15%;
   }
-  .player-4 {
+  .player-5 {
     top: 33%;
     right: 1%;
   }
   /*dealer*/
-  .player-5 {
+  .player-0 {
     top: 7%;
     left: 42%;
   }

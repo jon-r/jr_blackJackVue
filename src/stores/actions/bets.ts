@@ -1,5 +1,4 @@
 import { getRandom } from "../../deckTools.ts";
-import { wait } from "../../helpers/time.ts";
 import { useCoreStore } from "../coreStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
 
@@ -42,10 +41,7 @@ export function useBetActions() {
       });
   }
 
-  async function settleBet(
-    multiplier: number,
-    targetId = coreStore.activePlayerId,
-  ) {
+  function settleBet(multiplier: number, targetId = coreStore.activePlayerId) {
     const targetPlayer = playersStore.players[targetId];
 
     if (!targetPlayer) {
@@ -53,8 +49,6 @@ export function useBetActions() {
     }
 
     targetPlayer.firstBet = targetPlayer.firstBet * multiplier;
-
-    await wait(coreStore.config.autoTime);
 
     targetPlayer.money += targetPlayer.firstBet;
     targetPlayer.firstBet = 0;

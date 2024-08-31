@@ -83,12 +83,14 @@ watch(
   () => coreStore.activeStage,
   () => {
     switch (coreStore.activeStage) {
-      case GameStages.DealOne:
+      case GameStages.PlaceBets:
+        return gameActions.goToFirstPlayer();
+      case GameStages.DealCards:
         return gameActions.dealInitialCards();
-      // case GameStages.DealTwo:
-      //   return gameProgressActions.dealSecondCards();
-      // case GameStages.PlayerActions:
-      //   return playersStore.checkCanContinue();
+      case GameStages.PlayerActions:
+        return gameActions.goToFirstPlayer();
+      case GameStages.DealerActions:
+        return gameActions.dealFinalCards();
     }
   },
 );

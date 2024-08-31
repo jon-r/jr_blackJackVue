@@ -3,7 +3,8 @@
 import { ref } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
-import { DEFAULT_PLAYER_NAMES } from "../../constants/player.ts";
+// import { DEFAULT_PLAYER_NAMES } from "../../constants/player.ts";
+import { setupPlayerInput } from "../../helpers/players.ts";
 // import { DEFAULT_PLAYER } from "../../constants/player.ts";
 // import { useAppStore } from "../../store/store.ts";
 import { useBetActions } from "../../stores/actions/bets.ts";
@@ -12,7 +13,7 @@ import { useCoreStore } from "../../stores/coreStore.ts";
 // import { useGamePlayStore } from "../../stores/gamePlayStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
 import { GameConfig } from "../../types/config.ts";
-import { Player, PlayerInputStub } from "../../types/players.ts";
+// import { Player, PlayerInputStub } from "../../types/players.ts";
 import TextButton from "../common/TextButton.vue";
 import InputField from "./InputField.vue";
 import ModalContainer from "./ModalContainer.vue";
@@ -29,19 +30,19 @@ const betActions = useBetActions();
 
 const emit = defineEmits(["closeModal"]);
 
-function setupPlayerInput(players: Player[]): PlayerInputStub[] {
-  if (!players.length) {
-    return DEFAULT_PLAYER_NAMES.map((name) => ({ name }));
-  }
-
-  const playersWithoutDealer = players
-    .filter((player) => !player.isDealer)
-    .map((player) => ({ name: player.name }));
-
-  return Array.from({ ...playersWithoutDealer, length: 5 }, (player) => ({
-    name: player.name ?? "",
-  }));
-}
+// function setupPlayerInput(players: Player[]): PlayerInputStub[] {
+//   if (!players.length) {
+//     return DEFAULT_PLAYER_NAMES.map((name) => ({ name }));
+//   }
+//
+//   const playersWithoutDealer = players
+//     .filter((player) => !player.isDealer)
+//     .map((player) => ({ name: player.name }));
+//
+//   return Array.from({ ...playersWithoutDealer, length: 5 }, (player) => ({
+//     name: player.name ?? "",
+//   }));
+// }
 
 const playerInput = ref(setupPlayerInput(playersStore.players));
 
@@ -95,7 +96,7 @@ function newDemo() {
   newGame();
 
   betActions.placeRandomBets();
-  coreStore.jumpToStage(GameStages.DealOne);
+  coreStore.jumpToStage(GameStages.DealCards);
   // autoBet();
   // coreStore.activePlayerId = 0;
   // coreStore.activeStage = GameStages.DealOne;

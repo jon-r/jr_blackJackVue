@@ -1,11 +1,10 @@
 export enum GameStages {
   Init = -1,
   PlaceBets = 0,
-  DealOne = 1,
-  DealTwo = 2, // todo remove dealTwo
-  PlayerActions = 3,
-  DealerActions = 4,
-  EndRound = 5,
+  DealCards = 1,
+  PlayerActions = 2,
+  DealerActions = 3,
+  EndRound = 4,
 }
 
 export enum GamePlayActionTypes {

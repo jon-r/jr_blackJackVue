@@ -36,6 +36,10 @@ export function getCardScore(rawCard: RawCard): number {
     : Math.min(faceValue, FACE_SCORE);
 }
 
+export function isBlankCard(rawCard: RawCard) {
+  return rawCard[0] === 0;
+}
+
 export function formatCard(rawCard: RawCard): Card {
   const [faceValue, suit] = rawCard;
 
@@ -46,7 +50,9 @@ export function formatCard(rawCard: RawCard): Card {
   };
 }
 
-export function getHandScore(hand: Hand): number {
+export function getHandScore(hand?: Hand): number {
+  if (!hand) return 0;
+
   return hand.cards.reduce((score, card) => {
     let cardScore = getCardScore(card);
     if (cardScore === ACE_SCORE && score > FACE_SCORE) {
