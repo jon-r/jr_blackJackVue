@@ -7,6 +7,19 @@ export enum GameStages {
   EndRound = 4,
 }
 
+export enum SpecialScores {
+  Bust = "Bust",
+  BlackJack = "BlackJack",
+  Soft = "Soft",
+  None = "",
+}
+
+export enum GameOutcomes {
+  Win = "Win",
+  Lost = "Lost",
+  Push = "Push",
+}
+
 export enum GamePlayActionTypes {
   Hit = "hit",
   Stand = "stand",

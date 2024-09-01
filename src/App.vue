@@ -35,7 +35,7 @@ const shoeRef = ref<HTMLDivElement>();
 const blankCard: Card = {
   suit: "blank",
   face: 0,
-  score: 0,
+  // score: 0,
 };
 
 // const activePlayer = computed(
@@ -64,14 +64,20 @@ watch(
   () => coreStore.activeStage,
   () => {
     switch (coreStore.activeStage) {
+      // todo reset on init
+
       case GameStages.PlaceBets:
+        coreStore.sendMessage("Please place your bets.");
         return gameActions.goToFirstPlayer();
       case GameStages.DealCards:
+        coreStore.sendMessage("All bets are in, dealing out first cards.");
         return gameActions.dealInitialCards();
       case GameStages.PlayerActions:
         return gameActions.goToFirstPlayer();
       case GameStages.DealerActions:
         return gameActions.dealFinalCards();
+      case GameStages.EndRound:
+        return coreStore.sendMessage("Round over. Play again?");
     }
   },
 );

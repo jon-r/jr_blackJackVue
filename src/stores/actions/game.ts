@@ -36,7 +36,7 @@ export function useGameActions() {
 
     // deal two
     await playersStore.dealAllPlayersCards();
-    await playersStore.dealOrPeek(DEALER_ID);
+    await playersStore.dealOrPeekDealer();
 
     coreStore.jumpToStage(GameStages.PlayerActions);
   }
@@ -45,7 +45,7 @@ export function useGameActions() {
     let dealerMayContinue = true;
     while (dealerMayContinue) {
       await playersStore.dealCard(DEALER_ID);
-      dealerMayContinue = playersStore.dealerScore < DEALER_STAND_SCORE;
+      dealerMayContinue = playersStore.dealerOutcome.score < DEALER_STAND_SCORE;
     }
 
     await playersStore.revealAllBlankCards();

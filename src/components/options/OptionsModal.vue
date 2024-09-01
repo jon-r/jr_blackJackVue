@@ -16,6 +16,7 @@ import { GameConfig } from "../../types/config.ts";
 import TextButton from "../common/TextButton.vue";
 import InputField from "./InputField.vue";
 import ModalContainer from "./ModalContainer.vue";
+import MdIcon from "../common/MdIcon.vue";
 
 // const { dispatch } = useAppStore();
 const coreStore = useCoreStore();

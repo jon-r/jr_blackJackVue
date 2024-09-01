@@ -27,6 +27,11 @@ export const useCoreStore = defineStore("core", () => {
     config.value = newConfig;
   }
 
+  function restartGame() {
+    // todo need more here?
+    jumpToStage(GameStages.Init);
+  }
+
   function jumpToStage(stage: GameStages) {
     // todo skip player if they cant play
     activePlayerId.value = 0;
@@ -73,7 +78,8 @@ export const useCoreStore = defineStore("core", () => {
     nextPlayer,
     jumpToStage,
     jumpToPlayer,
-    nextStage,
+    // nextStage,
+    restartGame,
     // endAllPlayerTurns,
   };
 });

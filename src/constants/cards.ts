@@ -14,6 +14,13 @@ export const CARD_FACES: Record<number, string> = {
   [FaceValues.Queen]: "Q",
 };
 
+export const CARD_VALUES: Record<number, number> = {
+  [FaceValues.Ace]: 11,
+  [FaceValues.Jack]: 10,
+  [FaceValues.King]: 10,
+  [FaceValues.Queen]: 10,
+};
+
 export const enum CardSuits {
   Hearts = "hearts",
   Diamonds = "diamonds",

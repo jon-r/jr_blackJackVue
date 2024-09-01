@@ -2,17 +2,12 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
 import {
-  ACE_SCORE,
   BLACKJACK_SCORE,
   FACE_SCORE,
   UNKNOWN_CARD,
 } from "../constants/cards.ts";
 import { DEALER_ID, DEALER_NAME } from "../constants/player.ts";
-import {
-  getCardScore,
-  isBlankCard,
-  oldGetHandScore,
-} from "../helpers/cards.ts";
+import { getCardScore, getHandOutcome, isBlankCard } from "../helpers/cards.ts";
 import {
   createEmptyHand,
   createPlayer,
@@ -45,7 +40,7 @@ export const usePlayersStore = defineStore("players", () => {
     players.value.find((player) => player.index === coreStore.activePlayerId),
   );
 
-  const dealerScore = computed(() => oldGetHandScore(dealer.value.hands[0]));
+  const dealerOutcome = computed(() => getHandOutcome(dealer.value.hands[0]));
 
   function resetPlayers(stubs: PlayerInputStub[]) {
     const newPlayers: Player[] = stubs.map(({ name }, index) =>
@@ -91,10 +86,10 @@ export const usePlayersStore = defineStore("players", () => {
     return targetPlayer.hands[handId ?? targetPlayer.activeHandId];
   }
 
-  function dealerPeekCard(dealerHand: Hand): RawCard | undefined {
-    const currentHandValue = oldGetHandScore(dealerHand);
+  function dealerPeekCard(): RawCard | undefined {
+    const currentHandValue = dealerOutcome.value.score;
 
-    if (ACE_SCORE !== currentHandValue && FACE_SCORE !== currentHandValue) {
+    if (currentHandValue < FACE_SCORE) {
       return;
     }
 
@@ -103,6 +98,8 @@ export const usePlayersStore = defineStore("players", () => {
       deckStore.returnCard(newCard);
 
       return;
+    } else {
+      // todo end now, dealer blackjack time
     }
 
     return newCard;
@@ -111,7 +108,7 @@ export const usePlayersStore = defineStore("players", () => {
   function checkPlayerScore(playerId?: number, handId?: number) {
     const targetHand = getPlayerHand(playerId, handId);
 
-    const playerMustStand = oldGetHandScore(targetHand) >= BLACKJACK_SCORE;
+    const playerMustStand = getHandOutcome(targetHand).score >= BLACKJACK_SCORE;
 
     // todo handle instant wins/losses here? need to move this function to playerActions
 
@@ -182,19 +179,15 @@ export const usePlayersStore = defineStore("players", () => {
     targetHand.cards[targetHand.revealed] = UNKNOWN_CARD;
   }
 
-  async function dealOrPeek(playerId?: number) {
-    const targetHand = getPlayerHand(playerId);
-
-    if (!targetHand) return; // shouldnt happen, maybe throw error?
-
-    dealBlank(playerId);
+  async function dealOrPeekDealer() {
+    dealBlank(DEALER_ID);
 
     await wait(coreStore.config.autoTime);
 
-    const newCard = dealerPeekCard(targetHand);
+    const newCard = dealerPeekCard();
 
     if (newCard) {
-      revealCard(newCard, playerId);
+      revealCard(newCard, DEALER_ID);
     }
 
     return newCard;
@@ -203,7 +196,7 @@ export const usePlayersStore = defineStore("players", () => {
   return {
     players,
     dealer,
-    dealerScore,
+    dealerOutcome,
     currentPlayer,
     activePlayersCount,
 
@@ -213,7 +206,7 @@ export const usePlayersStore = defineStore("players", () => {
     dealCard,
     dealAllPlayersCards,
     revealAllBlankCards,
-    dealOrPeek,
+    dealOrPeekDealer,
     addHand,
     nextHand,
   };

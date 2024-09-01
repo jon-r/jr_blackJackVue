@@ -1,4 +1,4 @@
-import { getRandom } from "../../deckTools.ts";
+import { getRandom } from "../../helpers/math.ts";
 import { useCoreStore } from "../coreStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
 
