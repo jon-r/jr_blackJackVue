@@ -1,12 +1,12 @@
 import { CardSuits } from "../constants/cards.ts";
 
-export type RawCardOld = [faceValue: number, suit: number];
+// export type RawCardOld = [faceValue: number, suit: number];
 export type RawCard = [faceValue: number, suit: CardSuits];
 
 // todo enums
 export type Card = {
   face: number | string;
-  score: number;
+  // score: number;
   suit: string | CardSuits;
 };
 

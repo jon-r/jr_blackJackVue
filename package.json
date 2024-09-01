@@ -9,7 +9,7 @@
     "dev": "vite",
     "lint": "eslint .",
     "prettify": "prettier . --write",
-    "type-check": "tsc --noEmit"
+    "type-check": "vue-tsc --noEmit"
   },
   "author": "Jon Richards",
   "license": "MIT",
@@ -29,7 +29,6 @@
   },
   "dependencies": {
     "pinia": "^2.2.1",
-    "vue": "^3.4.35",
-    "vuex": "^4.1.0"
+    "vue": "^3.4.35"
   }
 }

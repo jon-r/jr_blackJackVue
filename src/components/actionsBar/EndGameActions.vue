@@ -2,14 +2,16 @@
 import { computed } from "vue";
 
 import { EndGameActionTypes } from "../../constants/gamePlay.ts";
-import { useAppStore } from "../../store/store.ts";
+// import { useAppStore } from "../../store/store.ts";
+import { useCoreStore } from "../../stores/coreStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
 import { ButtonControl } from "../../types/button.ts";
 import MdIcon from "../common/MdIcon.vue";
 import ActionButton from "./ActionButton.vue";
 
-const { dispatch } = useAppStore();
+// const { dispatch } = useAppStore();
 const playersStore = usePlayersStore();
+const coreStore = useCoreStore();
 
 const actionButtons = computed<ButtonControl[]>(() => {
   // todo can do this with filter maybe
@@ -20,26 +22,26 @@ const actionButtons = computed<ButtonControl[]>(() => {
       id: "end-new",
       label: EndGameActionTypes.New,
       icon: "skip_previous",
-      onClick: newGame,
+      onClick: coreStore.restartGame,
     },
     {
       id: "end-next",
       label: EndGameActionTypes.Next,
       disabled: playersStore.activePlayersCount > 0,
       icon: "skip_next",
-      onClick: nextRound,
+      onClick: coreStore.newRound,
     },
   ];
 });
 
-function newGame() {
-  const gameEvent = { type: "newGame" };
-  return dispatch("doEvent", gameEvent);
-}
+// function newGame() {
+//   const gameEvent = { type: "newGame" };
+//   return dispatch("doEvent", gameEvent);
+// }
 
-function nextRound() {
-  return dispatch("nextRound");
-}
+// function nextRound() {
+//   return dispatch("nextRound");
+// }
 </script>
 
 <template>

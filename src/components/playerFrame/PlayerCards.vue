@@ -2,12 +2,13 @@
 import { computed } from "vue";
 
 import { setPos, transformJiggle } from "../../animationTools.ts";
-import { BLACKJACK_SCORE, FaceValues } from "../../constants/cards.ts";
-import { formatCard, oldGetHandScore } from "../../helpers/cards.ts";
+// import { FaceValues } from "../../constants/cards.ts";
+import { SpecialScores } from "../../constants/gamePlay.ts";
+import { formatCard, getHandOutcome } from "../../helpers/cards.ts";
 import { useDeckStore } from "../../stores/deckStore.ts";
 // import { useAppStore } from "../../store/store.ts";
 import { Position } from "../../types/animations.ts";
-import { Hand, RawCard } from "../../types/card.ts";
+import { Hand } from "../../types/card.ts";
 import PlayingCard from "../common/PlayingCard.vue";
 
 type PlayerCardsProps = {
@@ -23,12 +24,12 @@ const props = defineProps<PlayerCardsProps>();
 
 const formattedCards = computed(() => props.hand.cards.map(formatCard));
 
-const acesCount = computed(
-  () =>
-    props.hand.cards.filter(
-      ([faceValue]: RawCard) => faceValue === FaceValues.Ace,
-    ).length,
-);
+// const acesCount = computed(
+//   () =>
+//     props.hand.cards.filter(
+//       ([faceValue]: RawCard) => faceValue === FaceValues.Ace,
+//     ).length,
+// );
 
 const enterPosition = computed<Position>(() => {
   const shoe = deckStore.shoePosition;
@@ -46,8 +47,8 @@ const leavePosition = computed<Position>(() => ({
 
 // fixme bug if 10 or face on soft (it doesnt update the score)
 // also remove the aces side-effect
-const score = computed(() => {
-  return oldGetHandScore(props.hand);
+const outcome = computed(() => {
+  return getHandOutcome(props.hand);
   // // const cards = this.cards;
   //
   // if (props.cards.length === 0) return 0;
@@ -76,19 +77,19 @@ const score = computed(() => {
   // return newScore;
 });
 
-const scoreString = computed(() => {
-  switch (true) {
-    case score.value > BLACKJACK_SCORE:
-      return "Bust";
-    case score.value === BLACKJACK_SCORE && props.hand.cards.length === 2:
-      return "BlackJack";
-    // fixme soft is more complex than this
-    case acesCount.value > 0:
-      return "Soft";
-    default:
-      return "";
-  }
-});
+// const scoreString = computed(() => {
+//   switch (true) {
+//     case score.value > BLACKJACK_SCORE:
+//       return "Bust";
+//     case score.value === BLACKJACK_SCORE && props.hand.cards.length === 2:
+//       return "BlackJack";
+//     // fixme soft is more complex than this
+//     case acesCount.value > 0:
+//       return "Soft";
+//     default:
+//       return "";
+//   }
+// });
 
 // fixme card transitions seem to be problematic. maybe can be handled with just css?
 function enter(el: HTMLElement) {
@@ -110,9 +111,9 @@ function leave(el: HTMLElement, done: () => void) {
   <div class="player-cards" :class="{ 'active-hand': isActive }">
     <div
       class="hand-score shadow-light"
-      :class="{ 'error-text': score > BLACKJACK_SCORE }"
+      :class="{ 'error-text': outcome.special === SpecialScores.Bust }"
     >
-      {{ score }} {{ scoreString }}
+      {{ outcome.score }} {{ outcome.special }}
     </div>
 
     <TransitionGroup

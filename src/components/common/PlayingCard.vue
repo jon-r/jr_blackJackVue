@@ -1,3 +1,4 @@
+<!-- todo redo this with RawCard? -->
 <script lang="ts" setup>
 import { Card } from "../../types/card.ts";
 

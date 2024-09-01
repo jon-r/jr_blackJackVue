@@ -2,9 +2,9 @@
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
-import { useAppStore } from "../../store/store.ts";
+// import { useAppStore } from "../../store/store.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
-import { usePlayersStore } from "../../stores/playersStore.ts";
+// import { usePlayersStore } from "../../stores/playersStore.ts";
 import { Position } from "../../types/animations.ts";
 import { Player } from "../../types/players.ts";
 import ActiveBets from "./ActiveBets.vue";
@@ -14,8 +14,8 @@ type PlayerFrameProps = {
   player: Player;
 };
 
-const { dispatch } = useAppStore();
-const playersStore = usePlayersStore();
+// const { dispatch } = useAppStore();
+// const playersStore = usePlayersStore();
 const coreStore = useCoreStore();
 const props = defineProps<PlayerFrameProps>();
 
@@ -63,16 +63,16 @@ watch(isPlayerTurn, function turnCheck() {
   }
 });
 
-watch(
-  () => playersStore.dealer.score,
-  function endRound(dealerScore: number) {
-    if (!dealerScore) return false;
-
-    roundResult.value = getScores();
-
-    emitBetChange(roundResult.value);
-  },
-);
+// watch(
+//   () => playersStore.dealer.score,
+//   function endRound(dealerScore: number) {
+//     if (!dealerScore) return false;
+//
+//     roundResult.value = getScores();
+//
+//     emitBetChange(roundResult.value);
+//   },
+// );
 
 watch(
   () => coreStore.gameRound,
@@ -82,31 +82,31 @@ watch(
   },
 );
 
-function emitBetChange(value: string) {
-  const betEvent = {
-    idx: props.player.index,
-    type: "bet",
-    value,
-  };
+// function emitBetChange(value: string) {
+//   const betEvent = {
+//     idx: props.player.index,
+//     type: "bet",
+//     value,
+//   };
+//
+//   dispatch("doEvent", betEvent);
+// }
 
-  dispatch("doEvent", betEvent);
-}
-
-function getScores() {
-  const dealerScore = playersStore.dealer.score;
-  const playerScore = props.player.score;
-
-  switch (true) {
-    case dealerScore === playerScore:
-      return "push";
-    case playerScore > 21 || dealerScore === 21:
-      return "lose";
-    case dealerScore > 21 || playerScore > dealerScore:
-      return "win";
-    default: // dealerScore > playerScore
-      return "lose";
-  }
-}
+// function getScores() {
+//   const dealerScore = playersStore.dealer.score;
+//   const playerScore = props.player.score;
+//
+//   switch (true) {
+//     case dealerScore === playerScore:
+//       return "push";
+//     case playerScore > 21 || dealerScore === 21:
+//       return "lose";
+//     case dealerScore > 21 || playerScore > dealerScore:
+//       return "win";
+//     default: // dealerScore > playerScore
+//       return "lose";
+//   }
+// }
 
 function triggerTextAnim() {
   diffFloat.value = false;

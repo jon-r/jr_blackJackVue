@@ -1,3 +1,5 @@
+/*
+
 // combine more into more ... function groups?
 // merge commonly done actions into big chains ()
 import { InjectionKey } from "vue";
@@ -230,3 +232,6 @@ export default createStore({
     ]),
   },
 });
+
+
+ */

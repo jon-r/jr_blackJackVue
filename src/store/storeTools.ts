@@ -1,3 +1,4 @@
+/*
 import type { ActionTree, GetterTree } from "vuex/types/index.d.ts";
 
 import { Player } from "../types/players.ts";
@@ -101,3 +102,6 @@ export function getState<Keys = (keyof AppState)[]>(
 
   return out;
 }
+
+
+ */

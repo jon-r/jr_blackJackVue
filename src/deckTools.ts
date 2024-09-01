@@ -1,3 +1,4 @@
+/*
 import { Card, RawCardOld } from "./types/card.ts";
 
 export function getRandom(range: number): number {
@@ -35,3 +36,4 @@ export function valueCard(cardRaw: RawCardOld): Card {
 }
 
 export const blankCard = { face: "", score: 0, suit: "blank" };
+*/

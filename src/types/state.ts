@@ -1,3 +1,4 @@
+/*
 import { Store } from "vuex/types/index.d.ts";
 
 import { GameStages } from "../constants/gamePlay.ts";
@@ -50,3 +51,4 @@ declare module "@vue/runtime-core" {
     $store: Store<AppState>;
   }
 }
+*/
