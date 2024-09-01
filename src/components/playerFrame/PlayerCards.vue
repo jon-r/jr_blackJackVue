@@ -2,12 +2,8 @@
 import { computed } from "vue";
 
 import { setPos, transformJiggle } from "../../animationTools.ts";
-import {
-  ACE_SCORE,
-  BLACKJACK_SCORE,
-  FaceValues,
-} from "../../constants/cards.ts";
-import { formatCard, getHandScore } from "../../helpers/cards.ts";
+import { BLACKJACK_SCORE, FaceValues } from "../../constants/cards.ts";
+import { formatCard, oldGetHandScore } from "../../helpers/cards.ts";
 import { useDeckStore } from "../../stores/deckStore.ts";
 // import { useAppStore } from "../../store/store.ts";
 import { Position } from "../../types/animations.ts";
@@ -51,7 +47,7 @@ const leavePosition = computed<Position>(() => ({
 // fixme bug if 10 or face on soft (it doesnt update the score)
 // also remove the aces side-effect
 const score = computed(() => {
-  return getHandScore(props.hand);
+  return oldGetHandScore(props.hand);
   // // const cards = this.cards;
   //
   // if (props.cards.length === 0) return 0;

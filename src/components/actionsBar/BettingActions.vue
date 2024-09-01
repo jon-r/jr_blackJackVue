@@ -1,21 +1,10 @@
 <script setup lang="ts">
-// import { storeToRefs } from "pinia";
-import {
-  /*ToRefs, */
-  computed,
-  ref,
-} from "vue";
+import { computed, ref } from "vue";
 
 import { CHIP_VALUES } from "../../constants/gamePlay.ts";
 import { useBetActions } from "../../stores/actions/bets.ts";
 // import { useAppStore } from "../../store/store.ts";
-import {
-  /*CoreState,*/
-  useCoreStore,
-} from "../../stores/coreStore.ts";
-// import {usePlayersStore} from "../../stores/playersStore.ts";
-// import { usePlayerBetsStore } from "../../stores/playerBetsStore.ts";
-// import { usePlayerCardsStore } from "../../stores/playerCardsStore.ts";
+import { useCoreStore } from "../../stores/coreStore.ts";
 import { ButtonControl } from "../../types/button.ts";
 import { Player } from "../../types/players.ts";
 import BettingChip from "../common/BettingChip.vue";
@@ -25,12 +14,10 @@ import ActionButton from "./ActionButton.vue";
 type BettingActionsProps = {
   player: Player;
 };
+// const { dispatch } = useAppStore();
 const props = defineProps<BettingActionsProps>();
 
-// const { dispatch } = useAppStore();
 const coreStore = useCoreStore();
-// const { config }: ToRefs<CoreState> = storeToRefs(coreStore);
-// const playersStore = usePlayersStore();
 const betActions = useBetActions();
 
 // const chips = [5, 10, 25, 100, 500, 1000];

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import { storeToRefs } from "pinia";
 import { computed, watch } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
@@ -16,12 +15,9 @@ import GamePlayActions from "./GamePlayActions.vue";
 // };
 
 const { dispatch } = useAppStore();
+// const props = defineProps<ActionsBarProps>();
 const playersStore = usePlayersStore();
 const coreStore = useCoreStore();
-
-// todo remove storeToRefs
-// const { config, activeStage }: ToRefs<CoreState> = storeToRefs(coreStore);
-// const props = defineProps<ActionsBarProps>();
 
 const tipsMessage = computed(() => {
   switch (coreStore.activeStage) {

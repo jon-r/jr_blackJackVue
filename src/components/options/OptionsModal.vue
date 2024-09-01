@@ -10,7 +10,6 @@ import { setupPlayerInput } from "../../helpers/players.ts";
 import { useBetActions } from "../../stores/actions/bets.ts";
 import { useGameActions } from "../../stores/actions/game.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
-// import { useGamePlayStore } from "../../stores/gamePlayStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
 import { GameConfig } from "../../types/config.ts";
 // import { Player, PlayerInputStub } from "../../types/players.ts";
@@ -21,28 +20,10 @@ import ModalContainer from "./ModalContainer.vue";
 // const { dispatch } = useAppStore();
 const coreStore = useCoreStore();
 const playersStore = usePlayersStore();
-// const {
-//   config: { deckCount, minBet, autoTime },
-// }: ToRefs<CoreState> = storeToRefs(coreStore);
-// const gamePlayStore = useGamePlayStore();
 const gameActions = useGameActions();
 const betActions = useBetActions();
 
 const emit = defineEmits(["closeModal"]);
-
-// function setupPlayerInput(players: Player[]): PlayerInputStub[] {
-//   if (!players.length) {
-//     return DEFAULT_PLAYER_NAMES.map((name) => ({ name }));
-//   }
-//
-//   const playersWithoutDealer = players
-//     .filter((player) => !player.isDealer)
-//     .map((player) => ({ name: player.name }));
-//
-//   return Array.from({ ...playersWithoutDealer, length: 5 }, (player) => ({
-//     name: player.name ?? "",
-//   }));
-// }
 
 const playerInput = ref(setupPlayerInput(playersStore.players));
 
@@ -58,7 +39,7 @@ function newGame() {
     deckCount: deckCount.value,
     minBet: minBet.value,
     autoTime: autoTime.value,
-    playerCount: playerInput.value.length, // todo maybe -1 to count without dealer
+    playerCount: playerInput.value.length,
   };
 
   gameActions.newGame(playerInput.value, newConfig);
@@ -75,17 +56,9 @@ function newGame() {
     isDealer: true,
   });
 
-  const newConfig: GameConfig = {
-    deckCount: deckCount,
-    minBet: minBet,
-    autoTime: autoTime,
-    playerCount: players.length, // todo maybe -1 to count without dealer
-  };
-
   const options = { players, config: newConfig };
 
   await store.dispatch("newGame", options);
-  gamePlayStore.setConfig(newConfig);
 */
 
   emit("closeModal");
@@ -98,23 +71,11 @@ function newDemo() {
   betActions.placeRandomBets();
   coreStore.jumpToStage(GameStages.DealCards);
   // autoBet();
-  // coreStore.activePlayerId = 0;
-  // coreStore.activeStage = GameStages.DealOne;
   // await store.dispatch("nextPlayerPromise");
-  // coreStore.nextPlayer();
-  // coreStore.nextStage();
   // await store.dispatch("nextStage");
 }
 
 // function autoBet() {
-//   playersStore.players
-//     .filter((player) => !player.isDealer)
-//     .forEach((player) => {
-//       const rngBet = (getRandom(10) + 1) * 100;
-//
-//       betActions.placeBet(rngBet, player.id);
-//     });
-//
 //   // if (idx > max) return Promise.resolve();
 //
 //   // const betVals = {

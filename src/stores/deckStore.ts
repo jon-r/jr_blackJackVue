@@ -7,8 +7,6 @@ import { Position } from "../types/animations.ts";
 import { RawCard } from "../types/card.ts";
 import { useCoreStore } from "./coreStore.ts";
 
-// import {useGamePlayStore} from "./coreStore.ts";
-
 const nilPosition: Position = { x: 0, y: 0 };
 
 export const useDeckStore = defineStore("deck", () => {

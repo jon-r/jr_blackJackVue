@@ -50,7 +50,7 @@ export function formatCard(rawCard: RawCard): Card {
   };
 }
 
-export function getHandScore(hand?: Hand): number {
+export function oldGetHandScore(hand?: Hand): number {
   if (!hand) return 0;
 
   return hand.cards.reduce((score, card) => {

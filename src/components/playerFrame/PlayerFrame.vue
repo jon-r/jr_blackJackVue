@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import { storeToRefs } from "pinia";
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
@@ -18,8 +17,6 @@ type PlayerFrameProps = {
 const { dispatch } = useAppStore();
 const playersStore = usePlayersStore();
 const coreStore = useCoreStore();
-// const { activePlayerId, activeStage, gameRound }: CoreState =
-//   storeToRefs(coreStore);
 const props = defineProps<PlayerFrameProps>();
 
 const playerClass = `player-${props.player.index}`;

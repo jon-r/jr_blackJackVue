@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import { storeToRefs } from "pinia";
 import { onMounted, ref, watch } from "vue";
 
 import SvgStatic from "./components/SvgStatic.vue";
@@ -11,20 +10,18 @@ import OptionsModal from "./components/options/OptionsModal.vue";
 import PlayerFrame from "./components/playerFrame/PlayerFrame.vue";
 import { GameStages } from "./constants/gamePlay.ts";
 import { useGameActions } from "./stores/actions/game.ts";
-// import { useAppStore } from "./store/store.ts";
-import { Card } from "./types/card.ts";
 import { useCoreStore } from "./stores/coreStore.ts";
 import { useDeckStore } from "./stores/deckStore.ts";
 import { usePlayersStore } from "./stores/playersStore.ts";
+// import { useAppStore } from "./store/store.ts";
+import { Card } from "./types/card.ts";
 
 // import { GameEvent } from "./types/state.ts";
 
 // const store = useAppStore();
 
 const playersStore = usePlayersStore();
-// const { players, activePlayersCount }: PlayersState = storeToRefs(playersStore);
 const coreStore = useCoreStore();
-// const { notifications }: CoreState = storeToRefs(coreStore);
 const deckStore = useDeckStore();
 
 const gameActions = useGameActions();
@@ -60,22 +57,6 @@ onMounted(() => {
 //     if (event.type === "newGame") {
 //       showOptions.value = true;
 //     }
-//   },
-// );
-
-// watch(
-//   () => notifications,
-//   function updateChat(params: string[]) {
-//     const maxMessages = 5;
-//
-//     messageIndex.value += 1;
-//
-//     messages.value.unshift({
-//       text: params,
-//       idx: messageIndex.value,
-//     });
-//
-//     if (messages.value.length > maxMessages) messages.value.pop();
 //   },
 // );
 

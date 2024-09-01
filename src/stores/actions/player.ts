@@ -16,6 +16,7 @@ export function usePlayerActions() {
     playersStore.nextHand();
   }
 
+  // fixme
   function split() {
     // add second bet
     betActions.updateBet(1);

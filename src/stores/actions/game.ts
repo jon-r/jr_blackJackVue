@@ -30,10 +30,11 @@ export function useGameActions() {
   }
 
   async function dealInitialCards() {
+    // deal one
     await playersStore.dealAllPlayersCards();
     await playersStore.dealCard(DEALER_ID);
-    // await wait(coreStore.config.autoTime);
 
+    // deal two
     await playersStore.dealAllPlayersCards();
     await playersStore.dealOrPeek(DEALER_ID);
 

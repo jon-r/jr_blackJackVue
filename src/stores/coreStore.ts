@@ -40,8 +40,6 @@ export const useCoreStore = defineStore("core", () => {
   function newRound() {
     gameRound.value += 1;
     jumpToStage(GameStages.PlaceBets);
-    // activeStage.value = GameStages.PlaceBets;
-    // activePlayerId.value = 0;
   }
 
   function nextPlayer() {
@@ -61,11 +59,6 @@ export const useCoreStore = defineStore("core", () => {
     }
     console.log(GameStages[activeStage.value]);
   }
-
-  // function endAllPlayerTurns() {
-  //   activeStage.value = GameStages.DealerActions;
-  //   nextPlayer();
-  // }
 
   return {
     config,

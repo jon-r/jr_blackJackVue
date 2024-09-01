@@ -10,8 +10,6 @@ export type Card = {
   suit: string | CardSuits;
 };
 
-// export type PlayerHandOld = { cards: Card[]; score: number; revealed: number };
-
 export type Hand = { cards: RawCard[]; revealed: number };
 
 export type HandRules = {

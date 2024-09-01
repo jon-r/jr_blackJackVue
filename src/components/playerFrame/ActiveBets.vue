@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import { storeToRefs } from "pinia";
 import { computed, ref, watch } from "vue";
 
 import {
@@ -14,8 +13,6 @@ import { Position } from "../../types/animations.ts";
 // import { Player } from "../../types/players.ts";
 import { GameEvent } from "../../types/state.ts";
 import BettingChip from "../common/BettingChip.vue";
-import {GamePlayState, useGamePlayStore} from "../../stores/gamePlayStore.ts";
-import {storeToRefs} from "pinia";
 
 type ActiveBetProps = {
   // player: Player;
@@ -25,10 +22,6 @@ type ActiveBetProps = {
 
 // const { dispatch } = useAppStore();
 const coreStore = useCoreStore();
-// const {
-//   gameRound,
-//   config: { minBet },
-// }: CoreState = storeToRefs(coreStore);
 const props = defineProps<ActiveBetProps>();
 
 // const bet = ref(0);
@@ -77,7 +70,7 @@ function leave(el: HTMLElement, done: () => void) {
 // function hideChips() {
 //   quidsIn.value = false;
 // }
-
+//
 // function calcChips(value: number) {
 //   const chips = [1000, 500, 100, 25, 10, 5];
 //   const out = [];

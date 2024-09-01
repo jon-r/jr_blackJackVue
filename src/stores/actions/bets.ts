@@ -15,8 +15,6 @@ export function useBetActions() {
 
     targetPlayer.money -= value;
     targetPlayer.firstBet += value;
-    // coreStore.sendMessage(`${targetPlayer.name} bets £${value}`);
-    // coreStore.nextPlayer();
   }
 
   function updateBet(multiplier: number, targetId = coreStore.activePlayerId) {

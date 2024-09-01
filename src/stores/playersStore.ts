@@ -8,33 +8,21 @@ import {
   UNKNOWN_CARD,
 } from "../constants/cards.ts";
 import { DEALER_ID, DEALER_NAME } from "../constants/player.ts";
-import { getCardScore, getHandScore, isBlankCard } from "../helpers/cards.ts";
+import {
+  getCardScore,
+  isBlankCard,
+  oldGetHandScore,
+} from "../helpers/cards.ts";
 import {
   createEmptyHand,
   createPlayer,
   isPlayerActive,
 } from "../helpers/players.ts";
 import { wait } from "../helpers/time.ts";
-// import { EMPTY_HAND, UNKNOWN_CARD } from "../constants/cards.ts";
-// import { GameStages } from "../constants/gamePlay.ts";
-// import { DEALER, DEFAULT_PLAYER } from "../constants/player.ts";
-// import { wait } from "../helpers/time.ts";
 import { Hand, RawCard } from "../types/card.ts";
 import { Player, PlayerInputStub } from "../types/players.ts";
 import { useCoreStore } from "./coreStore.ts";
 import { useDeckStore } from "./deckStore.ts";
-
-// const defaultNames = ["Aaron", "Beth", "Chris", "Denise", "Ethan"];
-// function createDefaultPlayers(): Player[] {
-//   const players: Player[] = defaultNames.map(createPlayer);
-//   const dealer: Player = {
-//     ...createPlayer("Dealer", players.length),
-//     isDealer: true,
-//   };
-//   players.push(dealer);
-//
-//   return players;
-// }
 
 // todo reorganise actions
 export const usePlayersStore = defineStore("players", () => {
@@ -46,7 +34,6 @@ export const usePlayersStore = defineStore("players", () => {
   const dealer = computed(
     () => players.value.find((player) => player.isDealer) as Player,
   );
-  // const realPlayers = computed(() => players.value.filter((player) => !player.isDealer));
 
   const activePlayersCount = computed(
     () =>
@@ -58,7 +45,7 @@ export const usePlayersStore = defineStore("players", () => {
     players.value.find((player) => player.index === coreStore.activePlayerId),
   );
 
-  const dealerScore = computed(() => getHandScore(dealer.value.hands[0]));
+  const dealerScore = computed(() => oldGetHandScore(dealer.value.hands[0]));
 
   function resetPlayers(stubs: PlayerInputStub[]) {
     const newPlayers: Player[] = stubs.map(({ name }, index) =>
@@ -104,39 +91,8 @@ export const usePlayersStore = defineStore("players", () => {
     return targetPlayer.hands[handId ?? targetPlayer.activeHandId];
   }
 
-  // function takeCard(playerId?: number, handId?: number) {
-  //   const [, targetHand] = getPlayerWithHand(playerId, handId);
-  //
-  //   if (!targetHand) {
-  //     return;
-  //   }
-  //
-  //   if (targetHand.cards.length > targetHand.revealed) {
-  //     // already have a blank card
-  //     return;
-  //   }
-  //
-  //   targetHand.cards.push(UNKNOWN_CARD);
-  // }
-
-  // async function revealCard(playerId?: number, handId?: number) {
-  //   const [, targetHand] = getPlayerWithHand(playerId, handId);
-  //
-  //   if (!targetHand) {
-  //     return;
-  //   }
-  //
-  //   await wait(coreStore.config.autoTime);
-  //
-  //   const newCard = deckStore.drawCard();
-  //   targetHand.cards[targetHand.revealed] = newCard;
-  //   targetHand.revealed += 1;
-  //
-  //   return newCard;
-  // }
-
   function dealerPeekCard(dealerHand: Hand): RawCard | undefined {
-    const currentHandValue = getHandScore(dealerHand);
+    const currentHandValue = oldGetHandScore(dealerHand);
 
     if (ACE_SCORE !== currentHandValue && FACE_SCORE !== currentHandValue) {
       return;
@@ -152,30 +108,10 @@ export const usePlayersStore = defineStore("players", () => {
     return newCard;
   }
 
-  // async function revealOrPeek(playerId?: number, handId?: number) {
-  //   const [player, targetHand] = getPlayerWithHand(playerId, handId);
-  //
-  //   if (!player || !targetHand) {
-  //     return UNKNOWN_CARD; // shouldnt happen, maybe throw error?
-  //   }
-  //
-  //   if (player.isDealer) {
-  //     return dealerPeekCard(targetHand);
-  //   } else {
-  //     return revealCard(playerId);
-  //   }
-  // }
-
-  // todo have this return the card (for use in messages/checks)
-  // async function dealThenReveal(playerId?: number, handId?: number) {
-  //   takeCard(playerId, handId);
-  //   revealCard(playerId, handId);
-  // }
-
   function checkPlayerScore(playerId?: number, handId?: number) {
     const targetHand = getPlayerHand(playerId, handId);
 
-    const playerMustStand = getHandScore(targetHand) >= BLACKJACK_SCORE;
+    const playerMustStand = oldGetHandScore(targetHand) >= BLACKJACK_SCORE;
 
     // todo handle instant wins/losses here? need to move this function to playerActions
 
@@ -272,11 +208,6 @@ export const usePlayersStore = defineStore("players", () => {
     activePlayersCount,
 
     resetPlayers,
-    // addPlayerHand,
-    // takeCard,
-    // revealCard,
-    // revealOrPeek,
-    // dealThenReveal,
     dealBlank,
     checkPlayerScore,
     dealCard,
