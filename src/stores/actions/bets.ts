@@ -1,4 +1,8 @@
+import { GameOutcomes, OUTCOME_MULTIPLIER } from "../../constants/gamePlay.ts";
+import { getGameOutcome } from "../../helpers/gamePlay.ts";
 import { getRandom } from "../../helpers/math.ts";
+import { isPlayerActive } from "../../helpers/players.ts";
+import { wait } from "../../helpers/time.ts";
 import { useCoreStore } from "../coreStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
 
@@ -14,7 +18,7 @@ export function useBetActions() {
     }
 
     targetPlayer.money -= value;
-    targetPlayer.firstBet += value;
+    targetPlayer.bet += value;
   }
 
   function updateBet(multiplier: number, targetId = coreStore.activePlayerId) {
@@ -24,33 +28,45 @@ export function useBetActions() {
       return;
     }
 
-    const extraBet = targetPlayer.firstBet * multiplier;
+    const extraBet = targetPlayer.bet * multiplier;
 
     placeBet(extraBet, targetId);
   }
 
   function placeRandomBets() {
-    playersStore.players
-      .filter((player) => !player.isDealer)
-      .forEach((player) => {
-        const rngBet = (getRandom(10) + 1) * 100;
+    playersStore.players.filter(isPlayerActive).forEach((_, id) => {
+      const rngBet = (getRandom(10) + 1) * 100;
 
-        placeBet(rngBet, player.index);
-      });
+      placeBet(rngBet, id);
+    });
   }
 
-  function settleBet(multiplier: number, targetId = coreStore.activePlayerId) {
+  async function settleBet(
+    outcome: GameOutcomes,
+    targetId = coreStore.activePlayerId,
+  ) {
     const targetPlayer = playersStore.players[targetId];
 
     if (!targetPlayer) {
       return;
     }
 
-    targetPlayer.firstBet = targetPlayer.firstBet * multiplier;
+    targetPlayer.bet += targetPlayer.bet * OUTCOME_MULTIPLIER[outcome];
+    targetPlayer.outcome = outcome;
 
-    targetPlayer.money += targetPlayer.firstBet;
-    targetPlayer.firstBet = 0;
+    await wait(coreStore.config.autoTime);
+
+    targetPlayer.money += targetPlayer.bet;
+    targetPlayer.bet = 0;
   }
 
-  return { placeBet, placeRandomBets, updateBet, settleBet };
+  function settleAllBets() {
+    playersStore.players.forEach(async (player, id) => {
+      const outcome = getGameOutcome(player.score, playersStore.dealer.score);
+
+      await settleBet(outcome, id);
+    });
+  }
+
+  return { placeBet, placeRandomBets, updateBet, settleBet, settleAllBets };
 }

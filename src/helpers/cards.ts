@@ -11,9 +11,10 @@ import {
 import { SpecialScores } from "../constants/gamePlay.ts";
 import { Card, Hand, HandRules, RawCard } from "../types/card.ts";
 import { Player } from "../types/players.ts";
+import { createEmptyScore } from "./players.ts";
 
 export function getHandRules(player: Player): HandRules {
-  const { activeHandId, hands, money, firstBet } = player;
+  const { activeHandId, hands, money, bet } = player;
   const currentHand = hands[activeHandId];
 
   if (!currentHand) {
@@ -22,7 +23,7 @@ export function getHandRules(player: Player): HandRules {
 
   const { cards } = currentHand;
 
-  const canAfford = money >= firstBet;
+  const canAfford = money >= bet;
   const isFirstPlay = cards.length === 2;
   const hasMatch = getCardScore(cards[0]) === getCardScore(cards[1]);
   const canSplit = isFirstPlay && hasMatch;
@@ -78,7 +79,7 @@ function getHandSpecial(
 
 export function getHandOutcome(hand?: Hand): HandScore {
   if (!hand) {
-    return { score: 0, special: SpecialScores.None };
+    return createEmptyScore();
   }
 
   const nonBlankCards = hand.cards.filter((card) => !isBlankCard(card));

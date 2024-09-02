@@ -20,7 +20,7 @@ const playerActions = usePlayerActions();
 
 const actionButtons = computed<ButtonControl[]>(() => {
   const { canSplit, canAfford, isFirstPlay } = getHandRules(props.player);
-  const { firstBet } = props.player;
+  const { bet } = props.player;
 
   return [
     {
@@ -40,7 +40,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
       label: GamePlayActionTypes.Split,
       disabled: !(canAfford && canSplit),
       icon: "call_split",
-      alert: `- £${firstBet}`,
+      alert: `- £${bet}`,
       onClick: playerActions.split,
     },
     {
@@ -48,7 +48,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
       label: GamePlayActionTypes.Surrender,
       disabled: !isFirstPlay,
       icon: "flag",
-      alert: `+ £${firstBet / 2}`,
+      alert: `+ £${bet / 2}`,
       onClick: playerActions.surrender,
     },
     {
@@ -56,7 +56,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
       label: GamePlayActionTypes.Double,
       disabled: !(canAfford && isFirstPlay),
       icon: "monetization_on",
-      alert: `- £${firstBet}`,
+      alert: `- £${bet}`,
       onClick: playerActions.double,
     },
   ];

@@ -1,6 +1,7 @@
+import { SpecialScores } from "../constants/gamePlay.ts";
 import { DEFAULT_PLAYER_NAMES } from "../constants/player.ts";
 import { Hand } from "../types/card.ts";
-import { Player, PlayerInputStub } from "../types/players.ts";
+import { HandScore, Player, PlayerInputStub } from "../types/players.ts";
 
 export function setupPlayerInput(players: Player[]): PlayerInputStub[] {
   if (!players.length) {
@@ -20,17 +21,22 @@ export function createEmptyHand(): Hand {
   return { cards: [], revealed: 0 };
 }
 
-export function createPlayer(name: string, index: number) {
+export function createEmptyScore(): HandScore {
+  return { score: 0, special: SpecialScores.None };
+}
+
+export function createPlayer(name: string, index: number): Player {
   return {
-    index,
     name,
+    index,
     money: 1000,
-    firstBet: 0,
+    bet: 0,
     isDealer: false,
-    score: 0,
+    score: createEmptyScore(),
     inGame: true,
     peeked: null,
     hands: [createEmptyHand()],
+    outcome: null,
     activeHandId: 0,
   };
 }

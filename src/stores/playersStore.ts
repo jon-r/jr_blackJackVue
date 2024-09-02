@@ -6,6 +6,7 @@ import {
   FACE_SCORE,
   UNKNOWN_CARD,
 } from "../constants/cards.ts";
+import { GameStages } from "../constants/gamePlay.ts";
 import { DEALER_ID, DEALER_NAME } from "../constants/player.ts";
 import { getCardScore, getHandOutcome, isBlankCard } from "../helpers/cards.ts";
 import {
@@ -36,7 +37,7 @@ export const usePlayersStore = defineStore("players", () => {
         .length,
   );
 
-  const currentPlayer = computed(() =>
+  const currentPlayer = computed<Player | undefined>(() =>
     players.value.find((player) => player.index === coreStore.activePlayerId),
   );
 
@@ -99,7 +100,7 @@ export const usePlayersStore = defineStore("players", () => {
 
       return;
     } else {
-      // todo end now, dealer blackjack time
+      coreStore.jumpToStage(GameStages.EndRound);
     }
 
     return newCard;
@@ -108,11 +109,13 @@ export const usePlayersStore = defineStore("players", () => {
   function checkPlayerScore(playerId?: number, handId?: number) {
     const targetHand = getPlayerHand(playerId, handId);
 
-    const playerMustStand = getHandOutcome(targetHand).score >= BLACKJACK_SCORE;
+    const outcome = getHandOutcome(targetHand);
 
-    // todo handle instant wins/losses here? need to move this function to playerActions
+    const playerMustStand = outcome.score >= BLACKJACK_SCORE;
 
-    if (!targetHand || playerMustStand) {
+    // todo handle instant loss here? need to move this function to playerActions
+
+    if (playerMustStand) {
       coreStore.nextPlayer();
     }
   }
@@ -193,6 +196,13 @@ export const usePlayersStore = defineStore("players", () => {
     return newCard;
   }
 
+  function setFinalScores() {
+    players.value.forEach((player) => {
+      player.score = getHandOutcome(player.hands[0]);
+      // todo handle split hands
+    });
+  }
+
   return {
     players,
     dealer,
@@ -209,5 +219,6 @@ export const usePlayersStore = defineStore("players", () => {
     dealOrPeekDealer,
     addHand,
     nextHand,
+    setFinalScores,
   };
 });

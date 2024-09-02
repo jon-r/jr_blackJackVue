@@ -77,7 +77,8 @@ watch(
       case GameStages.DealerActions:
         return gameActions.dealFinalCards();
       case GameStages.EndRound:
-        return coreStore.sendMessage("Round over. Play again?");
+        coreStore.sendMessage("Round over. Play again?");
+        return gameActions.finaliseRound();
     }
   },
 );

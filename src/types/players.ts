@@ -1,12 +1,14 @@
+import { GameOutcomes, SpecialScores } from "../constants/gamePlay.ts";
 import { Hand, RawCard } from "./card.ts";
 
 export type Player = {
-  isDealer: boolean;
   index: number;
+  isDealer: boolean;
   name: string;
   money: number;
-  firstBet: number;
-  score: number;
+  bet: number;
+  outcome: GameOutcomes | null;
+  score: HandScore;
   inGame: boolean;
   peeked: RawCard | null;
   hands: Hand[];
@@ -14,3 +16,8 @@ export type Player = {
 };
 
 export type PlayerInputStub = Pick<Player, "name">;
+
+export type HandScore = {
+  score: number;
+  special: SpecialScores;
+};

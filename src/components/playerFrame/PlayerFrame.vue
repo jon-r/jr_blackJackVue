@@ -132,7 +132,7 @@ function triggerTextAnim() {
 
     <ActiveBets
       v-if="!props.player.isDealer"
-      :bet="props.player.firstBet"
+      :bet="props.player.bet"
       :frame-pos="framePos"
     />
 

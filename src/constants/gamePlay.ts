@@ -15,10 +15,20 @@ export enum SpecialScores {
 }
 
 export enum GameOutcomes {
-  Win = "Win",
+  Blackjack = "Blackjack",
+  Won = "Won",
   Lost = "Lost",
   Push = "Push",
+  Surrendered = "Surrendered",
 }
+
+export const OUTCOME_MULTIPLIER = {
+  [GameOutcomes.Blackjack]: 1.5,
+  [GameOutcomes.Won]: 1,
+  [GameOutcomes.Push]: 0,
+  [GameOutcomes.Surrendered]: -0.5,
+  [GameOutcomes.Lost]: -1,
+} as const;
 
 export enum GamePlayActionTypes {
   Hit = "hit",

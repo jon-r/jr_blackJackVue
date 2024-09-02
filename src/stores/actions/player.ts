@@ -1,3 +1,4 @@
+import { GameOutcomes } from "../../constants/gamePlay.ts";
 import { useCoreStore } from "../coreStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
 import { useBetActions } from "./bets.ts";
@@ -22,12 +23,14 @@ export function usePlayerActions() {
     betActions.updateBet(1);
     // splice hand
 
+    // https://www.onlineblackjackexplorer.com/how-to-play/blackjack-split/ use these 'common' rules
+
     // deal/reveal second card to each hand
     // check for outcome?
   }
 
-  function surrender() {
-    betActions.settleBet(0.5);
+  async function surrender() {
+    await betActions.settleBet(GameOutcomes.Surrendered);
     coreStore.nextPlayer();
   }
 

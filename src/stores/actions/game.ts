@@ -6,11 +6,13 @@ import { PlayerInputStub } from "../../types/players.ts";
 import { useCoreStore } from "../coreStore.ts";
 import { useDeckStore } from "../deckStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
+import { useBetActions } from "./bets.ts";
 
 export function useGameActions() {
   const coreStore = useCoreStore();
   const playersStore = usePlayersStore();
   const deckStore = useDeckStore();
+  const betActions = useBetActions();
 
   function newGame(players: PlayerInputStub[], config: GameConfig) {
     coreStore.setConfig(config);
@@ -21,12 +23,12 @@ export function useGameActions() {
   }
 
   function goToFirstPlayer() {
-    const firstPlayer = playersStore.players.find(
+    const firstPlayerId = playersStore.players.findIndex(
       (player) => player.inGame && !player.isDealer,
     );
 
-    // fixme end game if no players (no bang)
-    coreStore.jumpToPlayer(firstPlayer!.index);
+    // fixme end game if no players
+    coreStore.jumpToPlayer(firstPlayerId);
   }
 
   async function dealInitialCards() {
@@ -53,5 +55,18 @@ export function useGameActions() {
     coreStore.jumpToStage(GameStages.EndRound);
   }
 
-  return { newGame, goToFirstPlayer, dealInitialCards, dealFinalCards };
+  function finaliseRound() {
+    playersStore.setFinalScores();
+    betActions.settleAllBets();
+
+    // todo disable any fully lost players here
+  }
+
+  return {
+    newGame,
+    goToFirstPlayer,
+    dealInitialCards,
+    dealFinalCards,
+    finaliseRound,
+  };
 }
