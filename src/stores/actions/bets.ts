@@ -1,7 +1,7 @@
 import { GameOutcomes, OUTCOME_MULTIPLIER } from "../../constants/gamePlay.ts";
 import { getGameOutcome } from "../../helpers/gamePlay.ts";
 import { getRandom } from "../../helpers/math.ts";
-import { isPlayerActive } from "../../helpers/players.ts";
+import { isActivePlayer } from "../../helpers/players.ts";
 import { wait } from "../../helpers/time.ts";
 import { useCoreStore } from "../coreStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
@@ -18,7 +18,7 @@ export function useBetActions() {
     }
 
     targetPlayer.money -= value;
-    targetPlayer.bet += value;
+    targetPlayer.openBet += value;
   }
 
   function updateBet(multiplier: number, targetId = coreStore.activePlayerId) {
@@ -28,13 +28,13 @@ export function useBetActions() {
       return;
     }
 
-    const extraBet = targetPlayer.bet * multiplier;
+    const extraBet = targetPlayer.openBet * multiplier;
 
     placeBet(extraBet, targetId);
   }
 
   function placeRandomBets() {
-    playersStore.players.filter(isPlayerActive).forEach((_, id) => {
+    playersStore.players.filter(isActivePlayer).forEach((_, id) => {
       const rngBet = (getRandom(10) + 1) * 100;
 
       placeBet(rngBet, id);
@@ -51,21 +51,24 @@ export function useBetActions() {
       return;
     }
 
-    targetPlayer.bet += targetPlayer.bet * OUTCOME_MULTIPLIER[outcome];
+    targetPlayer.openBet += targetPlayer.openBet * OUTCOME_MULTIPLIER[outcome];
     targetPlayer.outcome = outcome;
 
     await wait(coreStore.config.autoTime);
 
-    targetPlayer.money += targetPlayer.bet;
-    targetPlayer.bet = 0;
+    targetPlayer.money += targetPlayer.openBet;
+    targetPlayer.openBet = 0;
   }
 
   // todo skip if already settled (bust or surrendered)
   function settleAllBets() {
     playersStore.players.forEach(async (player, id) => {
-      const outcome = getGameOutcome(player.score, playersStore.dealer.score);
+      if (!player.outcome) {
+        // todo get best player hand
+        const outcome = getGameOutcome(player.hands, playersStore.dealer.hands);
 
-      await settleBet(outcome, id);
+        await settleBet(outcome, id);
+      }
     });
   }
 

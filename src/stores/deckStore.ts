@@ -4,7 +4,7 @@ import { ref } from "vue";
 import { buildDeck } from "../helpers/cards.ts";
 import { getRandom } from "../helpers/math.ts";
 import { Position } from "../types/animations.ts";
-import { RawCard } from "../types/card.ts";
+import { PlayingCard } from "../types/card.ts";
 import { useCoreStore } from "./coreStore.ts";
 
 const nilPosition: Position = { x: 0, y: 0 };
@@ -12,7 +12,7 @@ const nilPosition: Position = { x: 0, y: 0 };
 export const useDeckStore = defineStore("deck", () => {
   const coreStore = useCoreStore();
 
-  const deck = ref<RawCard[]>([]);
+  const deck = ref<PlayingCard[]>([]);
   const shoePosition = ref<Position>(nilPosition);
 
   function rebuildDeck(deckCount = coreStore.config.deckCount) {
@@ -29,7 +29,7 @@ export const useDeckStore = defineStore("deck", () => {
     return newCard;
   }
 
-  function returnCard(card: RawCard) {
+  function returnCard(card: PlayingCard) {
     deck.value.push(card);
   }
 

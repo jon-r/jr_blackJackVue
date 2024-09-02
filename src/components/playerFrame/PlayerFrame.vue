@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from "vue";
 
+import { DEALER_ID } from "../../constants/player.ts";
 // import { GameStages } from "../../constants/gamePlay.ts";
 // import { useAppStore } from "../../store/store.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
@@ -38,6 +39,8 @@ const diffClass = computed(() => {
   triggerTextAnim();
   return moneyDiff.value > 0 ? "good-text" : "error-text";
 });
+
+const isDealer = computed(() => props.player.index === DEALER_ID);
 
 const moneyDiff = computed(() => {
   const out = props.player.money - oldMoney.value;
@@ -129,14 +132,14 @@ function triggerTextAnim() {
     />
 
     <ActiveBets
-      v-if="!props.player.isDealer"
-      :bet="props.player.bet"
+      v-if="!isDealer"
+      :bet="props.player.openBet"
       :frame-pos="framePos"
     />
 
     <header
       class="player-frame-title flex frame shadow-light"
-      v-if="!props.player.isDealer"
+      v-if="!isDealer"
       :class="{ 'is-active': isPlayerTurn }"
     >
       <h4

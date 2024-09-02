@@ -7,16 +7,17 @@ import {
   UNKNOWN_CARD,
 } from "../constants/cards.ts";
 import { GameStages } from "../constants/gamePlay.ts";
-import { DEALER_ID, DEALER_NAME } from "../constants/player.ts";
-import { getCardScore, getHandOutcome, isBlankCard } from "../helpers/cards.ts";
+import { DEALER_ID, DEALER_STUB } from "../constants/player.ts";
+import { getCardScore, isBlankCard } from "../helpers/cards.ts";
+import { getHandScore, updateHand } from "../helpers/gamePlay.ts";
 import {
   createEmptyHand,
   createPlayer,
-  isPlayerActive,
+  isActivePlayer,
 } from "../helpers/players.ts";
 import { wait } from "../helpers/time.ts";
-import { Hand, RawCard } from "../types/card.ts";
-import { Player, PlayerInputStub } from "../types/players.ts";
+import { PlayingCard } from "../types/card.ts";
+import { GameHand, Player, PlayerInputStub } from "../types/players.ts";
 import { useCoreStore } from "./coreStore.ts";
 import { useDeckStore } from "./deckStore.ts";
 
@@ -28,31 +29,21 @@ export const usePlayersStore = defineStore("players", () => {
   const players = ref<Player[]>([]);
 
   const dealer = computed(
-    () => players.value.find((player) => player.isDealer) as Player,
+    () => players.value.find((player) => player.index === DEALER_ID) as Player,
   );
 
   const activePlayersCount = computed(
-    () =>
-      players.value.filter((player) => !player.isDealer && player.inGame)
-        .length,
+    () => players.value.filter(isActivePlayer).length,
   );
 
   const currentPlayer = computed<Player | undefined>(() =>
     players.value.find((player) => player.index === coreStore.activePlayerId),
   );
 
-  const dealerOutcome = computed(() => getHandOutcome(dealer.value.hands[0]));
-
   function resetPlayers(stubs: PlayerInputStub[]) {
-    const newPlayers: Player[] = stubs.map(({ name }, index) =>
+    players.value = [DEALER_STUB, ...stubs].map(({ name }, index) =>
       createPlayer(name, index + 1),
     );
-    newPlayers.unshift({
-      ...createPlayer(DEALER_NAME, DEALER_ID),
-      isDealer: true,
-    });
-
-    players.value = newPlayers;
   }
 
   function addHand() {
@@ -62,9 +53,7 @@ export const usePlayersStore = defineStore("players", () => {
   function nextHand(playerId = coreStore.activePlayerId) {
     const targetPlayer = players.value[playerId];
 
-    if (!targetPlayer) {
-      return;
-    }
+    if (!targetPlayer) return;
 
     const nextHand = targetPlayer.activeHandId + 1;
 
@@ -78,29 +67,25 @@ export const usePlayersStore = defineStore("players", () => {
   function getPlayerHand(
     playerId = coreStore.activePlayerId,
     handId?: number,
-  ): Hand | undefined {
+  ): GameHand | undefined {
     const targetPlayer = players.value[playerId];
-    if (!targetPlayer?.inGame) {
-      return;
-    }
+    if (!targetPlayer?.inGame) return;
 
     return targetPlayer.hands[handId ?? targetPlayer.activeHandId];
   }
 
-  function dealerPeekCard(): RawCard | undefined {
-    const currentHandValue = dealerOutcome.value.score;
+  function dealerPeekCard(): PlayingCard | undefined {
+    const currentCard = dealer.value.hands[0].cards[0];
+    const cardScore = getCardScore(currentCard);
 
-    if (currentHandValue < FACE_SCORE) {
-      return;
-    }
+    if (cardScore < FACE_SCORE) return;
 
     const newCard = deckStore.drawCard();
-    if (getCardScore(newCard) + currentHandValue !== BLACKJACK_SCORE) {
-      deckStore.returnCard(newCard);
-
-      return;
-    } else {
+    if (getHandScore([currentCard, newCard]).score === BLACKJACK_SCORE) {
+      revealCard(newCard, DEALER_ID);
       coreStore.jumpToStage(GameStages.EndRound);
+    } else {
+      deckStore.returnCard(newCard);
     }
 
     return newCard;
@@ -109,11 +94,11 @@ export const usePlayersStore = defineStore("players", () => {
   function checkPlayerScore(playerId?: number, handId?: number) {
     const targetHand = getPlayerHand(playerId, handId);
 
-    const outcome = getHandOutcome(targetHand);
+    if (!targetHand) return;
 
-    const playerMustStand = outcome.score >= BLACKJACK_SCORE;
+    const playerMustStand = !targetHand || targetHand.score >= BLACKJACK_SCORE;
 
-    // todo handle instant loss here? need to move this function to playerActions
+    // todo handle instant loss here? may need to move this function to playerActions
 
     if (playerMustStand) {
       coreStore.nextPlayer();
@@ -137,7 +122,7 @@ export const usePlayersStore = defineStore("players", () => {
 
   async function dealAllPlayersCards() {
     for (let i = 0; i < players.value.length; i++) {
-      if (isPlayerActive(players.value[i])) {
+      if (isActivePlayer(players.value[i])) {
         await dealCard(i);
       }
     }
@@ -145,7 +130,7 @@ export const usePlayersStore = defineStore("players", () => {
 
   async function revealAllBlankCards() {
     for (let i = 0; i < players.value.length; i++) {
-      if (isPlayerActive(players.value[i])) {
+      if (isActivePlayer(players.value[i])) {
         await wait(coreStore.config.autoTime);
         revealBlanks(i);
       }
@@ -165,13 +150,21 @@ export const usePlayersStore = defineStore("players", () => {
     }
   }
 
-  function revealCard(card: RawCard, playerId?: number, handId?: number) {
+  // todo update score/specials here
+  function revealCard(
+    card: PlayingCard,
+    playerId = coreStore.activePlayerId,
+    handId?: number,
+  ) {
+    const targetPlayer = players.value[playerId];
     const targetHand = getPlayerHand(playerId, handId);
+    //
+    if (!targetPlayer || !targetHand) return;
 
-    if (!targetHand) return;
-
-    targetHand.cards[targetHand.revealed] = card;
-    targetHand.revealed += 1;
+    targetPlayer.hands[handId ?? targetPlayer.activeHandId] = updateHand(
+      targetHand,
+      card,
+    );
   }
 
   function dealBlank(playerId?: number, handId?: number) {
@@ -179,7 +172,9 @@ export const usePlayersStore = defineStore("players", () => {
 
     if (!targetHand) return; // shouldnt happen, maybe throw error?
 
-    targetHand.cards[targetHand.revealed] = UNKNOWN_CARD;
+    targetHand.cards.push(UNKNOWN_CARD);
+
+    // targetHand.cards[targetHand.revealed] = UNKNOWN_CARD;
   }
 
   async function dealOrPeekDealer() {
@@ -196,17 +191,16 @@ export const usePlayersStore = defineStore("players", () => {
     return newCard;
   }
 
-  function setFinalScores() {
-    players.value.forEach((player) => {
-      player.score = getHandOutcome(player.hands[0]);
-      // todo handle split hands
-    });
-  }
+  // function setFinalScores() {
+  //   players.value.forEach((player) => {
+  //     player.score = getHandOutcome(player.hands[0]);
+  //     // todo handle split hands
+  //   });
+  // }
 
   return {
     players,
     dealer,
-    dealerOutcome,
     currentPlayer,
     activePlayersCount,
 
@@ -219,6 +213,5 @@ export const usePlayersStore = defineStore("players", () => {
     dealOrPeekDealer,
     addHand,
     nextHand,
-    setFinalScores,
   };
 });

@@ -1,6 +1,7 @@
 import { DEALER_STAND_SCORE } from "../../constants/cards.ts";
 import { GameStages } from "../../constants/gamePlay.ts";
 import { DEALER_ID } from "../../constants/player.ts";
+import { isActivePlayer } from "../../helpers/players.ts";
 import { GameConfig } from "../../types/config.ts";
 import { PlayerInputStub } from "../../types/players.ts";
 import { useCoreStore } from "../coreStore.ts";
@@ -23,9 +24,7 @@ export function useGameActions() {
   }
 
   function goToFirstPlayer() {
-    const firstPlayerId = playersStore.players.findIndex(
-      (player) => player.inGame && !player.isDealer,
-    );
+    const firstPlayerId = playersStore.players.findIndex(isActivePlayer);
 
     // fixme end game if no players
     coreStore.jumpToPlayer(firstPlayerId);
@@ -47,7 +46,8 @@ export function useGameActions() {
     let dealerMayContinue = true;
     while (dealerMayContinue) {
       await playersStore.dealCard(DEALER_ID);
-      dealerMayContinue = playersStore.dealerOutcome.score < DEALER_STAND_SCORE;
+      dealerMayContinue =
+        playersStore.dealer.hands[0].score < DEALER_STAND_SCORE;
     }
 
     await playersStore.revealAllBlankCards();
@@ -56,7 +56,7 @@ export function useGameActions() {
   }
 
   function finaliseRound() {
-    playersStore.setFinalScores();
+    // playersStore.setFinalScores();
     betActions.settleAllBets();
 
     // todo disable any fully lost players here

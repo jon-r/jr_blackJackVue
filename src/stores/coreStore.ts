@@ -77,8 +77,6 @@ export const useCoreStore = defineStore("core", () => {
     nextPlayer,
     jumpToStage,
     jumpToPlayer,
-    // nextStage,
     restartGame,
-    // endAllPlayerTurns,
   };
 });

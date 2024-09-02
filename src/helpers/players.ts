@@ -1,7 +1,11 @@
 import { SpecialScores } from "../constants/gamePlay.ts";
-import { DEFAULT_PLAYER_NAMES } from "../constants/player.ts";
-import { Hand } from "../types/card.ts";
-import { HandScore, Player, PlayerInputStub } from "../types/players.ts";
+import { DEALER_ID, DEFAULT_PLAYER_NAMES } from "../constants/player.ts";
+import {
+  GameHand,
+  HandScore,
+  Player,
+  PlayerInputStub,
+} from "../types/players.ts";
 
 export function setupPlayerInput(players: Player[]): PlayerInputStub[] {
   if (!players.length) {
@@ -9,7 +13,7 @@ export function setupPlayerInput(players: Player[]): PlayerInputStub[] {
   }
 
   const playersWithoutDealer = players
-    .filter((player) => !player.isDealer)
+    .filter((player) => player.index !== DEALER_ID)
     .map((player) => ({ name: player.name }));
 
   return Array.from({ ...playersWithoutDealer, length: 5 }, (player) => ({
@@ -17,8 +21,14 @@ export function setupPlayerInput(players: Player[]): PlayerInputStub[] {
   }));
 }
 
-export function createEmptyHand(): Hand {
-  return { cards: [], revealed: 0 };
+export function createEmptyHand(): GameHand {
+  return {
+    cards: [],
+    special: SpecialScores.None,
+    score: 0,
+    revealed: 0,
+    softAces: 0,
+  };
 }
 
 export function createEmptyScore(): HandScore {
@@ -30,17 +40,19 @@ export function createPlayer(name: string, index: number): Player {
     name,
     index,
     money: 1000,
-    bet: 0,
-    isDealer: false,
-    score: createEmptyScore(),
+    openBet: 0,
     inGame: true,
-    peeked: null,
     hands: [createEmptyHand()],
     outcome: null,
     activeHandId: 0,
+
+    peeked: null,
+    bet: 0,
+    isDealer: false,
+    score: createEmptyScore(),
   };
 }
 
-export function isPlayerActive(player: Player) {
-  return player.inGame && !player.isDealer;
+export function isActivePlayer(player: Player) {
+  return player.inGame && player.index !== DEALER_ID;
 }

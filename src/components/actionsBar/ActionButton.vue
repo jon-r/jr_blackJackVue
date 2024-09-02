@@ -12,7 +12,10 @@ const props = defineProps<ButtonControlProps>();
 
     <slot />
 
-    <span v-if="props.alert" class="ctrl-btn-alert alert-text">
+    <span
+      v-if="props.alert && !props.disabled"
+      class="ctrl-btn-alert alert-text"
+    >
       {{ props.alert }}
     </span>
   </button>

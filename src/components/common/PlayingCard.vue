@@ -3,10 +3,10 @@
 import { computed } from "vue";
 
 import { CARD_FACES } from "../../constants/cards.ts";
-import { RawCard } from "../../types/card.ts";
+import { PlayingCard } from "../../types/card.ts";
 
 type PlayingCardProps = {
-  card: RawCard;
+  card: PlayingCard;
 };
 const props = defineProps<PlayingCardProps>();
 

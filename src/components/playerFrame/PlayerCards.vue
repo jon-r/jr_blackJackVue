@@ -4,15 +4,16 @@ import { computed } from "vue";
 import { setPos, transformJiggle } from "../../animationTools.ts";
 // import { FaceValues } from "../../constants/cards.ts";
 import { SpecialScores } from "../../constants/gamePlay.ts";
-import { getHandOutcome } from "../../helpers/cards.ts";
+// import { getHandOutcome } from "../../helpers/cards.ts";
 import { useDeckStore } from "../../stores/deckStore.ts";
 // import { useAppStore } from "../../store/store.ts";
 import { Position } from "../../types/animations.ts";
-import { Hand } from "../../types/card.ts";
+import { GameHand } from "../../types/players.ts";
+// import { Hand } from "../../types/card.ts";
 import PlayingCard from "../common/PlayingCard.vue";
 
 type PlayerCardsProps = {
-  hand: Hand;
+  hand: GameHand;
   framePos: Position;
   isActive: boolean;
 };
@@ -44,7 +45,7 @@ const leavePosition = computed<Position>(() => ({
 
 // fixme bug if 10 or face on soft (it doesnt update the score)
 // also remove the aces side-effect
-const outcome = computed(() => getHandOutcome(props.hand));
+// const outcome = computed(() => getHandOutcome(props.hand));
 
 /*
 const score = computed(() => {
@@ -107,9 +108,9 @@ function leave(el: HTMLElement, done: () => void) {
   <div class="player-cards" :class="{ 'active-hand': isActive }">
     <div
       class="hand-score shadow-light"
-      :class="{ 'error-text': outcome.special === SpecialScores.Bust }"
+      :class="{ 'error-text': hand.special === SpecialScores.Bust }"
     >
-      {{ outcome.score }} {{ outcome.special }}
+      {{ hand.score }} {{ hand.special }}
     </div>
 
     <TransitionGroup
