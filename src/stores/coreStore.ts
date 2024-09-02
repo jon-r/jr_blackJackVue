@@ -18,6 +18,7 @@ export const useCoreStore = defineStore("core", () => {
   const activePlayerId = ref(-1);
   const notifications = ref<string[]>([]);
 
+  // todo send more messages
   function sendMessage(newMessage: string) {
     notifications.value.unshift(newMessage);
     notifications.value.slice(MAX_MESSAGES);
@@ -28,13 +29,12 @@ export const useCoreStore = defineStore("core", () => {
   }
 
   function restartGame() {
-    // todo need more here?
+    // todo need more here? (defo more in the gameActions file to reset players)
     jumpToStage(GameStages.Init);
   }
 
   function jumpToStage(stage: GameStages) {
-    // todo skip player if they cant play
-    activePlayerId.value = 0;
+    jumpToPlayer(0);
     activeStage.value = stage;
   }
 

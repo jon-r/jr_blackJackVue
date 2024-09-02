@@ -19,10 +19,17 @@ export function getGameOutcome(
   const playerHand = player[0]; // todo find the best non-bust hand
   const dealerHand = dealer[0];
 
-  const dealerHasBlackjack = hasBlackjack(playerHand);
+  const dealerHasBlackjack = hasBlackjack(dealerHand);
   const playerHasBlackjack = hasBlackjack(playerHand);
-  const dealerHasBust = hasBust(playerHand);
+  const dealerHasBust = hasBust(dealerHand);
   const playerHasBust = hasBust(playerHand);
+
+  console.log({
+    dealerHasBlackjack,
+    playerHasBlackjack,
+    dealerHasBust,
+    playerHasBust,
+  });
 
   if (
     playerHasBust ||
@@ -80,33 +87,36 @@ type HandCalculation = {
   softAces: number;
 };
 
-// todo maybe cleaner way to do this?
+const nilScore = { score: 0, softAces: 0 };
+
 export function getHandScore(cards: PlayingCard[]): HandCalculation {
   if (!cards) {
-    return { score: 0, softAces: 0 };
+    return nilScore;
   }
 
-  return cards.reduce(
-    (prev: HandCalculation, card: PlayingCard) => {
-      let { score, softAces } = prev;
+  // todo maybe cleaner way to do this?
+  return cards.reduce((prev: HandCalculation, card: PlayingCard) => {
+    let { score, softAces } = prev;
 
-      const newCardScore = getCardScore(card);
+    const newCardScore = getCardScore(card);
 
-      if (newCardScore === ACE_SCORE) {
-        softAces += 1;
-      }
+    if (newCardScore === ACE_SCORE) {
+      softAces += 1;
+    }
 
-      score += newCardScore;
+    score += newCardScore;
 
-      while (softAces > 0 && score > BLACKJACK_SCORE) {
-        softAces = -1;
-        score = -10;
-      }
-
+    if (score <= BLACKJACK_SCORE) {
       return { softAces, score };
-    },
-    { score: 0, softAces: 0 },
-  );
+    }
+
+    while (softAces > 0 && score > BLACKJACK_SCORE) {
+      softAces = -1;
+      score = -10;
+    }
+
+    return { softAces, score };
+  }, nilScore);
 }
 
 export function updateHand(hand: GameHand, newCard: PlayingCard): GameHand {
@@ -118,7 +128,5 @@ export function updateHand(hand: GameHand, newCard: PlayingCard): GameHand {
     cards,
     special,
     ...handScore,
-
-    revealed: 0,
   };
 }

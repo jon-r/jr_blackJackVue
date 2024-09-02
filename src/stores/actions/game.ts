@@ -45,7 +45,7 @@ export function useGameActions() {
   async function dealFinalCards() {
     let dealerMayContinue = true;
     while (dealerMayContinue) {
-      await playersStore.dealCard(DEALER_ID);
+      await playersStore.revealCard(DEALER_ID);
       dealerMayContinue =
         playersStore.dealer.hands[0].score < DEALER_STAND_SCORE;
     }
@@ -56,7 +56,6 @@ export function useGameActions() {
   }
 
   function finaliseRound() {
-    // playersStore.setFinalScores();
     betActions.settleAllBets();
 
     // todo disable any fully lost players here
@@ -64,8 +63,8 @@ export function useGameActions() {
 
   return {
     newGame,
-    goToFirstPlayer,
     dealInitialCards,
+    goToFirstPlayer,
     dealFinalCards,
     finaliseRound,
   };

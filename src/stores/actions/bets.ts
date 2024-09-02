@@ -34,10 +34,10 @@ export function useBetActions() {
   }
 
   function placeRandomBets() {
-    playersStore.players.filter(isActivePlayer).forEach((_, id) => {
+    playersStore.players.filter(isActivePlayer).forEach((player) => {
       const rngBet = (getRandom(10) + 1) * 100;
 
-      placeBet(rngBet, id);
+      placeBet(rngBet, player.index);
     });
   }
 
@@ -62,12 +62,12 @@ export function useBetActions() {
 
   // todo skip if already settled (bust or surrendered)
   function settleAllBets() {
-    playersStore.players.forEach(async (player, id) => {
+    playersStore.players.filter(isActivePlayer).forEach(async (player) => {
       if (!player.outcome) {
         // todo get best player hand
         const outcome = getGameOutcome(player.hands, playersStore.dealer.hands);
 
-        await settleBet(outcome, id);
+        await settleBet(outcome, player.index);
       }
     });
   }

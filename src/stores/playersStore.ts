@@ -6,7 +6,6 @@ import {
   FACE_SCORE,
   UNKNOWN_CARD,
 } from "../constants/cards.ts";
-import { GameStages } from "../constants/gamePlay.ts";
 import { DEALER_ID, DEALER_STUB } from "../constants/player.ts";
 import { getCardScore, isBlankCard } from "../helpers/cards.ts";
 import { getHandScore, updateHand } from "../helpers/gamePlay.ts";
@@ -21,7 +20,7 @@ import { GameHand, Player, PlayerInputStub } from "../types/players.ts";
 import { useCoreStore } from "./coreStore.ts";
 import { useDeckStore } from "./deckStore.ts";
 
-// todo reorganise actions in better folders
+// todo reorganise actions/functions in better folders (after style merge)
 export const usePlayersStore = defineStore("players", () => {
   const coreStore = useCoreStore();
   const deckStore = useDeckStore();
@@ -32,6 +31,9 @@ export const usePlayersStore = defineStore("players", () => {
     () => players.value.find((player) => player.index === DEALER_ID) as Player,
   );
 
+  // todo maybe 'activePlayers' worth adding, its used in a few places
+  // also make readonlys / setter+getters
+
   const activePlayersCount = computed(
     () => players.value.filter(isActivePlayer).length,
   );
@@ -41,9 +43,7 @@ export const usePlayersStore = defineStore("players", () => {
   );
 
   function resetPlayers(stubs: PlayerInputStub[]) {
-    players.value = [DEALER_STUB, ...stubs].map(({ name }, index) =>
-      createPlayer(name, index + 1),
-    );
+    players.value = [DEALER_STUB, ...stubs].map(createPlayer);
   }
 
   function addHand() {
@@ -82,13 +82,10 @@ export const usePlayersStore = defineStore("players", () => {
 
     const newCard = deckStore.drawCard();
     if (getHandScore([currentCard, newCard]).score === BLACKJACK_SCORE) {
-      revealCard(newCard, DEALER_ID);
-      coreStore.jumpToStage(GameStages.EndRound);
-    } else {
-      deckStore.returnCard(newCard);
+      return newCard;
     }
 
-    return newCard;
+    deckStore.returnCard(newCard);
   }
 
   function checkPlayerScore(playerId?: number, handId?: number) {
@@ -112,10 +109,16 @@ export const usePlayersStore = defineStore("players", () => {
 
     dealBlank(playerId, handId);
 
-    await wait(coreStore.config.autoTime);
+    return revealCard(playerId, handId);
+  }
 
-    const newCard = deckStore.drawCard();
-    revealCard(newCard, playerId);
+  async function dealOrPeekDealer() {
+    dealBlank(DEALER_ID);
+
+    const newCard = dealerPeekCard();
+    if (newCard) {
+      setCard(newCard, DEALER_ID);
+    }
 
     return newCard;
   }
@@ -128,30 +131,19 @@ export const usePlayersStore = defineStore("players", () => {
     }
   }
 
-  async function revealAllBlankCards() {
-    for (let i = 0; i < players.value.length; i++) {
-      if (isActivePlayer(players.value[i])) {
-        await wait(coreStore.config.autoTime);
-        revealBlanks(i);
-      }
-    }
+  async function revealCard(
+    playerId?: number,
+    handId?: number,
+  ): Promise<PlayingCard | undefined> {
+    await wait(coreStore.config.autoTime);
+
+    const newCard = deckStore.drawCard();
+    setCard(newCard, playerId, handId);
+
+    return newCard;
   }
 
-  function revealBlanks(playerId?: number, handId?: number) {
-    const targetHand = getPlayerHand(playerId, handId);
-
-    if (!targetHand) return; // shouldnt happen, maybe throw error?
-
-    const cardsToReveal = targetHand.cards.filter(isBlankCard);
-
-    for (let i = 0; i < cardsToReveal.length; i++) {
-      const newCard = deckStore.drawCard();
-      revealCard(newCard, playerId);
-    }
-  }
-
-  // todo update score/specials here
-  function revealCard(
+  function setCard(
     card: PlayingCard,
     playerId = coreStore.activePlayerId,
     handId?: number,
@@ -167,36 +159,33 @@ export const usePlayersStore = defineStore("players", () => {
     );
   }
 
+  async function revealAllBlankCards() {
+    for (let i = 0; i < players.value.length; i++) {
+      if (isActivePlayer(players.value[i])) {
+        await revealBlanks(i);
+      }
+    }
+  }
+
+  async function revealBlanks(playerId?: number, handId?: number) {
+    const targetHand = getPlayerHand(playerId, handId);
+
+    if (!targetHand) return; // shouldnt happen, maybe throw error?
+
+    const cardsToReveal = targetHand.cards.filter(isBlankCard);
+
+    for (let i = 0; i < cardsToReveal.length; i++) {
+      await revealCard(playerId, handId);
+    }
+  }
+
   function dealBlank(playerId?: number, handId?: number) {
     const targetHand = getPlayerHand(playerId, handId);
 
     if (!targetHand) return; // shouldnt happen, maybe throw error?
 
     targetHand.cards.push(UNKNOWN_CARD);
-
-    // targetHand.cards[targetHand.revealed] = UNKNOWN_CARD;
   }
-
-  async function dealOrPeekDealer() {
-    dealBlank(DEALER_ID);
-
-    await wait(coreStore.config.autoTime);
-
-    const newCard = dealerPeekCard();
-
-    if (newCard) {
-      revealCard(newCard, DEALER_ID);
-    }
-
-    return newCard;
-  }
-
-  // function setFinalScores() {
-  //   players.value.forEach((player) => {
-  //     player.score = getHandOutcome(player.hands[0]);
-  //     // todo handle split hands
-  //   });
-  // }
 
   return {
     players,
@@ -208,6 +197,7 @@ export const usePlayersStore = defineStore("players", () => {
     dealBlank,
     checkPlayerScore,
     dealCard,
+    revealCard,
     dealAllPlayersCards,
     revealAllBlankCards,
     dealOrPeekDealer,

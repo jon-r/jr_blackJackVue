@@ -694,6 +694,7 @@ h5 {
 
 .card-outer {
   position: absolute;
+  top: 0;
   transition: transform 600ms ease-out;
 }
 .card-outer:not(.blank) {
@@ -707,7 +708,7 @@ h5 {
   border-radius: 3px;
   padding: 2px;
   overflow: hidden;
-  position: relative;
+  /*position: relative;*/
   font-weight: bold;
 }
 
