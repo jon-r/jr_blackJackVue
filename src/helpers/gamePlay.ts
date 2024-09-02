@@ -38,21 +38,3 @@ export function getGameOutcome(
 
   return GameOutcomes.Won;
 }
-
-/*
-blackjack win:
-natural blackjack AND dealer no natural blackjack
-
-win:
-higher than dealer
-OR dealer bust
-
-draw:
-equal scores (non bust)
-
-lose:
-bust 
-lower than dealer
-dealer blackjack
-
- */

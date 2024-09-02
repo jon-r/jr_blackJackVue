@@ -12,11 +12,11 @@ import { useGameActions } from "../../stores/actions/game.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
 import { GameConfig } from "../../types/config.ts";
+import MdIcon from "../common/MdIcon.vue";
 // import { Player, PlayerInputStub } from "../../types/players.ts";
 import TextButton from "../common/TextButton.vue";
 import InputField from "./InputField.vue";
 import ModalContainer from "./ModalContainer.vue";
-import MdIcon from "../common/MdIcon.vue";
 
 // const { dispatch } = useAppStore();
 const coreStore = useCoreStore();
@@ -57,11 +57,10 @@ function newGame() {
     isDealer: true,
   });
 
-  const options = { players, config: newConfig };
+  const options = { players, config };
 
   await store.dispatch("newGame", options);
 */
-
   emit("closeModal");
 }
 
@@ -76,24 +75,28 @@ function newDemo() {
   // await store.dispatch("nextStage");
 }
 
-// function autoBet() {
-//   // if (idx > max) return Promise.resolve();
-//
-//   // const betVals = {
-//   //   idx,
-//   //   value: rngBet,
-//   // };
-//   // const betEvent = {
-//   //   idx,
-//   //   type: "bet",
-//   //   value: "addBet",
-//   // };
-//   // const nextIdx = idx + 1;
-//   //
-//   // await dispatch("playerSetBet", betVals);
-//   // await dispatch("doEvent", betEvent);
-//   // await autoBet(nextIdx, max);
-// }
+/*
+async function autoBet(idx: number, max: number) {
+  if (idx > max) return Promise.resolve();
+
+  const rngBet = (getRandom(10) + 1) * 100;
+
+  const betVals = {
+    idx,
+    value: rngBet,
+  };
+  const betEvent = {
+    idx,
+    type: "bet",
+    value: "addBet",
+  };
+  const nextIdx = idx + 1;
+
+  await store.dispatch("playerSetBet", betVals);
+  await store.dispatch("doEvent", betEvent);
+  await autoBet(nextIdx, max);
+}
+*/
 </script>
 <template>
   <ModalContainer
@@ -104,7 +107,7 @@ function newDemo() {
       <fieldset class="options-group">
         <h4 class="options-title frame">Player Names</h4>
 
-        <!-- todo add/remove players -->
+        <!-- todo ability to add/remove players -->
         <InputField
           v-for="(player, i) in playerInput"
           :key="i"

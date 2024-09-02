@@ -20,7 +20,7 @@ import { Player, PlayerInputStub } from "../types/players.ts";
 import { useCoreStore } from "./coreStore.ts";
 import { useDeckStore } from "./deckStore.ts";
 
-// todo reorganise actions
+// todo reorganise actions in better folders
 export const usePlayersStore = defineStore("players", () => {
   const coreStore = useCoreStore();
   const deckStore = useDeckStore();
@@ -123,7 +123,7 @@ export const usePlayersStore = defineStore("players", () => {
   async function dealCard(playerId?: number, handId?: number) {
     const targetHand = getPlayerHand(playerId, handId);
 
-    if (!targetHand) return; // shouldnt happen, maybe throw error?
+    if (!targetHand) return;
 
     dealBlank(playerId, handId);
 

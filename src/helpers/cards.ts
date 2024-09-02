@@ -2,14 +2,13 @@ import {
   ACE_SCORE,
   BLACKJACK_SCORE,
   CARDS_PER_SUIT,
-  CARD_FACES,
   CARD_VALUES,
   FACE_SCORE,
   SUITS_COUNT,
   SUIT_LIST,
 } from "../constants/cards.ts";
 import { SpecialScores } from "../constants/gamePlay.ts";
-import { Card, Hand, HandRules, RawCard } from "../types/card.ts";
+import { Hand, HandRules, RawCard } from "../types/card.ts";
 import { Player } from "../types/players.ts";
 import { createEmptyScore } from "./players.ts";
 
@@ -18,17 +17,24 @@ export function getHandRules(player: Player): HandRules {
   const currentHand = hands[activeHandId];
 
   if (!currentHand) {
-    return { canAfford: false, canSplit: false, isFirstPlay: false };
+    return {
+      canSurrender: false,
+      canDouble: false,
+      canSplit: false,
+    };
   }
 
   const { cards } = currentHand;
 
-  const canAfford = money >= bet;
   const isFirstPlay = cards.length === 2;
-  const hasMatch = getCardScore(cards[0]) === getCardScore(cards[1]);
-  const canSplit = isFirstPlay && hasMatch;
+  const canAfford = money >= bet;
+  const hasMatchingCards = getCardScore(cards[0]) === getCardScore(cards[1]);
 
-  return { canAfford, canSplit, isFirstPlay };
+  return {
+    canSurrender: isFirstPlay,
+    canDouble: isFirstPlay && canAfford,
+    canSplit: isFirstPlay && canAfford && hasMatchingCards,
+  };
 }
 
 export function getCardScore(rawCard: RawCard): number {
@@ -40,21 +46,6 @@ export function getCardScore(rawCard: RawCard): number {
 export function isBlankCard([faceValue]: RawCard) {
   return faceValue === 0;
 }
-
-export function formatCard(rawCard: RawCard): Card {
-  const [faceValue, suit] = rawCard;
-
-  return {
-    face: CARD_FACES[faceValue] || faceValue,
-    // score: getCardScore(rawCard), // todo unused here
-    suit,
-  };
-}
-
-type HandScore = {
-  score: number;
-  special: SpecialScores;
-};
 
 type HandCalculation = {
   score: number;
@@ -76,6 +67,11 @@ function getHandSpecial(
   }
   return SpecialScores.None;
 }
+
+type HandScore = {
+  score: number;
+  special: SpecialScores;
+};
 
 export function getHandOutcome(hand?: Hand): HandScore {
   if (!hand) {

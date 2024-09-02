@@ -8,6 +8,7 @@ import PlayingCard from "./components/common/PlayingCard.vue";
 import TextButton from "./components/common/TextButton.vue";
 import OptionsModal from "./components/options/OptionsModal.vue";
 import PlayerFrame from "./components/playerFrame/PlayerFrame.vue";
+import { UNKNOWN_CARD } from "./constants/cards.ts";
 import { GameStages } from "./constants/gamePlay.ts";
 import { useGameActions } from "./stores/actions/game.ts";
 import { useCoreStore } from "./stores/coreStore.ts";
@@ -18,13 +19,12 @@ import { Card } from "./types/card.ts";
 
 // import { GameEvent } from "./types/state.ts";
 
-// const store = useAppStore();
-
 const playersStore = usePlayersStore();
 const coreStore = useCoreStore();
 const deckStore = useDeckStore();
 
 const gameActions = useGameActions();
+// const store = useAppStore();
 
 const showOptions = ref(true);
 // const messages = ref<{ text: string; idx: number }[]>([]);
@@ -104,7 +104,7 @@ watch(
       </TransitionGroup>
 
       <div class="deck" ref="shoeRef">
-        <PlayingCard v-once :card="blankCard" class="stacked" />
+        <PlayingCard v-once :card="UNKNOWN_CARD" class="stacked" />
       </div>
 
       <div v-if="playersStore.activePlayersCount > 0">

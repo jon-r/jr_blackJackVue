@@ -1,17 +1,29 @@
 <!-- todo redo this with RawCard? -->
 <script lang="ts" setup>
-import { Card } from "../../types/card.ts";
+import { computed } from "vue";
+
+import { CARD_FACES } from "../../constants/cards.ts";
+import { RawCard } from "../../types/card.ts";
 
 type PlayingCardProps = {
-  card: Card;
+  card: RawCard;
 };
 const props = defineProps<PlayingCardProps>();
+
+const visualCard = computed(() => {
+  const [faceValue, suit] = props.card;
+
+  return {
+    face: CARD_FACES[faceValue] || faceValue,
+    suit,
+  };
+});
 </script>
 
 <template>
-  <div class="card" :class="props.card.suit">
-    <span v-if="props.card.face">
-      {{ props.card.face }}
+  <div class="card" :class="visualCard.suit">
+    <span v-if="visualCard.face">
+      {{ visualCard.face }}
     </span>
   </div>
 </template>

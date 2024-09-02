@@ -1,365 +1,339 @@
 <script setup lang="ts">
-// import { storeToRefs } from "pinia";
-import { computed, ref, watch } from "vue";
-
-import {
-  BLACKJACK_SCORE,
-  DEALER_STAND_SCORE,
-  FACE_SCORE,
-} from "../../constants/cards.ts";
+// import { b } from "vite/dist/node/types.d-aGj9QkWt.js";
+// import { computed, ref, watch } from "vue";
 // import { GameStages } from "../../constants/gamePlay.ts";
 // import { blankCard, valueCard } from "../../deckTools.ts";
 // import { useAppStore } from "../../store/store.ts";
-import { useCoreStore } from "../../stores/coreStore.ts";
 import { Position } from "../../types/animations.ts";
-import { Card, Hand, RawCard } from "../../types/card.ts";
+// import { Card, PlayerHand, RawCard } from "../../types/card.ts";
 import { Player } from "../../types/players.ts";
-import { GameEvent } from "../../types/state.ts";
+// import { GameEvent } from "../../types/state.ts";
 import PlayerCards from "./PlayerCards.vue";
 
 type PlayerHandProps = {
   isCurrentTurn: boolean;
   player: Player;
   framePos: Position;
-  result: string;
+  // result: string;
 };
+// const store = useAppStore();
 const props = defineProps<PlayerHandProps>();
 
-const coreStore = useCoreStore();
-
-// const hands = ref<PlayerHandOld[]>([]);
-// const activeHandId = ref(-1);
+/*
+const hands = ref<PlayerHand[]>([]);
+const activeHandId = ref(-1);
 const message = ref("");
 
-const activeHand = computed(
-  () => props.player.hands[props.player.activeHandId],
-);
-
-const activeScore = computed(() => {
-  if (!activeHand.value) {
-    return 0;
-  }
-  return activeHand.value.cards.reduce((acc: number, card) => {
-    const [value] = card;
-    return acc + Math.min(value[0], FACE_SCORE);
-  }, 0);
-});
+const activeHand = computed(() => hands.value.at(activeHandId.value));
 
 // todo this should all be handled in a watcher function
 const allowPlay = computed(() => {
-  // const activeHand = props.player.hands[props.player.activeHandId]
-  if (!activeScore.value) {
+  if (!activeHand.value) {
     return false;
   }
 
-  const max = props.player.isDealer ? DEALER_STAND_SCORE : BLACKJACK_SCORE;
+  // todo magic consts, and helpers
+  const max = props.player.isDealer ? 17 : 21;
 
-  // const activeScore = activeHand.value.score;
-  if (activeScore.value > BLACKJACK_SCORE) {
+  const activeScore = activeHand.value.score;
+  if (activeScore > 21) {
     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
     message.value = "Bust";
-  } else if (
-    activeScore.value === BLACKJACK_SCORE &&
-    activeHand.value.cards.length === 2
-  ) {
+  } else if (activeScore === 21 && activeHand.value.revealed === 2) {
     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
     message.value = "BlackJack!";
     emitBetChange("blackJack");
   }
 
   cardMessage(activeHand.value, message.value);
-  return activeScore.value < max;
+  return activeScore < max;
 });
 
 const roundResult = computed(() => {
   return message.value || props.result || "";
 });
 
-// function wait<T>(time: number, resolved: T): Promise<T> {
-//   return new Promise((resolve) => setTimeout(() => resolve(resolved), time));
-// }
+function wait<T>(time: number, resolved: T): Promise<T> {
+  return new Promise((resolve) => setTimeout(() => resolve(resolved), time));
+}
 
-/* hand methods */
+/* hand methods *
 function addHand() {
-  // hands.value.push({ cards: [], score: 0, revealed: 0 });
+  hands.value.push({ cards: [], score: 0, revealed: 0 });
 }
 
 function addSplitHand(splitCard: Card) {
-  // addHand();
-  // nextHand();
-  // setCard(splitCard, true);
+  addHand();
+  nextHand();
+  setCard(splitCard, true);
 }
 
 function nextHand() {
-  // if (hands.value.length - 1 === activeHandId.value) {
-  //   emitEndTurn();
-  // } else {
-  //   activeHandId.value += 1;
-  // }
+  if (hands.value.length - 1 === activeHandId.value) {
+    emitEndTurn();
+  } else {
+    activeHandId.value += 1;
+  }
 }
 
 function prevHand() {
-  // activeHandId.value -= 1;
+  activeHandId.value -= 1;
 }
 
-/* card methods */
+/* card methods *
 
 function addBlankCard() {
-  // activeHand.value.cards.push(blankCard);
+  activeHand.value.cards.push(blankCard);
 }
 
 function revealCard(mayPeek = false): Promise<RawCard> {
-  // const drawType = mayPeek ? "deckDrawPeek" : "deckDrawRandom";
-  //
-  // return store.dispatch(drawType, activeHand.value.score);
+  const drawType = mayPeek ? "deckDrawPeek" : "deckDrawRandom";
+
+  return store.dispatch(drawType, activeHand.value.score);
 }
 
 // fixme this looks sus
 function setCard(card: RawCard | Card, isPreset = false) {
-  // if (!card) return;
-  //
-  // const newCard = isPreset ? card : valueCard(card as RawCard);
-  //
-  // activeHand.value.cards.splice(activeHand.value.revealed, 1, newCard as Card);
-  //
-  // activeHand.value.revealed += 1;
+  if (!card) return;
+
+  const newCard = isPreset ? card : valueCard(card as RawCard);
+
+  activeHand.value.cards.splice(activeHand.value.revealed, 1, newCard as Card);
+
+  activeHand.value.revealed += 1;
 }
 
 async function dealRevealSet(mayPeek = false) {
-  // addBlankCard();
-  // const rawCard = await revealCard(mayPeek);
-  // await wait(autoTime, null);
-  // setCard(rawCard);
+  addBlankCard();
+  const rawCard = await revealCard(mayPeek);
+  await wait(store.getters.autoTime, null);
+  setCard(rawCard);
 }
 
 async function fillBlanks() {
-  // const hasBlank = activeHand.value.cards.length > activeHand.value.revealed;
-  //
-  // if (!hasBlank) return;
-  //
-  // const rawCard = await revealCard();
-  // await wait(autoTime, null);
-  // setCard(rawCard);
+  const hasBlank = activeHand.value.cards.length > activeHand.value.revealed;
+
+  if (!hasBlank) return;
+
+  const rawCard = await revealCard();
+  await wait(store.getters.autoTime, null);
+  setCard(rawCard);
 }
 
-/* turn setting -------------- */
+/* turn setting -------------- *
 watch(
   () => props.isCurrentTurn,
   function startTurn(turn: boolean) {
-    // if (!turn) return false;
-    //
-    // const actions = new Map<GameStages, () => void>([
-    //   [GameStages.DealOne, dealOutFirst],
-    //   [GameStages.DealTwo, dealOutSecond],
-    //   [GameStages.PlayerActions, playerActions],
-    //   [GameStages.DealerActions, dealOutLast],
-    //   //       [5, this.roundResult],
-    // ]);
-    //
-    // const fn = actions.get(activeStage);
-    //
-    // return fn?.();
+    if (!turn) return false;
+
+    const actions = new Map([
+      [GameStages.DealOne, dealOutFirst],
+      [GameStages.DealTwo, dealOutSecond],
+      [GameStages.PlayerActions, playerActions],
+      [GameStages.DealerActions, dealOutLast],
+      //       [5, this.roundResult],
+    ]);
+
+    const fn = actions.get(store.getters.gameStage);
+
+    return fn ? fn() : false;
   },
 );
 
-/* TURN 0 ------------------ */
+/* TURN 0 ------------------ *
 watch(
-  () => coreStore.gameRound,
+  () => store.getters.gameRound,
   function clearTable() {
-    // hands.value.forEach((hand) => {
-    //   hand.cards = [];
-    // });
-    // message.value = "";
-    //
-    // setTimeout(() => {
-    //   hands.value = [];
-    //   activeHandId.value = -1;
-    // }, 2000);
+    hands.value.forEach((hand) => {
+      hand.cards = [];
+    });
+    message.value = "";
+
+    setTimeout(() => {
+      hands.value = [];
+      activeHandId.value = -1;
+    }, 2000);
   },
 );
 
-/* TURN 1 ------------------ */
+/* TURN 1 ------------------ *
 
 async function dealOutFirst() {
-  // activeHandId.value = 0;
-  // addHand();
-  // await wait(100, null);
-  // await dealRevealSet();
-  // emitEndTurn();
+  activeHandId.value = 0;
+  addHand();
+  await wait(100, null);
+  await dealRevealSet();
+  emitEndTurn();
 }
 
-/* TURN 2 ------------------ */
+/* TURN 2 ------------------ *
 
 async function dealOutSecond() {
-  // const isDealer = props.player.isDealer;
-  //
-  // await dealRevealSet(isDealer);
-  //
-  // const endImmediately = isDealer && activeHand.value.score === 21;
-  //
-  // if (endImmediately) {
-  //   await wait(autoTime, null);
-  //   emitEndRound();
-  // } else {
-  //   emitEndTurn();
-  // }
+  const isDealer = props.player.isDealer;
+
+  await dealRevealSet(isDealer);
+
+  const endImmediately = isDealer && activeHand.value.score === 21;
+
+  if (endImmediately) {
+    await wait(store.getters.autoTime, null);
+    emitEndRound();
+  } else {
+    emitEndTurn();
+  }
 }
 
-/* TURN 3 -------------------- */
+/* TURN 3 -------------------- *
 
 function updateRules() {
-  // const count = activeHand.value.revealed;
-  // const split =
-  //   count === 2 &&
-  //   activeHand.value.cards[0].face === activeHand.value.cards[1].face;
-  // store.dispatch("handCtrlRules", { count, split });
+  const count = activeHand.value.revealed;
+  const split =
+    count === 2 &&
+    activeHand.value.cards[0].face === activeHand.value.cards[1].face;
+  store.dispatch("handCtrlRules", { count, split });
 }
 
 function scoreCheck() {
-  // updateRules();
-  // if (!allowPlay.value) {
-  //   nextHand();
-  // }
+  updateRules();
+  if (!allowPlay.value) {
+    nextHand();
+  }
 }
 
 async function playerActions() {
-  // if (!props.player.isDealer) {
-  //   return scoreCheck();
-  // }
-  //
-  // const peekedCard = playersStore.dealer.peeked;
-  // if (peekedCard) {
-  //   setCard(peekedCard);
-  //   // .wait(0, null) todo why wait here?
-  //   await autoHit();
-  // }
-  //
-  // await fillBlanks();
-  // await autoHit();
+  if (!props.player.isDealer) {
+    return scoreCheck();
+  }
+
+  const peekedCard = (store.getters.dealer as Dealer).peeked;
+  if (peekedCard) {
+    setCard(peekedCard);
+    // .wait(0, null) todo why wait here?
+    await autoHit();
+  }
+
+  await fillBlanks();
+  await autoHit();
 }
 
 watch(
-  () => null, //store.getters.eventBus,
+  () => store.getters.eventBus,
   function doCtrl(event: GameEvent) {
-    // const { idx, type, value } = event;
-    // const isHandEvent = idx === props.player.index && type === "card";
-    //
-    // const events = {
-    //   hit,
-    //   stand,
-    //   split,
-    //   surrender,
-    //   double,
-    // };
-    //
-    // // @ts-expect-error - do this better
-    // if (isHandEvent) events[value]();
+    const { idx, type, value } = event;
+    const isHandEvent = idx === props.player.index && type === "card";
+
+    const events = {
+      hit,
+      stand,
+      split,
+      surrender,
+      double,
+    };
+
+    // @ts-expect-error - do this better
+    if (isHandEvent) events[value]();
   },
 );
 
 async function hit() {
-  // await dealRevealSet();
-  // scoreCheck();
+  await dealRevealSet();
+  scoreCheck();
 }
 
 async function autoHit() {
-  // if (allowPlay.value) {
-  //   await dealRevealSet();
-  //   await wait(autoTime, null);
-  //   await autoHit();
-  // } else {
-  //   emitEndTurn();
-  // }
+  if (allowPlay.value) {
+    await dealRevealSet();
+    await wait(store.getters.autoTime, null);
+    await autoHit();
+  } else {
+    emitEndTurn();
+  }
 }
 
 function stand() {
-  // // wait(0, null) todo why wait
-  // nextHand();
+  // wait(0, null) todo why wait
+  nextHand();
 }
 
 async function split() {
-  // const splitCard = activeHand.value.cards.splice(1)[0];
-  // activeHand.value.revealed -= 1;
-  //
-  // await emitBetChange("addBet");
-  //
-  // await dealRevealSet();
-  // addSplitHand(splitCard);
-  // await wait(100, null);
-  // await dealRevealSet();
-  // prevHand();
-  // scoreCheck();
+  const splitCard = activeHand.value.cards.splice(1)[0];
+  activeHand.value.revealed -= 1;
+
+  await emitBetChange("addBet");
+
+  await dealRevealSet();
+  addSplitHand(splitCard);
+  await wait(100, null);
+  await dealRevealSet();
+  prevHand();
+  scoreCheck();
 }
 
 async function surrender() {
-  // await emitBetChange("forfeit");
-  // emitEndTurn();
+  await emitBetChange("forfeit");
+  emitEndTurn();
 }
 
 async function double() {
-  // addBlankCard();
-  // await emitBetChange("addBet");
-  //
-  // await store.dispatch("playerDoubleBet", { idx: props.player.index });
-  // // needed to change the bet AFTER adding. to avoid double dipping
-  // emitEndTurn();
+  addBlankCard();
+  await emitBetChange("addBet");
+
+  await store.dispatch("playerDoubleBet", { idx: props.player.index });
+  // needed to change the bet AFTER adding. to avoid double dipping
+  emitEndTurn();
 }
 
-/* TURN 4 ------------------------- */
+/* TURN 4 ------------------------- *
 
 async function dealOutLast() {
-  // await fillBlanks();
-  // setFinalScores();
-  // emitEndTurn();
+  await fillBlanks();
+  setFinalScores();
+  emitEndTurn();
 }
 
 function setFinalScores() {
   // also filtering out any bust scores
-  // const bestScore = hands.value
-  //   .map((hand) => hand.score)
-  //   .reduce((max, cur) => (cur > 21 ? max : Math.max(max, cur)), -1);
-  //
-  // emitFinalScore(bestScore);
+  const bestScore = hands.value
+    .map((hand) => hand.score)
+    .reduce((max, cur) => (cur > 21 ? max : Math.max(max, cur)), -1);
+
+  emitFinalScore(bestScore);
 }
 
-/* emits -------------------------------------------------------------*/
+/* emits -------------------------------------------------------------*
 
 function emitEndTurn() {
-  // gamePlayStore.nextPlayer();
-  // store.dispatch("nextPlayer");
+  store.dispatch("nextPlayer");
 }
 
 function emitEndRound() {
-  // store.dispatch("setStage", 3);
-  // store.dispatch("nextPlayer");
-  // gamePlayStore.nextPlayer()
-  // gamePlayStore.endAllPlayerTurns();
+  store.dispatch("setStage", 3);
+  store.dispatch("nextPlayer");
 }
 
 function emitBetChange(value: string) {
-  // const betEvent = {
-  //   idx: props.player.index,
-  //   type: "bet",
-  //   value,
-  // };
-  //
-  // return store.dispatch("doEvent", betEvent);
+  const betEvent = {
+    idx: props.player.index,
+    type: "bet",
+    value,
+  };
+
+  return store.dispatch("doEvent", betEvent);
 }
 
 function emitFinalScore(value: number) {
-  // const idx = props.player.index;
-  // store.dispatch("playerSetScore", { idx, value });
+  const idx = props.player.index;
+  store.dispatch("playerSetScore", { idx, value });
 }
 
-/* messenger ---------------------------------------------------------*/
+/* messenger ---------------------------------------------------------*
 
-function cardMessage(hand: Hand, outcome: string) {
-  // const has = hand.revealed === 2 ? "starts with" : "now has";
-  //
-  // const msg = `${props.player.name} ${has} ${hand.score}. ${outcome}`;
-  //
-  // store.dispatch("setNewMessage", msg);
-}
+function cardMessage(hand: PlayerHand, outcome: string) {
+  const has = hand.revealed === 2 ? "starts with" : "now has";
+
+  const msg = `${props.player.name} ${has} ${hand.score}. ${outcome}`;
+
+ */
 </script>
 
 <template>
@@ -372,8 +346,8 @@ function cardMessage(hand: Hand, outcome: string) {
       :is-active="idx === player.activeHandId"
     >
     </PlayerCards>
-    <div class="round-alert alert-text" v-if="roundResult && !player.isDealer">
-      {{ roundResult }}
+    <div class="round-alert alert-text" v-if="player.outcome">
+      {{ player.outcome }}
     </div>
   </div>
 </template>

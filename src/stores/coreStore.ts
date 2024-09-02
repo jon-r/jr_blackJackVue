@@ -62,7 +62,6 @@ export const useCoreStore = defineStore("core", () => {
     } else {
       jumpToStage(activeStage.value + 1);
     }
-    console.log(GameStages[activeStage.value]);
   }
 
   return {

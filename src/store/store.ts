@@ -7,7 +7,7 @@ import { createStore, useStore } from "vuex";
 import { Store } from "vuex/types/index.d.ts";
 
 import { buildDeck, getRandom } from "../deckTools.ts";
-import { RawCardOld } from "../types/card.ts";
+import { RawCard } from "../types/card.ts";
 import { NewGameOptions } from "../types/config.ts";
 import { AppState, DoubleBetMutation, PlayerMutation } from "../types/state.ts";
 import { createAppState } from "./state.ts";
@@ -47,7 +47,7 @@ export default createStore({
     //      })
     //    },
 
-    DEALER_SET_PEEKED(state: AppState, card: RawCardOld) {
+    DEALER_SET_PEEKED(state: AppState, card: RawCard) {
       state.dealer.peeked = card;
     },
 
@@ -67,7 +67,7 @@ export default createStore({
       SET_STAGE: "gameStage",
       SET_ACTIVE_PLAYER: "gameActivePlayer",
       SET_PLAYERS: "players",
-      // SET_PLAYER_COUNT: "activePlayerCount",
+      SET_PLAYER_COUNT: "activePlayerCount",
       SET_DEALER: "dealer",
       SET_ROUND: "gameRound",
       SET_DECK: "deck",

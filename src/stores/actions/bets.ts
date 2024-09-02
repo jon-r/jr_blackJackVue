@@ -60,6 +60,7 @@ export function useBetActions() {
     targetPlayer.bet = 0;
   }
 
+  // todo skip if already settled (bust or surrendered)
   function settleAllBets() {
     playersStore.players.forEach(async (player, id) => {
       const outcome = getGameOutcome(player.score, playersStore.dealer.score);

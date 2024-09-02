@@ -19,7 +19,7 @@ const props = defineProps<GamePlayActionsProps>();
 const playerActions = usePlayerActions();
 
 const actionButtons = computed<ButtonControl[]>(() => {
-  const { canSplit, canAfford, isFirstPlay } = getHandRules(props.player);
+  const { canSplit, canSurrender, canDouble } = getHandRules(props.player);
   const { bet } = props.player;
 
   return [
@@ -38,7 +38,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "play-split",
       label: GamePlayActionTypes.Split,
-      disabled: !(canAfford && canSplit),
+      disabled: !canSplit,
       icon: "call_split",
       alert: `- £${bet}`,
       onClick: playerActions.split,
@@ -46,7 +46,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "play-surrender",
       label: GamePlayActionTypes.Surrender,
-      disabled: !isFirstPlay,
+      disabled: !canSurrender,
       icon: "flag",
       alert: `+ £${bet / 2}`,
       onClick: playerActions.surrender,
@@ -54,7 +54,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "play-double",
       label: GamePlayActionTypes.Double,
-      disabled: !(canAfford && isFirstPlay),
+      disabled: !canDouble,
       icon: "monetization_on",
       alert: `- £${bet}`,
       onClick: playerActions.double,
@@ -62,7 +62,8 @@ const actionButtons = computed<ButtonControl[]>(() => {
   ];
 });
 
-/*function handleAction(action: GamePlayActionTypes) {
+/*
+function handleAction(action: GamePlayActionTypes) {
   const { index: idx, name, firstBet } = props.player;
 
   const handEvent = {
@@ -71,8 +72,8 @@ const actionButtons = computed<ButtonControl[]>(() => {
     value: action,
   };
 
-  dispatch("doEvent", handEvent);
-  dispatch("setNewMessage", `${name} ${action}s`);
+  store.dispatch("doEvent", handEvent);
+  store.dispatch("setNewMessage", `${name} ${action}s`);
 
   if (
     action === GamePlayActionTypes.Split ||
@@ -83,9 +84,10 @@ const actionButtons = computed<ButtonControl[]>(() => {
       value: -firstBet,
     };
 
-    dispatch("playerUpdateMoney", betVals);
+    store.dispatch("playerUpdateMoney", betVals);
   }
-}*/
+}
+*/
 </script>
 <template>
   <section class="ctrl-menu frame flex flex-wrap">

@@ -34,14 +34,16 @@ const actionButtons = computed<ButtonControl[]>(() => {
   ];
 });
 
-// function newGame() {
-//   const gameEvent = { type: "newGame" };
-//   return dispatch("doEvent", gameEvent);
-// }
+/*
+function newGame() {
+  const gameEvent = { type: "newGame" };
+  return store.dispatch("doEvent", gameEvent);
+}
 
-// function nextRound() {
-//   return dispatch("nextRound");
-// }
+function nextRound() {
+  return store.dispatch("nextRound");
+}
+*/
 </script>
 
 <template>

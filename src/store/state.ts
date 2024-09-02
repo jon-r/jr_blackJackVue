@@ -1,7 +1,7 @@
 /*
 
 import { GameStages } from "../constants/gamePlay.ts";
-// import { DEFAULT_PLAYER } from "../constants/player.ts";
+import { DEFAULT_PLAYER } from "../constants/player.ts";
 import { AppState } from "../types/state.ts";
 
 export function createAppState(): AppState {
@@ -12,19 +12,19 @@ export function createAppState(): AppState {
     gameActivePlayer: -1,
 
     // players & dealer
-    // dealer: { ...DEFAULT_PLAYER, index: 5, name: "Dealer", isDealer: true },
+    dealer: { ...DEFAULT_PLAYER, index: 5, name: "Dealer", isDealer: true },
     players: [
-      // { ...DEFAULT_PLAYER, index: 0, name: "Aaron" },
-      // { ...DEFAULT_PLAYER, index: 1, name: "Beth" },
-      // { ...DEFAULT_PLAYER, index: 2, name: "Chris" },
-      // { ...DEFAULT_PLAYER, index: 3, name: "Denise" },
-      // { ...DEFAULT_PLAYER, index: 4, name: "Ethan" },
+      { ...DEFAULT_PLAYER, index: 0, name: "Aaron" },
+      { ...DEFAULT_PLAYER, index: 1, name: "Beth" },
+      { ...DEFAULT_PLAYER, index: 2, name: "Chris" },
+      { ...DEFAULT_PLAYER, index: 3, name: "Denise" },
+      { ...DEFAULT_PLAYER, index: 4, name: "Ethan" },
     ],
-    // activePlayerCount: 5,
+    activePlayerCount: 5,
 
     // deck and cards
     deck: [],
-    shoePos: { x: 0, y: 0 },
+    shoePos: {},
 
     // other options
     config: {
