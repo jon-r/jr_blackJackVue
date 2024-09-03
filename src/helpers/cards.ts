@@ -1,6 +1,7 @@
 import {
   CARDS_PER_SUIT,
   CARD_VALUES,
+  FaceValues,
   SUITS_COUNT,
   SUIT_LIST,
 } from "../constants/cards.ts";
@@ -39,7 +40,11 @@ export function getCardScore(rawCard: PlayingCard): number {
 }
 
 export function isBlankCard([faceValue]: PlayingCard) {
-  return faceValue === 0;
+  return faceValue === FaceValues.Blank;
+}
+
+export function isAce([faceValue]: PlayingCard) {
+  return faceValue === FaceValues.Ace;
 }
 
 export function buildDeck(decks: number): PlayingCard[] {

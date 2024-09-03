@@ -1,8 +1,8 @@
-import { ACE_SCORE, BLACKJACK_SCORE } from "../constants/cards.ts";
+import { BLACKJACK_SCORE } from "../constants/cards.ts";
 import { GameOutcomes, SpecialScores } from "../constants/gamePlay.ts";
 import { PlayingCard } from "../types/card.ts";
 import { GameHand } from "../types/players.ts";
-import { getCardScore, isBlankCard } from "./cards.ts";
+import { getCardScore, isAce, isBlankCard } from "./cards.ts";
 
 export function hasBlackjack(player: GameHand): boolean {
   return player.special === SpecialScores.BlackJack;
@@ -91,21 +91,13 @@ export function getHandScore(cards: PlayingCard[]): HandCalculation {
   return cards.reduce((prev: HandCalculation, card: PlayingCard) => {
     let { score, softAces } = prev;
 
-    const newCardScore = getCardScore(card);
+    softAces += Number(isAce(card));
+    score += getCardScore(card);
 
-    if (newCardScore === ACE_SCORE) {
-      softAces += 1;
-    }
-
-    score += newCardScore;
-
-    if (score <= BLACKJACK_SCORE) {
-      return { softAces, score };
-    }
-
-    while (softAces > 0 && score > BLACKJACK_SCORE) {
-      softAces = -1;
-      score = -10;
+    while (score > BLACKJACK_SCORE && softAces > 0) {
+      // convert the ace to a 'hard' ace of 1 point
+      softAces -= 1;
+      score -= 10;
     }
 
     return { softAces, score };

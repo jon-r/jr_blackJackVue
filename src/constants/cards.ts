@@ -1,6 +1,7 @@
 import { PlayingCard } from "../types/card.ts";
 
 export enum FaceValues {
+  Blank = 0,
   Ace = 1,
   Jack = 11,
   Queen = 12,
@@ -38,7 +39,10 @@ export const SUIT_LIST = [
 export const SUITS_COUNT = SUIT_LIST.length;
 export const CARDS_PER_SUIT = 13;
 
-export const UNKNOWN_CARD: PlayingCard = [0, CardSuits.Blank] as const;
+export const UNKNOWN_CARD: PlayingCard = [
+  FaceValues.Blank,
+  CardSuits.Blank,
+] as const;
 
 export const FACE_SCORE = 10;
 export const ACE_SCORE = 11;

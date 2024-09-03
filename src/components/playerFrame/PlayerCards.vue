@@ -98,9 +98,9 @@ function enterTo(el: HTMLElement) {
   setPos(el, jiggle);
 }
 
-function leave(el: HTMLElement, done: () => void) {
-  el.addEventListener("transitionend", done);
-  setPos(el, leavePosition.value);
+function leave() {
+  // el.addEventListener("transitionend", done);
+  // setPos(el, leavePosition.value);
 }
 </script>
 

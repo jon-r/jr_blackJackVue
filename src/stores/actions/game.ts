@@ -1,6 +1,7 @@
 import { DEALER_STAND_SCORE } from "../../constants/cards.ts";
 import { GameStages } from "../../constants/gamePlay.ts";
 import { DEALER_ID } from "../../constants/player.ts";
+import { hasBlackjack, hasBust } from "../../helpers/gamePlay.ts";
 import { isActivePlayer, isNotDealer } from "../../helpers/players.ts";
 import { GameConfig } from "../../types/config.ts";
 import { PlayerInputStub } from "../../types/players.ts";
@@ -26,7 +27,11 @@ export function useGameActions() {
   function goToNextPlayer() {
     const nextPlayer = playersStore.players.find(
       (player) =>
-        isActivePlayer(player) && player.index > coreStore.activePlayerId,
+        isActivePlayer(player) &&
+        player.index > coreStore.activePlayerId &&
+        // todo multi hand
+        !hasBust(player.hands[0]) &&
+        !hasBlackjack(player.hands[0]),
     );
 
     if (nextPlayer) {

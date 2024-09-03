@@ -67,9 +67,14 @@ export const usePlayersStore = defineStore("players", () => {
 
     if (!targetPlayer) return false;
 
-    targetPlayer.activeHandId += 1;
+    const nextHand = targetPlayer.activeHandId + 1;
 
-    return Boolean(targetPlayer.hands[targetPlayer.activeHandId]);
+    if (targetPlayer.hands[nextHand]) {
+      targetPlayer.activeHandId = nextHand;
+      return true;
+    }
+
+    return false;
   }
 
   function getPlayerHand(
