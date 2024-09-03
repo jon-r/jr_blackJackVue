@@ -472,29 +472,29 @@ h5 {
   height: 25%;
   max-height: 208px;
 }
-.player-0 {
+.player-1 {
   top: 25%;
   left: 5%;
 }
-.player-1 {
+.player-2 {
   top: 50%;
   left: 5%;
 }
-.player-2 {
+.player-3 {
   top: 75%;
   left: 35%;
 }
-.player-3 {
+.player-4 {
   top: 50%;
   right: 5%;
 }
-.player-4 {
+.player-5 {
   top: 25%;
   right: 5%;
 }
 
 /*dealer*/
-.player-5 {
+.player-0 {
   top: 2%;
   left: 30%;
 }
@@ -535,28 +535,28 @@ h5 {
 }
 
 @media screen and (min-width: 980px) {
-  .player-0 {
+  .player-1 {
     top: 33%;
     left: 1%;
   }
-  .player-1 {
+  .player-2 {
     top: 63%;
     left: 15%;
   }
-  .player-2 {
+  .player-3 {
     top: 71%;
     left: 40%;
   }
-  .player-3 {
+  .player-4 {
     top: 63%;
     right: 15%;
   }
-  .player-4 {
+  .player-5 {
     top: 33%;
     right: 1%;
   }
   /*dealer*/
-  .player-5 {
+  .player-0 {
     top: 7%;
     left: 42%;
   }
@@ -588,7 +588,7 @@ h5 {
   z-index: 10;
   padding: 0 6px;
   white-space: nowrap;
-  top: 1em;
+  top: 8em;
 }
 
 .round-alert {
@@ -692,6 +692,7 @@ h5 {
 
 .card-outer {
   position: absolute;
+  top: 0;
   transition: transform 600ms ease-out;
 }
 .card-outer:not(.blank) {
@@ -705,7 +706,7 @@ h5 {
   border-radius: 3px;
   padding: 2px;
   overflow: hidden;
-  position: relative;
+  /*position: relative;*/
   font-weight: bold;
 }
 
@@ -721,8 +722,8 @@ h5 {
     #c97272;
 }
 
-.hearts .card,
-.diamonds .card {
+.card.hearts,
+.card.diamonds  {
   color: red;
 }
 .card.clubs,

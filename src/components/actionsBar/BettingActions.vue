@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 
-import { useAppStore } from "../../store/store.ts";
-import { ButtonControl } from "../../types/button.ts";
+import { CHIP_VALUES } from "../../constants/gamePlay.ts";
+import { useBetActions } from "../../stores/actions/bets.ts";
+import { useGameActions } from "../../stores/actions/game.ts";
+import { useCoreStore } from "../../stores/coreStore.ts";
 import { Player } from "../../types/players.ts";
 import BettingChip from "../common/BettingChip.vue";
 import MdIcon from "../common/MdIcon.vue";
 import ActionButton from "./ActionButton.vue";
+import { ButtonControl } from "./button.ts";
 
 type BettingActionsProps = {
   player: Player;
 };
-
-const store = useAppStore();
 const props = defineProps<BettingActionsProps>();
 
-const chips = [5, 10, 25, 100, 500, 1000];
+const coreStore = useCoreStore();
+const betActions = useBetActions();
+const gameActions = useGameActions();
 
 const chipsToPlace = ref<number[]>([]);
 const betToPlace = computed(() =>
@@ -25,8 +28,7 @@ const betToPlace = computed(() =>
 const chipButtons = computed<ButtonControl[]>(() => {
   const maxChips = props.player.money - betToPlace.value;
 
-  // todo tidy types
-  return chips.map((chip) => ({
+  return CHIP_VALUES.map((chip) => ({
     id: `${chip}`,
     label: `£${chip}`,
     disabled: chip > maxChips,
@@ -35,12 +37,13 @@ const chipButtons = computed<ButtonControl[]>(() => {
 });
 
 const actionButtons = computed<ButtonControl[]>(() => {
-  const { minBet } = store.getters.config;
+  const { minBet } = coreStore.config;
+
   return [
     {
       id: "bet-submit",
       label: `Submit: £${betToPlace.value}`,
-      class: "btn-good",
+      className: "btn-good",
       icon: "publish",
       disabled: betToPlace.value < minBet,
       onClick: submitBet,
@@ -49,9 +52,9 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "bet-undo",
       label: "Undo",
-      class: "btn-alert",
+      className: "btn-alert",
       icon: "undo",
-      canUse: betToPlace.value > 0,
+      disabled: betToPlace.value === 0,
       onClick: removeChip,
     },
   ];
@@ -63,30 +66,13 @@ function addChip(value: number) {
 function removeChip() {
   chipsToPlace.value.pop();
 }
-function submitBet() {
-  const idx = props.player.index;
 
-  const betVals = {
-    idx,
-    value: betToPlace.value,
-  };
-  const betEvent = {
-    idx,
-    type: "bet",
-    value: "addBet",
-  };
+function submitBet() {
+  coreStore.sendMessage(`${props.player.name} bets £${betToPlace.value}`);
+  betActions.placeBet(betToPlace.value);
+  gameActions.goToNextPlayer();
 
   chipsToPlace.value = [];
-
-  // todo bonus combine these in store?
-  store.dispatch(
-    "setNewMessage",
-    `${props.player.name} bets £${betToPlace.value}`,
-  );
-  store
-    .dispatch("playerSetBet", betVals)
-    .then(() => store.dispatch("doEvent", betEvent))
-    .then(() => store.dispatch("nextPlayer"));
 }
 </script>
 

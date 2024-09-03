@@ -2,85 +2,63 @@
 import { computed } from "vue";
 
 import { GamePlayActionTypes } from "../../constants/gamePlay.ts";
-import { useAppStore } from "../../store/store.ts";
-import { ButtonControl } from "../../types/button.ts";
+import { getHandRules } from "../../helpers/cards.ts";
+import { usePlayerActions } from "../../stores/actions/player.ts";
 import { Player } from "../../types/players.ts";
 import MdIcon from "../common/MdIcon.vue";
 import ActionButton from "./ActionButton.vue";
+import { ButtonControl } from "./button.ts";
 
 type GamePlayActionsProps = {
   player: Player;
 };
 
-const store = useAppStore();
 const props = defineProps<GamePlayActionsProps>();
+const playerActions = usePlayerActions();
 
 const actionButtons = computed<ButtonControl[]>(() => {
-  const { split: canSplit, count: cardCount } = store.getters.handRules;
-  const isFirstAction = cardCount < 3;
-  const { money, firstBet } = props.player;
-
-  const canAfford = money >= firstBet;
+  const { canSplit, canSurrender, canDouble } = getHandRules(props.player);
+  const { openBet } = props.player;
 
   return [
     {
       id: "play-hit",
       label: GamePlayActionTypes.Hit,
       icon: "touch_app",
+      onClick: playerActions.hit,
     },
     {
       id: "play-stand",
       label: GamePlayActionTypes.Stand,
       icon: "pan_tool",
+      onClick: playerActions.stand,
     },
     {
       id: "play-split",
       label: GamePlayActionTypes.Split,
-      disabled: !(canAfford && canSplit),
+      disabled: !canSplit,
       icon: "call_split",
-      alert: `- £${firstBet}`,
+      alert: `- £${openBet}`,
+      onClick: playerActions.split,
     },
     {
       id: "play-surrender",
       label: GamePlayActionTypes.Surrender,
-      disabled: !isFirstAction,
+      disabled: !canSurrender,
       icon: "flag",
-      alert: `+ £${firstBet / 2}`,
+      alert: `+ £${openBet / 2}`,
+      onClick: playerActions.surrender,
     },
     {
       id: "play-double",
       label: GamePlayActionTypes.Double,
-      disabled: !(canAfford && isFirstAction),
+      disabled: !canDouble,
       icon: "monetization_on",
-      alert: `- £${firstBet}`,
+      alert: `- £${openBet}`,
+      onClick: playerActions.double,
     },
   ];
 });
-
-function handleAction(action: GamePlayActionTypes) {
-  const { index: idx, name, firstBet } = props.player;
-
-  const handEvent = {
-    idx,
-    type: "card",
-    value: action,
-  };
-
-  store.dispatch("doEvent", handEvent);
-  store.dispatch("setNewMessage", `${name} ${action}s`);
-
-  if (
-    action === GamePlayActionTypes.Split ||
-    action === GamePlayActionTypes.Double
-  ) {
-    const betVals = {
-      idx,
-      value: -firstBet,
-    };
-
-    store.dispatch("playerUpdateMoney", betVals);
-  }
-}
 </script>
 <template>
   <section class="ctrl-menu frame flex flex-wrap">
@@ -88,7 +66,7 @@ function handleAction(action: GamePlayActionTypes) {
       v-for="actionButton in actionButtons"
       :key="actionButton.id"
       v-bind="actionButton"
-      @click="() => handleAction(actionButton.label as GamePlayActionTypes)"
+      @click="actionButton.onClick"
     >
       <MdIcon class="ctrl-btn-icon" :name="actionButton.icon!" />
     </ActionButton>

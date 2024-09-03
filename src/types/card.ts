@@ -1,10 +1,9 @@
-export type RawCard = [number, number];
+import { CardSuits } from "../constants/cards.ts";
 
-// todo enums
-export type Card = {
-  face: number | string;
-  score: number;
-  suit: string;
+export type PlayingCard = [faceValue: number, suit: CardSuits];
+
+export type HandRules = {
+  canDouble: boolean;
+  canSplit: boolean;
+  canSurrender: boolean;
 };
-
-export type PlayerHand = { cards: Card[]; score: number; revealed: number };

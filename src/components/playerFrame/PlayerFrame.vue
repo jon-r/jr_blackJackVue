@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref } from "vue";
 
-import { GameStages } from "../../constants/gamePlay.ts";
-import { useAppStore } from "../../store/store.ts";
+import { isNotDealer } from "../../helpers/players.ts";
+import { useCoreStore } from "../../stores/coreStore.ts";
 import { Position } from "../../types/animations.ts";
-import { Dealer, Player } from "../../types/players.ts";
+import { Player } from "../../types/players.ts";
 import ActiveBets from "./ActiveBets.vue";
 import PlayerHand from "./PlayerHand.vue";
 
@@ -12,14 +12,13 @@ type PlayerFrameProps = {
   player: Player;
 };
 
-const store = useAppStore();
 const props = defineProps<PlayerFrameProps>();
+const coreStore = useCoreStore();
 
 const playerClass = `player-${props.player.index}`;
 const oldMoney = ref(0);
 const diffFloat = ref(true);
 const framePos = ref<Position>({ x: 0, y: 0 });
-const roundResult = ref("");
 
 const frameParent = ref<HTMLElement>();
 
@@ -37,6 +36,8 @@ const diffClass = computed(() => {
   return moneyDiff.value > 0 ? "good-text" : "error-text";
 });
 
+const notDealer = computed(() => isNotDealer(props.player));
+
 const moneyDiff = computed(() => {
   const out = props.player.money - oldMoney.value;
   // eslint-disable-next-line vue/no-side-effects-in-computed-properties
@@ -45,63 +46,8 @@ const moneyDiff = computed(() => {
 });
 
 const isPlayerTurn = computed(() => {
-  return store.getters.gameActivePlayer === props.player.index;
+  return coreStore.activePlayerId === props.player.index;
 });
-
-watch(isPlayerTurn, function turnCheck() {
-  const cantBet = !props.player.inGame;
-  const wontBet =
-    store.getters.gameStage === GameStages.PlaceBets && props.player.isDealer;
-
-  if (isPlayerTurn.value && (cantBet || wontBet)) {
-    store.dispatch("nextPlayer");
-  }
-});
-
-watch(
-  () => store.getters.dealer.score,
-  function endRound(dealerScore: number) {
-    if (!dealerScore) return false;
-
-    roundResult.value = getScores();
-
-    emitBetChange(roundResult.value);
-  },
-);
-
-watch(
-  () => store.getters.gameRound,
-  function cleanUp() {
-    roundResult.value = "";
-    // todo bonus: anything else can go here?
-  },
-);
-
-function emitBetChange(value: string) {
-  const betEvent = {
-    idx: props.player.index,
-    type: "bet",
-    value,
-  };
-
-  store.dispatch("doEvent", betEvent);
-}
-
-function getScores() {
-  const dealerScore = (store.getters.dealer as Dealer).score;
-  const playerScore = props.player.score;
-
-  switch (true) {
-    case dealerScore === playerScore:
-      return "push";
-    case playerScore > 21 || dealerScore === 21:
-      return "lose";
-    case dealerScore > 21 || playerScore > dealerScore:
-      return "win";
-    default: // dealerScore > playerScore
-      return "lose";
-  }
-}
 
 function triggerTextAnim() {
   diffFloat.value = false;
@@ -119,21 +65,20 @@ function triggerTextAnim() {
   >
     <PlayerHand
       v-if="props.player.inGame"
-      :result="roundResult"
       :player="props.player"
       :frame-pos="framePos"
       :is-current-turn="isPlayerTurn"
     />
 
     <ActiveBets
-      v-if="!props.player.isDealer"
-      :player="props.player"
+      v-if="notDealer"
+      :bet="props.player.openBet"
       :frame-pos="framePos"
     />
 
     <header
       class="player-frame-title flex frame shadow-light"
-      v-if="!props.player.isDealer"
+      v-if="notDealer"
       :class="{ 'is-active': isPlayerTurn }"
     >
       <h4

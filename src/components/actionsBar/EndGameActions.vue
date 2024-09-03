@@ -2,42 +2,32 @@
 import { computed } from "vue";
 
 import { EndGameActionTypes } from "../../constants/gamePlay.ts";
-import { useAppStore } from "../../store/store.ts";
-import { ButtonControl } from "../../types/button.ts";
+import { useGameActions } from "../../stores/actions/game.ts";
+import { usePlayersStore } from "../../stores/playersStore.ts";
 import MdIcon from "../common/MdIcon.vue";
 import ActionButton from "./ActionButton.vue";
+import { ButtonControl } from "./button.ts";
 
-const store = useAppStore();
+const playersStore = usePlayersStore();
+const gameActions = useGameActions();
 
 const actionButtons = computed<ButtonControl[]>(() => {
-  // todo can do this with filter maybe
-  const hasPlayers = store.getters.activePlayerCount > 0;
-
   return [
     {
       id: "end-new",
       label: EndGameActionTypes.New,
       icon: "skip_previous",
-      onClick: newGame,
+      onClick: gameActions.endGame,
     },
     {
       id: "end-next",
       label: EndGameActionTypes.Next,
-      disabled: !hasPlayers,
+      disabled: playersStore.activePlayers.length === 0,
       icon: "skip_next",
-      onClick: nextRound,
+      onClick: gameActions.nextRound,
     },
   ];
 });
-
-function newGame() {
-  const gameEvent = { type: "newGame" };
-  return store.dispatch("doEvent", gameEvent);
-}
-
-function nextRound() {
-  return store.dispatch("nextRound");
-}
 </script>
 
 <template>

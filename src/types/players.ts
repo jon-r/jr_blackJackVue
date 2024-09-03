@@ -1,32 +1,24 @@
-import { RawCard } from "./card.ts";
-
-export type PlayerInputStub = {
-  index: number;
-  name: string;
-};
+import { GameOutcomes, SpecialScores } from "../constants/gamePlay.ts";
+import { PlayingCard } from "./card.ts";
 
 export type Player = {
-  isDealer: false;
-
   index: number;
   name: string;
   money: number;
-  firstBet: number;
-  score: number;
+  openBet: number;
+
+  outcome: GameOutcomes | null;
   inGame: boolean;
-  peeked: null;
+  hands: GameHand[];
+  activeHandId: number;
+  didPeek: PlayingCard | null;
 };
 
-export type Dealer = {
-  isDealer: true;
-  peeked: RawCard | null;
-
-  index: number;
-  name: string;
-  money: number;
-  firstBet: number;
+export type GameHand = {
+  cards: PlayingCard[];
+  special: SpecialScores;
   score: number;
-  inGame: boolean;
+  softAces: number;
 };
 
-export type AnyPlayer = Dealer | Player;
+export type PlayerInputStub = Pick<Player, "name">;

@@ -1,10 +1,11 @@
+// todo move to the button
 export type ButtonControl = {
   id: string;
   label: string;
 
   icon?: string;
   alert?: string;
-  class?: string;
+  className?: string;
   disabled?: boolean;
 
   onClick?: () => void;
