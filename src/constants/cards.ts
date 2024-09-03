@@ -15,13 +15,6 @@ export const CARD_FACES: Record<number, string> = {
   [FaceValues.Queen]: "Q",
 };
 
-export const CARD_VALUES: Record<number, number> = {
-  [FaceValues.Ace]: 11,
-  [FaceValues.Jack]: 10,
-  [FaceValues.King]: 10,
-  [FaceValues.Queen]: 10,
-};
-
 export const enum CardSuits {
   Hearts = "hearts",
   Diamonds = "diamonds",
@@ -44,7 +37,13 @@ export const UNKNOWN_CARD: PlayingCard = [
   CardSuits.Blank,
 ] as const;
 
+export const CARD_VALUES: Record<number, number> = {
+  [FaceValues.Ace]: 11,
+  [FaceValues.Jack]: 10,
+  [FaceValues.King]: 10,
+  [FaceValues.Queen]: 10,
+};
+
 export const FACE_SCORE = 10;
-export const ACE_SCORE = 11;
 export const BLACKJACK_SCORE = 21;
 export const DEALER_STAND_SCORE = 17;

@@ -14,8 +14,9 @@ import { useGameActions } from "./stores/actions/game.ts";
 import { useCoreStore } from "./stores/coreStore.ts";
 import { useDeckStore } from "./stores/deckStore.ts";
 import { usePlayersStore } from "./stores/playersStore.ts";
+
 // import { useAppStore } from "./store/store.ts";
-import { Card } from "./types/card.ts";
+// import { Card } from "./types/card.ts";
 
 // import { GameEvent } from "./types/state.ts";
 
@@ -26,17 +27,11 @@ const deckStore = useDeckStore();
 const gameActions = useGameActions();
 // const store = useAppStore();
 
-const showOptions = ref(true);
+const showOptions = ref(coreStore.activeStage === GameStages.Init);
 // const messages = ref<{ text: string; idx: number }[]>([]);
 // const messageIndex = ref(0);
 
 const shoeRef = ref<HTMLDivElement>();
-
-const blankCard: Card = {
-  suit: "blank",
-  face: 0,
-  // score: 0,
-};
 
 // const activePlayer = computed(
 //   () => store.getters.players[activePlayerId],
@@ -60,10 +55,20 @@ onMounted(() => {
 //   },
 // );
 
+// todo this to be moved to the options frame when they all split up
 watch(
   () => coreStore.activeStage,
-  () => {
-    switch (coreStore.activeStage) {
+  (stage) => {
+    if (stage === GameStages.Init) {
+      showOptions.value = true;
+    }
+  },
+);
+
+watch(
+  () => coreStore.activeStage,
+  (stage: GameStages) => {
+    switch (stage) {
       // todo reset on init?
 
       case GameStages.PlaceBets:

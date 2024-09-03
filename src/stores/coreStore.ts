@@ -3,18 +3,11 @@ import { ref } from "vue";
 
 import { GameStages } from "../constants/gamePlay.ts";
 import { DEALER_ID } from "../constants/player.ts";
+import { DEFAULT_SETTINGS, MAX_MESSAGES } from "../constants/settings.ts";
 import { GameConfig } from "../types/config.ts";
 
-const MAX_MESSAGES = 5;
-
 export const useCoreStore = defineStore("core", () => {
-  const config = ref<GameConfig>({
-    minBet: 100,
-    autoTime: 300,
-    deckCount: 6,
-    playerCount: 5,
-  });
-  const gameRound = ref(-1);
+  const config = ref<GameConfig>(DEFAULT_SETTINGS);
   const activeStage = ref(GameStages.Init);
   const activePlayerId = ref(-1);
   const notifications = ref<string[]>([]);
@@ -39,7 +32,6 @@ export const useCoreStore = defineStore("core", () => {
   }
 
   function newRound() {
-    gameRound.value += 1;
     jumpToStage(GameStages.PlaceBets);
   }
 
@@ -54,7 +46,6 @@ export const useCoreStore = defineStore("core", () => {
   return {
     config,
     setConfig,
-    gameRound,
     activeStage,
     activePlayerId,
     notifications,
