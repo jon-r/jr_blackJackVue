@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 
+import { isNotDealer } from "~/helpers/players.ts";
+import { useCoreStore } from "~/stores/coreStore.ts";
 import { Position } from "~/types/animations.ts";
 import { Player } from "~/types/players.ts";
 
-import { isNotDealer } from "../../helpers/players.ts";
-import { useCoreStore } from "../../stores/coreStore.ts";
 import CurrentBet from "./CurrentBet.vue";
 import PlayerHand from "./PlayerHand.vue";
 import PlayerLabel from "./PlayerLabel.vue";

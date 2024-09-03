@@ -6,19 +6,20 @@ import {
   DEALER_STAND_SCORE,
   FACE_SCORE,
   UNKNOWN_CARD,
-} from "../constants/cards.ts";
-import { SpecialScores } from "../constants/gamePlay.ts";
-import { DEALER_ID, DEALER_STUB } from "../constants/player.ts";
-import { getCardScore, isBlankCard } from "../helpers/cards.ts";
-import { getHandScore, updateHand } from "../helpers/gamePlay.ts";
+} from "~/constants/cards.ts";
+import { SpecialScores } from "~/constants/gamePlay.ts";
+import { DEALER_ID, DEALER_STUB } from "~/constants/player.ts";
+import { getCardScore, isBlankCard } from "~/helpers/cards.ts";
+import { getHandScore, updateHand } from "~/helpers/gamePlay.ts";
 import {
   createEmptyHand,
   createPlayer,
   isActivePlayer,
-} from "../helpers/players.ts";
-import { wait } from "../helpers/time.ts";
-import { PlayingCard } from "../types/card.ts";
-import { GameHand, Player, PlayerInputStub } from "../types/players.ts";
+} from "~/helpers/players.ts";
+import { wait } from "~/helpers/time.ts";
+import { PlayingCard } from "~/types/card.ts";
+import { GameHand, Player, PlayerInputStub } from "~/types/players.ts";
+
 import { useCoreStore } from "./coreStore.ts";
 import { useDeckStore } from "./deckStore.ts";
 

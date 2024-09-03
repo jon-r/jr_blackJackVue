@@ -1,7 +1,8 @@
-import { GameOutcomes, OUTCOME_MULTIPLIER } from "../../constants/gamePlay.ts";
-import { getGameOutcome } from "../../helpers/gamePlay.ts";
-import { getRandom } from "../../helpers/math.ts";
-import { wait } from "../../helpers/time.ts";
+import { GameOutcomes, OUTCOME_MULTIPLIER } from "~/constants/gamePlay.ts";
+import { getGameOutcome } from "~/helpers/gamePlay.ts";
+import { getRandom } from "~/helpers/math.ts";
+import { wait } from "~/helpers/time.ts";
+
 import { useCoreStore } from "../coreStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
 

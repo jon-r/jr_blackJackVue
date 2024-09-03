@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { Position } from "../../types/animations.ts";
-import { Player } from "../../types/players.ts";
+import { Position } from "~/types/animations.ts";
+import { Player } from "~/types/players.ts";
+
 import PlayerCards from "./PlayerCards.vue";
 
 type PlayerHandProps = {

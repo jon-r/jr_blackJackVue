@@ -1,6 +1,6 @@
-import { SpecialScores } from "../constants/gamePlay.ts";
-import { DEALER_ID, DEFAULT_PLAYER_NAMES } from "../constants/player.ts";
-import { GameHand, Player, PlayerInputStub } from "../types/players.ts";
+import { SpecialScores } from "~/constants/gamePlay.ts";
+import { DEALER_ID, DEFAULT_PLAYER_NAMES } from "~/constants/player.ts";
+import { GameHand, Player, PlayerInputStub } from "~/types/players.ts";
 
 export function setupPlayerInput(players: Player[]): PlayerInputStub[] {
   if (!players.length) {

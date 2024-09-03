@@ -1,9 +1,10 @@
-import { GameStages } from "../../constants/gamePlay.ts";
-import { DEALER_ID } from "../../constants/player.ts";
-import { hasBlackjack, hasBust } from "../../helpers/gamePlay.ts";
-import { isActivePlayer, isNotDealer } from "../../helpers/players.ts";
-import { GameConfig } from "../../types/config.ts";
-import { PlayerInputStub } from "../../types/players.ts";
+import { GameStages } from "~/constants/gamePlay.ts";
+import { DEALER_ID } from "~/constants/player.ts";
+import { hasBlackjack, hasBust } from "~/helpers/gamePlay.ts";
+import { isActivePlayer, isNotDealer } from "~/helpers/players.ts";
+import { GameConfig } from "~/types/config.ts";
+import { PlayerInputStub } from "~/types/players.ts";
+
 import { useCoreStore } from "../coreStore.ts";
 import { useDeckStore } from "../deckStore.ts";
 import { usePlayersStore } from "../playersStore.ts";

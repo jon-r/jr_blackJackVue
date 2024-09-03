@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { GamePlayActionTypes } from "../../constants/gamePlay.ts";
-import { getHandRules } from "../../helpers/cards.ts";
-import { usePlayerActions } from "../../stores/actions/player.ts";
-import { Player } from "../../types/players.ts";
+import { GamePlayActionTypes } from "~/constants/gamePlay.ts";
+import { getHandRules } from "~/helpers/cards.ts";
+import { usePlayerActions } from "~/stores/actions/player.ts";
+import { Player } from "~/types/players.ts";
+
 import ActionButton from "./ActionButton.vue";
 import { ButtonControl } from "./button.ts";
 

@@ -2,15 +2,14 @@
 import { onMounted, ref } from "vue";
 
 import { UNKNOWN_CARD } from "~/constants/cards.ts";
-import { useCoreStore } from "~/stores/coreStore.ts";
 import { useDeckStore } from "~/stores/deckStore.ts";
 import { usePlayersStore } from "~/stores/playersStore.ts";
 
+import MessagesOutput from "./MessagesOutput.vue";
 import PlayingCard from "./common/PlayingCard.vue";
 import PlayerFrame from "./playerFrame/PlayerFrame.vue";
 
 const playersStore = usePlayersStore();
-const coreStore = useCoreStore();
 const deckStore = useDeckStore();
 
 const shoeRef = ref<HTMLDivElement>();
@@ -26,11 +25,7 @@ onMounted(() => {
 </script>
 <template>
   <main class="blackjack-table">
-    <TransitionGroup class="announcement frame" name="messages" tag="ul">
-      <li class="message" v-for="(msg, i) in coreStore.notifications" :key="i">
-        {{ msg }}
-      </li>
-    </TransitionGroup>
+    <MessagesOutput />
 
     <section class="blackjack-table__deck" ref="shoeRef">
       <PlayingCard v-once :card="UNKNOWN_CARD" class="stacked" />

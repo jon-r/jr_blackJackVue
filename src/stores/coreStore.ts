@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-import { GameStages } from "../constants/gamePlay.ts";
-import { DEALER_ID } from "../constants/player.ts";
-import { DEFAULT_SETTINGS, MAX_MESSAGES } from "../constants/settings.ts";
-import { GameConfig } from "../types/config.ts";
+import { GameStages } from "~/constants/gamePlay.ts";
+import { DEALER_ID } from "~/constants/player.ts";
+import { DEFAULT_SETTINGS, MAX_MESSAGES } from "~/constants/settings.ts";
+import { GameConfig } from "~/types/config.ts";
 
 export const useCoreStore = defineStore("core", () => {
   const config = ref<GameConfig>(DEFAULT_SETTINGS);

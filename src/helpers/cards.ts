@@ -4,9 +4,9 @@ import {
   FaceValues,
   SUITS_COUNT,
   SUIT_LIST,
-} from "../constants/cards.ts";
-import { HandRules, PlayingCard } from "../types/card.ts";
-import { Player } from "../types/players.ts";
+} from "~/constants/cards.ts";
+import { HandRules, PlayingCard } from "~/types/card.ts";
+import { Player } from "~/types/players.ts";
 
 export function getHandRules(player: Player): HandRules {
   const { activeHandId, hands, money, openBet } = player;

@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-import { buildDeck } from "../helpers/cards.ts";
-import { getRandom } from "../helpers/math.ts";
-import { Position } from "../types/animations.ts";
-import { PlayingCard } from "../types/card.ts";
+import { buildDeck } from "~/helpers/cards.ts";
+import { getRandom } from "~/helpers/math.ts";
+import { Position } from "~/types/animations.ts";
+import { PlayingCard } from "~/types/card.ts";
+
 import { useCoreStore } from "./coreStore.ts";
 
 const nilPosition: Position = { x: 0, y: 0 };

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { setPos, transformJiggle } from "../../animationTools.ts";
-import { SpecialScores } from "../../constants/gamePlay.ts";
-import { useDeckStore } from "../../stores/deckStore.ts";
-import { Position } from "../../types/animations.ts";
-import { GameHand } from "../../types/players.ts";
+import { setPos, transformJiggle } from "~/animationTools.ts";
+import { SpecialScores } from "~/constants/gamePlay.ts";
+import { useDeckStore } from "~/stores/deckStore.ts";
+import { Position } from "~/types/animations.ts";
+import { GameHand } from "~/types/players.ts";
+
 import PlayingCard from "../common/PlayingCard.vue";
 
 type PlayerCardsProps = {

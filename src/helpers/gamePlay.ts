@@ -1,7 +1,8 @@
-import { BLACKJACK_SCORE } from "../constants/cards.ts";
-import { GameOutcomes, SpecialScores } from "../constants/gamePlay.ts";
-import { PlayingCard } from "../types/card.ts";
-import { GameHand } from "../types/players.ts";
+import { BLACKJACK_SCORE } from "~/constants/cards.ts";
+import { GameOutcomes, SpecialScores } from "~/constants/gamePlay.ts";
+import { PlayingCard } from "~/types/card.ts";
+import { GameHand } from "~/types/players.ts";
+
 import { getCardScore, isAce, isBlankCard } from "./cards.ts";
 
 export function hasBlackjack(player: GameHand): boolean {

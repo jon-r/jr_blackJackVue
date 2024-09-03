@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 
-import { CHIP_VALUES } from "../../constants/gamePlay.ts";
-import { useBetActions } from "../../stores/actions/bets.ts";
-import { useGameActions } from "../../stores/actions/game.ts";
-import { useCoreStore } from "../../stores/coreStore.ts";
-import { Player } from "../../types/players.ts";
+import { CHIP_VALUES } from "~/constants/gamePlay.ts";
+import { useBetActions } from "~/stores/actions/bets.ts";
+import { useGameActions } from "~/stores/actions/game.ts";
+import { useCoreStore } from "~/stores/coreStore.ts";
+import { Player } from "~/types/players.ts";
+
 import BettingChip from "../common/BettingChip.vue";
 import ActionButton from "./ActionButton.vue";
 import { ButtonControl } from "./button.ts";

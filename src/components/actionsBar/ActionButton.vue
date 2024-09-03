@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import MdIcon from "../common/MdIcon.vue";
 import { ButtonControl } from "./button.ts";
-import MdIcon from "~/components/common/MdIcon.vue";
 
 type ButtonControlProps = Omit<ButtonControl, "onClick" | "id">;
 
@@ -20,10 +20,7 @@ const props = defineProps<ButtonControlProps>();
 
     <MdIcon v-if="props.icon" class="action-button__icon" :name="props.icon" />
 
-    <em
-      v-if="props.alert && !props.disabled"
-      class="action-button__alert"
-    >
+    <em v-if="props.alert && !props.disabled" class="action-button__alert">
       {{ props.alert }}
     </em>
   </button>

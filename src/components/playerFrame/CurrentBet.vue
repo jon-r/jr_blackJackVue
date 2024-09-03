@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { setPos } from "../../animationTools.ts";
-import { CHIP_VALUES } from "../../constants/gamePlay.ts";
-import { Position } from "../../types/animations.ts";
+import { setPos } from "~/animationTools.ts";
+import { CHIP_VALUES } from "~/constants/gamePlay.ts";
+import { Position } from "~/types/animations.ts";
+
 import BettingChip from "../common/BettingChip.vue";
 
 type ActiveBetProps = {

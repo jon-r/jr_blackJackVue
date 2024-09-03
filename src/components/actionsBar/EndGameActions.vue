@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { EndGameActionTypes } from "../../constants/gamePlay.ts";
-import { useGameActions } from "../../stores/actions/game.ts";
-import { usePlayersStore } from "../../stores/playersStore.ts";
+import { EndGameActionTypes } from "~/constants/gamePlay.ts";
+import { useGameActions } from "~/stores/actions/game.ts";
+import { usePlayersStore } from "~/stores/playersStore.ts";
+
 import ActionButton from "./ActionButton.vue";
 import { ButtonControl } from "./button.ts";
 

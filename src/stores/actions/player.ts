@@ -1,4 +1,5 @@
-import { GameOutcomes, SpecialScores } from "../../constants/gamePlay.ts";
+import { GameOutcomes, SpecialScores } from "~/constants/gamePlay.ts";
+
 import { usePlayersStore } from "../playersStore.ts";
 import { useBetActions } from "./bets.ts";
 import { useGameActions } from "./game.ts";
