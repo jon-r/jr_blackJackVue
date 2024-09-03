@@ -4,17 +4,15 @@ import { computed } from "vue";
 import { GamePlayActionTypes } from "../../constants/gamePlay.ts";
 import { getHandRules } from "../../helpers/cards.ts";
 import { usePlayerActions } from "../../stores/actions/player.ts";
-// import { useAppStore } from "../../store/store.ts";
-import { ButtonControl } from "../../types/button.ts";
 import { Player } from "../../types/players.ts";
 import MdIcon from "../common/MdIcon.vue";
 import ActionButton from "./ActionButton.vue";
+import { ButtonControl } from "./button.ts";
 
 type GamePlayActionsProps = {
   player: Player;
 };
 
-// const { dispatch } = useAppStore();
 const props = defineProps<GamePlayActionsProps>();
 const playerActions = usePlayerActions();
 
@@ -61,33 +59,6 @@ const actionButtons = computed<ButtonControl[]>(() => {
     },
   ];
 });
-
-/*
-function handleAction(action: GamePlayActionTypes) {
-  const { index: idx, name, firstBet } = props.player;
-
-  const handEvent = {
-    idx,
-    type: "card",
-    value: action,
-  };
-
-  store.dispatch("doEvent", handEvent);
-  store.dispatch("setNewMessage", `${name} ${action}s`);
-
-  if (
-    action === GamePlayActionTypes.Split ||
-    action === GamePlayActionTypes.Double
-  ) {
-    const betVals = {
-      idx,
-      value: -firstBet,
-    };
-
-    store.dispatch("playerUpdateMoney", betVals);
-  }
-}
-*/
 </script>
 <template>
   <section class="ctrl-menu frame flex flex-wrap">

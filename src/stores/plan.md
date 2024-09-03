@@ -1,6 +1,0 @@
-- root
-  - gamePlay (round,stage,settings,etc)
-  - players
-  - actions
-  - cards
-  - eventBus?

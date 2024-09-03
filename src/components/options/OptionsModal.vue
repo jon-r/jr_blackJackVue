@@ -1,24 +1,18 @@
 <script setup lang="ts">
-// import { storeToRefs } from "pinia";
 import { ref } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
-// import { DEFAULT_PLAYER_NAMES } from "../../constants/player.ts";
 import { setupPlayerInput } from "../../helpers/players.ts";
-// import { DEFAULT_PLAYER } from "../../constants/player.ts";
-// import { useAppStore } from "../../store/store.ts";
 import { useBetActions } from "../../stores/actions/bets.ts";
 import { useGameActions } from "../../stores/actions/game.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
 import { GameConfig } from "../../types/config.ts";
 import MdIcon from "../common/MdIcon.vue";
-// import { Player, PlayerInputStub } from "../../types/players.ts";
 import TextButton from "../common/TextButton.vue";
 import InputField from "./InputField.vue";
 import ModalContainer from "./ModalContainer.vue";
 
-// const { dispatch } = useAppStore();
 const coreStore = useCoreStore();
 const playersStore = usePlayersStore();
 const gameActions = useGameActions();
@@ -34,7 +28,6 @@ const autoTime = ref(coreStore.config.autoTime);
 
 const isMoreOptionsOpen = ref(false);
 
-// todo move new player functionality to the state
 function newGame() {
   const newConfig: GameConfig = {
     deckCount: deckCount.value,
@@ -44,23 +37,7 @@ function newGame() {
   };
 
   gameActions.startGame(playerInput.value, newConfig);
-  /*
-  const players: AnyPlayer[] = playerInput.value.map((player) => ({
-    ...DEFAULT_PLAYER,
-    ...player,
-  }));
 
-  players.push({
-    ...DEFAULT_PLAYER,
-    name: "Dealer",
-    index: players.length,
-    isDealer: true,
-  });
-
-  const options = { players, config };
-
-  await store.dispatch("newGame", options);
-*/
   emit("closeModal");
 }
 
@@ -70,33 +47,7 @@ function newDemo() {
 
   betActions.placeRandomBets();
   coreStore.jumpToStage(GameStages.DealCards);
-  // autoBet();
-  // await store.dispatch("nextPlayerPromise");
-  // await store.dispatch("nextStage");
 }
-
-/*
-async function autoBet(idx: number, max: number) {
-  if (idx > max) return Promise.resolve();
-
-  const rngBet = (getRandom(10) + 1) * 100;
-
-  const betVals = {
-    idx,
-    value: rngBet,
-  };
-  const betEvent = {
-    idx,
-    type: "bet",
-    value: "addBet",
-  };
-  const nextIdx = idx + 1;
-
-  await store.dispatch("playerSetBet", betVals);
-  await store.dispatch("doEvent", betEvent);
-  await autoBet(nextIdx, max);
-}
-*/
 </script>
 <template>
   <ModalContainer

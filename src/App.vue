@@ -15,27 +15,15 @@ import { useCoreStore } from "./stores/coreStore.ts";
 import { useDeckStore } from "./stores/deckStore.ts";
 import { usePlayersStore } from "./stores/playersStore.ts";
 
-// import { useAppStore } from "./store/store.ts";
-// import { Card } from "./types/card.ts";
-
-// import { GameEvent } from "./types/state.ts";
-
 const playersStore = usePlayersStore();
 const coreStore = useCoreStore();
 const deckStore = useDeckStore();
 
 const gameActions = useGameActions();
-// const store = useAppStore();
 
 const showOptions = ref(coreStore.activeStage === GameStages.Init);
-// const messages = ref<{ text: string; idx: number }[]>([]);
-// const messageIndex = ref(0);
 
 const shoeRef = ref<HTMLDivElement>();
-
-// const activePlayer = computed(
-//   () => store.getters.players[activePlayerId],
-// );
 
 onMounted(() => {
   const { offsetTop, offsetLeft } = shoeRef.value;
@@ -45,15 +33,6 @@ onMounted(() => {
     y: offsetTop,
   });
 });
-
-// watch(
-//   () => store.getters.eventBus,
-//   function newGameCheck(event: GameEvent) {
-//     if (event.type === "newGame") {
-//       showOptions.value = true;
-//     }
-//   },
-// );
 
 // todo this to be moved to the options frame when they all split up
 watch(
@@ -65,12 +44,11 @@ watch(
   },
 );
 
+// todo maybe move the message to gameActions
 watch(
   () => coreStore.activeStage,
   (stage: GameStages) => {
     switch (stage) {
-      // todo reset on init?
-
       case GameStages.PlaceBets:
         coreStore.sendMessage("Please place your bets.");
         return gameActions.goToNextPlayer();

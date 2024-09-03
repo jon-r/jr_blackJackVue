@@ -1,3 +1,4 @@
+// todo move to the button
 export type ButtonControl = {
   id: string;
   label: string;

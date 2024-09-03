@@ -1,11 +1,20 @@
 <script setup lang="ts">
-import { ButtonControl } from "../../types/button.ts";
+export type ButtonControl = {
+  id: string;
+  label: string;
+
+  icon?: string;
+  alert?: string;
+  className?: string;
+  disabled?: boolean;
+
+  onClick?: () => void;
+};
 
 type ButtonControlProps = Omit<ButtonControl, "onClick" | "id" | "icon">;
 
 const props = defineProps<ButtonControlProps>();
 </script>
-<!-- todo check if any other props need passing forward -->
 <template>
   <button
     type="button"

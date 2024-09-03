@@ -2,8 +2,6 @@
 import { computed, nextTick, onMounted, ref } from "vue";
 
 import { isNotDealer } from "../../helpers/players.ts";
-// import { GameStages } from "../../constants/gamePlay.ts";
-// import { useAppStore } from "../../store/store.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
 import { Position } from "../../types/animations.ts";
 import { Player } from "../../types/players.ts";
@@ -14,15 +12,13 @@ type PlayerFrameProps = {
   player: Player;
 };
 
-// const { dispatch } = useAppStore();
-const coreStore = useCoreStore();
 const props = defineProps<PlayerFrameProps>();
+const coreStore = useCoreStore();
 
 const playerClass = `player-${props.player.index}`;
 const oldMoney = ref(0);
 const diffFloat = ref(true);
 const framePos = ref<Position>({ x: 0, y: 0 });
-// const roundResult = ref("");
 
 const frameParent = ref<HTMLElement>();
 
@@ -53,63 +49,6 @@ const isPlayerTurn = computed(() => {
   return coreStore.activePlayerId === props.player.index;
 });
 
-/*
-watch(isPlayerTurn, function turnCheck() {
-  const cantBet = !props.player.inGame;
-  const wontBet =
-    store.getters.gameStage === GameStages.PlaceBets && props.player.isDealer;
-
-  if (isPlayerTurn.value && (cantBet || wontBet)) {
-    store.dispatch("nextPlayer");
-  }
-});
-
-watch(
-  () => store.getters.dealer.score,
-  function endRound(dealerScore: number) {
-    if (!dealerScore) return false;
-
-    roundResult.value = getScores();
-
-    emitBetChange(roundResult.value);
-  },
-);
-
-watch(
-  () => store.getters.gameRound,
-  function cleanUp() {
-    roundResult.value = "";
-    // todo bonus: anything else can go here?
-  },
-);
-
-function emitBetChange(value: string) {
-  const betEvent = {
-    idx: props.player.index,
-    type: "bet",
-    value,
-  };
-
-  store.dispatch("doEvent", betEvent);
-}
-
-function getScores() {
-  const dealerScore = (store.getters.dealer as Dealer).score;
-  const playerScore = props.player.score;
-
-  switch (true) {
-    case dealerScore === playerScore:
-      return "push";
-    case playerScore > 21 || dealerScore === 21:
-      return "lose";
-    case dealerScore > 21 || playerScore > dealerScore:
-      return "win";
-    default: // dealerScore > playerScore
-      return "lose";
-  }
-}
-
- */
 function triggerTextAnim() {
   diffFloat.value = false;
   nextTick(() => {

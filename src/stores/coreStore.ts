@@ -45,11 +45,11 @@ export const useCoreStore = defineStore("core", () => {
 
   return {
     config,
-    setConfig,
     activeStage,
     activePlayerId,
     notifications,
 
+    setConfig,
     sendMessage,
     newRound,
     nextStage,

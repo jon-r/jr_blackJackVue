@@ -1,4 +1,3 @@
-<!-- todo redo this with RawCard? -->
 <script lang="ts" setup>
 import { computed } from "vue";
 

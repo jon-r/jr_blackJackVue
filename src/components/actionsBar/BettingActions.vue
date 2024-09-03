@@ -4,25 +4,21 @@ import { computed, ref } from "vue";
 import { CHIP_VALUES } from "../../constants/gamePlay.ts";
 import { useBetActions } from "../../stores/actions/bets.ts";
 import { useGameActions } from "../../stores/actions/game.ts";
-// import { useAppStore } from "../../store/store.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
-import { ButtonControl } from "../../types/button.ts";
 import { Player } from "../../types/players.ts";
 import BettingChip from "../common/BettingChip.vue";
 import MdIcon from "../common/MdIcon.vue";
 import ActionButton from "./ActionButton.vue";
+import { ButtonControl } from "./button.ts";
 
 type BettingActionsProps = {
   player: Player;
 };
-// const { dispatch } = useAppStore();
 const props = defineProps<BettingActionsProps>();
 
 const coreStore = useCoreStore();
 const betActions = useBetActions();
 const gameActions = useGameActions();
-
-// const chips = [5, 10, 25, 100, 500, 1000];
 
 const chipsToPlace = ref<number[]>([]);
 const betToPlace = computed(() =>
@@ -32,7 +28,6 @@ const betToPlace = computed(() =>
 const chipButtons = computed<ButtonControl[]>(() => {
   const maxChips = props.player.money - betToPlace.value;
 
-  // todo tidy types
   return CHIP_VALUES.map((chip) => ({
     id: `${chip}`,
     label: `£${chip}`,
@@ -73,27 +68,11 @@ function removeChip() {
 }
 
 function submitBet() {
-  // const idx = props.player.index;
-
-  // const betVals = {
-  //   idx,
-  //   value: betToPlace.value,
-  // };
-  // const betEvent = {
-  //   idx,
-  //   type: "bet",
-  //   value: "addBet",
-  // };
-
   coreStore.sendMessage(`${props.player.name} bets £${betToPlace.value}`);
   betActions.placeBet(betToPlace.value);
   gameActions.goToNextPlayer();
 
   chipsToPlace.value = [];
-  // dispatch("setNewMessage", `${props.player.name} bets £${betToPlace.value}`);
-  // dispatch("playerSetBet", betVals)
-  //   .then(() => dispatch("doEvent", betEvent))
-  //   .then(() => dispatch("nextPlayer"));
 }
 </script>
 

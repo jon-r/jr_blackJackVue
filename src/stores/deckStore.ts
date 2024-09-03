@@ -32,6 +32,7 @@ export const useDeckStore = defineStore("deck", () => {
   return {
     deck,
     shoePosition,
+
     setShoePosition,
     rebuildDeck,
     drawCard,

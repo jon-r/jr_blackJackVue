@@ -2,14 +2,10 @@
 import { computed } from "vue";
 
 import { setPos, transformJiggle } from "../../animationTools.ts";
-// import { FaceValues } from "../../constants/cards.ts";
 import { SpecialScores } from "../../constants/gamePlay.ts";
-// import { getHandOutcome } from "../../helpers/cards.ts";
 import { useDeckStore } from "../../stores/deckStore.ts";
-// import { useAppStore } from "../../store/store.ts";
 import { Position } from "../../types/animations.ts";
 import { GameHand } from "../../types/players.ts";
-// import { Hand } from "../../types/card.ts";
 import PlayingCard from "../common/PlayingCard.vue";
 
 type PlayerCardsProps = {
@@ -18,16 +14,8 @@ type PlayerCardsProps = {
   isActive: boolean;
 };
 
-// const store = useAppStore();
 const deckStore = useDeckStore();
 const props = defineProps<PlayerCardsProps>();
-// const emit = defineEmits(["update:modelValue"]);
-
-/*
-const aces = computed(
-  () => props.cards.filter((card) => card.face === "A").length,
-);
-*/
 
 const enterPosition = computed<Position>(() => {
   const shoe = deckStore.shoePosition;
@@ -38,54 +26,11 @@ const enterPosition = computed<Position>(() => {
   };
 });
 
+/*
 const leavePosition = computed<Position>(() => ({
   x: -props.framePos.x,
   y: -props.framePos.y - 100, // to go right off the page
 }));
-
-// fixme bug if 10 or face on soft (it doesnt update the score)
-// also remove the aces side-effect
-// const outcome = computed(() => getHandOutcome(props.hand));
-
-/*
-const score = computed(() => {
-  // const cards = this.cards;
-
-  if (props.cards.length === 0) return 0;
-
-  /*  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-  this.aces = cards.reduce(
-      (count, card) => count + Number(card.face === "A"),
-      0,
-  );*
-
-  let newScore = props.cards.reduce((score, card) => score + card.score, 0);
-
-  let currentAces = aces.value;
-  // reduces as many aces as needed (if possible) to keep the score down
-  while (newScore > 21 && currentAces > 0) {
-    currentAces -= 1;
-    newScore -= 10;
-  }
-
-  // fixme remove side effect
-  emit("update:modelValue", newScore);
-
-  return newScore;
-});
-
-const scoreString = computed(() => {
-  switch (true) {
-    case score.value > 21:
-      return "Bust";
-    case score.value === 21 && props.cards.length < 3:
-      return "BlackJack";
-    case aces.value > 0:
-      return "Soft";
-    default:
-      return "";
-  }
-});
 */
 
 // fixme card transitions seem to be problematic. maybe can be handled with just css?
@@ -121,7 +66,6 @@ function leave() {
       @after-enter="enterTo"
       @leave="leave"
     >
-      <!-- FIXME fully revisit how cards + chips style works -->
       <PlayingCard
         v-for="(card, idx) in hand.cards"
         :key="idx"

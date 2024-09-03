@@ -2,20 +2,12 @@
 import { computed } from "vue";
 
 import { GameStages } from "../../constants/gamePlay.ts";
-// import { useAppStore } from "../../store/store.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
 import { usePlayersStore } from "../../stores/playersStore.ts";
-// import { Player } from "../../types/players.ts";
 import BettingActions from "./BettingActions.vue";
 import EndGameActions from "./EndGameActions.vue";
 import GamePlayActions from "./GamePlayActions.vue";
 
-// type ActionsBarProps = {
-//   player?: Player;
-// };
-
-// const { dispatch } = useAppStore();
-// const props = defineProps<ActionsBarProps>();
 const playersStore = usePlayersStore();
 const coreStore = useCoreStore();
 
@@ -31,24 +23,6 @@ const tipsMessage = computed(() => {
       return "";
   }
 });
-
-// todo can move to store (gameplay?)
-// watch(
-//   () => coreStore.activeStage,
-//   function updateStageMessage(stage: GameStages) {
-//     const out = new Map<GameStages, string>([
-//       [GameStages.PlaceBets, "Please place Your bets"],
-//       [GameStages.DealCards, "All bets are in, dealing out the first cards."],
-//       [GameStages.EndRound, "Round Over"],
-//     ]);
-//
-//     if (!out.has(stage)) return false;
-//
-//     const msg = out.get(stage);
-//
-//     return dispatch("setNewMessage", msg);
-//   },
-// );
 </script>
 
 <template>
