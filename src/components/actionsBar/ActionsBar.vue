@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { GameStages } from "../../constants/gamePlay.ts";
-import { useCoreStore } from "../../stores/coreStore.ts";
-import { usePlayersStore } from "../../stores/playersStore.ts";
+import { GameStages } from "~/constants/gamePlay.ts";
+import { useCoreStore } from "~/stores/coreStore.ts";
+import { usePlayersStore } from "~/stores/playersStore.ts";
+
 import BettingActions from "./BettingActions.vue";
 import EndGameActions from "./EndGameActions.vue";
 import GamePlayActions from "./GamePlayActions.vue";
@@ -29,7 +30,9 @@ const tipsMessage = computed(() => {
   <section class="actions-bar">
     <template v-if="playersStore.currentPlayer">
       <aside class="actions-bar__player-info">
-        <h2 class="actions-bar__player-name">{{ playersStore.currentPlayer.name }}</h2>
+        <h2 class="actions-bar__player-name">
+          {{ playersStore.currentPlayer.name }}
+        </h2>
         <p>{{ tipsMessage }}</p>
       </aside>
       <menu class="actions-bar__controls">

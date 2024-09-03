@@ -62,10 +62,7 @@ const isPlayerTurn = computed(() => {
 <template>
   <section
     class="player-frame"
-    :class="[
-      'player-frame--' + props.player.index,
-      props.player.isDealer && 'player-frame--dealer',
-    ]"
+    :class="['player-frame--' + props.player.index]"
     ref="frameParent"
   >
     <PlayerHand
@@ -101,23 +98,24 @@ const isPlayerTurn = computed(() => {
   flex-direction: column;
   justify-content: flex-end; /* flex end may not be needed? */
 
-  &--0 {
+  &--1 {
     transform: translate(26px, 190px);
   }
-  &--1 {
+  &--2 {
     transform: translate(160px, 380px);
   }
-  &--2 {
+  &--3 {
     transform: translate(424px, 420px);
   }
-  &--3 {
+  &--4 {
     transform: translate(672px, 380px);
   }
-  &--4 {
+  &--5 {
     transform: translate(822px, 190px);
   }
 
-  &--dealer {
+  /* dealer */
+  &--0 {
     transform: translate(424px, 20px);
   }
 }

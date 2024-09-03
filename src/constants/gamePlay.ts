@@ -31,6 +31,7 @@ export const OUTCOME_MULTIPLIER = {
 } as const;
 
 // todo these shouldn't be needed with proper onClick props
+/** @deprecated */
 export enum GamePlayActionTypes {
   Hit = "Hit",
   Stand = "Stand",
@@ -39,6 +40,7 @@ export enum GamePlayActionTypes {
   Double = "Double",
 }
 
+/** @deprecated */
 export enum EndGameActionTypes {
   New = "New Game",
   Next = "Next Round",

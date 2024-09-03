@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 
-import { CARD_FACES } from "../../constants/cards.ts";
-import { PlayingCard } from "../../types/card.ts";
+import { CARD_FACES } from "~/constants/cards.ts";
+import { PlayingCard } from "~/types/card.ts";
 
 type PlayingCardProps = {
   card: PlayingCard;
@@ -14,13 +14,13 @@ const visualCard = computed(() => {
 
   return {
     face: CARD_FACES[faceValue] || faceValue,
-    suit, // todo make class here
+    suit: `playing-card--${suit}`,
   };
 });
 </script>
 
 <template>
-  <div class="playing-card" :class="'playing-card--' + visualCard.suit">
+  <div class="playing-card" :class="visualCard.suit">
     <span v-if="visualCard.face">
       {{ visualCard.face }}
     </span>

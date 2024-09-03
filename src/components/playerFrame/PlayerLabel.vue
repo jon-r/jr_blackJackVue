@@ -18,10 +18,10 @@ type DiffObj = {
 const moneyDiff = ref<DiffObj>({ diff: 0, index: 0, rendered: "" });
 
 watch(
-  () => props.player.firstBet,
-  async () => {
+  () => props.player.openBet,
+  async (openBet: number) => {
     await nextTick();
-    const newDiff = moneyDiff.value.diff - props.player.firstBet;
+    const newDiff = moneyDiff.value.diff - openBet;
 
     moneyDiff.value = {
       diff: newDiff,

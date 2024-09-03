@@ -1,64 +1,43 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 
-import { useAppStore } from "~/store/store.ts";
-import { Card } from "~/types/card.ts";
+import { UNKNOWN_CARD } from "~/constants/cards.ts";
+import { useCoreStore } from "~/stores/coreStore.ts";
+import { useDeckStore } from "~/stores/deckStore.ts";
+import { usePlayersStore } from "~/stores/playersStore.ts";
 
 import PlayingCard from "./common/PlayingCard.vue";
 import PlayerFrame from "./playerFrame/PlayerFrame.vue";
 
-const store = useAppStore();
-
-const messages = ref<{ text: string; idx: number }[]>([]);
-const messageIndex = ref(0);
+const playersStore = usePlayersStore();
+const coreStore = useCoreStore();
+const deckStore = useDeckStore();
 
 const shoeRef = ref<HTMLDivElement>();
-
-const blankCard: Card = {
-  suit: "blank",
-  face: 0,
-  score: 0,
-};
 
 onMounted(() => {
   const { offsetTop, offsetLeft } = shoeRef.value;
 
-  store.dispatch("setShoePos", {
+  deckStore.setShoePosition({
     x: offsetLeft,
     y: offsetTop,
   });
 });
-
-watch(
-  () => store.getters.newMessage,
-  function updateChat(params: string) {
-    const maxMessages = 5;
-
-    messageIndex.value += 1;
-
-    messages.value.unshift({
-      text: params,
-      idx: messageIndex.value,
-    });
-
-    if (messages.value.length > maxMessages) messages.value.pop();
-  },
-);
 </script>
 <template>
   <main class="blackjack-table">
     <TransitionGroup class="announcement frame" name="messages" tag="ul">
-      <li class="message" v-for="msg in messages" :key="msg.idx">
-        {{ msg.text }}
+      <li class="message" v-for="(msg, i) in coreStore.notifications" :key="i">
+        {{ msg }}
       </li>
     </TransitionGroup>
 
     <section class="blackjack-table__deck" ref="shoeRef">
-      <PlayingCard v-once :card="blankCard" class="stacked" />
+      <PlayingCard v-once :card="UNKNOWN_CARD" class="stacked" />
     </section>
 
     <PlayerFrame
-      v-for="player in store.getters.players"
+      v-for="player in playersStore.players"
       :key="player.index"
       :player="player"
     />

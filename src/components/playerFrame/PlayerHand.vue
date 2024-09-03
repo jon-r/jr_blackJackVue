@@ -20,8 +20,8 @@ const props = defineProps<PlayerHandProps>();
       :frame-pos="props.framePos"
       :hand="hand"
       :is-active="idx === player.activeHandId"
-    >
-    </PlayerCards>
+    />
+
     <div class="round-alert alert-text" v-if="player.outcome">
       {{ player.outcome }}
     </div>

@@ -5,7 +5,6 @@ import { GamePlayActionTypes } from "../../constants/gamePlay.ts";
 import { getHandRules } from "../../helpers/cards.ts";
 import { usePlayerActions } from "../../stores/actions/player.ts";
 import { Player } from "../../types/players.ts";
-import MdIcon from "../common/MdIcon.vue";
 import ActionButton from "./ActionButton.vue";
 import { ButtonControl } from "./button.ts";
 

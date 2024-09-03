@@ -7,7 +7,6 @@ import { useGameActions } from "../../stores/actions/game.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
 import { Player } from "../../types/players.ts";
 import BettingChip from "../common/BettingChip.vue";
-import MdIcon from "../common/MdIcon.vue";
 import ActionButton from "./ActionButton.vue";
 import { ButtonControl } from "./button.ts";
 
