@@ -24,13 +24,6 @@ export function getGameOutcome(
   const dealerHasBust = hasBust(dealerHand);
   const playerHasBust = hasBust(playerHand);
 
-  console.log({
-    dealerHasBlackjack,
-    playerHasBlackjack,
-    dealerHasBust,
-    playerHasBust,
-  });
-
   if (
     playerHasBust ||
     (dealerHasBlackjack && !playerHasBlackjack) ||

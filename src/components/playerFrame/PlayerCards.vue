@@ -105,7 +105,6 @@ function leave(el: HTMLElement, done: () => void) {
 </script>
 
 <template>
-  <small> {{ hand.score }}</small>
   <div class="player-cards" :class="{ 'active-hand': isActive }">
     <div
       class="hand-score shadow-light"

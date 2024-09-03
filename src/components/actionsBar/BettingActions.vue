@@ -46,18 +46,18 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "bet-submit",
       label: `Submit: £${betToPlace.value}`,
-      class: "btn-good",
+      className: "btn-good",
       icon: "publish",
-      canUse: betToPlace.value >= minBet,
+      disabled: betToPlace.value < minBet,
       onClick: submitBet,
       alert: `Min: £${minBet}`,
     },
     {
       id: "bet-undo",
       label: "Undo",
-      class: "btn-alert",
+      className: "btn-alert",
       icon: "undo",
-      canUse: betToPlace.value > 0,
+      disabled: betToPlace.value === 0,
       onClick: removeChip,
     },
   ];

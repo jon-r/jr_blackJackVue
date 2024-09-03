@@ -25,6 +25,7 @@
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.3.5",
+    "vite-plugin-vue-devtools": "^7.3.9",
     "vue-tsc": "^2.0.29"
   },
   "dependencies": {

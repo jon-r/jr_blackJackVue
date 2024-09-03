@@ -7,7 +7,12 @@ const props = defineProps<ButtonControlProps>();
 </script>
 <!-- todo check if any other props need passing forward -->
 <template>
-  <button type="button" class="ctrl-btn flex-auto" :disabled="props.disabled">
+  <button
+    type="button"
+    class="ctrl-btn flex-auto"
+    :class="props.className"
+    :disabled="props.disabled"
+  >
     <span class="ctrl-btn-title">{{ props.label }}</span>
 
     <slot />

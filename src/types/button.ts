@@ -4,7 +4,7 @@ export type ButtonControl = {
 
   icon?: string;
   alert?: string;
-  class?: string;
+  className?: string;
   disabled?: boolean;
 
   onClick?: () => void;
