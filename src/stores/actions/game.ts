@@ -1,4 +1,3 @@
-import { DEALER_STAND_SCORE } from "../../constants/cards.ts";
 import { GameStages } from "../../constants/gamePlay.ts";
 import { DEALER_ID } from "../../constants/player.ts";
 import { hasBlackjack, hasBust } from "../../helpers/gamePlay.ts";
@@ -58,15 +57,7 @@ export function useGameActions() {
   }
 
   async function dealFinalCards() {
-    let dealerMayContinue = true;
-    while (dealerMayContinue) {
-      await playersStore.revealCard(DEALER_ID);
-      dealerMayContinue =
-        playersStore.dealer.hands[0].score < DEALER_STAND_SCORE;
-    }
-
     await playersStore.revealAllBlankCards();
-
     coreStore.jumpToStage(GameStages.EndRound);
   }
 

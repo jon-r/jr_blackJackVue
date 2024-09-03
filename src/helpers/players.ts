@@ -35,6 +35,7 @@ export function createPlayer({ name }: PlayerInputStub, index: number): Player {
     hands: [createEmptyHand()],
     outcome: null,
     activeHandId: 0,
+    didPeek: null,
   };
 }
 

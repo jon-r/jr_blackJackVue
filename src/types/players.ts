@@ -11,6 +11,7 @@ export type Player = {
   inGame: boolean;
   hands: GameHand[];
   activeHandId: number;
+  didPeek: PlayingCard | null;
 };
 
 export type GameHand = {
@@ -21,8 +22,3 @@ export type GameHand = {
 };
 
 export type PlayerInputStub = Pick<Player, "name">;
-
-export type HandScore = {
-  score: number;
-  special: SpecialScores;
-};

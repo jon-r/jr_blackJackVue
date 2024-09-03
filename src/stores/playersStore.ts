@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 
 import {
   BLACKJACK_SCORE,
+  DEALER_STAND_SCORE,
   FACE_SCORE,
   UNKNOWN_CARD,
 } from "../constants/cards.ts";
@@ -47,6 +48,7 @@ export const usePlayersStore = defineStore("players", () => {
       player.hands = [createEmptyHand()];
       player.outcome = null;
       player.activeHandId = 0;
+      player.didPeek = null;
     });
   }
 
@@ -58,9 +60,11 @@ export const usePlayersStore = defineStore("players", () => {
     });
   }
 
+  /*
   function addHand() {
     players.value[coreStore.activePlayerId]?.hands.push(createEmptyHand());
   }
+*/
 
   function nextHand(playerId = coreStore.activePlayerId): boolean {
     const targetPlayer = players.value[playerId];
@@ -98,7 +102,7 @@ export const usePlayersStore = defineStore("players", () => {
       return newCard;
     }
 
-    deckStore.returnCard(newCard);
+    players.value[DEALER_ID].didPeek = newCard;
   }
 
   function checkPlayerScore(playerId?: number, handId?: number): SpecialScores {
@@ -141,6 +145,7 @@ export const usePlayersStore = defineStore("players", () => {
     await wait(coreStore.config.autoTime);
 
     const newCard = deckStore.drawCard();
+
     setCard(newCard, playerId, handId);
 
     return newCard;
@@ -163,6 +168,15 @@ export const usePlayersStore = defineStore("players", () => {
   }
 
   async function revealAllBlankCards() {
+    if (dealer.value.didPeek) {
+      setCard(dealer.value.didPeek, DEALER_ID);
+    }
+    let dealerMayContinue = dealer.value.hands[0].score < DEALER_STAND_SCORE;
+    while (dealerMayContinue) {
+      await revealCard(DEALER_ID);
+      dealerMayContinue = dealer.value.hands[0].score < DEALER_STAND_SCORE;
+    }
+
     for (let i = 0; i < activePlayers.value.length; i++) {
       await revealBlanks(activePlayers.value[i].index);
     }
@@ -198,11 +212,9 @@ export const usePlayersStore = defineStore("players", () => {
     dealBlank,
     checkPlayerScore,
     dealCard,
-    revealCard,
     dealAllPlayersCards,
     revealAllBlankCards,
     dealOrPeekDealer,
-    addHand,
     nextHand,
     resetCards,
     checkPlayersBalance,
