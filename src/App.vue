@@ -64,16 +64,16 @@ watch(
   () => coreStore.activeStage,
   () => {
     switch (coreStore.activeStage) {
-      // todo reset on init
+      // todo reset on init?
 
       case GameStages.PlaceBets:
         coreStore.sendMessage("Please place your bets.");
-        return gameActions.goToFirstPlayer();
+        return gameActions.goToNextPlayer();
       case GameStages.DealCards:
         coreStore.sendMessage("All bets are in, dealing out first cards.");
         return gameActions.dealInitialCards();
       case GameStages.PlayerActions:
-        return gameActions.goToFirstPlayer();
+        return gameActions.goToNextPlayer();
       case GameStages.DealerActions:
         return gameActions.dealFinalCards();
       case GameStages.EndRound:
@@ -107,7 +107,7 @@ watch(
         <PlayingCard v-once :card="UNKNOWN_CARD" class="stacked" />
       </div>
 
-      <div v-if="playersStore.activePlayersCount > 0">
+      <div v-if="playersStore.activePlayers.length > 0">
         <PlayerFrame
           v-for="player in playersStore.players"
           :key="player.index"

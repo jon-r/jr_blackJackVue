@@ -43,7 +43,7 @@ function newGame() {
     playerCount: playerInput.value.length,
   };
 
-  gameActions.newGame(playerInput.value, newConfig);
+  gameActions.startGame(playerInput.value, newConfig);
   /*
   const players: AnyPlayer[] = playerInput.value.map((player) => ({
     ...DEFAULT_PLAYER,

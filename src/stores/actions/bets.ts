@@ -1,7 +1,6 @@
 import { GameOutcomes, OUTCOME_MULTIPLIER } from "../../constants/gamePlay.ts";
 import { getGameOutcome } from "../../helpers/gamePlay.ts";
 import { getRandom } from "../../helpers/math.ts";
-import { isActivePlayer } from "../../helpers/players.ts";
 import { wait } from "../../helpers/time.ts";
 import { useCoreStore } from "../coreStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
@@ -34,7 +33,7 @@ export function useBetActions() {
   }
 
   function placeRandomBets() {
-    playersStore.players.filter(isActivePlayer).forEach((player) => {
+    playersStore.activePlayers.forEach((player) => {
       const rngBet = (getRandom(10) + 1) * 100;
 
       placeBet(rngBet, player.index);
@@ -61,8 +60,8 @@ export function useBetActions() {
   }
 
   // todo skip if already settled (bust or surrendered)
-  function settleAllBets() {
-    playersStore.players.filter(isActivePlayer).forEach(async (player) => {
+  async function settleAllBets() {
+    const promises = playersStore.activePlayers.map(async (player) => {
       if (!player.outcome) {
         // todo get best player hand
         const outcome = getGameOutcome(player.hands, playersStore.dealer.hands);
@@ -70,6 +69,8 @@ export function useBetActions() {
         await settleBet(outcome, player.index);
       }
     });
+
+    await Promise.all(promises);
   }
 
   return { placeBet, placeRandomBets, updateBet, settleBet, settleAllBets };

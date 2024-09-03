@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 import { GameStages } from "../constants/gamePlay.ts";
+import { DEALER_ID } from "../constants/player.ts";
 import { GameConfig } from "../types/config.ts";
 
 const MAX_MESSAGES = 5;
@@ -9,7 +10,7 @@ const MAX_MESSAGES = 5;
 export const useCoreStore = defineStore("core", () => {
   const config = ref<GameConfig>({
     minBet: 100,
-    autoTime: 500,
+    autoTime: 300,
     deckCount: 6,
     playerCount: 5,
   });
@@ -28,13 +29,8 @@ export const useCoreStore = defineStore("core", () => {
     config.value = newConfig;
   }
 
-  function restartGame() {
-    // todo need more here? (defo more in the gameActions file to reset players)
-    jumpToStage(GameStages.Init);
-  }
-
   function jumpToStage(stage: GameStages) {
-    jumpToPlayer(0);
+    jumpToPlayer(DEALER_ID);
     activeStage.value = stage;
   }
 
@@ -45,15 +41,6 @@ export const useCoreStore = defineStore("core", () => {
   function newRound() {
     gameRound.value += 1;
     jumpToStage(GameStages.PlaceBets);
-  }
-
-  function nextPlayer() {
-    // todo skip player if they cant play
-    if (activePlayerId.value === config.value.playerCount) {
-      nextStage();
-    } else {
-      jumpToPlayer(activePlayerId.value + 1);
-    }
   }
 
   function nextStage() {
@@ -74,9 +61,8 @@ export const useCoreStore = defineStore("core", () => {
 
     sendMessage,
     newRound,
-    nextPlayer,
+    nextStage,
     jumpToStage,
     jumpToPlayer,
-    restartGame,
   };
 });

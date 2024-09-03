@@ -1,20 +1,41 @@
-import { GameOutcomes } from "../../constants/gamePlay.ts";
-import { useCoreStore } from "../coreStore.ts";
+import { GameOutcomes, SpecialScores } from "../../constants/gamePlay.ts";
 import { usePlayersStore } from "../playersStore.ts";
 import { useBetActions } from "./bets.ts";
+import { useGameActions } from "./game.ts";
 
 export function usePlayerActions() {
-  const coreStore = useCoreStore();
   const playersStore = usePlayersStore();
   const betActions = useBetActions();
+  const gameActions = useGameActions();
+
+  function nextHandOrPlayer() {
+    const nextHand = playersStore.nextHand();
+    if (!nextHand) {
+      gameActions.goToNextPlayer();
+    }
+  }
+
+  async function checkScore() {
+    switch (playersStore.checkPlayerScore()) {
+      case SpecialScores.BlackJack:
+        gameActions.goToNextPlayer();
+        break;
+      case SpecialScores.Bust:
+        await betActions.settleBet(GameOutcomes.Lost);
+        nextHandOrPlayer();
+        break;
+      default:
+      // else continue
+    }
+  }
 
   async function hit() {
     await playersStore.dealCard();
-    playersStore.checkPlayerScore();
+    await checkScore();
   }
 
   function stand() {
-    playersStore.nextHand();
+    nextHandOrPlayer();
   }
 
   // fixme
@@ -31,13 +52,13 @@ export function usePlayerActions() {
 
   async function surrender() {
     await betActions.settleBet(GameOutcomes.Surrendered);
-    coreStore.nextPlayer();
+    gameActions.goToNextPlayer();
   }
 
   function double() {
     betActions.updateBet(1);
     playersStore.dealBlank();
-    coreStore.nextPlayer();
+    gameActions.goToNextPlayer();
   }
 
   return { hit, stand, split, surrender, double };

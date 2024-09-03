@@ -6,6 +6,7 @@ import {
   FACE_SCORE,
   UNKNOWN_CARD,
 } from "../constants/cards.ts";
+import { SpecialScores } from "../constants/gamePlay.ts";
 import { DEALER_ID, DEALER_STUB } from "../constants/player.ts";
 import { getCardScore, isBlankCard } from "../helpers/cards.ts";
 import { getHandScore, updateHand } from "../helpers/gamePlay.ts";
@@ -31,12 +32,7 @@ export const usePlayersStore = defineStore("players", () => {
     () => players.value.find((player) => player.index === DEALER_ID) as Player,
   );
 
-  // todo maybe 'activePlayers' worth adding, its used in a few places
-  // also make readonlys / setter+getters
-
-  const activePlayersCount = computed(
-    () => players.value.filter(isActivePlayer).length,
-  );
+  const activePlayers = computed(() => players.value.filter(isActivePlayer));
 
   const currentPlayer = computed<Player | undefined>(() =>
     players.value.find((player) => player.index === coreStore.activePlayerId),
@@ -46,22 +42,34 @@ export const usePlayersStore = defineStore("players", () => {
     players.value = [DEALER_STUB, ...stubs].map(createPlayer);
   }
 
+  function resetCards() {
+    players.value.forEach((player) => {
+      player.hands = [createEmptyHand()];
+      player.outcome = null;
+      player.activeHandId = 0;
+    });
+  }
+
+  function checkPlayersBalance() {
+    players.value.forEach((player) => {
+      if (player.money < coreStore.config.minBet) {
+        player.inGame = false;
+      }
+    });
+  }
+
   function addHand() {
     players.value[coreStore.activePlayerId]?.hands.push(createEmptyHand());
   }
 
-  function nextHand(playerId = coreStore.activePlayerId) {
+  function nextHand(playerId = coreStore.activePlayerId): boolean {
     const targetPlayer = players.value[playerId];
 
-    if (!targetPlayer) return;
+    if (!targetPlayer) return false;
 
-    const nextHand = targetPlayer.activeHandId + 1;
+    targetPlayer.activeHandId += 1;
 
-    if (nextHand === targetPlayer.hands.length) {
-      return coreStore.nextPlayer();
-    }
-
-    targetPlayer.activeHandId = nextHand;
+    return Boolean(targetPlayer.hands[targetPlayer.activeHandId]);
   }
 
   function getPlayerHand(
@@ -88,18 +96,10 @@ export const usePlayersStore = defineStore("players", () => {
     deckStore.returnCard(newCard);
   }
 
-  function checkPlayerScore(playerId?: number, handId?: number) {
+  function checkPlayerScore(playerId?: number, handId?: number): SpecialScores {
     const targetHand = getPlayerHand(playerId, handId);
 
-    if (!targetHand) return;
-
-    const playerMustStand = !targetHand || targetHand.score >= BLACKJACK_SCORE;
-
-    // todo handle instant loss here? may need to move this function to playerActions
-
-    if (playerMustStand) {
-      coreStore.nextPlayer();
-    }
+    return targetHand?.special || SpecialScores.None;
   }
 
   async function dealCard(playerId?: number, handId?: number) {
@@ -124,10 +124,8 @@ export const usePlayersStore = defineStore("players", () => {
   }
 
   async function dealAllPlayersCards() {
-    for (let i = 0; i < players.value.length; i++) {
-      if (isActivePlayer(players.value[i])) {
-        await dealCard(i);
-      }
+    for (let i = 0; i < activePlayers.value.length; i++) {
+      await dealCard(activePlayers.value[i].index);
     }
   }
 
@@ -160,10 +158,8 @@ export const usePlayersStore = defineStore("players", () => {
   }
 
   async function revealAllBlankCards() {
-    for (let i = 0; i < players.value.length; i++) {
-      if (isActivePlayer(players.value[i])) {
-        await revealBlanks(i);
-      }
+    for (let i = 0; i < activePlayers.value.length; i++) {
+      await revealBlanks(activePlayers.value[i].index);
     }
   }
 
@@ -189,9 +185,9 @@ export const usePlayersStore = defineStore("players", () => {
 
   return {
     players,
+    activePlayers,
     dealer,
     currentPlayer,
-    activePlayersCount,
 
     resetPlayers,
     dealBlank,
@@ -203,5 +199,7 @@ export const usePlayersStore = defineStore("players", () => {
     dealOrPeekDealer,
     addHand,
     nextHand,
+    resetCards,
+    checkPlayersBalance,
   };
 });

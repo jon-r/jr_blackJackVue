@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 
 import { CHIP_VALUES } from "../../constants/gamePlay.ts";
 import { useBetActions } from "../../stores/actions/bets.ts";
+import { useGameActions } from "../../stores/actions/game.ts";
 // import { useAppStore } from "../../store/store.ts";
 import { useCoreStore } from "../../stores/coreStore.ts";
 import { ButtonControl } from "../../types/button.ts";
@@ -19,6 +20,7 @@ const props = defineProps<BettingActionsProps>();
 
 const coreStore = useCoreStore();
 const betActions = useBetActions();
+const gameActions = useGameActions();
 
 // const chips = [5, 10, 25, 100, 500, 1000];
 
@@ -85,7 +87,7 @@ function submitBet() {
 
   coreStore.sendMessage(`${props.player.name} bets £${betToPlace.value}`);
   betActions.placeBet(betToPlace.value);
-  coreStore.nextPlayer();
+  gameActions.goToNextPlayer();
 
   chipsToPlace.value = [];
   // dispatch("setNewMessage", `${props.player.name} bets £${betToPlace.value}`);

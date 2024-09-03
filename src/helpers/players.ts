@@ -8,7 +8,7 @@ export function setupPlayerInput(players: Player[]): PlayerInputStub[] {
   }
 
   const playersWithoutDealer = players
-    .filter((player) => player.index !== DEALER_ID)
+    .filter(isNotDealer)
     .map((player) => ({ name: player.name }));
 
   return Array.from({ ...playersWithoutDealer, length: 5 }, (player) => ({
@@ -39,5 +39,9 @@ export function createPlayer({ name }: PlayerInputStub, index: number): Player {
 }
 
 export function isActivePlayer(player: Player) {
-  return player.inGame && player.index !== DEALER_ID;
+  return player.inGame && isNotDealer(player);
+}
+
+export function isNotDealer(player: Player) {
+  return player.index !== DEALER_ID;
 }

@@ -1,7 +1,7 @@
 import { DEALER_STAND_SCORE } from "../../constants/cards.ts";
 import { GameStages } from "../../constants/gamePlay.ts";
 import { DEALER_ID } from "../../constants/player.ts";
-import { isActivePlayer } from "../../helpers/players.ts";
+import { isActivePlayer, isNotDealer } from "../../helpers/players.ts";
 import { GameConfig } from "../../types/config.ts";
 import { PlayerInputStub } from "../../types/players.ts";
 import { useCoreStore } from "../coreStore.ts";
@@ -15,7 +15,7 @@ export function useGameActions() {
   const deckStore = useDeckStore();
   const betActions = useBetActions();
 
-  function newGame(players: PlayerInputStub[], config: GameConfig) {
+  function startGame(players: PlayerInputStub[], config: GameConfig) {
     coreStore.setConfig(config);
     playersStore.resetPlayers(players);
     deckStore.rebuildDeck(config.deckCount);
@@ -23,11 +23,17 @@ export function useGameActions() {
     coreStore.newRound();
   }
 
-  function goToFirstPlayer() {
-    const firstPlayerId = playersStore.players.findIndex(isActivePlayer);
+  function goToNextPlayer() {
+    const nextPlayer = playersStore.players.find(
+      (player) =>
+        isActivePlayer(player) && player.index > coreStore.activePlayerId,
+    );
 
-    // fixme end game if no players
-    coreStore.jumpToPlayer(firstPlayerId);
+    if (nextPlayer) {
+      coreStore.jumpToPlayer(nextPlayer.index);
+    } else {
+      coreStore.nextStage();
+    }
   }
 
   async function dealInitialCards() {
@@ -37,9 +43,13 @@ export function useGameActions() {
 
     // deal two
     await playersStore.dealAllPlayersCards();
-    await playersStore.dealOrPeekDealer();
+    const peekedBlackjack = await playersStore.dealOrPeekDealer();
 
-    coreStore.jumpToStage(GameStages.PlayerActions);
+    if (peekedBlackjack) {
+      coreStore.jumpToStage(GameStages.DealerActions);
+    } else {
+      coreStore.jumpToStage(GameStages.PlayerActions);
+    }
   }
 
   async function dealFinalCards() {
@@ -55,17 +65,28 @@ export function useGameActions() {
     coreStore.jumpToStage(GameStages.EndRound);
   }
 
-  function finaliseRound() {
-    betActions.settleAllBets();
+  async function finaliseRound() {
+    await betActions.settleAllBets();
+    playersStore.checkPlayersBalance();
+  }
 
-    // todo disable any fully lost players here
+  function nextRound() {
+    playersStore.resetCards();
+    coreStore.newRound();
+  }
+
+  function endGame() {
+    playersStore.resetPlayers(playersStore.players.filter(isNotDealer));
+    coreStore.jumpToStage(GameStages.Init);
   }
 
   return {
-    newGame,
+    startGame,
     dealInitialCards,
-    goToFirstPlayer,
+    goToNextPlayer,
     dealFinalCards,
     finaliseRound,
+    nextRound,
+    endGame,
   };
 }
