@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import MdIcon from "../common/MdIcon.vue";
 import { ButtonControl } from "./button.ts";
 
 type ButtonControlProps = Omit<ButtonControl, "onClick" | "id">;
@@ -18,7 +17,7 @@ const props = defineProps<ButtonControlProps>();
 
     <slot />
 
-    <MdIcon v-if="props.icon" class="action-button__icon" :name="props.icon" />
+    <i v-if="props.icon" class="md-icon md-icon--lg">{{ props.icon }}</i>
 
     <em v-if="props.alert && !props.disabled" class="action-button__alert">
       {{ props.alert }}
@@ -54,9 +53,6 @@ const props = defineProps<ButtonControlProps>();
     color: var(--md-sys-color-on-disabled);
     opacity: 0.7;
     cursor: not-allowed;
-  }
-  &:disabled &__icon {
-    color: var(--md-sys-color-on-disabled);
   }
 
   &--wider {

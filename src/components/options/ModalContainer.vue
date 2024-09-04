@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import MdIcon from "../common/MdIcon.vue";
-
 type ModalContainerProps = {
   title: string;
 };
@@ -18,7 +16,7 @@ const props = defineProps<ModalContainerProps>();
           class="button-base modal__close"
           @click="() => $emit('closeModal')"
         >
-          <MdIcon name="close" />
+          <i class="md-icon">close</i>
         </button>
       </header>
 

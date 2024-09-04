@@ -4,7 +4,6 @@ import { ref, watch } from "vue";
 import { GameStages } from "~/constants/gamePlay.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
 
-import MdIcon from "../common/MdIcon.vue";
 import ModalContainer from "./ModalContainer.vue";
 import OptionsForm from "./OptionsForm.vue";
 
@@ -27,7 +26,7 @@ watch(
     class="button-base modal__open"
     @click="isOptionsModalOpen = true"
   >
-    <MdIcon name="menu" />
+    <i class="md-icon">menu</i>
   </button>
 
   <ModalContainer

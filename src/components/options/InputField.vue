@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import MdIcon from "../common/MdIcon.vue";
-
 type InputProps = {
   inputId: string;
   label: string;
@@ -19,7 +17,9 @@ const model = defineModel();
     <label class="input-field__label" :for="props.inputId">
       {{ props.label }}
     </label>
-    <MdIcon :name="props.icon" />
+
+    <i class="md-icon">{{ props.icon }}</i>
+
     <input
       class="input-field__input"
       :type="props.type"

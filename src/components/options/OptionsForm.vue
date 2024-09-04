@@ -9,7 +9,6 @@ import { useCoreStore } from "~/stores/coreStore.ts";
 import { usePlayersStore } from "~/stores/playersStore.ts";
 import { GameConfig } from "~/types/config.ts";
 
-import MdIcon from "../common/MdIcon.vue";
 import InputField from "./InputField.vue";
 
 const coreStore = useCoreStore();
@@ -72,7 +71,9 @@ function newDemo() {
       >
         <span>In Game Options</span>
 
-        <MdIcon :name="isMoreOptionsOpen ? 'expand_less' : 'expand_more'" />
+        <i class="md-icon">{{
+          isMoreOptionsOpen ? "expand_less" : "expand_more"
+        }}</i>
       </h4>
       <template v-if="isMoreOptionsOpen">
         <InputField
