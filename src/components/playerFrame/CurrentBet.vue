@@ -60,17 +60,19 @@ function leave(el: HTMLElement, done: () => void) {
       @leave="leave"
     >-->
     <ul class="current-bet__chips">
-      <BettingChip
+      <li
         v-for="(chip, idx) in betAsChips"
         :key="idx"
-        :value="chip"
-        is-stacked
-        class="current-bet__chip-stack"
-      />
+        class="current-bet__chip-stacked"
+      >
+        <BettingChip :value="chip" is-stacked />
+      </li>
     </ul>
     <!--    </TransitionGroup>-->
 
-    <span v-show="bet > 0">Placed Bet: £{{ bet }}</span>
+    <span class="current-bet__value" v-show="bet > 0">
+      Placed Bet: £{{ bet }}
+    </span>
   </div>
 </template>
 
@@ -79,12 +81,38 @@ function leave(el: HTMLElement, done: () => void) {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  padding: 0 0.5rem;
 
   &__chips {
+    display: flex;
+    flex-direction: column-reverse;
     list-style: none;
-    width: 2rem;
+    width: 2.5rem;
     padding: 0;
     margin: 0;
+    position: relative;
+  }
+
+  /* todo handle z-index somehow. maybe js easiest */
+  &__chip-stacked {
+    margin-top: -1.7rem;
+
+    &:first-child::before {
+      content: "";
+      display: block;
+      height: 1.25rem;
+      width: 2.5rem;
+      border-radius: 50%;
+      background-color: var(--md-sys-color-scrim);
+      box-shadow: var(--shadow-level2);
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+    }
+  }
+
+  &__value {
+    font-size: 11px;
   }
 }
 </style>

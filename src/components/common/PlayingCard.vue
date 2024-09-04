@@ -21,26 +21,60 @@ const visualCard = computed(() => {
 
 <template>
   <div class="playing-card" :class="visualCard.suit">
-    <span v-if="visualCard.face">
+    <strong v-if="visualCard.face">
       {{ visualCard.face }}
-    </span>
+    </strong>
   </div>
 </template>
 
 <style>
 .playing-card {
   --card-back-bg: url(src/assets/card-back.svg);
+  --card-symbol: url(src/assets/card.min.svg);
 
   width: 50px;
   height: 70px;
-  background: var(--md-sys-color-surface-container-low);
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
   border-radius: 3px;
   padding: 2px;
+  overflow: hidden;
+  position: relative;
 
   &--blank {
     background:
       var(--card-back-bg) center/cover,
       var(--playing-card-back);
+  }
+
+  &--hearts,
+  &--diamonds {
+    color: var(--md-sys-color-error);
+  }
+
+  &:not(&--blank)::after {
+    content: "";
+    position: absolute;
+    right: -15px;
+    bottom: -10px;
+    height: 60px;
+    width: 60px;
+    /* todo inline this like the chips and use currentcolour */
+    background-image: var(--card-symbol);
+    background-size: 200%;
+  }
+
+  &--hearts::after {
+    background-position: top left;
+  }
+  &--diamonds::after {
+    background-position: bottom left;
+  }
+  &--clubs::after {
+    background-position: top right;
+  }
+  &--spades::after {
+    background-position: bottom right;
   }
 }
 </style>

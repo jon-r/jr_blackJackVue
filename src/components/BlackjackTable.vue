@@ -43,15 +43,17 @@ onMounted(() => {
   flex: 1;
   background: var(--md-sys-color-primary) url(../assets/table-print.svg)
     no-repeat center;
+  color: var(--md-sys-color-on-primary);
   position: relative;
 
   &__deck {
     position: absolute;
     top: 40px;
     right: 25%;
+    transform: rotate(5deg);
     border-radius: 0 0 3px 3px;
     box-shadow:
-      0 4px 0 0 var(--playing-card-back-variant),
+      1px 4px 0 0 var(--playing-card-side),
       var(--shadow-level2);
   }
 }

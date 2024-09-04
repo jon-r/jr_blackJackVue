@@ -126,12 +126,13 @@
 
     --md-sys-color-primary-container-opacity: rgb(51 78 23 / 20%);
 
-    /* todo pick a nice color for dark */
+    /* todo pick a nice colors for dark */
     --playing-card-back: hotpink; /*rgb(201, 114, 114)*/
-    --playing-card-back-variant: hotpink; /*rgb(201, 114, 114)*/
+    --playing-card-side: hotpink; /*rgb(201, 114, 114)*/
   }
 
   .light {
+    /* todo replace the top with hex, then thisll be way easier */
     --md-sys-color-primary-hover: rgb(74 103 45 / 92%);
     --md-sys-color-primary-hover-opacity: rgb(74 103 45 / 8%);
     --md-sys-color-secondary-hover: rgb(87 98 74 / 92%);
@@ -145,7 +146,7 @@
     --md-sys-color-on-disabled: rgb(26 28 22 / 38%);
 
     --playing-card-back: rgb(201, 114, 114);
-    --playing-card-back-variant: rgb(152, 75, 75);
+    --playing-card-side: rgb(152, 75, 75);
   }
 
   .dark,

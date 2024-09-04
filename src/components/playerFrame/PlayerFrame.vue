@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 
+import PlayerCards from "~/components/playerFrame/PlayerCards.vue";
 import { isNotDealer } from "~/helpers/players.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
 import { Position } from "~/types/animations.ts";
 import { Player } from "~/types/players.ts";
 
 import CurrentBet from "./CurrentBet.vue";
-import PlayerHand from "./PlayerHand.vue";
 import PlayerLabel from "./PlayerLabel.vue";
 
 type PlayerFrameProps = {
@@ -65,12 +65,17 @@ const isPlayerTurn = computed(() => {
     :class="['player-frame--' + props.player.index]"
     ref="frameParent"
   >
-    <PlayerHand
-      v-if="props.player.inGame"
-      :player="props.player"
+    <PlayerCards
+      v-for="(hand, idx) in player.hands"
+      :key="idx"
       :frame-pos="framePos"
-      :is-current-turn="isPlayerTurn"
+      :hand="hand"
+      :is-active="idx === player.activeHandId"
     />
+
+    <strong class="player-frame__alert" v-if="player.outcome">
+      {{ player.outcome }}
+    </strong>
 
     <CurrentBet
       v-if="notDealer"
@@ -87,36 +92,46 @@ const isPlayerTurn = computed(() => {
 </template>
 <style>
 .player-frame {
-  border: solid 1px red;
+  /*border: solid 1px red; */
   position: absolute;
   top: 0;
   left: 0;
   height: 196px;
-  width: 196px;
+  width: 216px;
 
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* flex end may not be needed? */
+  /* justify-content: flex-end; /* flex end may not be needed? */
 
   &--1 {
-    transform: translate(26px, 190px);
+    transform: translate(6px, 190px);
   }
   &--2 {
-    transform: translate(160px, 380px);
+    transform: translate(140px, 380px);
   }
   &--3 {
-    transform: translate(424px, 420px);
+    transform: translate(404px, 420px);
   }
   &--4 {
-    transform: translate(672px, 380px);
+    transform: translate(652px, 380px);
   }
   &--5 {
-    transform: translate(822px, 190px);
+    transform: translate(802px, 190px);
   }
 
   /* dealer */
   &--0 {
-    transform: translate(424px, 20px);
+    transform: translate(404px, 20px);
+  }
+
+  &__alert {
+    position: absolute;
+    inset: 3rem 0;
+
+    text-align: center;
+    font-size: 2rem;
+    text-shadow: 0 0 10px #000;
+    color: orange; /* todo warning color */
   }
 }
 </style>

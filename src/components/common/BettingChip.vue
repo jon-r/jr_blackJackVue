@@ -8,7 +8,7 @@ type BettingChipProps = {
 
 const props = defineProps<BettingChipProps>();
 const viewBox = computed(() =>
-  props.isStacked ? "0 0 100 60" : "0 0 100 100",
+  props.isStacked ? "0 10 100 70" : "0 0 100 100",
 );
 const href = computed(() => (props.isStacked ? "#chip-tilt" : "#chip"));
 </script>
