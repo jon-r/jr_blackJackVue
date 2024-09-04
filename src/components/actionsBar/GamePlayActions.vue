@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { GamePlayActionTypes } from "~/constants/gamePlay.ts";
 import { getHandRules } from "~/helpers/cards.ts";
 import { usePlayerActions } from "~/stores/actions/player.ts";
 import { Player } from "~/types/players.ts";
@@ -23,19 +22,21 @@ const actionButtons = computed<ButtonControl[]>(() => {
   return [
     {
       id: "play-hit",
-      label: GamePlayActionTypes.Hit,
+      label: "Hit",
       icon: "touch_app",
       onClick: playerActions.hit,
+      className: "action-button--emphasis-variant",
     },
     {
       id: "play-stand",
-      label: GamePlayActionTypes.Stand,
+      label: "Stand",
       icon: "pan_tool",
       onClick: playerActions.stand,
+      className: "action-button--emphasis-variant",
     },
     {
       id: "play-split",
-      label: GamePlayActionTypes.Split,
+      label: "Split",
       disabled: !canSplit,
       icon: "call_split",
       alert: `- £${openBet}`,
@@ -43,7 +44,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
     },
     {
       id: "play-surrender",
-      label: GamePlayActionTypes.Surrender,
+      label: "Surrender",
       disabled: !canSurrender,
       icon: "flag",
       alert: `+ £${openBet / 2}`,
@@ -51,7 +52,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
     },
     {
       id: "play-double",
-      label: GamePlayActionTypes.Double,
+      label: "Double",
       disabled: !canDouble,
       icon: "monetization_on",
       alert: `- £${openBet}`,

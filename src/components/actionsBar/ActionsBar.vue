@@ -57,7 +57,6 @@ const tipsMessage = computed(() => {
 <style>
 .actions-bar {
   background-color: var(--md-sys-color-surface);
-  border-radius: 0 0 var(--border-radius) var(--border-radius);
   height: 128px;
   padding: var(--gap-sm);
   gap: var(--gap-md);

@@ -30,20 +30,4 @@ export const OUTCOME_MULTIPLIER = {
   [GameOutcomes.Lost]: -1,
 } as const;
 
-// todo these shouldn't be needed with proper onClick props
-/** @deprecated */
-export enum GamePlayActionTypes {
-  Hit = "Hit",
-  Stand = "Stand",
-  Split = "Split",
-  Surrender = "Surrender",
-  Double = "Double",
-}
-
-/** @deprecated */
-export enum EndGameActionTypes {
-  New = "New Game",
-  Next = "Next Round",
-}
-
 export const CHIP_VALUES = [1000, 500, 100, 25, 10, 5] as const;

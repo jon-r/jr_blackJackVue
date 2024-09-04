@@ -17,9 +17,11 @@ const props = defineProps<ButtonControlProps>();
 
     <slot />
 
-    <i v-if="props.icon" class="md-icon md-icon--lg">{{ props.icon }}</i>
+    <i v-if="props.icon" class="action-button__icon md-icon">{{
+      props.icon
+    }}</i>
 
-    <em v-if="props.alert && !props.disabled" class="action-button__alert">
+    <em v-if="props.alert" class="action-button__alert">
       {{ props.alert }}
     </em>
   </button>
@@ -28,6 +30,7 @@ const props = defineProps<ButtonControlProps>();
 .action-button {
   flex: 1;
   background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
   padding: 4px;
 
   display: flex;
@@ -82,7 +85,7 @@ const props = defineProps<ButtonControlProps>();
   }
 
   &__icon {
-    font-size: 2rem;
+    font-size: 2.5rem;
     opacity: 0.8;
   }
 

@@ -41,7 +41,8 @@ onMounted(() => {
 <style>
 .blackjack-table {
   flex: 1;
-  background: url(../assets/table-print.svg) center/contain no-repeat;
+  background: var(--md-sys-color-primary) url(../assets/table-print.svg)
+    no-repeat center;
   position: relative;
 
   &__deck {

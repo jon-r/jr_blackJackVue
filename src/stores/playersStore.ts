@@ -9,6 +9,7 @@ import {
 } from "~/constants/cards.ts";
 import { SpecialScores } from "~/constants/gamePlay.ts";
 import { DEALER_ID, DEALER_STUB } from "~/constants/player.ts";
+import { AUTO_TIME } from "~/constants/settings.ts";
 import { getCardScore, isBlankCard } from "~/helpers/cards.ts";
 import { getHandScore, updateHand } from "~/helpers/gamePlay.ts";
 import {
@@ -143,7 +144,7 @@ export const usePlayersStore = defineStore("players", () => {
     playerId?: number,
     handId?: number,
   ): Promise<PlayingCard | undefined> {
-    await wait(coreStore.config.autoTime);
+    await wait(AUTO_TIME);
 
     const newCard = deckStore.drawCard();
 

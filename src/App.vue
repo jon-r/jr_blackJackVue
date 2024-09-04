@@ -54,8 +54,9 @@ watch(
 
   display: flex;
   flex-direction: column;
-  background-color: var(--md-sys-color-primary);
+
   border: solid 1px var(--md-sys-color-outline-variant);
   border-radius: var(--border-radius);
+  overflow: hidden;
 }
 </style>

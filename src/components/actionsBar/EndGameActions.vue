@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { EndGameActionTypes } from "~/constants/gamePlay.ts";
 import { useGameActions } from "~/stores/actions/game.ts";
 import { usePlayersStore } from "~/stores/playersStore.ts";
 
@@ -15,13 +14,13 @@ const actionButtons = computed<ButtonControl[]>(() => {
   return [
     {
       id: "end-new",
-      label: EndGameActionTypes.New,
+      label: "End Game",
       icon: "skip_previous",
       onClick: gameActions.endGame,
     },
     {
       id: "end-next",
-      label: EndGameActionTypes.Next,
+      label: "Next Round",
       className: "action-button--emphasis",
       disabled: playersStore.activePlayers.length === 0,
       icon: "skip_next",

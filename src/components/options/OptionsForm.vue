@@ -22,7 +22,6 @@ const playerInput = ref(setupPlayerInput(playersStore.players));
 
 const deckCount = ref(coreStore.config.deckCount);
 const minBet = ref(coreStore.config.minBet);
-const autoTime = ref(coreStore.config.autoTime);
 
 const isMoreOptionsOpen = ref(false);
 
@@ -30,7 +29,6 @@ function newGame() {
   const newConfig: GameConfig = {
     deckCount: deckCount.value,
     minBet: minBet.value,
-    autoTime: autoTime.value,
     playerCount: playerInput.value.length,
   };
 
@@ -88,13 +86,6 @@ function newDemo() {
           input-id="bet"
           icon="remove_circle"
           label="Minimum Bet"
-          type="number"
-        />
-        <InputField
-          v-model.number="autoTime"
-          input-id="time"
-          icon="slow_motion_video"
-          label="Deal Speed"
           type="number"
         />
       </template>

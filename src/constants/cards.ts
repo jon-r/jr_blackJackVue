@@ -22,6 +22,7 @@ export const enum CardSuits {
   Clubs = "clubs",
   Blank = "blank",
 }
+
 export const SUIT_LIST = [
   CardSuits.Hearts,
   CardSuits.Diamonds,
