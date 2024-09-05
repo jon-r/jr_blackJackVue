@@ -25,14 +25,14 @@ const actionButtons = computed<ButtonControl[]>(() => {
       label: "Hit",
       icon: "touch_app",
       onClick: playerActions.hit,
-      className: "action-button--emphasis-variant",
+      className: "action-button--emphasis",
     },
     {
       id: "play-stand",
       label: "Stand",
       icon: "pan_tool",
       onClick: playerActions.stand,
-      className: "action-button--emphasis-variant",
+      className: "action-button--emphasis",
     },
     {
       id: "play-split",

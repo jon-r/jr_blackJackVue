@@ -52,7 +52,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "bet-undo",
       label: "Undo",
-      className: "action-button--emphasis-variant",
+      className: "action-button--warn",
       icon: "undo",
       disabled: betToPlace.value === 0,
       onClick: removeChip,

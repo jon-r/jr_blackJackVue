@@ -36,12 +36,13 @@ watch(
 </script>
 
 <template>
-  <div class="app-container">
+  <!-- todo light vs dark modes toggle -->
+  <main class="app-container light">
     <BlackjackTable />
     <ActionsBar />
-  </div>
+    <OptionsModal />
+  </main>
 
-  <OptionsModal />
   <SvgStatic v-once />
 </template>
 <style>

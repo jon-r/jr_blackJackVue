@@ -29,8 +29,8 @@ const visualCard = computed(() => {
 
 <style>
 .playing-card {
-  --card-back-bg: url(src/assets/card-back.svg);
-  --card-symbol: url(src/assets/card.min.svg);
+  --card-back-bg: url(../../assets/card-back.svg);
+  --card-symbol: url(../../assets/card.min.svg);
 
   width: 50px;
   height: 70px;

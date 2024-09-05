@@ -24,7 +24,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <main class="blackjack-table">
+  <div class="blackjack-table">
     <MessagesOutput />
 
     <section class="blackjack-table__deck" ref="deckRef">
@@ -36,7 +36,7 @@ onMounted(() => {
       :key="player.index"
       :player="player"
     />
-  </main>
+  </div>
 </template>
 <style>
 .blackjack-table {

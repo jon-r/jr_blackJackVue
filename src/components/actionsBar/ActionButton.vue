@@ -29,8 +29,8 @@ const props = defineProps<ButtonControlProps>();
 <style>
 .action-button {
   flex: 1;
-  background-color: var(--md-sys-color-secondary-container);
-  color: var(--md-sys-color-on-secondary-container);
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
   padding: 4px;
 
   display: flex;
@@ -49,7 +49,7 @@ const props = defineProps<ButtonControlProps>();
   }
 
   &:hover {
-    background-color: var(--md-sys-color-secondary-container-hover);
+    background-color: var(--md-sys-color-primary-container-hover);
   }
   &:disabled {
     background-color: var(--md-sys-color-disabled);
@@ -61,22 +61,22 @@ const props = defineProps<ButtonControlProps>();
   &--wider {
     flex: 1.5;
   }
+
   &--emphasis {
-    background-color: var(--md-sys-color-secondary);
-    color: var(--md-sys-color-on-secondary);
+    background-color: var(--md-sys-color-tertiary-container);
+    color: var(--md-sys-color-on-tertiary-container);
 
     &:hover {
-      background-color: var(--md-sys-color-secondary-hover);
+      background-color: var(--md-sys-color-tertiary-container-hover);
     }
   }
 
-  &--emphasis-variant {
-    /* todo maybe need to tone these colours down a bit? */
-    background-color: var(--md-sys-color-tertiary);
-    color: var(--md-sys-color-on-tertiary);
+  &--warn {
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
 
     &:hover {
-      background-color: var(--md-sys-color-tertiary-hover);
+      background-color: var(--md-sys-color-secondary-container-hover);
     }
   }
 
