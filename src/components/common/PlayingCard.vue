@@ -36,8 +36,8 @@ const visualCard = computed(() => {
   height: 70px;
   background: var(--md-sys-color-surface);
   color: var(--md-sys-color-on-surface);
-  border-radius: 3px;
-  padding: 2px;
+  border-radius: var(--border-radius-xs);
+  padding: var(--padding-xs);
   overflow: hidden;
   position: relative;
 

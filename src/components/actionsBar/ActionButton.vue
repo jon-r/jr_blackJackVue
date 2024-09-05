@@ -22,7 +22,7 @@ const props = defineProps<ButtonControlProps>();
     }}</i>
 
     <em v-if="props.alert" class="action-button__alert">
-      {{ props.alert }}
+      <small>{{ props.alert }}</small>
     </em>
   </button>
 </template>
@@ -31,17 +31,17 @@ const props = defineProps<ButtonControlProps>();
   flex: 1;
   background-color: var(--md-sys-color-primary-container);
   color: var(--md-sys-color-on-primary-container);
-  padding: 4px;
+  padding: var(--padding-sm);
 
   display: flex;
   flex-direction: column;
   align-items: center;
 
   &:first-of-type {
-    border-radius: var(--gap-md) 0 0 var(--gap-md);
+    border-radius: var(--border-radius-xl) 0 0 var(--border-radius-xl);
   }
   &:last-of-type {
-    border-radius: 0 var(--gap-md) var(--gap-md) 0;
+    border-radius: 0 var(--border-radius-xl) var(--border-radius-xl) 0;
   }
 
   & + & {
@@ -54,7 +54,7 @@ const props = defineProps<ButtonControlProps>();
   &:disabled {
     background-color: var(--md-sys-color-disabled);
     color: var(--md-sys-color-on-disabled);
-    opacity: 0.7;
+    opacity: 0.75;
     cursor: not-allowed;
   }
 
@@ -81,18 +81,16 @@ const props = defineProps<ButtonControlProps>();
   }
 
   &__label {
-    min-height: 2rem;
+    min-height: 2em;
   }
 
   &__icon {
-    font-size: 2.5rem;
-    opacity: 0.8;
+    font-size: var(--font-size-heading-xl);
   }
 
   &__alert {
     margin-top: auto;
-    color: var(--md-sys-color-on-error-container);
-    font-size: 0.75rem;
+    color: var(--md-sys-color-secondary);
   }
 }
 </style>

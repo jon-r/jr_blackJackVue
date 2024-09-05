@@ -58,8 +58,8 @@ const tipsMessage = computed(() => {
 .actions-bar {
   background-color: var(--md-sys-color-surface);
   height: 128px;
-  padding: var(--gap-sm);
-  gap: var(--gap-md);
+  padding: var(--padding-md);
+  gap: var(--padding-md);
   display: flex;
   align-items: stretch;
 

@@ -11,11 +11,16 @@ export const useCoreStore = defineStore("core", () => {
   const activeStage = ref(GameStages.Init);
   const activePlayerId = ref(-1);
   const notifications = ref<string[]>([]);
+  const isOptionsModalOpen = ref(activeStage.value === GameStages.Init);
+
+  function toggleOptionsModal(isOpen: boolean) {
+    isOptionsModalOpen.value = isOpen;
+  }
 
   // todo send more messages
   function sendMessage(newMessage: string) {
     notifications.value.unshift(newMessage);
-    notifications.value.slice(MAX_MESSAGES);
+    notifications.value = notifications.value.slice(MAX_MESSAGES);
   }
 
   function setConfig(newConfig: GameConfig) {
@@ -48,7 +53,9 @@ export const useCoreStore = defineStore("core", () => {
     activeStage,
     activePlayerId,
     notifications,
+    isOptionsModalOpen,
 
+    toggleOptionsModal,
     setConfig,
     sendMessage,
     newRound,

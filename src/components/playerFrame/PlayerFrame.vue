@@ -129,9 +129,9 @@ const isPlayerTurn = computed(() => {
     inset: 3rem 0;
 
     text-align: center;
-    font-size: 2rem;
-    text-shadow: 0 0 10px #000;
-    color: orange; /* todo warning color */
+    font-size: var(--font-size-heading-small);
+    text-shadow: 0 0 10px var(--md-sys-color-shadow);
+    color: var(--md-sys-color-secondary-container);
   }
 }
 </style>

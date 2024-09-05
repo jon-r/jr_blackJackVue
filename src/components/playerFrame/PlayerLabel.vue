@@ -34,15 +34,12 @@ watch(
 <template>
   <header
     class="player-label"
-    :class="[props.isFocused && 'player-label--focussed']"
+    :class="[
+      props.isFocused && 'player-label--focussed',
+      !props.player.inGame && 'player-label--disabled',
+    ]"
   >
-    <h3
-      class="player-label__name"
-      :class="{
-        'alert-text': props.isFocused,
-        'error-text': !props.player.inGame,
-      }"
-    >
+    <h3 class="player-label__name">
       {{ props.player.name }}
     </h3>
 
@@ -67,9 +64,9 @@ watch(
 .player-label {
   background-color: var(--md-sys-color-surface-container-low);
   color: var(--md-sys-color-on-surface);
-  border-radius: var(--border-radius-sm);
-  box-shadow: var(--shadow-level1);
-  padding: 2px var(--gap-md);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-level-1);
+  padding: var(--padding-xs) var(--padding-lg);
 
   display: flex;
   justify-content: space-between;
@@ -80,8 +77,9 @@ watch(
     color: var(--md-sys-color-on-primary-container);
   }
 
-  &__name {
-    font-size: 1.75rem;
+  &--disabled {
+    background-color: var(--md-sys-color-disabled);
+    color: var(--md-sys-color-on-disabled);
   }
 
   /* todo animate nicer. more transition stuff and easing whatnots
@@ -90,18 +88,16 @@ watch(
 
   &__diff {
     display: block;
-    color: red;
+    color: var(--md-sys-color-error);
     pointer-events: none;
     position: absolute;
 
-    transition:
-      transform 2s,
-      opacity 2s;
-    transform: translateY(-200px);
+    transition: 2s;
+    transform: translateY(-100px);
     opacity: 0;
 
     &--returns {
-      color: green;
+      color: var(--md-sys-color-primary);
     }
   }
 }

@@ -17,6 +17,8 @@ watch(
   () => coreStore.activeStage,
   (stage: GameStages) => {
     switch (stage) {
+      case GameStages.Init:
+        return coreStore.toggleOptionsModal(true);
       case GameStages.PlaceBets:
         coreStore.sendMessage("Please place your bets.");
         return gameActions.goToNextPlayer();
@@ -57,7 +59,7 @@ watch(
   flex-direction: column;
 
   border: solid 1px var(--md-sys-color-outline-variant);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-xl);
   overflow: hidden;
 }
 </style>

@@ -70,9 +70,9 @@ function leave(el: HTMLElement, done: () => void) {
     </ul>
     <!--    </TransitionGroup>-->
 
-    <span class="current-bet__value" v-show="bet > 0">
+    <small class="current-bet__value" v-show="bet > 0">
       Placed Bet: £{{ bet }}
-    </span>
+    </small>
   </div>
 </template>
 
@@ -81,35 +81,30 @@ function leave(el: HTMLElement, done: () => void) {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding: 0 0.5rem;
+  padding: 0 var(--padding-sm);
 
   &__chips {
     display: flex;
     flex-direction: column-reverse;
-    width: 2.5rem;
+    width: 40px;
     position: relative;
   }
 
-  /* todo handle z-index somehow. maybe js easiest */
   &__chip-stacked {
-    margin-top: -1.7rem;
+    margin-top: -28px;
 
     &:first-child::before {
       content: "";
       display: block;
-      height: 1.25rem;
-      width: 2.5rem;
+      height: 20px;
+      width: 40px;
       border-radius: 50%;
       background-color: var(--md-sys-color-scrim);
-      box-shadow: var(--shadow-level2);
+      box-shadow: var(--shadow-level-2);
       position: absolute;
       bottom: 10px;
       left: 0;
     }
-  }
-
-  &__value {
-    font-size: 11px;
   }
 }
 </style>

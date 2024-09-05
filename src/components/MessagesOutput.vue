@@ -19,8 +19,8 @@ const coreStore = useCoreStore();
 <style>
 .messages-output {
   position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
+  top: var(--padding-md);
+  left: var(--padding-md);
 
   &__message {
     &:first-of-type {

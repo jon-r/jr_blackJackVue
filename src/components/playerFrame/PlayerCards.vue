@@ -68,15 +68,15 @@ function leave() {
     />
     <!--    </TransitionGroup>-->
 
-    <span
-      v-if="isActive"
+    <small
+      v-if="isActive && hand.score > 0"
       class="player-cards__hand-score"
       :class="{
         'player-cards__hand-score--bust': hand.special === SpecialScores.Bust,
       }"
     >
       {{ hand.score }} {{ hand.special }}
-    </span>
+    </small>
   </div>
 </template>
 <style>
@@ -92,12 +92,11 @@ function leave() {
 
   &__hand-score {
     position: absolute;
-    top: 1rem;
-    left: 1rem;
+    top: var(--padding-lg);
+    left: var(--padding-lg);
 
-    border-radius: 16px;
-    padding: 0 4px;
-    font-size: 11px;
+    border-radius: var(--border-radius-lg);
+    padding: 0 var(--padding-xs);
     display: block;
     background-color: var(--md-sys-color-primary-container);
     color: var(--md-sys-color-on-primary-container);
@@ -111,8 +110,8 @@ function leave() {
   /* todo thisll be stacked until the animation is re-added */
   &__card {
     position: absolute;
-    top: 1rem;
-    left: 1.5rem;
+    top: var(--padding-lg);
+    left: var(--padding-xl);
   }
 }
 </style>

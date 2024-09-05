@@ -16,8 +16,6 @@ const playersStore = usePlayersStore();
 const gameActions = useGameActions();
 const betActions = useBetActions();
 
-const emit = defineEmits(["closeModal"]);
-
 const playerInput = ref(setupPlayerInput(playersStore.players));
 
 const deckCount = ref(coreStore.config.deckCount);
@@ -33,8 +31,7 @@ function newGame() {
   };
 
   gameActions.startGame(playerInput.value, newConfig);
-
-  emit("closeModal");
+  coreStore.toggleOptionsModal(false);
 }
 
 // todo demo automatically (based on url query)
@@ -113,19 +110,18 @@ function newDemo() {
 .options-form {
   &__group {
     border: none;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-md);
     background-color: var(--md-sys-color-surface-container-highest);
-    padding: var(--gap-sm);
+    padding: var(--padding-lg);
 
     display: grid;
-    grid-gap: var(--gap-sm);
+    grid-gap: var(--padding-md);
     grid-template-columns: 1fr 1fr;
-    margin-bottom: var(--gap-sm);
+    margin: 0 0 var(--padding-md);
   }
 
   &__group-title {
     grid-column: span 2;
-    font-size: 0.75rem;
     color: var(--md-sys-color-on-surface-variant);
 
     &--toggleable {
@@ -143,10 +139,10 @@ function newDemo() {
   }
 
   &__footer-button {
-    height: 40px;
-    padding: 0 var(--gap-md);
-    border-radius: var(--border-radius);
-    margin-left: var(--gap-sm);
+    height: var(--button-size);
+    padding: 0 var(--padding-xl);
+    border-radius: var(--border-radius-xl);
+    margin-left: var(--padding-lg);
 
     color: var(--md-sys-color-primary);
 
@@ -161,7 +157,7 @@ function newDemo() {
       &:hover {
         background-color: var(--md-sys-color-primary-hover);
         color: var(--md-sys-color-on-primary);
-        box-shadow: var(--shadow-level1);
+        box-shadow: var(--shadow-level-1);
       }
     }
   }

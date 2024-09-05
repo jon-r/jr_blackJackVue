@@ -1,3 +1,7 @@
+/*!
+http://material-foundation.github.io?primary=%2386E307&secondary=%23D2B441&colorMatch=false
+ */
+
 .dark {
     --md-sys-color-primary: rgb(176 209 139);
     --md-sys-color-surface-tint: rgb(176 209 139);
@@ -102,26 +106,20 @@
     --md-sys-color-surface-container-highest: rgb(226 227 216);
 }
 
-/* todo rename using token style names */
 :root {
-    --border-radius: 1.5rem;
-    --border-radius-sm: 0.5rem;
-    --gap-md: 1.5rem;
-    --gap-sm: 1rem;
-
     .dark {
         --md-sys-color-primary-hover: rgb(176 209 139 / 92%);
-        --md-sys-color-primary-hover-opacity: rgb(176 209 139 / 8%);
-        --md-sys-color-primary-container-hover: rgb(51 78 23 / 50%);
-
-        --md-sys-color-secondary-hover-opacity: rgb(222 197 110 / 8%);
-        --md-sys-color-secondary-container-hover: rgb(252 225 134 / 50%);
         --md-sys-color-tertiary-hover: rgb(160 207 204 / 92%);
+
+        --md-sys-color-primary-hover-opacity: rgb(176 209 139 / 8%);
+        --md-sys-color-secondary-hover-opacity: rgb(222 197 110 / 8%);
+
+        --md-sys-color-primary-container-hover: rgb(51 78 23 / 50%);
+        --md-sys-color-secondary-container-hover: rgb(252 225 134 / 50%);
         --md-sys-color-tertiary-container-hover: rgb(31 78 76 / 50%);
 
         --md-sys-color-disabled: rgb(226 227 216 / 12%);
         --md-sys-color-on-disabled: rgb(226 227 216 / 38%);
-
 
         /* todo pick a nice colors for dark */
         --playing-card-back: hotpink; /*rgb(201, 114, 114)*/
@@ -131,31 +129,31 @@
     .light {
         /* todo replace the top with hex, then thisll be way easier */
         --md-sys-color-primary-hover: rgb(74 103 45 / 92%);
+        --md-sys-color-tertiary-hover: rgb(56 102 100 / 92%);
+
         --md-sys-color-primary-hover-opacity: rgb(74 103 45 / 8%);
 
         --md-sys-color-primary-container-hover: rgb(203 238 165 / 50%);
         --md-sys-color-secondary-container-hover: rgb(252 225 134 / 50%);
-        --md-sys-color-secondary-hover-opacity: rgb(112 93 13 / 8%);
-
-        --md-sys-color-tertiary-hover: rgb(56 102 100 / 92%);
         --md-sys-color-tertiary-container-hover: rgb(187 236 232 / 50%);
+
 
         --md-sys-color-disabled: rgb(26 28 22 / 12%);
         --md-sys-color-on-disabled: rgb(26 28 22 / 38%);
 
-        --playing-card-back: #c97272;
-        --playing-card-side: #984b4b;
+        --playing-card-back: rgb(201, 114, 114);
+        --playing-card-side: rgb(152, 75, 75);
     }
 
     .dark,
     .light {
         --md-sys-color-scrim: rgb(0 0 0 / 32%);
 
-        --shadow-level3: rgba(0, 0, 0, 0.2) 0px 3px 5px -1px,
+        --shadow-level-3: rgba(0, 0, 0, 0.2) 0px 3px 5px -1px,
         rgba(0, 0, 0, 0.14) 0px 6px 10px 0px, rgba(0, 0, 0, 0.12) 0px 1px 18px 0px;
-        --shadow-level2: rgba(0, 0, 0, 0.2) 0px 3px 3px -2px,
+        --shadow-level-2: rgba(0, 0, 0, 0.2) 0px 3px 3px -2px,
         rgba(0, 0, 0, 0.14) 0px 3px 4px 0px, rgba(0, 0, 0, 0.12) 0px 1px 8px 0px;
-        --shadow-level1: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px,
+        --shadow-level-1: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px,
         rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
     }
 }

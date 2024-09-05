@@ -15,7 +15,7 @@ const model = defineModel();
 <template>
   <div class="input-field">
     <label class="input-field__label" :for="props.inputId">
-      {{ props.label }}
+      <small>{{ props.label }}</small>
     </label>
 
     <i class="md-icon">{{ props.icon }}</i>
@@ -33,12 +33,12 @@ const model = defineModel();
 <style>
 .input-field {
   border: solid 1px var(--md-sys-color-outline);
-  border-radius: 0.25rem;
+  border-radius: var(--padding-xs);
   position: relative;
-  padding: 0 0.75rem;
+  padding: 0 var(--padding-md);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--padding-sm);
   height: 56px;
 
   &:focus-within {
@@ -48,10 +48,9 @@ const model = defineModel();
 
   &__label {
     position: absolute;
-    top: -8px;
-    left: 8px;
-    padding: 1px;
-    font-size: 0.75rem;
+    top: -12px;
+    left: 12px;
+    padding: 1px var(--padding-xs);
     background-color: var(--md-sys-color-surface-container-highest);
   }
 

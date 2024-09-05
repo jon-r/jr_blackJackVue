@@ -1,11 +1,7 @@
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 
-// prettier-ignore -> keep reset first
-import "~/styles/reset.css";
-import "~/styles/typography.css";
-import "~/styles/util.css";
-import "~/styles/vars.css";
+import "~/styles/styles.css";
 
 import App from "./App.vue";
 

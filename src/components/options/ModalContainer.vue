@@ -1,22 +1,28 @@
 <script setup lang="ts">
+import { useCoreStore } from "~/stores/coreStore.ts";
+
 type ModalContainerProps = {
   title: string;
 };
-
 const props = defineProps<ModalContainerProps>();
+const coreStore = useCoreStore();
+
+function closeModal() {
+  coreStore.toggleOptionsModal(false);
+}
 </script>
 <template>
-  <div class="modal-backing" @click.self="() => $emit('closeModal')">
+  <div class="modal-backing" @click.self="closeModal">
     <section class="modal">
       <header class="modal__header">
-        <h3 class="modal__title">{{ props.title }}</h3>
+        <h2 class="modal__title">{{ props.title }}</h2>
 
         <button
           type="button"
           class="button-base modal__close"
-          @click="() => $emit('closeModal')"
+          @click="closeModal"
         >
-          <i class="md-icon">close</i>
+          <i class="md-icon md-icon--lg">close</i>
         </button>
       </header>
 
@@ -36,17 +42,17 @@ const props = defineProps<ModalContainerProps>();
 .modal {
   background-color: var(--md-sys-color-surface-container-high);
   color: var(--md-sys-color-on-surface-variant);
-  border-radius: var(--border-radius);
-  padding: var(--gap-md);
-  box-shadow: var(--shadow-level3);
+  border-radius: var(--border-radius-xl);
+  padding: var(--padding-xl);
+  box-shadow: var(--shadow-level-3);
 
-  width: calc(100% - var(--gap-md));
+  width: calc(100% - var(--padding-xl));
   max-width: 560px;
 
   &__header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: var(--gap-sm);
+    margin-bottom: var(--padding-md);
     align-items: center;
   }
 
@@ -55,16 +61,16 @@ const props = defineProps<ModalContainerProps>();
   }
 
   &__close {
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: 2rem;
-    color: var(--md-sys-color-secondary);
+    width: var(--button-size);
+    height: var(--button-size);
+    padding: vaR(--padding-xs);
+    color: var(--md-sys-color-primary);
 
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-xl);
     transition: background-color 300ms;
 
     &:hover {
-      background-color: var(--md-sys-color-secondary-hover-opacity);
+      background-color: var(--md-sys-color-primary-hover-opacity);
     }
   }
 }
