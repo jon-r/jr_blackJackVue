@@ -51,16 +51,6 @@ function leave() {
 
 <template>
   <div class="player-cards" :class="{ 'player-cards--active-hand': isActive }">
-    <span
-      v-if="isActive"
-      class="player-cards__hand-score"
-      :class="{
-        'player-cards__hand-score--bust': hand.special === SpecialScores.Bust,
-      }"
-    >
-      {{ hand.score }} {{ hand.special }}
-    </span>
-
     <!--    <TransitionGroup-->
     <!--      appear-->
     <!--      name="cards"-->
@@ -77,6 +67,16 @@ function leave() {
       class="player-cards__card"
     />
     <!--    </TransitionGroup>-->
+
+    <span
+      v-if="isActive"
+      class="player-cards__hand-score"
+      :class="{
+        'player-cards__hand-score--bust': hand.special === SpecialScores.Bust,
+      }"
+    >
+      {{ hand.score }} {{ hand.special }}
+    </span>
   </div>
 </template>
 <style>
@@ -93,7 +93,7 @@ function leave() {
   &__hand-score {
     position: absolute;
     top: 1rem;
-    right: 1rem;
+    left: 1rem;
 
     border-radius: 16px;
     padding: 0 4px;

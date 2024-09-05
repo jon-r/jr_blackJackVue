@@ -12,12 +12,12 @@ import PlayerFrame from "./playerFrame/PlayerFrame.vue";
 const playersStore = usePlayersStore();
 const deckStore = useDeckStore();
 
-const shoeRef = ref<HTMLDivElement>();
+const deckRef = ref<HTMLDivElement>();
 
 onMounted(() => {
-  const { offsetTop, offsetLeft } = shoeRef.value;
+  const { offsetTop, offsetLeft } = deckRef.value;
 
-  deckStore.setShoePosition({
+  deckStore.setDeckPosition({
     x: offsetLeft,
     y: offsetTop,
   });
@@ -27,7 +27,7 @@ onMounted(() => {
   <main class="blackjack-table">
     <MessagesOutput />
 
-    <section class="blackjack-table__deck" ref="shoeRef">
+    <section class="blackjack-table__deck" ref="deckRef">
       <PlayingCard v-once :card="UNKNOWN_CARD" class="stacked" />
     </section>
 

@@ -59,7 +59,7 @@ function leave(el: HTMLElement, done: () => void) {
       @enter="enter"
       @leave="leave"
     >-->
-    <ul class="current-bet__chips">
+    <ul class="list-base current-bet__chips">
       <li
         v-for="(chip, idx) in betAsChips"
         :key="idx"
@@ -86,10 +86,7 @@ function leave(el: HTMLElement, done: () => void) {
   &__chips {
     display: flex;
     flex-direction: column-reverse;
-    list-style: none;
     width: 2.5rem;
-    padding: 0;
-    margin: 0;
     position: relative;
   }
 

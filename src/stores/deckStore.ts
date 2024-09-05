@@ -14,14 +14,14 @@ export const useDeckStore = defineStore("deck", () => {
   const coreStore = useCoreStore();
 
   const deck = ref<PlayingCard[]>([]);
-  const shoePosition = ref<Position>(nilPosition);
+  const deckPosition = ref<Position>(nilPosition);
 
   function rebuildDeck(deckCount = coreStore.config.deckCount) {
     deck.value = buildDeck(deckCount);
   }
 
-  function setShoePosition(newPosition: Position) {
-    shoePosition.value = newPosition;
+  function setDeckPosition(newPosition: Position) {
+    deckPosition.value = newPosition;
   }
 
   function drawCard() {
@@ -32,9 +32,9 @@ export const useDeckStore = defineStore("deck", () => {
 
   return {
     deck,
-    shoePosition,
+    deckPosition,
 
-    setShoePosition,
+    setDeckPosition,
     rebuildDeck,
     drawCard,
   };

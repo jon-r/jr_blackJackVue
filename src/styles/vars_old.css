@@ -2,15 +2,15 @@
 /* primary colour = #86E307 */
 /* fixme remove any that arent used (maybe some postcss thing) */
 .dark {
-  --md-sys-color-primary: rgb(176 209 139);
+  --md-sys-color-primary: #b0d18b;
   --md-sys-color-surface-tint: rgb(176 209 139);
   --md-sys-color-on-primary: rgb(30 55 2);
   --md-sys-color-primary-container: rgb(51 78 23);
   --md-sys-color-on-primary-container: rgb(203 238 165);
-  --md-sys-color-secondary: rgb(191 203 173);
-  --md-sys-color-on-secondary: rgb(42 51 31);
-  --md-sys-color-secondary-container: rgb(64 74 52);
-  --md-sys-color-on-secondary-container: rgb(219 231 200);
+  --md-sys-color-secondary: rgb(222 197 110);
+  --md-sys-color-on-secondary: rgb(59 47 0);
+  --md-sys-color-secondary-container: rgb(85 69 0);
+  --md-sys-color-on-secondary-container: rgb(252 225 134);
   --md-sys-color-tertiary: rgb(160 207 204);
   --md-sys-color-on-tertiary: rgb(0 55 53);
   --md-sys-color-tertiary-container: rgb(31 78 76);
@@ -36,10 +36,10 @@
   --md-sys-color-on-primary-fixed: rgb(14 32 0);
   --md-sys-color-primary-fixed-dim: rgb(176 209 139);
   --md-sys-color-on-primary-fixed-variant: rgb(51 78 23);
-  --md-sys-color-secondary-fixed: rgb(219 231 200);
-  --md-sys-color-on-secondary-fixed: rgb(21 30 11);
-  --md-sys-color-secondary-fixed-dim: rgb(191 203 173);
-  --md-sys-color-on-secondary-fixed-variant: rgb(64 74 52);
+  --md-sys-color-secondary-fixed: rgb(252 225 134);
+  --md-sys-color-on-secondary-fixed: rgb(34 27 0);
+  --md-sys-color-secondary-fixed-dim: rgb(222 197 110);
+  --md-sys-color-on-secondary-fixed-variant: rgb(85 69 0);
   --md-sys-color-tertiary-fixed: rgb(187 236 232);
   --md-sys-color-on-tertiary-fixed: rgb(0 32 31);
   --md-sys-color-tertiary-fixed-dim: rgb(160 207 204);
@@ -53,16 +53,17 @@
   --md-sys-color-surface-container-highest: rgb(51 54 46);
 }
 
+
 .light {
   --md-sys-color-primary: rgb(74 103 45);
   --md-sys-color-surface-tint: rgb(74 103 45);
   --md-sys-color-on-primary: rgb(255 255 255);
   --md-sys-color-primary-container: rgb(203 238 165);
   --md-sys-color-on-primary-container: rgb(14 32 0);
-  --md-sys-color-secondary: rgb(87 98 74);
+  --md-sys-color-secondary: rgb(112 93 13);
   --md-sys-color-on-secondary: rgb(255 255 255);
-  --md-sys-color-secondary-container: rgb(219 231 200);
-  --md-sys-color-on-secondary-container: rgb(21 30 11);
+  --md-sys-color-secondary-container: rgb(252 225 134);
+  --md-sys-color-on-secondary-container: rgb(34 27 0);
   --md-sys-color-tertiary: rgb(56 102 100);
   --md-sys-color-on-tertiary: rgb(255 255 255);
   --md-sys-color-tertiary-container: rgb(187 236 232);
@@ -88,10 +89,10 @@
   --md-sys-color-on-primary-fixed: rgb(14 32 0);
   --md-sys-color-primary-fixed-dim: rgb(176 209 139);
   --md-sys-color-on-primary-fixed-variant: rgb(51 78 23);
-  --md-sys-color-secondary-fixed: rgb(219 231 200);
-  --md-sys-color-on-secondary-fixed: rgb(21 30 11);
-  --md-sys-color-secondary-fixed-dim: rgb(191 203 173);
-  --md-sys-color-on-secondary-fixed-variant: rgb(64 74 52);
+  --md-sys-color-secondary-fixed: rgb(252 225 134);
+  --md-sys-color-on-secondary-fixed: rgb(34 27 0);
+  --md-sys-color-secondary-fixed-dim: rgb(222 197 110);
+  --md-sys-color-on-secondary-fixed-variant: rgb(85 69 0);
   --md-sys-color-tertiary-fixed: rgb(187 236 232);
   --md-sys-color-on-tertiary-fixed: rgb(0 32 31);
   --md-sys-color-tertiary-fixed-dim: rgb(160 207 204);
@@ -147,6 +148,7 @@
 
     --playing-card-back: rgb(201, 114, 114);
     --playing-card-side: rgb(152, 75, 75);
+
   }
 
   .dark,

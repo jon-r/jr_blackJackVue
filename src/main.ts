@@ -5,7 +5,7 @@ import { createApp } from "vue";
 import "~/styles/reset.css";
 import "~/styles/typography.css";
 import "~/styles/util.css";
-import "~/styles/vars.css";
+import "~/styles/vars_old.css";
 
 import App from "./App.vue";
 
