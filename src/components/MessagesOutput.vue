@@ -3,6 +3,7 @@ import { useCoreStore } from "~/stores/coreStore.ts";
 
 const coreStore = useCoreStore();
 </script>
+<!-- todo animate this once more messages to fill out a bit -->
 <template>
   <!--  <TransitionGroup class="announcement frame" name="messages" tag="ul">-->
   <ul class="list-base messages-output">

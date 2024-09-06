@@ -1,7 +1,7 @@
-import { wait } from "~/helpers/time.ts";
 import { Position } from "~/types/animations.ts";
 
 import { getRandom } from "./math.ts";
+import { wait } from "./time.ts";
 
 export function transformJiggle({
   scale = 10,

@@ -4,21 +4,19 @@ import { onMounted, ref } from "vue";
 import { NIL_POSITION, SpecialScores } from "~/constants/gamePlay.ts";
 import { setElementPosition, transformJiggle } from "~/helpers/animation.ts";
 import { useDeckStore } from "~/stores/deckStore.ts";
-import { Position } from "~/types/animations.ts";
 import { GameHand } from "~/types/players.ts";
 
 import PlayingCard from "../common/PlayingCard.vue";
 
 type PlayerCardsProps = {
   hand: GameHand;
-  framePos: Position;
   isActive: boolean;
 };
 
 const deckStore = useDeckStore();
 const props = defineProps<PlayerCardsProps>();
 
-const enterPosition = ref<Position>(NIL_POSITION);
+const enterPosition = ref(NIL_POSITION);
 const leavePosition = { x: 0, y: 1000 };
 
 const frameRef = ref<HTMLDivElement>();

@@ -76,7 +76,6 @@ function submitBet() {
 </script>
 
 <template>
-  <!--  <section class="ctrl-menu frame flex flex-wrap">-->
   <ActionButton
     v-for="chipButton in chipButtons"
     :key="chipButton.id"
@@ -92,5 +91,4 @@ function submitBet() {
     v-bind="actionButton"
     @click="actionButton.onClick"
   />
-  <!--  </section>-->
 </template>

@@ -4,7 +4,6 @@ import { useCoreStore } from "~/stores/coreStore.ts";
 import ModalContainer from "./ModalContainer.vue";
 import OptionsForm from "./OptionsForm.vue";
 
-// fixme
 const coreStore = useCoreStore();
 </script>
 <template>

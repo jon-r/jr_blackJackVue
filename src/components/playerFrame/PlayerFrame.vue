@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 
 import PlayerCards from "~/components/playerFrame/PlayerCards.vue";
 import { isNotDealer } from "~/helpers/players.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
-import { Position } from "~/types/animations.ts";
 import { Player } from "~/types/players.ts";
 
 import CurrentBet from "./CurrentBet.vue";
@@ -17,58 +16,18 @@ type PlayerFrameProps = {
 const props = defineProps<PlayerFrameProps>();
 const coreStore = useCoreStore();
 
-// const playerClass = `player-${props.player.index}`;
-// const oldMoney = ref(0);
-// const diffFloat = ref(true);
-const framePos = ref<Position>({ x: 0, y: 0 });
-
-const frameParent = ref<HTMLElement>();
-
-onMounted(() => {
-  const { offsetLeft, offsetTop } = frameParent.value;
-  framePos.value = {
-    x: offsetLeft,
-    y: offsetTop,
-  };
-});
-
-// const diffClass = computed(() => {
-//   // todo sideffect bad
-//   triggerTextAnim();
-//   return moneyDiff.value > 0 ? "good-text" : "error-text";
-// });
-
 const notDealer = computed(() => isNotDealer(props.player));
-
-// const moneyDiff = computed(() => {
-//   const out = props.player.money - oldMoney.value;
-//   // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-//   oldMoney.value = props.player.money;
-//   return out;
-// });
 
 const isPlayerTurn = computed(() => {
   return coreStore.activePlayerId === props.player.index;
 });
-
-// function triggerTextAnim() {
-//   diffFloat.value = false;
-//   nextTick(() => {
-//     diffFloat.value = true;
-//   });
-// }
 </script>
 
 <template>
-  <section
-    class="player-frame"
-    :class="['player-frame--' + props.player.index]"
-    ref="frameParent"
-  >
+  <section class="player-frame" :class="'player-frame--' + props.player.index">
     <PlayerCards
       v-for="(hand, idx) in player.hands"
       :key="idx"
-      :frame-pos="framePos"
       :hand="hand"
       :is-active="idx === player.activeHandId"
     />
@@ -77,11 +36,7 @@ const isPlayerTurn = computed(() => {
       {{ player.outcome }}
     </strong>
 
-    <CurrentBet
-      v-if="notDealer"
-      :bet="props.player.openBet"
-      :frame-pos="framePos"
-    />
+    <CurrentBet v-if="notDealer" :bet="props.player.openBet" />
 
     <PlayerLabel
       v-if="notDealer"
@@ -92,7 +47,6 @@ const isPlayerTurn = computed(() => {
 </template>
 <style>
 .player-frame {
-  /*border: solid 1px red; */
   position: absolute;
   top: 0;
   left: 0;

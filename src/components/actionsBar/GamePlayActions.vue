@@ -62,12 +62,10 @@ const actionButtons = computed<ButtonControl[]>(() => {
 });
 </script>
 <template>
-  <!--  <section class="ctrl-menu frame flex flex-wrap">-->
   <ActionButton
     v-for="actionButton in actionButtons"
     :key="actionButton.id"
     v-bind="actionButton"
     @click="actionButton.onClick"
   />
-  <!--  </section>-->
 </template>

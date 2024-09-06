@@ -7,6 +7,7 @@ type BettingChipProps = {
 };
 
 const props = defineProps<BettingChipProps>();
+// todo maybe the bounding doesnt need changing? just hard crop the svg
 const viewBox = computed(() =>
   props.isStacked ? "0 10 100 70" : "0 0 100 100",
 );

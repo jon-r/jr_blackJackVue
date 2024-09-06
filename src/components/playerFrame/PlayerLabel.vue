@@ -92,7 +92,7 @@ watch(
     pointer-events: none;
     position: absolute;
 
-    transition: 2s;
+    transition: var(--transition-short);
     transform: translateY(-100px);
     opacity: 0;
 
