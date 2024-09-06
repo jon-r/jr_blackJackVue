@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // import { computed } from "vue";
-// import { setPos, transformJiggle } from "~/animationTools.ts";
+import { setPos } from "~/animationTools.ts";
 import { SpecialScores } from "~/constants/gamePlay.ts";
+import { transformJiggle } from "~/helpers/animation.ts";
 import { useDeckStore } from "~/stores/deckStore.ts";
 import { Position } from "~/types/animations.ts";
 import { GameHand } from "~/types/players.ts";
@@ -34,14 +35,14 @@ const leavePosition = computed<Position>(() => ({
 */
 
 // fixme card transitions seem to be problematic. maybe can be handled with just css?
-// function enter(el: HTMLElement) {
-//   setPos(el, enterPosition.value);
-// }
-// function enterTo(el: HTMLElement) {
-//   const offsetX = Number(el.dataset.index) * 30;
-//   const jiggle = transformJiggle({ offsetX });
-//   setPos(el, jiggle);
-// }
+function enter(el: HTMLElement) {
+  // setPos(el, enterPosition.value);
+}
+function enterTo(el: HTMLElement) {
+  const offsetX = Number(el.dataset.index) * 30 + 40;
+  const jiggle = transformJiggle({ offsetX, offsetY: 40 });
+  setPos(el, jiggle);
+}
 
 function leave() {
   // el.addEventListener("transitionend", done);
@@ -50,32 +51,37 @@ function leave() {
 </script>
 
 <template>
-  <div class="player-cards" :class="{ 'player-cards--active-hand': isActive }">
-    <!--    <TransitionGroup-->
-    <!--      appear-->
-    <!--      name="cards"-->
-    <!--      tag="div"-->
-    <!--      @before-enter="enter"-->
-    <!--      @after-enter="enterTo"-->
-    <!--      @leave="leave"-->
-    <!--    >-->
-    <PlayingCard
-      v-for="(card, idx) in hand.cards"
-      :key="idx"
-      :card="card"
-      :data-index="idx"
-      class="player-cards__card"
-    />
-    <!--    </TransitionGroup>-->
+  <div
+    class="player-cards"
+    :class="{ 'player-cards--active-hand': props.isActive }"
+  >
+    <TransitionGroup
+      appear
+      name="cards"
+      tag="div"
+      @before-enter="enter"
+      @after-enter="enterTo"
+      @leave="leave"
+    >
+      <div
+        v-for="(card, idx) in props.hand.cards"
+        :key="idx"
+        :data-index="idx"
+        class="player-cards__card"
+      >
+        <PlayingCard :card="card" />
+      </div>
+    </TransitionGroup>
 
     <small
-      v-if="isActive && hand.score > 0"
+      v-if="props.isActive && props.hand.score > 0"
       class="player-cards__hand-score"
       :class="{
-        'player-cards__hand-score--bust': hand.special === SpecialScores.Bust,
+        'player-cards__hand-score--bust':
+          props.hand.special === SpecialScores.Bust,
       }"
     >
-      {{ hand.score }} {{ hand.special }}
+      {{ props.hand.score }} {{ props.hand.special }}
     </small>
   </div>
 </template>
@@ -98,8 +104,8 @@ function leave() {
     border-radius: var(--border-radius-lg);
     padding: 0 var(--padding-xs);
     display: block;
-    background-color: var(--md-sys-color-primary-container);
-    color: var(--md-sys-color-on-primary-container);
+    background-color: var(--md-sys-color-on-primary-container);
+    color: var(--md-sys-color-primary-container);
 
     &--bust {
       background-color: var(--md-sys-color-error);
@@ -107,11 +113,10 @@ function leave() {
     }
   }
 
-  /* todo thisll be stacked until the animation is re-added */
   &__card {
     position: absolute;
-    top: var(--padding-lg);
-    left: var(--padding-xl);
+    top: 0;
+    left: 0;
   }
 }
 </style>

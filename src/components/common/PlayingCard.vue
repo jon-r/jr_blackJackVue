@@ -21,9 +21,7 @@ const visualCard = computed(() => {
 
 <template>
   <div class="playing-card" :class="visualCard.suit">
-    <strong v-if="visualCard.face">
-      {{ visualCard.face }}
-    </strong>
+    <strong v-if="visualCard.face">{{ visualCard.face }}</strong>
   </div>
 </template>
 
@@ -40,6 +38,7 @@ const visualCard = computed(() => {
   padding: var(--padding-xs);
   overflow: hidden;
   position: relative;
+  line-height: 1;
 
   &--blank {
     background:
@@ -50,6 +49,17 @@ const visualCard = computed(() => {
   &--hearts,
   &--diamonds {
     color: var(--md-sys-color-error);
+  }
+
+  &:not(&--blank) {
+    animation: flip var(--transition-duration-standard)
+      var(--transition-ease-standard) both;
+
+    &::after,
+    & strong {
+      animation: reveal var(--transition-duration-standard)
+        var(--transition-ease-standard) both;
+    }
   }
 
   &:not(&--blank)::after {
@@ -75,6 +85,31 @@ const visualCard = computed(() => {
   }
   &--spades::after {
     background-position: bottom right;
+  }
+}
+
+@keyframes flip {
+  from {
+    background-image: var(--card-back-bg);
+  }
+  50% {
+    background-image: var(--card-back-bg);
+    transform: rotateY(90deg);
+  }
+  51%,
+  to {
+    background-image: none;
+  }
+}
+
+@keyframes reveal {
+  from,
+  50% {
+    visibility: hidden;
+  }
+  to,
+  51% {
+    visibility: visible;
   }
 }
 </style>

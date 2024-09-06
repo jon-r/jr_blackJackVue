@@ -42,7 +42,7 @@ onMounted(() => {
     </button>
 
     <section class="blackjack-table__deck" ref="deckRef">
-      <PlayingCard v-once :card="UNKNOWN_CARD" class="stacked" />
+      <PlayingCard v-once :card="UNKNOWN_CARD" />
     </section>
 
     <PlayerFrame
