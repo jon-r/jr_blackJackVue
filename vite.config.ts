@@ -13,7 +13,7 @@ export default defineConfig(() => ({
       google: {
         families: [
           { name: "Material Symbols Rounded", styles: "wght@400" },
-          { name: "Noto Sans", styles: "ital,wght@0,400;0,600;1,400" },
+          { name: "Noto Sans", styles: "ital,wght@0,400..600;1,400" },
           { name: "Noto Serif", styles: "wght@400;600" },
         ],
       },
