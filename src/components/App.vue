@@ -12,7 +12,7 @@ import { useCoreStore } from "~/stores/coreStore.ts";
 const coreStore = useCoreStore();
 const gameActions = useGameActions();
 
-// todo maybe move the message to gameActions
+// todo move the message to gameActions
 watch(
   () => coreStore.activeStage,
   (stage: GameStages) => {

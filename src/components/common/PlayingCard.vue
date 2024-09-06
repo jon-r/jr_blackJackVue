@@ -52,11 +52,11 @@ const visualCard = computed(() => {
   }
 
   &:not(&--blank) {
-    animation: flip var(--transition-standard) both;
+    animation: flip-card var(--transition-standard) both;
 
     &::after,
     & strong {
-      animation: reveal var(--transition-standard) both;
+      animation: reveal-card var(--transition-standard) both;
     }
   }
 
@@ -86,7 +86,7 @@ const visualCard = computed(() => {
   }
 }
 
-@keyframes flip {
+@keyframes flip-card {
   from {
     background-image: var(--card-back-bg);
   }
@@ -100,7 +100,7 @@ const visualCard = computed(() => {
   }
 }
 
-@keyframes reveal {
+@keyframes reveal-card {
   from,
   50% {
     visibility: hidden;

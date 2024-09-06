@@ -7,7 +7,6 @@ import {
   FACE_SCORE,
   UNKNOWN_CARD,
 } from "~/constants/cards.ts";
-import { SpecialScores } from "~/constants/gamePlay.ts";
 import { DEALER_ID, DEALER_STUB } from "~/constants/player.ts";
 import { AUTO_TIME_STANDARD } from "~/constants/settings.ts";
 import { getCardScore, isBlankCard } from "~/helpers/cards.ts";
@@ -105,12 +104,6 @@ export const usePlayersStore = defineStore("players", () => {
     }
 
     players.value[DEALER_ID].didPeek = newCard;
-  }
-
-  function checkPlayerScore(playerId?: number, handId?: number): SpecialScores {
-    const targetHand = getPlayerHand(playerId, handId);
-
-    return targetHand?.special || SpecialScores.None;
   }
 
   async function dealCard(playerId?: number, handId?: number) {
@@ -212,7 +205,7 @@ export const usePlayersStore = defineStore("players", () => {
 
     resetPlayers,
     dealBlank,
-    checkPlayerScore,
+    getPlayerHand,
     dealCard,
     dealAllPlayersCards,
     revealAllBlankCards,

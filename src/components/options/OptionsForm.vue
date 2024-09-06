@@ -35,6 +35,7 @@ function newGame() {
 }
 
 // todo demo automatically (based on url query)
+//  todo move this to gameActions
 function newDemo() {
   newGame();
 

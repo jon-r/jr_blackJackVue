@@ -36,7 +36,11 @@ const isPlayerTurn = computed(() => {
       {{ player.outcome }}
     </strong>
 
-    <CurrentBet v-if="notDealer" :bet="props.player.openBet" />
+    <CurrentBet
+      v-if="notDealer"
+      :bet="props.player.openBet"
+      :outcome="props.player.outcome"
+    />
 
     <PlayerLabel
       v-if="notDealer"

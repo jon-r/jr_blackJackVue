@@ -1,4 +1,5 @@
-import { GameOutcomes, SpecialScores } from "~/constants/gamePlay.ts";
+import { BLACKJACK_SCORE } from "~/constants/cards.ts";
+import { GameOutcomes } from "~/constants/gamePlay.ts";
 
 import { usePlayersStore } from "../playersStore.ts";
 import { useBetActions } from "./bets.ts";
@@ -17,17 +18,19 @@ export function usePlayerActions() {
   }
 
   async function checkScore() {
-    switch (playersStore.checkPlayerScore()) {
-      case SpecialScores.BlackJack:
-        gameActions.goToNextPlayer();
-        break;
-      case SpecialScores.Bust:
-        await betActions.settleBet(GameOutcomes.Lost);
-        nextHandOrPlayer();
-        break;
-      default:
-      // else continue
+    const hand = playersStore.getPlayerHand();
+
+    if (!hand) return;
+
+    if (hand.score > BLACKJACK_SCORE) {
+      await betActions.settleBet(GameOutcomes.Lost);
     }
+
+    if (hand.score >= BLACKJACK_SCORE) {
+      return nextHandOrPlayer();
+    }
+
+    // else continue
   }
 
   async function hit() {

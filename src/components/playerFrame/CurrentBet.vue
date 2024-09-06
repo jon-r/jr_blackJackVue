@@ -1,55 +1,57 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 
+import { GameOutcomes } from "~/constants/gamePlay.ts";
 import { AUTO_TIME_STANDARD } from "~/constants/settings.ts";
-import { staggeredPop, staggeredPush } from "~/helpers/animation.ts";
-import { moneyToChips } from "~/helpers/gamePlay.ts";
+import { staggeredPush } from "~/helpers/animation.ts";
+import {
+  hasMoneyLost,
+  hasMoneyReturned,
+  moneyToChips,
+} from "~/helpers/gamePlay.ts";
 import { sum } from "~/helpers/math.ts";
 
 import BettingChip from "../common/BettingChip.vue";
 
 type ActiveBetProps = {
   bet: number;
+  outcome: GameOutcomes | null;
 };
 
 const props = defineProps<ActiveBetProps>();
+
 const betAsChips = ref([]);
 
 watch(
   () => props.bet,
   async function staggerChips() {
+    if (props.bet === 0) {
+      return (betAsChips.value = []);
+    }
+
     let betDiff = props.bet - sum(betAsChips.value);
 
     if (betDiff > 0) {
       const newChips = moneyToChips(betDiff);
 
       await staggeredPush(betAsChips.value, newChips, AUTO_TIME_STANDARD);
-    } else {
-      const chipsToRemove = moneyToChips(Math.abs(betDiff));
-
-      const remainder = await staggeredPop(
-        betAsChips.value,
-        chipsToRemove,
-        AUTO_TIME_STANDARD,
-      );
-
-      // fixme needs to return any split chip (this doesnt right now)
-      if (remainder) {
-        const chipsToReturn = moneyToChips(remainder);
-        await staggeredPush(
-          betAsChips.value,
-          chipsToReturn,
-          AUTO_TIME_STANDARD,
-        );
-      }
     }
+    // else the full stack will be removed
   },
   { immediate: true },
 );
 </script>
 <template>
   <div class="current-bet">
-    <TransitionGroup class="list-base current-bet__chips" name="chips" tag="ul">
+    <TransitionGroup
+      class="list-base current-bet__chips"
+      name="chips"
+      tag="ul"
+      :class="{
+        'current-bet__chips--lost': hasMoneyLost(props.outcome),
+        'current-bet__chips--returned': hasMoneyReturned(props.outcome),
+      }"
+    >
       <li
         v-for="(chip, idx) in betAsChips"
         :key="idx"
@@ -60,7 +62,7 @@ watch(
     </TransitionGroup>
 
     <small class="current-bet__value" v-show="bet > 0">
-      Placed Bet: £{{ bet }}
+      Placed Bet: £{{ bet }} <br />
     </small>
   </div>
 </template>
@@ -77,6 +79,13 @@ watch(
     flex-direction: column-reverse;
     width: 40px;
     position: relative;
+
+    &--lost {
+      animation: fade-up var(--transition-long) both;
+    }
+    &--returned {
+      animation: fade-down var(--transition-long) both;
+    }
   }
 
   &__chip-stacked {
@@ -96,6 +105,20 @@ watch(
       bottom: 10px;
       left: 0;
     }
+  }
+}
+
+@keyframes fade-up {
+  to {
+    transform: translateY(-200px);
+    opacity: 0;
+  }
+}
+
+@keyframes fade-down {
+  to {
+    transform: translateY(200px);
+    opacity: 0;
   }
 }
 

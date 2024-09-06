@@ -24,25 +24,6 @@ export async function staggeredPush<T>(
 ) {
   for (let i = 0; i < itemsToAdd.length; i++) {
     originalArray.push(itemsToAdd[i]);
-    console.log(originalArray);
-    await wait(durationMs);
-  }
-}
-
-export async function staggeredPop<T>(
-  originalArray: T[],
-  itemsToRemove: T[],
-  durationMs: number,
-) {
-  for (let i = 0; i < itemsToRemove.length; i++) {
-    const find = originalArray.indexOf(itemsToRemove[i]);
-
-    if (find === -1) {
-      return itemsToRemove[i];
-    }
-
-    originalArray.splice(find, 1);
-
     await wait(durationMs);
   }
 }
