@@ -14,6 +14,12 @@
     --button-size: 40px;
     --button-size-lg: 56px;
 
+    --transition-duration-short: 150ms;
     --transition-duration-standard: 300ms;
+    --transition-duration-long: 450ms;
     --transition-ease-standard: cubic-bezier(0.2, 0.0, 0, 1.0);
+
+    --transition-short: var(--transition-duration-short) var(--transition-ease-standard);
+    --transition-standard: var(--transition-duration-standard) var(--transition-ease-standard);
+    --transition-long: var(--transition-duration-long) var(--transition-ease-standard);
 }

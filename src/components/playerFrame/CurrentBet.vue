@@ -1,84 +1,63 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 
-import { setPos } from "~/animationTools.ts";
-import { CHIP_VALUES } from "~/constants/gamePlay.ts";
+import { AUTO_TIME_STANDARD } from "~/constants/settings.ts";
+import { staggeredPop, staggeredPush } from "~/helpers/animation.ts";
+import { moneyToChips } from "~/helpers/gamePlay.ts";
 import { sum } from "~/helpers/math.ts";
-import { Position } from "~/types/animations.ts";
 
 import BettingChip from "../common/BettingChip.vue";
 
 type ActiveBetProps = {
   bet: number;
-  framePos: Position;
 };
 
 const props = defineProps<ActiveBetProps>();
 const betAsChips = ref([]);
 
-// todo animate this with a watch function and stagger in tokens
-// also potentially change direction of chips depending on win vs loss?
-const betAsChipsOld = computed<number[]>(() => {
-  let chipsValue = props.bet;
-  const chips = [];
-  while (chipsValue > 0) {
-    const bestChip = CHIP_VALUES.find((value) => value <= chipsValue);
-
-    if (!bestChip) break;
-
-    chipsValue -= bestChip;
-    chips.push(bestChip);
-  }
-
-  return chips;
-});
-
 watch(
   () => props.bet,
   async function staggerChips() {
     let betDiff = props.bet - sum(betAsChips.value);
-    const chips = betAsChips.value;
+
+    if (betDiff > 0) {
+      const newChips = moneyToChips(betDiff);
+
+      await staggeredPush(betAsChips.value, newChips, AUTO_TIME_STANDARD);
+    } else {
+      const chipsToRemove = moneyToChips(Math.abs(betDiff));
+
+      const remainder = await staggeredPop(
+        betAsChips.value,
+        chipsToRemove,
+        AUTO_TIME_STANDARD,
+      );
+
+      // fixme needs to return any split chip (this doesnt right now)
+      if (remainder) {
+        const chipsToReturn = moneyToChips(remainder);
+        await staggeredPush(
+          betAsChips.value,
+          chipsToReturn,
+          AUTO_TIME_STANDARD,
+        );
+      }
+    }
   },
+  { immediate: true },
 );
-
-function enter(el: HTMLElement) {
-  setPos(el, { x: 0, y: -200 });
-}
-
-function enterTo(el: HTMLElement) {
-  requestAnimationFrame(() => {
-    setPos(el, { x: 0, y: 0 });
-  });
-}
-
-function leave(el: HTMLElement, done: () => void) {
-  const frame = props.framePos;
-  setPos(el, { x: 0, y: -frame.y });
-  el.addEventListener("transitionend", () => {
-    done();
-  });
-}
 </script>
 <template>
   <div class="current-bet">
-    <!--    <TransitionGroup
-      class="chip-stack flex show"
-      name="bets"
-      tag="ul"
-      @after-enter="enterTo"
-      @enter="enter"
-      @leave="leave"
-    >-->
-    <ul class="list-base current-bet__chips">
+    <TransitionGroup class="list-base current-bet__chips" name="chips" tag="ul">
       <li
-        v-for="(chip, idx) in betAsChipsOld"
+        v-for="(chip, idx) in betAsChips"
         :key="idx"
         class="current-bet__chip-stacked"
       >
         <BettingChip :value="chip" is-stacked />
       </li>
-    </ul>
-    <!--    </TransitionGroup>-->
+    </TransitionGroup>
 
     <small class="current-bet__value" v-show="bet > 0">
       Placed Bet: £{{ bet }}
@@ -103,6 +82,8 @@ function leave(el: HTMLElement, done: () => void) {
   &__chip-stacked {
     margin-top: -28px;
 
+    transition: transform var(--transition-short);
+
     &:first-child::before {
       content: "";
       display: block;
@@ -116,5 +97,9 @@ function leave(el: HTMLElement, done: () => void) {
       left: 0;
     }
   }
+}
+
+.chips-enter-from {
+  transform: translateY(-150px);
 }
 </style>

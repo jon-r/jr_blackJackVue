@@ -1,8 +1,8 @@
 <script setup lang="ts">
-// import { computed } from "vue";
-import { setPos } from "~/animationTools.ts";
-import { SpecialScores } from "~/constants/gamePlay.ts";
-import { transformJiggle } from "~/helpers/animation.ts";
+import { onMounted, ref } from "vue";
+
+import { NIL_POSITION, SpecialScores } from "~/constants/gamePlay.ts";
+import { setElementPosition, transformJiggle } from "~/helpers/animation.ts";
 import { useDeckStore } from "~/stores/deckStore.ts";
 import { Position } from "~/types/animations.ts";
 import { GameHand } from "~/types/players.ts";
@@ -18,35 +18,32 @@ type PlayerCardsProps = {
 const deckStore = useDeckStore();
 const props = defineProps<PlayerCardsProps>();
 
-// const enterPosition = computed<Position>(() => {
-//   const shoe = deckStore.shoePosition;
-//
-//   return {
-//     x: shoe.x - props.framePos.x - 36,
-//     y: shoe.y - props.framePos.y - 70,
-//   };
-// });
+const enterPosition = ref<Position>(NIL_POSITION);
+const leavePosition = { x: 0, y: 1000 };
 
-/*
-const leavePosition = computed<Position>(() => ({
-  x: -props.framePos.x,
-  y: -props.framePos.y - 100, // to go right off the page
-}));
-*/
+const frameRef = ref<HTMLDivElement>();
 
-// fixme card transitions seem to be problematic. maybe can be handled with just css?
-function enter(el: HTMLElement) {
-  // setPos(el, enterPosition.value);
+onMounted(() => {
+  const { x: deckX, y: deckY } = deckStore.deckPosition;
+  const { x, y } = frameRef.value?.getBoundingClientRect() ?? NIL_POSITION;
+
+  enterPosition.value = {
+    x: deckX - x,
+    y: deckY - y,
+  };
+});
+
+function onEnter(el: HTMLElement) {
+  setElementPosition(el, enterPosition.value);
 }
-function enterTo(el: HTMLElement) {
+function onAfterEnter(el: HTMLElement) {
   const offsetX = Number(el.dataset.index) * 30 + 40;
   const jiggle = transformJiggle({ offsetX, offsetY: 40 });
-  setPos(el, jiggle);
+  setElementPosition(el, jiggle);
 }
 
-function leave() {
-  // el.addEventListener("transitionend", done);
-  // setPos(el, leavePosition.value);
+function onLeave(el: HTMLElement) {
+  setElementPosition(el, leavePosition);
 }
 </script>
 
@@ -54,14 +51,15 @@ function leave() {
   <div
     class="player-cards"
     :class="{ 'player-cards--active-hand': props.isActive }"
+    ref="frameRef"
   >
     <TransitionGroup
       appear
       name="cards"
       tag="div"
-      @before-enter="enter"
-      @after-enter="enterTo"
-      @leave="leave"
+      @before-enter="onEnter"
+      @after-enter="onAfterEnter"
+      @leave="onLeave"
     >
       <div
         v-for="(card, idx) in props.hand.cards"
@@ -117,6 +115,8 @@ function leave() {
     position: absolute;
     top: 0;
     left: 0;
+
+    transition: transform var(--transition-long);
   }
 }
 </style>

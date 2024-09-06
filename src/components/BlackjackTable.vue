@@ -2,6 +2,7 @@
 import { onMounted, ref } from "vue";
 
 import { UNKNOWN_CARD } from "~/constants/cards.ts";
+import { NIL_POSITION } from "~/constants/gamePlay.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
 import { useDeckStore } from "~/stores/deckStore.ts";
 import { usePlayersStore } from "~/stores/playersStore.ts";
@@ -21,12 +22,9 @@ function openOptions() {
 }
 
 onMounted(() => {
-  const { offsetTop, offsetLeft } = deckRef.value;
+  const { x, y } = deckRef.value?.getBoundingClientRect() ?? NIL_POSITION;
 
-  deckStore.setDeckPosition({
-    x: offsetLeft,
-    y: offsetTop,
-  });
+  deckStore.setDeckPosition({ x, y });
 });
 </script>
 <template>

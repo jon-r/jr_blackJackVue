@@ -1,8 +1,9 @@
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 
-import App from "~/components/App.vue";
 import "~/styles/styles.css";
+
+import App from "./components/App.vue";
 
 const app = createApp(App);
 

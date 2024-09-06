@@ -1,3 +1,5 @@
+import { Position } from "~/types/animations.ts";
+
 export enum GameStages {
   Init = -1,
   PlaceBets = 0,
@@ -31,3 +33,5 @@ export const OUTCOME_MULTIPLIER = {
 } as const;
 
 export const CHIP_VALUES = [1000, 500, 100, 25, 10, 5] as const;
+
+export const NIL_POSITION: Position = { x: 0, y: 0 };

@@ -8,5 +8,5 @@ export const DEFAULT_SETTINGS: GameConfig = {
 
 export const MAX_MESSAGES = 5;
 
-// todo fine tune this for different
-export const AUTO_TIME = 300;
+// todo fine tune this for different events
+export const AUTO_TIME_STANDARD = 300;

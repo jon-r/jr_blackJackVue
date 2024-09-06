@@ -1,5 +1,9 @@
 import { BLACKJACK_SCORE } from "~/constants/cards.ts";
-import { GameOutcomes, SpecialScores } from "~/constants/gamePlay.ts";
+import {
+  CHIP_VALUES,
+  GameOutcomes,
+  SpecialScores,
+} from "~/constants/gamePlay.ts";
 import { PlayingCard } from "~/types/card.ts";
 import { GameHand } from "~/types/players.ts";
 
@@ -115,4 +119,19 @@ export function updateHand(hand: GameHand, newCard: PlayingCard): GameHand {
     special,
     ...handScore,
   };
+}
+
+export function moneyToChips(money: number): number[] {
+  let chipsRemainingValue = money;
+  const chips = [];
+  while (chipsRemainingValue > 0) {
+    const bestChip = CHIP_VALUES.find((value) => value <= chipsRemainingValue);
+
+    if (!bestChip) break;
+
+    chipsRemainingValue -= bestChip;
+    chips.push(bestChip);
+  }
+
+  return chips;
 }

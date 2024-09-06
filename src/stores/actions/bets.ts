@@ -1,5 +1,5 @@
 import { GameOutcomes, OUTCOME_MULTIPLIER } from "~/constants/gamePlay.ts";
-import { AUTO_TIME } from "~/constants/settings.ts";
+import { AUTO_TIME_STANDARD } from "~/constants/settings.ts";
 import { getGameOutcome } from "~/helpers/gamePlay.ts";
 import { getRandom } from "~/helpers/math.ts";
 import { wait } from "~/helpers/time.ts";
@@ -55,7 +55,7 @@ export function useBetActions() {
     targetPlayer.openBet += targetPlayer.openBet * OUTCOME_MULTIPLIER[outcome];
     targetPlayer.outcome = outcome;
 
-    await wait(AUTO_TIME);
+    await wait(AUTO_TIME_STANDARD);
 
     targetPlayer.money += targetPlayer.openBet;
     targetPlayer.openBet = 0;
