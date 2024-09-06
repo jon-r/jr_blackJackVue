@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 
 import { setPos } from "~/animationTools.ts";
 import { CHIP_VALUES } from "~/constants/gamePlay.ts";
+import { sum } from "~/helpers/math.ts";
 import { Position } from "~/types/animations.ts";
 
 import BettingChip from "../common/BettingChip.vue";
@@ -13,10 +14,11 @@ type ActiveBetProps = {
 };
 
 const props = defineProps<ActiveBetProps>();
+const betAsChips = ref([]);
 
 // todo animate this with a watch function and stagger in tokens
 // also potentially change direction of chips depending on win vs loss?
-const betAsChips = computed<number[]>(() => {
+const betAsChipsOld = computed<number[]>(() => {
   let chipsValue = props.bet;
   const chips = [];
   while (chipsValue > 0) {
@@ -30,6 +32,14 @@ const betAsChips = computed<number[]>(() => {
 
   return chips;
 });
+
+watch(
+  () => props.bet,
+  async function staggerChips() {
+    let betDiff = props.bet - sum(betAsChips.value);
+    const chips = betAsChips.value;
+  },
+);
 
 function enter(el: HTMLElement) {
   setPos(el, { x: 0, y: -200 });
@@ -61,7 +71,7 @@ function leave(el: HTMLElement, done: () => void) {
     >-->
     <ul class="list-base current-bet__chips">
       <li
-        v-for="(chip, idx) in betAsChips"
+        v-for="(chip, idx) in betAsChipsOld"
         :key="idx"
         class="current-bet__chip-stacked"
       >

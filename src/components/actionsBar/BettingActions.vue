@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 
 import { CHIP_VALUES } from "~/constants/gamePlay.ts";
+import { sum } from "~/helpers/math.ts";
 import { useBetActions } from "~/stores/actions/bets.ts";
 import { useGameActions } from "~/stores/actions/game.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
@@ -21,9 +22,7 @@ const betActions = useBetActions();
 const gameActions = useGameActions();
 
 const chipsToPlace = ref<number[]>([]);
-const betToPlace = computed(() =>
-  chipsToPlace.value.reduce((a, b) => a + b, 0),
-);
+const betToPlace = computed(() => sum(chipsToPlace.value));
 
 const chipButtons = computed<ButtonControl[]>(() => {
   const maxChips = props.player.money - betToPlace.value;
