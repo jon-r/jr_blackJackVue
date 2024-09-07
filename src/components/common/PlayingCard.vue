@@ -52,11 +52,13 @@ const visualCard = computed(() => {
   }
 
   &:not(&--blank) {
-    animation: flip-card var(--transition-standard) both;
+    animation: flip-card var(--transition-standard)
+      var(--transition-duration-short) both;
 
     &::after,
     & strong {
-      animation: reveal-card var(--transition-standard) both;
+      animation: reveal-card var(--transition-standard)
+        var(--transition-duration-short) both;
     }
   }
 

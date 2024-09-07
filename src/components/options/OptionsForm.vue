@@ -36,6 +36,7 @@ function newGame() {
 
 // todo demo automatically (based on url query)
 //  todo move this to gameActions
+// fixme - bug with bets if mid game
 function newDemo() {
   newGame();
 
