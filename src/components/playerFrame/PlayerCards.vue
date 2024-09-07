@@ -4,12 +4,12 @@ import { onMounted, ref } from "vue";
 import { NIL_POSITION, SpecialScores } from "~/constants/gamePlay.ts";
 import { setElementPosition, transformJiggle } from "~/helpers/animation.ts";
 import { useDeckStore } from "~/stores/deckStore.ts";
-import { GameHand } from "~/types/players.ts";
+import { PlayerHand } from "~/types/players.ts";
 
 import PlayingCard from "../common/PlayingCard.vue";
 
 type PlayerCardsProps = {
-  hand: GameHand;
+  hand: PlayerHand;
   isActive: boolean;
 };
 
@@ -110,6 +110,7 @@ function onLeave(el: HTMLElement) {
   }
 
   &__card {
+    box-shadow: var(--shadow-level-1);
     position: absolute;
     top: 0;
     left: 0;

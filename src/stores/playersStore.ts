@@ -18,7 +18,7 @@ import {
 } from "~/helpers/players.ts";
 import { wait } from "~/helpers/time.ts";
 import { PlayingCard } from "~/types/card.ts";
-import { GameHand, Player, PlayerInputStub } from "~/types/players.ts";
+import { Player, PlayerHand, PlayerInputStub } from "~/types/players.ts";
 
 import { useCoreStore } from "./coreStore.ts";
 import { useDeckStore } from "./deckStore.ts";
@@ -85,7 +85,7 @@ export const usePlayersStore = defineStore("players", () => {
   function getPlayerHand(
     playerId = coreStore.activePlayerId,
     handId?: number,
-  ): GameHand | undefined {
+  ): PlayerHand | undefined {
     const targetPlayer = players.value[playerId];
     if (!targetPlayer?.inGame) return;
 

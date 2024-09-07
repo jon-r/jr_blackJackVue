@@ -24,14 +24,14 @@ const actionButtons = computed<ButtonControl[]>(() => {
       id: "play-hit",
       label: "Hit",
       icon: "touch_app",
-      onClick: playerActions.hit,
+      onClick: () => playerActions.hit(props.player),
       className: "action-button--emphasis",
     },
     {
       id: "play-stand",
       label: "Stand",
       icon: "pan_tool",
-      onClick: playerActions.stand,
+      onClick: () => playerActions.stand(props.player),
       className: "action-button--emphasis",
     },
     {
@@ -40,7 +40,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
       disabled: !canSplit,
       icon: "call_split",
       alert: `- £${openBet}`,
-      onClick: playerActions.split,
+      onClick: () => playerActions.split(props.player),
     },
     {
       id: "play-surrender",
@@ -48,7 +48,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
       disabled: !canSurrender,
       icon: "flag",
       alert: `+ £${openBet / 2}`,
-      onClick: playerActions.surrender,
+      onClick: () => playerActions.surrender(props.player),
     },
     {
       id: "play-double",
@@ -56,7 +56,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
       disabled: !canDouble,
       icon: "monetization_on",
       alert: `- £${openBet}`,
-      onClick: playerActions.double,
+      onClick: () => playerActions.double(props.player),
     },
   ];
 });

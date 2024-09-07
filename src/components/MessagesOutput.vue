@@ -3,19 +3,16 @@ import { useCoreStore } from "~/stores/coreStore.ts";
 
 const coreStore = useCoreStore();
 </script>
-<!-- todo animate this once more messages to fill out a bit -->
 <template>
-  <!--  <TransitionGroup class="announcement frame" name="messages" tag="ul">-->
-  <ul class="list-base messages-output">
+  <TransitionGroup class="list-base messages-output" name="messages" tag="ul">
     <li
       class="messages-output__message"
-      v-for="(msg, i) in coreStore.notifications"
-      :key="i"
+      v-for="msg in coreStore.messages"
+      :key="msg.id"
     >
-      {{ msg }}
+      {{ msg.value }}
     </li>
-  </ul>
-  <!--  </TransitionGroup>-->
+  </TransitionGroup>
 </template>
 <style>
 .messages-output {
@@ -24,9 +21,17 @@ const coreStore = useCoreStore();
   left: var(--padding-md);
 
   &__message {
+    transition: var(--transition-standard);
+    opacity: 1;
+
     &:first-of-type {
-      color: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-secondary-container);
     }
   }
+}
+
+.messages-leave-to {
+  transform: translateY(1rem);
+  opacity: 0;
 }
 </style>

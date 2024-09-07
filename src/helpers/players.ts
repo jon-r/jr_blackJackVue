@@ -1,6 +1,6 @@
 import { SpecialScores } from "~/constants/gamePlay.ts";
 import { DEALER_ID, DEFAULT_PLAYER_NAMES } from "~/constants/player.ts";
-import { GameHand, Player, PlayerInputStub } from "~/types/players.ts";
+import { Player, PlayerHand, PlayerInputStub } from "~/types/players.ts";
 
 export function setupPlayerInput(players: Player[]): PlayerInputStub[] {
   if (!players.length) {
@@ -16,7 +16,7 @@ export function setupPlayerInput(players: Player[]): PlayerInputStub[] {
   }));
 }
 
-export function createEmptyHand(): GameHand {
+export function createEmptyHand(): PlayerHand {
   return {
     cards: [],
     special: SpecialScores.None,

@@ -5,23 +5,23 @@ import {
   SpecialScores,
 } from "~/constants/gamePlay.ts";
 import { PlayingCard } from "~/types/card.ts";
-import { GameHand } from "~/types/players.ts";
+import { PlayerHand } from "~/types/players.ts";
 
 import { getCardScore, isAce, isBlankCard } from "./cards.ts";
 
-export function hasBlackjack(player: GameHand): boolean {
+export function hasBlackjack(player: PlayerHand): boolean {
   return player.special === SpecialScores.BlackJack;
 }
 
-export function hasBust(player: GameHand): boolean {
+export function hasBust(player: PlayerHand): boolean {
   return player.special === SpecialScores.Bust;
 }
 
 export function getGameOutcome(
-  player: GameHand[],
-  dealer: GameHand[],
+  player: PlayerHand[],
+  dealer: PlayerHand[],
 ): GameOutcomes {
-  const playerHand = player[0]; // todo find the best non-bust hand
+  const playerHand = player[0]; // todo multihand
   const dealerHand = dealer[0];
 
   const dealerHasBlackjack = hasBlackjack(dealerHand);
@@ -120,7 +120,7 @@ export function getHandScore(cards: PlayingCard[]): HandCalculation {
   }, nilScore);
 }
 
-export function updateHand(hand: GameHand, newCard: PlayingCard): GameHand {
+export function updateHand(hand: PlayerHand, newCard: PlayingCard): PlayerHand {
   const cards = replaceLastBlankCard(hand.cards, newCard);
   const handScore = getHandScore(cards);
   const special = getHandSpecial(handScore, cards.length);

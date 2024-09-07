@@ -61,9 +61,6 @@ watch(
         </span>
       </Transition>
     </p>
-
-    <button @click="TEST_ADD">+</button>
-    <button @click="TEST_RM">-</button>
   </header>
 </template>
 
@@ -74,12 +71,15 @@ watch(
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-level-1);
   padding: var(--padding-xs) var(--padding-lg);
+  opacity: 0.5;
+  transition: opacity var(--transition-short);
 
   display: flex;
   justify-content: space-between;
   align-items: baseline;
 
   &--focussed {
+    opacity: 1;
     background-color: var(--md-sys-color-primary-container);
     color: var(--md-sys-color-on-primary-container);
   }

@@ -127,7 +127,6 @@ http://material-foundation.github.io?primary=%2386E307&secondary=%23D2B441&color
     }
 
     .light {
-        /* todo replace the top with hex, then thisll be way easier */
         --md-sys-color-primary-hover: rgb(74 103 45 / 92%);
         --md-sys-color-tertiary-hover: rgb(56 102 100 / 92%);
 

@@ -64,7 +64,7 @@ export function useBetActions() {
   async function settleAllBets() {
     const promises = playersStore.activePlayers.map(async (player) => {
       if (!player.outcome) {
-        // todo get best player hand
+        // todo multihand
         const outcome = getGameOutcome(player.hands, playersStore.dealer.hands);
 
         await settleBet(outcome, player.index);

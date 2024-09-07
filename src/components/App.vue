@@ -12,25 +12,19 @@ import { useCoreStore } from "~/stores/coreStore.ts";
 const coreStore = useCoreStore();
 const gameActions = useGameActions();
 
-// todo move the message to gameActions
 watch(
   () => coreStore.activeStage,
   (stage: GameStages) => {
     switch (stage) {
-      case GameStages.Init:
-        return coreStore.toggleOptionsModal(true);
       case GameStages.PlaceBets:
-        coreStore.sendMessage("Please place your bets.");
-        return gameActions.goToNextPlayer();
+        return gameActions.placeBets();
       case GameStages.DealCards:
-        coreStore.sendMessage("All bets are in, dealing out first cards.");
         return gameActions.dealInitialCards();
       case GameStages.PlayerActions:
         return gameActions.goToNextPlayer();
       case GameStages.DealerActions:
         return gameActions.dealFinalCards();
       case GameStages.EndRound:
-        coreStore.sendMessage("Round over. Play again?");
         return gameActions.finaliseRound();
     }
   },
