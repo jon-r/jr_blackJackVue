@@ -1,0 +1,25 @@
+:root {
+    --border-radius-xs: 4px;
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 16px;
+    --border-radius-xl: 28px;
+
+    --padding-xs: 4px;
+    --padding-sm: 8px;
+    --padding-md: 12px;
+    --padding-lg: 16px;
+    --padding-xl: 24px;
+
+    --button-size: 40px;
+    --button-size-lg: 56px;
+
+    --transition-duration-short: 150ms;
+    --transition-duration-standard: 300ms;
+    --transition-duration-long: 450ms;
+    --transition-ease-standard: cubic-bezier(0.2, 0.0, 0, 1.0);
+
+    --transition-short: var(--transition-duration-short) var(--transition-ease-standard);
+    --transition-standard: var(--transition-duration-standard) var(--transition-ease-standard);
+    --transition-long: var(--transition-duration-long) var(--transition-ease-standard);
+}

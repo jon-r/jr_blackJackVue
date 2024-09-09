@@ -1,4 +1,4 @@
-import { PlayingCard } from "../types/card.ts";
+import { PlayingCard } from "~/types/card.ts";
 
 export enum FaceValues {
   Blank = 0,
@@ -22,6 +22,7 @@ export const enum CardSuits {
   Clubs = "clubs",
   Blank = "blank",
 }
+
 export const SUIT_LIST = [
   CardSuits.Hearts,
   CardSuits.Diamonds,

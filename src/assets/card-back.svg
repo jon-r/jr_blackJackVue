@@ -17,6 +17,5 @@
 
   <circle stroke="#8d1010" stroke-width="2" fill="#c97272" cx="50" cy="70" r="30" />
 
-  <use x="22" y="0" xlink:href="#jr-logo" ></use>
-
+  <use x="22" y="0" xlink:href="#jr-logo" />
 </svg>

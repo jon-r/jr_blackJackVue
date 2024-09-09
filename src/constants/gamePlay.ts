@@ -1,3 +1,5 @@
+import { Position } from "~/types/animations.ts";
+
 export enum GameStages {
   Init = -1,
   PlaceBets = 0,
@@ -30,17 +32,6 @@ export const OUTCOME_MULTIPLIER = {
   [GameOutcomes.Lost]: -1,
 } as const;
 
-export enum GamePlayActionTypes {
-  Hit = "hit",
-  Stand = "stand",
-  Split = "split",
-  Surrender = "surrender",
-  Double = "double",
-}
-
-export enum EndGameActionTypes {
-  New = "new game",
-  Next = "next round",
-}
-
 export const CHIP_VALUES = [1000, 500, 100, 25, 10, 5] as const;
+
+export const NIL_POSITION: Position = { x: 0, y: 0 };

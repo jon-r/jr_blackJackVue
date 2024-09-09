@@ -6,19 +6,20 @@ import {
   DEALER_STAND_SCORE,
   FACE_SCORE,
   UNKNOWN_CARD,
-} from "../constants/cards.ts";
-import { SpecialScores } from "../constants/gamePlay.ts";
-import { DEALER_ID, DEALER_STUB } from "../constants/player.ts";
-import { getCardScore, isBlankCard } from "../helpers/cards.ts";
-import { getHandScore, updateHand } from "../helpers/gamePlay.ts";
+} from "~/constants/cards.ts";
+import { DEALER_ID, DEALER_STUB } from "~/constants/player.ts";
+import { AUTO_TIME_STANDARD } from "~/constants/settings.ts";
+import { getCardScore, isBlankCard } from "~/helpers/cards.ts";
+import { getHandScore, updateHand } from "~/helpers/gamePlay.ts";
 import {
   createEmptyHand,
   createPlayer,
   isActivePlayer,
-} from "../helpers/players.ts";
-import { wait } from "../helpers/time.ts";
-import { PlayingCard } from "../types/card.ts";
-import { GameHand, Player, PlayerInputStub } from "../types/players.ts";
+} from "~/helpers/players.ts";
+import { wait } from "~/helpers/time.ts";
+import { PlayingCard } from "~/types/card.ts";
+import { Player, PlayerHand, PlayerInputStub } from "~/types/players.ts";
+
 import { useCoreStore } from "./coreStore.ts";
 import { useDeckStore } from "./deckStore.ts";
 
@@ -84,7 +85,7 @@ export const usePlayersStore = defineStore("players", () => {
   function getPlayerHand(
     playerId = coreStore.activePlayerId,
     handId?: number,
-  ): GameHand | undefined {
+  ): PlayerHand | undefined {
     const targetPlayer = players.value[playerId];
     if (!targetPlayer?.inGame) return;
 
@@ -103,12 +104,6 @@ export const usePlayersStore = defineStore("players", () => {
     }
 
     players.value[DEALER_ID].didPeek = newCard;
-  }
-
-  function checkPlayerScore(playerId?: number, handId?: number): SpecialScores {
-    const targetHand = getPlayerHand(playerId, handId);
-
-    return targetHand?.special || SpecialScores.None;
   }
 
   async function dealCard(playerId?: number, handId?: number) {
@@ -142,7 +137,7 @@ export const usePlayersStore = defineStore("players", () => {
     playerId?: number,
     handId?: number,
   ): Promise<PlayingCard | undefined> {
-    await wait(coreStore.config.autoTime);
+    await wait(AUTO_TIME_STANDARD);
 
     const newCard = deckStore.drawCard();
 
@@ -210,7 +205,7 @@ export const usePlayersStore = defineStore("players", () => {
 
     resetPlayers,
     dealBlank,
-    checkPlayerScore,
+    getPlayerHand,
     dealCard,
     dealAllPlayersCards,
     revealAllBlankCards,

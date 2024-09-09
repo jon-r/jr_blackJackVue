@@ -83,6 +83,115 @@
           opacity=".2"
         />
       </symbol>
+
+      <pattern id="a" patternUnits="userSpaceOnUse" height="16" width="10">
+        <path fill="#bb3838" d="M0 0l5 3v5l-5 -3z M5 8l5 3v5l-5 -3z" />
+        <path fill="#8d1010" d="M10 0l-5 3v5l5 -3M0 11l5-3v5l-5 3" />
+      </pattern>
+
+      <symbol id="jr-logo" fill="none" stroke-width="2" viewBox="0 0 61 16">
+        <path
+          stroke-linejoin="round"
+          stroke="#bb3838"
+          d="M7 -1L2 8l5 9m20 0l5-9-5-9"
+        />
+        <path
+          stroke="#e7e4e4"
+          d="M10 1h5v10a4 4 0 0 1-4 4h-2M16.5 1h3a4 4 0 0 1 0 8h-3 2q3 0 4 3t2.5 3"
+        />
+      </symbol>
+
+      <symbol id="jr-logo" fill="none" stroke-width="2" viewBox="0 0 61 16">
+        <path
+          stroke-linejoin="round"
+          stroke="#bb3838"
+          d="M7 -1L2 8l5 9m20 0l5-9-5-9"
+        />
+        <path
+          stroke="#e7e4e4"
+          d="M10 1h5v10a4 4 0 0 1-4 4h-2M16.5 1h3a4 4 0 0 1 0 8h-3 2q3 0 4 3t2.5 3"
+        />
+      </symbol>
+
+      <symbol id="card-blank">
+        <path fill="#c97272" d="m0 0h100v140h-100z" />
+
+        <path
+          fill="url(#a)"
+          stroke="#e7e4e4"
+          stroke-width="2"
+          d="m5 5h90v130h-90z"
+        />
+
+        <circle
+          stroke="#8d1010"
+          stroke-width="2"
+          fill="#c97272"
+          cx="50"
+          cy="70"
+          r="30"
+        />
+
+        <use x="22" y="0" xlink:href="#jr-logo" />
+      </symbol>
+
+      <symbol id="card-clubs">
+        <path
+          fill="currentcolor"
+          d="m74,113 a20,20 0 1,0 20,-24 a20,20 0 1,0 -36,0 a20,20 0 1,0 20,24 m-2,8 l10,16 h-20 z"
+        />
+      </symbol>
+
+      <symbol id="card-diamonds">
+        <path fill="currentcolor" d="m75,56 l36,42 l-36,42 l-36,-42 z" />
+      </symbol>
+
+      <symbol id="card-spades">
+        <path
+          fill="currentcolor"
+          d="m69,107 a1,1 0 0,0 40,0 q0,-14 -18,-28 t-16,-28 q0,14 -18,28 t-16,28 a1,1 0 0,0 40,0 m-6,16 l10,16 h-20 z"
+        />
+      </symbol>
+
+      <symbol id="card-hearts">
+        <path
+          fill="currentcolor"
+          d="m81 85a1 1 0 0 0-40 0q0 14 18 28t16 28q0-14 18-28t16-28a1 1 0 0 0-40 0z"
+        />
+      </symbol>
+
+      <path id="curve-lg" d="M33.5 8a1 1 0 1 0 158 0 a1 1 0 1 0-158 0" />
+      <path id="curve-sm" d="M50.5 8a1 1 0 1 0 124 0 a1 1 0 1 0-124 0" />
+
+      <symbol id="tabletop">
+        <g opacity=".5">
+          <g stroke="#f9a825" fill="none">
+            <path
+              d="M112.6 92.43c35.18 0 65.25-21.88 77.34-52.78.4-1.05-.13-2.22-1.18-2.6l-11.7-4.26c-1.02-.4-2.14.1-2.54 1.1-9.77 24.64-33.8 42.1-61.92 42.1S60.44 58.53 50.68 33.9c-.4-1-1.52-1.5-2.54-1.14L36.44 37c-1.05.4-1.6 1.56-1.18 2.6 12.1 30.9 42.16 52.8 77.34 52.8z"
+            />
+            <circle cx="25" cy="65" r="12" />
+            <circle cx="56" cy="107" r="12" />
+            <circle cx="113" cy="116" r="12" />
+            <circle cx="168" cy="107" r="12" />
+            <circle cx="200" cy="65" r="12" />
+          </g>
+          <g
+            fill="#f9a825"
+            text-anchor="middle"
+            font-family="Georgia"
+            letter-spacing=".8"
+          >
+            <text>
+              <textPath xlink:href="#curve-lg" startOffset="25%" font-size="10">
+                BLACKJACK PAYS 3 TO 2
+              </textPath>
+              <textPath xlink:href="#curve-sm" startOffset="25%" font-size="6">
+                DEALER MUST STAND ON 17
+              </textPath>
+            </text>
+          </g>
+        </g>
+      </symbol>
     </defs>
   </svg>
 </template>

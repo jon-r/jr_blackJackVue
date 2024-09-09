@@ -1,4 +1,5 @@
-import { GameOutcomes, SpecialScores } from "../constants/gamePlay.ts";
+import { GameOutcomes, SpecialScores } from "~/constants/gamePlay.ts";
+
 import { PlayingCard } from "./card.ts";
 
 export type Player = {
@@ -9,12 +10,12 @@ export type Player = {
 
   outcome: GameOutcomes | null;
   inGame: boolean;
-  hands: GameHand[];
+  hands: PlayerHand[];
   activeHandId: number;
   didPeek: PlayingCard | null;
 };
 
-export type GameHand = {
+export type PlayerHand = {
   cards: PlayingCard[];
   special: SpecialScores;
   score: number;

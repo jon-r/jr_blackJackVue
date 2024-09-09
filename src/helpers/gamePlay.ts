@@ -1,22 +1,27 @@
-import { BLACKJACK_SCORE } from "../constants/cards.ts";
-import { GameOutcomes, SpecialScores } from "../constants/gamePlay.ts";
-import { PlayingCard } from "../types/card.ts";
-import { GameHand } from "../types/players.ts";
+import { BLACKJACK_SCORE } from "~/constants/cards.ts";
+import {
+  CHIP_VALUES,
+  GameOutcomes,
+  SpecialScores,
+} from "~/constants/gamePlay.ts";
+import { PlayingCard } from "~/types/card.ts";
+import { PlayerHand } from "~/types/players.ts";
+
 import { getCardScore, isAce, isBlankCard } from "./cards.ts";
 
-export function hasBlackjack(player: GameHand): boolean {
+export function hasBlackjack(player: PlayerHand): boolean {
   return player.special === SpecialScores.BlackJack;
 }
 
-export function hasBust(player: GameHand): boolean {
+export function hasBust(player: PlayerHand): boolean {
   return player.special === SpecialScores.Bust;
 }
 
 export function getGameOutcome(
-  player: GameHand[],
-  dealer: GameHand[],
+  player: PlayerHand[],
+  dealer: PlayerHand[],
 ): GameOutcomes {
-  const playerHand = player[0]; // todo find the best non-bust hand
+  const playerHand = player[0]; // todo multihand
   const dealerHand = dealer[0];
 
   const dealerHasBlackjack = hasBlackjack(dealerHand);
@@ -43,6 +48,17 @@ export function getGameOutcome(
   }
 
   return GameOutcomes.Won;
+}
+
+export function hasMoneyReturned(outcome: GameOutcomes | null) {
+  return (
+    outcome === GameOutcomes.Blackjack ||
+    outcome === GameOutcomes.Won ||
+    outcome === GameOutcomes.Push
+  );
+}
+export function hasMoneyLost(outcome: GameOutcomes | null) {
+  return outcome === GameOutcomes.Lost || outcome === GameOutcomes.Surrendered;
 }
 
 function replaceLastBlankCard(
@@ -104,7 +120,7 @@ export function getHandScore(cards: PlayingCard[]): HandCalculation {
   }, nilScore);
 }
 
-export function updateHand(hand: GameHand, newCard: PlayingCard): GameHand {
+export function updateHand(hand: PlayerHand, newCard: PlayingCard): PlayerHand {
   const cards = replaceLastBlankCard(hand.cards, newCard);
   const handScore = getHandScore(cards);
   const special = getHandSpecial(handScore, cards.length);
@@ -114,4 +130,19 @@ export function updateHand(hand: GameHand, newCard: PlayingCard): GameHand {
     special,
     ...handScore,
   };
+}
+
+export function moneyToChips(money: number): number[] {
+  let chipsRemainingValue = money;
+  const chips = [];
+  while (chipsRemainingValue > 0) {
+    const bestChip = CHIP_VALUES.find((value) => value <= chipsRemainingValue);
+
+    if (!bestChip) break;
+
+    chipsRemainingValue -= bestChip;
+    chips.push(bestChip);
+  }
+
+  return chips;
 }

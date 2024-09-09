@@ -1,21 +1,31 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-import { GameStages } from "../constants/gamePlay.ts";
-import { DEALER_ID } from "../constants/player.ts";
-import { DEFAULT_SETTINGS, MAX_MESSAGES } from "../constants/settings.ts";
-import { GameConfig } from "../types/config.ts";
+import { GameStages } from "~/constants/gamePlay.ts";
+import { DEALER_ID } from "~/constants/player.ts";
+import { DEFAULT_SETTINGS, MAX_MESSAGES } from "~/constants/settings.ts";
+import { Message } from "~/types/animations.ts";
+import { GameConfig } from "~/types/config.ts";
 
 export const useCoreStore = defineStore("core", () => {
   const config = ref<GameConfig>(DEFAULT_SETTINGS);
   const activeStage = ref(GameStages.Init);
   const activePlayerId = ref(-1);
-  const notifications = ref<string[]>([]);
 
-  // todo send more messages
-  function sendMessage(newMessage: string) {
-    notifications.value.unshift(newMessage);
-    notifications.value.slice(MAX_MESSAGES);
+  const messages = ref<Message[]>([]);
+  const isOptionsModalOpen = ref(activeStage.value === GameStages.Init);
+
+  function toggleOptionsModal(isOpen: boolean) {
+    isOptionsModalOpen.value = isOpen;
+  }
+
+  function sendMessage(message: string) {
+    const newMessage: Message = {
+      id: Math.max(...messages.value.map((m) => m.id), -1) + 1,
+      value: message,
+    };
+
+    messages.value = [newMessage, ...messages.value].slice(0, MAX_MESSAGES);
   }
 
   function setConfig(newConfig: GameConfig) {
@@ -47,8 +57,10 @@ export const useCoreStore = defineStore("core", () => {
     config,
     activeStage,
     activePlayerId,
-    notifications,
+    messages,
+    isOptionsModalOpen,
 
+    toggleOptionsModal,
     setConfig,
     sendMessage,
     newRound,

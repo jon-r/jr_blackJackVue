@@ -1,10 +1,16 @@
-import { GameOutcomes, SpecialScores } from "../../constants/gamePlay.ts";
+import { BLACKJACK_SCORE } from "~/constants/cards.ts";
+import { GameOutcomes } from "~/constants/gamePlay.ts";
+import { formatPlayerMessage } from "~/helpers/messages.ts";
+import { useCoreStore } from "~/stores/coreStore.ts";
+import { Player } from "~/types/players.ts";
+
 import { usePlayersStore } from "../playersStore.ts";
 import { useBetActions } from "./bets.ts";
 import { useGameActions } from "./game.ts";
 
 export function usePlayerActions() {
   const playersStore = usePlayersStore();
+  const coreStore = useCoreStore();
   const betActions = useBetActions();
   const gameActions = useGameActions();
 
@@ -16,30 +22,40 @@ export function usePlayerActions() {
   }
 
   async function checkScore() {
-    switch (playersStore.checkPlayerScore()) {
-      case SpecialScores.BlackJack:
-        gameActions.goToNextPlayer();
-        break;
-      case SpecialScores.Bust:
-        await betActions.settleBet(GameOutcomes.Lost);
-        nextHandOrPlayer();
-        break;
-      default:
-      // else continue
+    const hand = playersStore.getPlayerHand();
+
+    if (!hand) return;
+
+    if (hand.score > BLACKJACK_SCORE) {
+      await betActions.settleBet(GameOutcomes.Lost);
     }
+
+    if (hand.score >= BLACKJACK_SCORE) {
+      return nextHandOrPlayer();
+    }
+
+    // else continue
   }
 
-  async function hit() {
-    await playersStore.dealCard();
+  async function hit(player: Player) {
+    const card = await playersStore.dealCard();
+    coreStore.sendMessage(formatPlayerMessage(player, "hits", card));
+
     await checkScore();
   }
 
-  function stand() {
+  function stand(player: Player) {
+    coreStore.sendMessage(formatPlayerMessage(player, "stands"));
     nextHandOrPlayer();
   }
 
-  // fixme
-  function split() {
+  // todo multihand
+  function split(player: Player) {
+    // const player = playersStore.currentPlayer;
+    // if (!player) return;
+
+    coreStore.sendMessage(formatPlayerMessage(player, "splits"));
+
     // add second bet
     betActions.updateBet(1);
     // splice hand
@@ -50,12 +66,16 @@ export function usePlayerActions() {
     // check for outcome?
   }
 
-  async function surrender() {
+  async function surrender(player: Player) {
+    coreStore.sendMessage(formatPlayerMessage(player, "surrenders"));
+
     await betActions.settleBet(GameOutcomes.Surrendered);
     gameActions.goToNextPlayer();
   }
 
-  function double() {
+  function double(player: Player) {
+    coreStore.sendMessage(formatPlayerMessage(player, "doubles"));
+
     betActions.updateBet(1);
     playersStore.dealBlank();
     gameActions.goToNextPlayer();

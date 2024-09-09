@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 
-import { CHIP_VALUES } from "../../constants/gamePlay.ts";
-import { useBetActions } from "../../stores/actions/bets.ts";
-import { useGameActions } from "../../stores/actions/game.ts";
-import { useCoreStore } from "../../stores/coreStore.ts";
-import { Player } from "../../types/players.ts";
+import { CHIP_VALUES } from "~/constants/gamePlay.ts";
+import { sum } from "~/helpers/math.ts";
+import { useBetActions } from "~/stores/actions/bets.ts";
+import { useGameActions } from "~/stores/actions/game.ts";
+import { useCoreStore } from "~/stores/coreStore.ts";
+import { Player } from "~/types/players.ts";
+
 import BettingChip from "../common/BettingChip.vue";
-import MdIcon from "../common/MdIcon.vue";
 import ActionButton from "./ActionButton.vue";
 import { ButtonControl } from "./button.ts";
 
@@ -21,9 +22,7 @@ const betActions = useBetActions();
 const gameActions = useGameActions();
 
 const chipsToPlace = ref<number[]>([]);
-const betToPlace = computed(() =>
-  chipsToPlace.value.reduce((a, b) => a + b, 0),
-);
+const betToPlace = computed(() => sum(chipsToPlace.value));
 
 const chipButtons = computed<ButtonControl[]>(() => {
   const maxChips = props.player.money - betToPlace.value;
@@ -41,9 +40,9 @@ const actionButtons = computed<ButtonControl[]>(() => {
 
   return [
     {
-      id: "bet-submit",
-      label: `Submit: £${betToPlace.value}`,
-      className: "btn-good",
+      id: "bet-place",
+      label: `Place Bet: £${betToPlace.value}`,
+      className: "action-button--wider action-button--emphasis",
       icon: "publish",
       disabled: betToPlace.value < minBet,
       onClick: submitBet,
@@ -52,7 +51,7 @@ const actionButtons = computed<ButtonControl[]>(() => {
     {
       id: "bet-undo",
       label: "Undo",
-      className: "btn-alert",
+      className: "action-button--warn",
       icon: "undo",
       disabled: betToPlace.value === 0,
       onClick: removeChip,
@@ -77,23 +76,19 @@ function submitBet() {
 </script>
 
 <template>
-  <section class="ctrl-menu frame flex flex-wrap">
-    <ActionButton
-      v-for="chipButton in chipButtons"
-      :key="chipButton.id"
-      v-bind="chipButton"
-      @click="chipButton.onClick"
-    >
-      <BettingChip :value="chipButton.disabled ? 0 : chipButton.id" />
-    </ActionButton>
+  <ActionButton
+    v-for="chipButton in chipButtons"
+    :key="chipButton.id"
+    v-bind="chipButton"
+    @click="chipButton.onClick"
+  >
+    <BettingChip :value="chipButton.disabled ? 'nil' : chipButton.id" />
+  </ActionButton>
 
-    <ActionButton
-      v-for="actionButton in actionButtons"
-      :key="actionButton.id"
-      v-bind="actionButton"
-      @click="actionButton.onClick"
-    >
-      <MdIcon class="ctrl-btn-icon" :name="actionButton.icon!" />
-    </ActionButton>
-  </section>
+  <ActionButton
+    v-for="actionButton in actionButtons"
+    :key="actionButton.id"
+    v-bind="actionButton"
+    @click="actionButton.onClick"
+  />
 </template>

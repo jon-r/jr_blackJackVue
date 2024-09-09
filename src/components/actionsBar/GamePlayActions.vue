@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { GamePlayActionTypes } from "../../constants/gamePlay.ts";
-import { getHandRules } from "../../helpers/cards.ts";
-import { usePlayerActions } from "../../stores/actions/player.ts";
-import { Player } from "../../types/players.ts";
-import MdIcon from "../common/MdIcon.vue";
+import { getHandRules } from "~/helpers/cards.ts";
+import { usePlayerActions } from "~/stores/actions/player.ts";
+import { Player } from "~/types/players.ts";
+
 import ActionButton from "./ActionButton.vue";
 import { ButtonControl } from "./button.ts";
 
@@ -23,52 +22,50 @@ const actionButtons = computed<ButtonControl[]>(() => {
   return [
     {
       id: "play-hit",
-      label: GamePlayActionTypes.Hit,
+      label: "Hit",
       icon: "touch_app",
-      onClick: playerActions.hit,
+      onClick: () => playerActions.hit(props.player),
+      className: "action-button--emphasis",
     },
     {
       id: "play-stand",
-      label: GamePlayActionTypes.Stand,
+      label: "Stand",
       icon: "pan_tool",
-      onClick: playerActions.stand,
+      onClick: () => playerActions.stand(props.player),
+      className: "action-button--emphasis",
     },
     {
       id: "play-split",
-      label: GamePlayActionTypes.Split,
+      label: "Split",
       disabled: !canSplit,
       icon: "call_split",
       alert: `- £${openBet}`,
-      onClick: playerActions.split,
+      onClick: () => playerActions.split(props.player),
     },
     {
       id: "play-surrender",
-      label: GamePlayActionTypes.Surrender,
+      label: "Surrender",
       disabled: !canSurrender,
       icon: "flag",
       alert: `+ £${openBet / 2}`,
-      onClick: playerActions.surrender,
+      onClick: () => playerActions.surrender(props.player),
     },
     {
       id: "play-double",
-      label: GamePlayActionTypes.Double,
+      label: "Double",
       disabled: !canDouble,
       icon: "monetization_on",
       alert: `- £${openBet}`,
-      onClick: playerActions.double,
+      onClick: () => playerActions.double(props.player),
     },
   ];
 });
 </script>
 <template>
-  <section class="ctrl-menu frame flex flex-wrap">
-    <ActionButton
-      v-for="actionButton in actionButtons"
-      :key="actionButton.id"
-      v-bind="actionButton"
-      @click="actionButton.onClick"
-    >
-      <MdIcon class="ctrl-btn-icon" :name="actionButton.icon!" />
-    </ActionButton>
-  </section>
+  <ActionButton
+    v-for="actionButton in actionButtons"
+    :key="actionButton.id"
+    v-bind="actionButton"
+    @click="actionButton.onClick"
+  />
 </template>

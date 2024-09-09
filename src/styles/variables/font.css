@@ -1,0 +1,18 @@
+:root {
+    --font-family-heading: "Noto Serif", serif;
+    --font-family-body: "Noto Sans", sans-serif;
+    --font-family-icon: "Material Symbols Rounded";
+
+    --font-size-body-small: 11px;
+    --font-size-body-medium: 14px;
+    --font-size-body-large: 16px;
+
+    --font-size-heading-small: 24px;
+    --font-size-heading-medium: 28px;
+    --font-size-heading-large: 32px;
+    --font-size-heading-xl: 32px;
+
+    --font-weight-bold: 600;
+    --font-weight-medium: 500;
+    --font-weight-normal: 400;
+}

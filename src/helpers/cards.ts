@@ -4,9 +4,9 @@ import {
   FaceValues,
   SUITS_COUNT,
   SUIT_LIST,
-} from "../constants/cards.ts";
-import { HandRules, PlayingCard } from "../types/card.ts";
-import { Player } from "../types/players.ts";
+} from "~/constants/cards.ts";
+import { HandRules, PlayingCard } from "~/types/card.ts";
+import { Player } from "~/types/players.ts";
 
 export function getHandRules(player: Player): HandRules {
   const { activeHandId, hands, money, openBet } = player;
@@ -47,15 +47,15 @@ export function isAce([faceValue]: PlayingCard) {
   return faceValue === FaceValues.Ace;
 }
 
-export function buildDeck(decks: number): PlayingCard[] {
+export function buildDeck(deckCount: number): PlayingCard[] {
   const cards: PlayingCard[] = [];
-  const nDecks = new Array(decks).fill(0);
-  const nSuits = new Array(SUITS_COUNT).fill(0);
-  const nFaces = new Array(CARDS_PER_SUIT).fill(0);
+  const nDecks = Array.from({ length: deckCount });
+  const nSuits = Array.from({ length: SUITS_COUNT });
+  const nFaces = Array.from({ length: CARDS_PER_SUIT });
 
   nDecks.forEach(() => {
-    nSuits.forEach((_y, j) => {
-      nFaces.forEach((_z, k) => {
+    nSuits.forEach((_, j) => {
+      nFaces.forEach((_, k) => {
         cards.push([k + 1, SUIT_LIST[j]]);
       });
     });

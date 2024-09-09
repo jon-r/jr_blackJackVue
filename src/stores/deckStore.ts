@@ -1,26 +1,26 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-import { buildDeck } from "../helpers/cards.ts";
-import { getRandom } from "../helpers/math.ts";
-import { Position } from "../types/animations.ts";
-import { PlayingCard } from "../types/card.ts";
-import { useCoreStore } from "./coreStore.ts";
+import { NIL_POSITION } from "~/constants/gamePlay.ts";
+import { buildDeck } from "~/helpers/cards.ts";
+import { getRandom } from "~/helpers/math.ts";
+import { Position } from "~/types/animations.ts";
+import { PlayingCard } from "~/types/card.ts";
 
-const nilPosition: Position = { x: 0, y: 0 };
+import { useCoreStore } from "./coreStore.ts";
 
 export const useDeckStore = defineStore("deck", () => {
   const coreStore = useCoreStore();
 
   const deck = ref<PlayingCard[]>([]);
-  const shoePosition = ref<Position>(nilPosition);
+  const deckPosition = ref<Position>(NIL_POSITION);
 
   function rebuildDeck(deckCount = coreStore.config.deckCount) {
     deck.value = buildDeck(deckCount);
   }
 
-  function setShoePosition(newPosition: Position) {
-    shoePosition.value = newPosition;
+  function setDeckPosition(newPosition: Position) {
+    deckPosition.value = newPosition;
   }
 
   function drawCard() {
@@ -31,9 +31,9 @@ export const useDeckStore = defineStore("deck", () => {
 
   return {
     deck,
-    shoePosition,
+    deckPosition,
 
-    setShoePosition,
+    setDeckPosition,
     rebuildDeck,
     drawCard,
   };

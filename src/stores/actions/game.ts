@@ -1,9 +1,11 @@
-import { GameStages } from "../../constants/gamePlay.ts";
-import { DEALER_ID } from "../../constants/player.ts";
-import { hasBlackjack, hasBust } from "../../helpers/gamePlay.ts";
-import { isActivePlayer, isNotDealer } from "../../helpers/players.ts";
-import { GameConfig } from "../../types/config.ts";
-import { PlayerInputStub } from "../../types/players.ts";
+import { GameStages } from "~/constants/gamePlay.ts";
+import { DEALER_ID } from "~/constants/player.ts";
+import { hasBlackjack, hasBust } from "~/helpers/gamePlay.ts";
+import { formatDealerMessage } from "~/helpers/messages.ts";
+import { isActivePlayer, isNotDealer } from "~/helpers/players.ts";
+import { GameConfig } from "~/types/config.ts";
+import { PlayerInputStub } from "~/types/players.ts";
+
 import { useCoreStore } from "../coreStore.ts";
 import { useDeckStore } from "../deckStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
@@ -28,7 +30,7 @@ export function useGameActions() {
       (player) =>
         isActivePlayer(player) &&
         player.index > coreStore.activePlayerId &&
-        // todo multi hand
+        // todo multihand
         !hasBust(player.hands[0]) &&
         !hasBlackjack(player.hands[0]),
     );
@@ -40,7 +42,13 @@ export function useGameActions() {
     }
   }
 
+  function placeBets() {
+    coreStore.sendMessage("Please place your bets.");
+    goToNextPlayer();
+  }
+
   async function dealInitialCards() {
+    coreStore.sendMessage("All bets are in, dealing out first cards.");
     // deal one
     await playersStore.dealAllPlayersCards();
     await playersStore.dealCard(DEALER_ID);
@@ -58,10 +66,12 @@ export function useGameActions() {
 
   async function dealFinalCards() {
     await playersStore.revealAllBlankCards();
+    coreStore.sendMessage(formatDealerMessage(playersStore.dealer.hands[0]));
     coreStore.jumpToStage(GameStages.EndRound);
   }
 
   async function finaliseRound() {
+    coreStore.sendMessage("Round over. Play again?");
     await betActions.settleAllBets();
     playersStore.checkPlayersBalance();
   }
@@ -73,11 +83,13 @@ export function useGameActions() {
 
   function endGame() {
     playersStore.resetPlayers(playersStore.players.filter(isNotDealer));
+    coreStore.toggleOptionsModal(true);
     coreStore.jumpToStage(GameStages.Init);
   }
 
   return {
     startGame,
+    placeBets,
     dealInitialCards,
     goToNextPlayer,
     dealFinalCards,

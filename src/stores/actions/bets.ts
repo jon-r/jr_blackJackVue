@@ -1,7 +1,9 @@
-import { GameOutcomes, OUTCOME_MULTIPLIER } from "../../constants/gamePlay.ts";
-import { getGameOutcome } from "../../helpers/gamePlay.ts";
-import { getRandom } from "../../helpers/math.ts";
-import { wait } from "../../helpers/time.ts";
+import { GameOutcomes, OUTCOME_MULTIPLIER } from "~/constants/gamePlay.ts";
+import { AUTO_TIME_LONG } from "~/constants/settings.ts";
+import { getGameOutcome } from "~/helpers/gamePlay.ts";
+import { getRandom } from "~/helpers/math.ts";
+import { wait } from "~/helpers/time.ts";
+
 import { useCoreStore } from "../coreStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
 
@@ -53,17 +55,16 @@ export function useBetActions() {
     targetPlayer.openBet += targetPlayer.openBet * OUTCOME_MULTIPLIER[outcome];
     targetPlayer.outcome = outcome;
 
-    await wait(coreStore.config.autoTime);
+    await wait(AUTO_TIME_LONG);
 
     targetPlayer.money += targetPlayer.openBet;
     targetPlayer.openBet = 0;
   }
 
-  // todo skip if already settled (bust or surrendered)
   async function settleAllBets() {
     const promises = playersStore.activePlayers.map(async (player) => {
       if (!player.outcome) {
-        // todo get best player hand
+        // todo multihand
         const outcome = getGameOutcome(player.hands, playersStore.dealer.hands);
 
         await settleBet(outcome, player.index);

@@ -1,78 +1,121 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { onMounted, ref } from "vue";
 
-import { setPos, transformJiggle } from "../../animationTools.ts";
-import { SpecialScores } from "../../constants/gamePlay.ts";
-import { useDeckStore } from "../../stores/deckStore.ts";
-import { Position } from "../../types/animations.ts";
-import { GameHand } from "../../types/players.ts";
+import { NIL_POSITION, SpecialScores } from "~/constants/gamePlay.ts";
+import { setElementPosition, transformJiggle } from "~/helpers/animation.ts";
+import { useDeckStore } from "~/stores/deckStore.ts";
+import { PlayerHand } from "~/types/players.ts";
+
 import PlayingCard from "../common/PlayingCard.vue";
 
 type PlayerCardsProps = {
-  hand: GameHand;
-  framePos: Position;
+  hand: PlayerHand;
   isActive: boolean;
 };
 
 const deckStore = useDeckStore();
 const props = defineProps<PlayerCardsProps>();
 
-const enterPosition = computed<Position>(() => {
-  const shoe = deckStore.shoePosition;
+const enterPosition = ref(NIL_POSITION);
+const leavePosition = { x: 0, y: 1000 };
 
-  return {
-    x: shoe.x - props.framePos.x - 36,
-    y: shoe.y - props.framePos.y - 70,
+const frameRef = ref<HTMLDivElement>();
+
+onMounted(() => {
+  const { x: deckX, y: deckY } = deckStore.deckPosition;
+  const { x, y } = frameRef.value?.getBoundingClientRect() ?? NIL_POSITION;
+
+  enterPosition.value = {
+    x: deckX - x,
+    y: deckY - y,
   };
 });
 
-/*
-const leavePosition = computed<Position>(() => ({
-  x: -props.framePos.x,
-  y: -props.framePos.y - 100, // to go right off the page
-}));
-*/
-
-// fixme card transitions seem to be problematic. maybe can be handled with just css?
-function enter(el: HTMLElement) {
-  setPos(el, enterPosition.value);
+function onEnter(el: HTMLElement) {
+  setElementPosition(el, enterPosition.value);
 }
-function enterTo(el: HTMLElement) {
-  const offsetX = Number(el.dataset.index) * 30;
-  const jiggle = transformJiggle({ offsetX });
-  setPos(el, jiggle);
+function onAfterEnter(el: HTMLElement) {
+  const offsetX = Number(el.dataset.index) * 30 + 40;
+  const jiggle = transformJiggle({ offsetX, offsetY: 40 });
+  setElementPosition(el, jiggle);
 }
 
-function leave() {
-  // el.addEventListener("transitionend", done);
-  // setPos(el, leavePosition.value);
+function onLeave(el: HTMLElement) {
+  setElementPosition(el, leavePosition);
 }
 </script>
 
 <template>
-  <div class="player-cards" :class="{ 'active-hand': isActive }">
-    <div
-      class="hand-score shadow-light"
-      :class="{ 'error-text': hand.special === SpecialScores.Bust }"
-    >
-      {{ hand.score }} {{ hand.special }}
-    </div>
-
+  <div
+    class="player-cards"
+    :class="{ 'player-cards--active-hand': props.isActive }"
+    ref="frameRef"
+  >
     <TransitionGroup
       appear
       name="cards"
       tag="div"
-      @before-enter="enter"
-      @after-enter="enterTo"
-      @leave="leave"
+      @before-enter="onEnter"
+      @after-enter="onAfterEnter"
+      @leave="onLeave"
     >
-      <PlayingCard
-        v-for="(card, idx) in hand.cards"
+      <div
+        v-for="(card, idx) in props.hand.cards"
         :key="idx"
-        :card="card"
         :data-index="idx"
-        class="card-outer"
-      />
+        class="player-cards__card"
+      >
+        <PlayingCard :card="card" />
+      </div>
     </TransitionGroup>
+
+    <small
+      v-if="props.isActive && props.hand.score > 0"
+      class="player-cards__hand-score"
+      :class="{
+        'player-cards__hand-score--bust':
+          props.hand.special === SpecialScores.Bust,
+      }"
+    >
+      {{ props.hand.score }} {{ props.hand.special }}
+    </small>
   </div>
 </template>
+<style>
+.player-cards {
+  flex: 1;
+  transition: 300ms;
+
+  &:not(&--active-hand) {
+    opacity: 0.75;
+    filter: grayscale(0.5);
+    transform: translateY(-10px);
+  }
+
+  &__hand-score {
+    position: absolute;
+    top: var(--padding-lg);
+    left: var(--padding-lg);
+
+    border-radius: var(--border-radius-lg);
+    padding: 0 var(--padding-xs);
+    display: block;
+    background-color: var(--md-sys-color-on-primary-container);
+    color: var(--md-sys-color-primary-container);
+
+    &--bust {
+      background-color: var(--md-sys-color-error);
+      color: var(--md-sys-color-on-error);
+    }
+  }
+
+  &__card {
+    box-shadow: var(--shadow-level-1);
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    transition: transform var(--transition-long);
+  }
+}
+</style>

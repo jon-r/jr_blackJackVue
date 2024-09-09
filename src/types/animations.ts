@@ -3,3 +3,8 @@ export type Position = {
   y: number;
   r?: number;
 };
+
+export type Message = {
+  id: number;
+  value: string;
+};
