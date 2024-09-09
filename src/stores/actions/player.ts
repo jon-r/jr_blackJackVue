@@ -1,6 +1,7 @@
 import { BLACKJACK_SCORE } from "~/constants/cards.ts";
 import { GameOutcomes } from "~/constants/gamePlay.ts";
 import { formatPlayerMessage } from "~/helpers/messages.ts";
+import { useCardsActions } from "~/stores/actions/cards.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
 import { Player } from "~/types/players.ts";
 
@@ -13,16 +14,17 @@ export function usePlayerActions() {
   const coreStore = useCoreStore();
   const betActions = useBetActions();
   const gameActions = useGameActions();
+  const cardsActions = useCardsActions();
 
   function nextHandOrPlayer() {
-    const nextHand = playersStore.nextHand();
+    const nextHand = playersStore.getNextHand();
     if (!nextHand) {
       gameActions.goToNextPlayer();
     }
   }
 
-  async function checkScore() {
-    const hand = playersStore.getPlayerHand();
+  async function checkScore(player: Player) {
+    const hand = playersStore.getPlayerHand(player.index);
 
     if (!hand) return;
 
@@ -37,11 +39,17 @@ export function usePlayerActions() {
     // else continue
   }
 
+  function submitBet(player: Player, value: number) {
+    coreStore.sendMessage(`${player.name} bets £${value}`);
+    betActions.placeBet(value);
+    gameActions.goToNextPlayer();
+  }
+
   async function hit(player: Player) {
-    const card = await playersStore.dealCard();
+    const card = await cardsActions.dealCard(player.index);
     coreStore.sendMessage(formatPlayerMessage(player, "hits", card));
 
-    await checkScore();
+    await checkScore(player);
   }
 
   function stand(player: Player) {
@@ -51,9 +59,6 @@ export function usePlayerActions() {
 
   // todo multihand
   function split(player: Player) {
-    // const player = playersStore.currentPlayer;
-    // if (!player) return;
-
     coreStore.sendMessage(formatPlayerMessage(player, "splits"));
 
     // add second bet
@@ -73,13 +78,13 @@ export function usePlayerActions() {
     gameActions.goToNextPlayer();
   }
 
-  function double(player: Player) {
+  async function double(player: Player) {
     coreStore.sendMessage(formatPlayerMessage(player, "doubles"));
 
     betActions.updateBet(1);
-    playersStore.dealBlank();
+    await cardsActions.dealBlank(player.index);
     gameActions.goToNextPlayer();
   }
 
-  return { hit, stand, split, surrender, double };
+  return { hit, stand, split, surrender, double, submitBet };
 }

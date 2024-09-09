@@ -14,7 +14,6 @@ import InputField from "./InputField.vue";
 const coreStore = useCoreStore();
 const playersStore = usePlayersStore();
 const gameActions = useGameActions();
-const betActions = useBetActions();
 
 const playerInput = ref(setupPlayerInput(playersStore.players));
 
@@ -23,30 +22,25 @@ const minBet = ref(coreStore.config.minBet);
 
 const isMoreOptionsOpen = ref(false);
 
-function newGame() {
+function newGame(isDemo = false) {
   const newConfig: GameConfig = {
     deckCount: deckCount.value,
     minBet: minBet.value,
     playerCount: playerInput.value.length,
   };
 
-  gameActions.startGame(playerInput.value, newConfig);
-  coreStore.toggleOptionsModal(false);
+  gameActions.startGame(playerInput.value, newConfig, isDemo);
 }
 
 // todo demo automatically (based on url query)
-//  todo move this to gameActions
 // fixme - bug with bets if mid game
 function newDemo() {
-  newGame();
-
-  betActions.placeRandomBets();
-  coreStore.jumpToStage(GameStages.DealCards);
+  newGame(true);
 }
 </script>
 
 <template>
-  <form class="options-form" @submit.prevent="newGame">
+  <form class="options-form" @submit.prevent="() => newGame()">
     <fieldset class="options-form__group">
       <h4 class="options-form__group-title">Player Names</h4>
 

@@ -23,7 +23,7 @@ export const useDeckStore = defineStore("deck", () => {
     deckPosition.value = newPosition;
   }
 
-  function drawCard() {
+  function drawCard(): PlayingCard {
     const newCardId = getRandom(deck.value.length);
     const [newCard] = deck.value.splice(newCardId, 1);
     return newCard;

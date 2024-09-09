@@ -23,6 +23,7 @@ const visualCard = computed(() => {
 <template>
   <div class="playing-card" :class="visualCard.suit">
     <strong v-if="visualCard.face">{{ visualCard.face }}</strong>
+    <!--    todo need to revert the back as inline it breaks animation -->
     <svg class="playing-card__face" viewBox="0 0 100 140">
       <use :xlink:href="visualCard.suitId" />
     </svg>

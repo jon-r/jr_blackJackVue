@@ -1,8 +1,9 @@
 import { GameStages } from "~/constants/gamePlay.ts";
-import { DEALER_ID } from "~/constants/player.ts";
+// import { DEALER_ID } from "~/constants/player.ts";
 import { hasBlackjack, hasBust } from "~/helpers/gamePlay.ts";
 import { formatDealerMessage } from "~/helpers/messages.ts";
 import { isActivePlayer, isNotDealer } from "~/helpers/players.ts";
+import { useCardsActions } from "~/stores/actions/cards.ts";
 import { GameConfig } from "~/types/config.ts";
 import { PlayerInputStub } from "~/types/players.ts";
 
@@ -16,13 +17,24 @@ export function useGameActions() {
   const playersStore = usePlayersStore();
   const deckStore = useDeckStore();
   const betActions = useBetActions();
+  const cardsActions = useCardsActions();
 
-  function startGame(players: PlayerInputStub[], config: GameConfig) {
+  function startGame(
+    players: PlayerInputStub[],
+    config: GameConfig,
+    isDemo: boolean,
+  ) {
     coreStore.setConfig(config);
     playersStore.resetPlayers(players);
     deckStore.rebuildDeck(config.deckCount);
 
-    coreStore.newRound();
+    coreStore.toggleOptionsModal(false);
+    coreStore.jumpToStage(GameStages.PlaceBets);
+
+    if (isDemo) {
+      betActions.placeRandomBets();
+      coreStore.jumpToStage(GameStages.DealCards);
+    }
   }
 
   function goToNextPlayer() {
@@ -50,12 +62,12 @@ export function useGameActions() {
   async function dealInitialCards() {
     coreStore.sendMessage("All bets are in, dealing out first cards.");
     // deal one
-    await playersStore.dealAllPlayersCards();
-    await playersStore.dealCard(DEALER_ID);
+    await cardsActions.dealAllPlayersCards();
+    // await cardsActions.dealCard(DEALER_ID);
 
     // deal two
-    await playersStore.dealAllPlayersCards();
-    const peekedBlackjack = await playersStore.dealOrPeekDealer();
+    const peekedBlackjack = await cardsActions.dealAllPlayersCards(true);
+    // const peekedBlackjack = await playersStore.dealOrPeekDealerCard();
 
     if (peekedBlackjack) {
       coreStore.jumpToStage(GameStages.DealerActions);
@@ -65,7 +77,7 @@ export function useGameActions() {
   }
 
   async function dealFinalCards() {
-    await playersStore.revealAllBlankCards();
+    await cardsActions.revealAllBlankCards();
     coreStore.sendMessage(formatDealerMessage(playersStore.dealer.hands[0]));
     coreStore.jumpToStage(GameStages.EndRound);
   }
@@ -78,7 +90,7 @@ export function useGameActions() {
 
   function nextRound() {
     playersStore.resetCards();
-    coreStore.newRound();
+    coreStore.jumpToStage(GameStages.PlaceBets);
   }
 
   function endGame() {

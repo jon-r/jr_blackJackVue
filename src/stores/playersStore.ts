@@ -2,21 +2,19 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
 import {
-  BLACKJACK_SCORE,
-  DEALER_STAND_SCORE,
-  FACE_SCORE,
-  UNKNOWN_CARD,
+  BLACKJACK_SCORE, // DEALER_STAND_SCORE,
+  FACE_SCORE, // UNKNOWN_CARD,
 } from "~/constants/cards.ts";
 import { DEALER_ID, DEALER_STUB } from "~/constants/player.ts";
-import { AUTO_TIME_STANDARD } from "~/constants/settings.ts";
-import { getCardScore, isBlankCard } from "~/helpers/cards.ts";
+// import { AUTO_TIME_STANDARD } from "~/constants/settings.ts";
+import { getCardScore } from "~/helpers/cards.ts";
 import { getHandScore, updateHand } from "~/helpers/gamePlay.ts";
 import {
   createEmptyHand,
   createPlayer,
   isActivePlayer,
 } from "~/helpers/players.ts";
-import { wait } from "~/helpers/time.ts";
+// import { wait } from "~/helpers/time.ts";
 import { PlayingCard } from "~/types/card.ts";
 import { Player, PlayerHand, PlayerInputStub } from "~/types/players.ts";
 
@@ -67,7 +65,7 @@ export const usePlayersStore = defineStore("players", () => {
   }
 */
 
-  function nextHand(playerId = coreStore.activePlayerId): boolean {
+  function getNextHand(playerId = coreStore.activePlayerId): boolean {
     const targetPlayer = players.value[playerId];
 
     if (!targetPlayer) return false;
@@ -106,54 +104,47 @@ export const usePlayersStore = defineStore("players", () => {
     players.value[DEALER_ID].didPeek = newCard;
   }
 
-  async function dealCard(playerId?: number, handId?: number) {
-    const targetHand = getPlayerHand(playerId, handId);
+  // async function dealOrPeekDealerCard() {
+  //   return dealCard(DEALER_ID, 0, true);
+  // }
+  //
+  // async function dealAllPlayersCards(mayPeek = false) {
+  //   for (let i = 0; i < activePlayers.value.length; i++) {
+  //     await dealCard(activePlayers.value[i].index);
+  //   }
+  //
+  //   await dealCard(DEALER_ID, 0, mayPeek);
+  // }
+  //
+  // function dealBlank(playerId: number, handId?: number) {
+  //   // const targetHand = getPlayerHand(playerId, handId);
+  //   //
+  //   // if (!targetHand) return; // shouldnt happen, maybe throw error?
+  //   //
+  //   // targetHand.cards.push(UNKNOWN_CARD);
+  //   setCard(UNKNOWN_CARD, playerId, handId);
+  // }
+  //
+  // async function dealCard(
+  //   playerId: number,
+  //   handId?: number,
+  //   dealerMayPeek = false,
+  // ): Promise<PlayingCard | undefined> {
+  //   await wait(AUTO_TIME_STANDARD);
+  //
+  //   const newCard = dealerMayPeek ? dealerPeekCard() : deckStore.drawCard();
+  //
+  //   if (newCard) {
+  //     setCard(newCard, playerId, handId);
+  //   }
+  //
+  //   return newCard;
+  // }
 
-    if (!targetHand) return;
-
-    dealBlank(playerId, handId);
-
-    return revealCard(playerId, handId);
-  }
-
-  async function dealOrPeekDealer() {
-    dealBlank(DEALER_ID);
-
-    const newCard = dealerPeekCard();
-    if (newCard) {
-      setCard(newCard, DEALER_ID);
-    }
-
-    return newCard;
-  }
-
-  async function dealAllPlayersCards() {
-    for (let i = 0; i < activePlayers.value.length; i++) {
-      await dealCard(activePlayers.value[i].index);
-    }
-  }
-
-  async function revealCard(
-    playerId?: number,
-    handId?: number,
-  ): Promise<PlayingCard | undefined> {
-    await wait(AUTO_TIME_STANDARD);
-
-    const newCard = deckStore.drawCard();
-
-    setCard(newCard, playerId, handId);
-
-    return newCard;
-  }
-
-  function setCard(
-    card: PlayingCard,
-    playerId = coreStore.activePlayerId,
-    handId?: number,
-  ) {
+  function setCard(card: PlayingCard, playerId: number, handId?: number) {
     const targetPlayer = players.value[playerId];
     const targetHand = getPlayerHand(playerId, handId);
-    //
+
     if (!targetPlayer || !targetHand) return;
 
     targetPlayer.hands[handId ?? targetPlayer.activeHandId] = updateHand(
@@ -162,40 +153,38 @@ export const usePlayersStore = defineStore("players", () => {
     );
   }
 
-  async function revealAllBlankCards() {
-    if (dealer.value.didPeek) {
-      setCard(dealer.value.didPeek, DEALER_ID);
-    }
-    let dealerMayContinue = dealer.value.hands[0].score < DEALER_STAND_SCORE;
-    while (dealerMayContinue) {
-      await revealCard(DEALER_ID);
-      dealerMayContinue = dealer.value.hands[0].score < DEALER_STAND_SCORE;
-    }
-
-    for (let i = 0; i < activePlayers.value.length; i++) {
-      await revealBlanks(activePlayers.value[i].index);
-    }
-  }
-
-  async function revealBlanks(playerId?: number, handId?: number) {
-    const targetHand = getPlayerHand(playerId, handId);
-
-    if (!targetHand) return; // shouldnt happen, maybe throw error?
-
-    const cardsToReveal = targetHand.cards.filter(isBlankCard);
-
-    for (let i = 0; i < cardsToReveal.length; i++) {
-      await revealCard(playerId, handId);
-    }
-  }
-
-  function dealBlank(playerId?: number, handId?: number) {
-    const targetHand = getPlayerHand(playerId, handId);
-
-    if (!targetHand) return; // shouldnt happen, maybe throw error?
-
-    targetHand.cards.push(UNKNOWN_CARD);
-  }
+  // async function revealAllBlankCards() {
+  //   await revealDealerBlanks();
+  //
+  //   for (let i = 0; i < activePlayers.value.length; i++) {
+  //     await revealPlayerBlanks(activePlayers.value[i].index);
+  //   }
+  // }
+  //
+  // async function revealDealerBlanks() {
+  //   if (dealer.value.didPeek) {
+  //     setCard(dealer.value.didPeek, DEALER_ID);
+  //   }
+  //   let dealerMayContinue = true;
+  //   while (dealerMayContinue) {
+  //     dealerMayContinue = dealer.value.hands[0].score < DEALER_STAND_SCORE;
+  //     if (dealerMayContinue) {
+  //       await dealCard(DEALER_ID);
+  //     }
+  //   }
+  // }
+  //
+  // async function revealPlayerBlanks(playerId: number, handId?: number) {
+  //   const targetHand = getPlayerHand(playerId, handId);
+  //
+  //   if (!targetHand) return; // shouldnt happen, maybe throw error?
+  //
+  //   const cardsToReveal = targetHand.cards.filter(isBlankCard);
+  //
+  //   for (let i = 0; i < cardsToReveal.length; i++) {
+  //     await dealCard(playerId, handId);
+  //   }
+  // }
 
   return {
     players,
@@ -204,14 +193,17 @@ export const usePlayersStore = defineStore("players", () => {
     currentPlayer,
 
     resetPlayers,
-    dealBlank,
+    // dealBlank,
     getPlayerHand,
-    dealCard,
-    dealAllPlayersCards,
-    revealAllBlankCards,
-    dealOrPeekDealer,
-    nextHand,
+    // dealCard,
+    // dealAllPlayersCards,
+    // revealAllBlankCards,
+    // dealOrPeekDealerCard,
+    getNextHand,
     resetCards,
     checkPlayersBalance,
+
+    setCard,
+    dealerPeekCard,
   };
 });
