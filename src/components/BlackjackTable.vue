@@ -29,7 +29,7 @@ onMounted(() => {
 </script>
 <template>
   <div class="blackjack-table">
-    <svg viewBox="5 5 215 140">
+    <svg class="blackjack-table__tabletop" viewBox="5 5 215 140">
       <use xlink:href="#tabletop" />
     </svg>
 
@@ -56,9 +56,15 @@ onMounted(() => {
 </template>
 <style>
 .blackjack-table {
+  flex: 1;
   background-color: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
   position: relative;
+
+  &__tabletop {
+    position: absolute;
+    inset: 0;
+  }
 
   &__deck {
     position: absolute;
