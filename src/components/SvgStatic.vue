@@ -83,6 +83,80 @@
           opacity=".2"
         />
       </symbol>
+
+      <pattern id="a" patternUnits="userSpaceOnUse" height="16" width="10">
+        <path fill="#bb3838" d="M0 0l5 3v5l-5 -3z M5 8l5 3v5l-5 -3z" />
+        <path fill="#8d1010" d="M10 0l-5 3v5l5 -3M0 11l5-3v5l-5 3" />
+      </pattern>
+
+      <symbol id="jr-logo" fill="none" stroke-width="2" viewBox="0 0 61 16">
+        <path
+          stroke-linejoin="round"
+          stroke="#bb3838"
+          d="M7 -1L2 8l5 9m20 0l5-9-5-9"
+        />
+        <path
+          stroke="#e7e4e4"
+          d="M10 1h5v10a4 4 0 0 1-4 4h-2M16.5 1h3a4 4 0 0 1 0 8h-3 2q3 0 4 3t2.5 3"
+        />
+      </symbol>
+
+      <symbol id="jr-logo" fill="none" stroke-width="2" viewBox="0 0 61 16">
+        <path
+          stroke-linejoin="round"
+          stroke="#bb3838"
+          d="M7 -1L2 8l5 9m20 0l5-9-5-9"
+        />
+        <path
+          stroke="#e7e4e4"
+          d="M10 1h5v10a4 4 0 0 1-4 4h-2M16.5 1h3a4 4 0 0 1 0 8h-3 2q3 0 4 3t2.5 3"
+        />
+      </symbol>
+
+      <symbol id="card-blank">
+        <path fill="#c97272" d="m0 0h100v140h-100z" />
+
+        <path
+          fill="url(#a)"
+          stroke="#e7e4e4"
+          stroke-width="2"
+          d="m5 5h90v130h-90z"
+        />
+
+        <circle
+          stroke="#8d1010"
+          stroke-width="2"
+          fill="#c97272"
+          cx="50"
+          cy="70"
+          r="30"
+        />
+
+        <use x="22" y="0" xlink:href="#jr-logo" />
+      </symbol>
+
+      <symbol id="card-clubs">
+        <path
+          d="m74,33 a10,10 0 1,0 10,-12 a10,10 0 1,0 -18,0 a10,10 0 1,0 10,12 m-1,4 l5,8 h-10 z"
+        />
+      </symbol>
+
+      <symbol id="card-diamonds">
+        <path fill="red" d="m50,108 l36,42 l-36,42 l-36,-42 z" />
+      </symbol>
+
+      <symbol id="card-spades">
+        <path
+          d="m72,79 a1,1 0 0,0 20,0 q0,-7 -9,-14 t-8,-14 q0,7 -9,14 t-8,14 a1,1 0 0,0 20,0 m-3,8 l5,8 h-10 z"
+        />
+      </symbol>
+
+      <symbol id="card-hearts">
+        <path
+          fill="red"
+          d="M28 18a1 1 0 0 0-20 0q0 7 9 14t8 14q0-7 9-14t8-14a1 1 0 0 0-20 0z"
+        />
+      </symbol>
     </defs>
   </svg>
 </template>

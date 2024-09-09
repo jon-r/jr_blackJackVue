@@ -15,13 +15,29 @@ const visualCard = computed(() => {
   return {
     face: CARD_FACES[faceValue] || faceValue,
     suit: `playing-card--${suit}`,
+    suit2: suit,
   };
 });
 </script>
 
 <template>
   <div class="playing-card" :class="visualCard.suit">
-    <strong v-if="visualCard.face">{{ visualCard.face }}</strong>
+    <svg class="playing-card__face" viewBox="0 0 100 140">
+      <use :xlink:href="'#card-' + visualCard.suit2" />
+    </svg>
+
+    <!--    <template v-if="visualCard.face">
+      <strong>{{ visualCard.face }}</strong>
+
+      &lt;!&ndash;    <svg >&ndash;&gt;
+      &lt;!&ndash;      <use :xlink:href="visualCard.face" />&ndash;&gt;
+      &lt;!&ndash;    </svg>&ndash;&gt;
+    </template>
+    <template v-else>
+      <svg class="playing-card__back" viewBox="0 0 100 140">
+        <use :xlink:href="'#card-' + visualCard.suit" />
+      </svg>
+    </template>-->
   </div>
 </template>
 
@@ -40,10 +56,18 @@ const visualCard = computed(() => {
   position: relative;
   line-height: 1;
 
+  /*
   &--blank {
-    background:
-      var(--card-back-bg) center/cover,
+    background: //var(--card-back-bg) center/cover,
       var(--playing-card-back);
+  }
+  */
+
+  &__face {
+    position: absolute;
+    inset: 0;
+    //background: //var(--card-back-bg) center/cover,
+      //  var(--playing-card-back);;
   }
 
   &--hearts,
@@ -62,19 +86,19 @@ const visualCard = computed(() => {
     }
   }
 
-  &:not(&--blank)::after {
+  /*  &:not(&--blank)::after {
     content: "";
     position: absolute;
     right: -15px;
     bottom: -10px;
     height: 60px;
     width: 60px;
-    /* todo inline this like the chips and use currentcolour */
+    !* todo inline this like the chips and use currentcolour *!
     background-image: var(--card-symbol);
     background-size: 200%;
-  }
+  }*/
 
-  &--hearts::after {
+  /*  &--hearts::after {
     background-position: top left;
   }
   &--diamonds::after {
@@ -85,7 +109,7 @@ const visualCard = computed(() => {
   }
   &--spades::after {
     background-position: bottom right;
-  }
+  }*/
 }
 
 @keyframes flip-card {
