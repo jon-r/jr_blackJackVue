@@ -137,25 +137,60 @@
 
       <symbol id="card-clubs">
         <path
-          d="m74,33 a10,10 0 1,0 10,-12 a10,10 0 1,0 -18,0 a10,10 0 1,0 10,12 m-1,4 l5,8 h-10 z"
+          fill="currentcolor"
+          d="m74,113 a20,20 0 1,0 20,-24 a20,20 0 1,0 -36,0 a20,20 0 1,0 20,24 m-2,8 l10,16 h-20 z"
         />
       </symbol>
 
       <symbol id="card-diamonds">
-        <path fill="red" d="m50,108 l36,42 l-36,42 l-36,-42 z" />
+        <path fill="currentcolor" d="m75,56 l36,42 l-36,42 l-36,-42 z" />
       </symbol>
 
       <symbol id="card-spades">
         <path
-          d="m72,79 a1,1 0 0,0 20,0 q0,-7 -9,-14 t-8,-14 q0,7 -9,14 t-8,14 a1,1 0 0,0 20,0 m-3,8 l5,8 h-10 z"
+          fill="currentcolor"
+          d="m69,107 a1,1 0 0,0 40,0 q0,-14 -18,-28 t-16,-28 q0,14 -18,28 t-16,28 a1,1 0 0,0 40,0 m-6,16 l10,16 h-20 z"
         />
       </symbol>
 
       <symbol id="card-hearts">
         <path
-          fill="red"
-          d="M28 18a1 1 0 0 0-20 0q0 7 9 14t8 14q0-7 9-14t8-14a1 1 0 0 0-20 0z"
+          fill="currentcolor"
+          d="m81 85a1 1 0 0 0-40 0q0 14 18 28t16 28q0-14 18-28t16-28a1 1 0 0 0-40 0z"
         />
+      </symbol>
+
+      <path id="curve-lg" d="M33.5 8a1 1 0 1 0 158 0 a1 1 0 1 0-158 0" />
+      <path id="curve-sm" d="M50.5 8a1 1 0 1 0 124 0 a1 1 0 1 0-124 0" />
+
+      <symbol id="tabletop">
+        <g opacity=".5">
+          <g stroke="#f9a825" fill="none">
+            <path
+              d="M112.6 92.43c35.18 0 65.25-21.88 77.34-52.78.4-1.05-.13-2.22-1.18-2.6l-11.7-4.26c-1.02-.4-2.14.1-2.54 1.1-9.77 24.64-33.8 42.1-61.92 42.1S60.44 58.53 50.68 33.9c-.4-1-1.52-1.5-2.54-1.14L36.44 37c-1.05.4-1.6 1.56-1.18 2.6 12.1 30.9 42.16 52.8 77.34 52.8z"
+            />
+            <circle cx="25" cy="65" r="12" />
+            <circle cx="56" cy="107" r="12" />
+            <circle cx="113" cy="116" r="12" />
+            <circle cx="168" cy="107" r="12" />
+            <circle cx="200" cy="65" r="12" />
+          </g>
+          <g
+            fill="#f9a825"
+            text-anchor="middle"
+            font-family="Georgia"
+            letter-spacing=".8"
+          >
+            <text>
+              <textPath xlink:href="#curve-lg" startOffset="25%" font-size="10">
+                BLACKJACK PAYS 3 TO 2
+              </textPath>
+              <textPath xlink:href="#curve-sm" startOffset="25%" font-size="6">
+                DEALER MUST STAND ON 17
+              </textPath>
+            </text>
+          </g>
+        </g>
       </symbol>
     </defs>
   </svg>

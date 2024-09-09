@@ -29,6 +29,10 @@ onMounted(() => {
 </script>
 <template>
   <div class="blackjack-table">
+    <svg viewBox="5 5 215 140">
+      <use xlink:href="#tabletop" />
+    </svg>
+
     <MessagesOutput />
 
     <button
@@ -52,9 +56,7 @@ onMounted(() => {
 </template>
 <style>
 .blackjack-table {
-  flex: 1;
-  background: var(--md-sys-color-primary) url(../assets/table-print.svg)
-    no-repeat center;
+  background-color: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
   position: relative;
 
