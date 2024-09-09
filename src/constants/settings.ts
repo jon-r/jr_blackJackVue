@@ -8,5 +8,6 @@ export const DEFAULT_SETTINGS: GameConfig = {
 
 export const MAX_MESSAGES = 5;
 
+export const AUTO_TIME_SHORT = 150;
 export const AUTO_TIME_STANDARD = 300;
 export const AUTO_TIME_LONG = 450;

@@ -2,7 +2,7 @@
 import { ref, watch } from "vue";
 
 import { GameOutcomes } from "~/constants/gamePlay.ts";
-import { AUTO_TIME_STANDARD } from "~/constants/settings.ts";
+import { AUTO_TIME_SHORT } from "~/constants/settings.ts";
 import { staggeredPush } from "~/helpers/animation.ts";
 import {
   hasMoneyLost,
@@ -34,13 +34,15 @@ watch(
     if (betDiff > 0) {
       const newChips = moneyToChips(betDiff);
 
-      await staggeredPush(betAsChips.value, newChips, AUTO_TIME_STANDARD);
+      await staggeredPush(betAsChips.value, newChips, AUTO_TIME_SHORT);
     }
     // else the full stack will be removed
   },
   { immediate: true },
 );
 </script>
+<!-- fixme seems a bug on red tokens z-index -->
+<!-- fixme tokens arent cleared for demo game -->
 <template>
   <div class="current-bet">
     <TransitionGroup
@@ -89,7 +91,7 @@ watch(
   }
 
   &__chip-stacked {
-    margin-top: -28px;
+    margin-top: -41px;
 
     transition: transform var(--transition-short);
 
