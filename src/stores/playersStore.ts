@@ -13,12 +13,8 @@ import { wait } from "~/helpers/time.ts";
 import { PlayingCard } from "~/types/card.ts";
 import { Player, PlayerHand, PlayerInputStub } from "~/types/players.ts";
 
-import { useCoreStore } from "./coreStore.ts";
-
 // todo reorganise actions/functions in better folders (after style merge)
 export const usePlayersStore = defineStore("players", () => {
-  const coreStore = useCoreStore();
-
   const players = ref<Player[]>([]);
 
   const dealer = computed(
@@ -26,10 +22,6 @@ export const usePlayersStore = defineStore("players", () => {
   );
 
   const activePlayers = computed(() => players.value.filter(isActivePlayer));
-
-  const currentPlayer = computed<Player | undefined>(() =>
-    players.value.find((player) => player.index === coreStore.activePlayerId),
-  );
 
   function createPlayers(stubs: PlayerInputStub[]) {
     players.value = [DEALER_STUB, ...stubs].map(createPlayer);
@@ -44,18 +36,12 @@ export const usePlayersStore = defineStore("players", () => {
     });
   }
 
-  function checkPlayersBalance() {
-    players.value.forEach((player) => {
-      if (player.money < coreStore.config.minBet) {
-        player.inGame = false;
-      }
-    });
+  function removePlayer(playerId: number) {
+    players.value[playerId].inGame = false;
   }
 
-  function getNextHand(playerId = coreStore.activePlayerId): boolean {
+  function getNextHand(playerId: number): boolean {
     const targetPlayer = players.value[playerId];
-
-    if (!targetPlayer) return false;
 
     const nextHand = targetPlayer.activeHandId + 1;
 
@@ -68,11 +54,10 @@ export const usePlayersStore = defineStore("players", () => {
   }
 
   function getPlayerHand(
-    playerId = coreStore.activePlayerId,
+    playerId: number,
     handId?: number,
   ): PlayerHand | undefined {
     const targetPlayer = players.value[playerId];
-    if (!targetPlayer?.inGame) return;
 
     return targetPlayer.hands[handId ?? targetPlayer.activeHandId];
   }
@@ -98,13 +83,12 @@ export const usePlayersStore = defineStore("players", () => {
     players,
     activePlayers,
     dealer,
-    currentPlayer,
 
     createPlayers,
     getPlayerHand,
     getNextHand,
     resetCards,
-    checkPlayersBalance,
+    removePlayer,
     setCard,
     setDealerPeekedCard,
   };

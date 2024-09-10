@@ -85,7 +85,12 @@ export function useGameActions() {
   async function finaliseRound() {
     coreStore.sendMessage("Round over. Play again?");
     await betActions.settleAllBets();
-    playersStore.checkPlayersBalance();
+
+    playersStore.activePlayers.forEach((player) => {
+      if (player.money < coreStore.config.minBet) {
+        playersStore.removePlayer(player.index);
+      }
+    });
   }
 
   function nextRound() {

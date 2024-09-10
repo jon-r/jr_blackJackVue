@@ -16,8 +16,8 @@ export function usePlayerActions() {
   const gameActions = useGameActions();
   const cardsActions = useCardsActions();
 
-  function nextHandOrPlayer() {
-    const nextHand = playersStore.getNextHand();
+  function nextHandOrPlayer(player: Player) {
+    const nextHand = playersStore.getNextHand(player.index);
     if (!nextHand) {
       gameActions.goToNextPlayer();
     }
@@ -33,7 +33,7 @@ export function usePlayerActions() {
     }
 
     if (hand.score >= BLACKJACK_SCORE) {
-      return nextHandOrPlayer();
+      return nextHandOrPlayer(player);
     }
 
     // else continue
@@ -54,7 +54,7 @@ export function usePlayerActions() {
 
   function stand(player: Player) {
     coreStore.sendMessage(formatPlayerMessage(player, "stands"));
-    nextHandOrPlayer();
+    nextHandOrPlayer(player);
   }
 
   // todo multihand

@@ -7,15 +7,11 @@ import { getRandom } from "~/helpers/math.ts";
 import { Position } from "~/types/animations.ts";
 import { PlayingCard } from "~/types/card.ts";
 
-import { useCoreStore } from "./coreStore.ts";
-
 export const useDeckStore = defineStore("deck", () => {
-  const coreStore = useCoreStore();
-
   const deck = ref<PlayingCard[]>([]);
   const deckPosition = ref<Position>(NIL_POSITION);
 
-  function rebuildDeck(deckCount = coreStore.config.deckCount) {
+  function rebuildDeck(deckCount: number) {
     deck.value = buildDeck(deckCount);
   }
 

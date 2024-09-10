@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import { GameStages } from "~/constants/gamePlay.ts";
 import { setupPlayerInput } from "~/helpers/players.ts";
-import { useBetActions } from "~/stores/actions/bets.ts";
 import { useGameActions } from "~/stores/actions/game.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
 import { usePlayersStore } from "~/stores/playersStore.ts";
