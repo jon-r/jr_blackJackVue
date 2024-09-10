@@ -33,7 +33,7 @@ export const useCoreStore = defineStore("core", () => {
   }
 
   function jumpToStage(stage: GameStages) {
-    jumpToPlayer(DEALER_ID);
+    jumpToPlayer(DEALER_ID.index);
     activeStage.value = stage;
   }
 

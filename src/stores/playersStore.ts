@@ -11,14 +11,23 @@ import {
 } from "~/helpers/players.ts";
 import { wait } from "~/helpers/time.ts";
 import { PlayingCard } from "~/types/card.ts";
-import { Player, PlayerHand, PlayerInputStub } from "~/types/players.ts";
+import {
+  Player,
+  PlayerHand,
+  PlayerHandIdentifier,
+  PlayerIdentifier,
+  PlayerInputStub,
+} from "~/types/players.ts";
 
 // todo reorganise actions/functions in better folders (after style merge)
 export const usePlayersStore = defineStore("players", () => {
   const players = ref<Player[]>([]);
 
   const dealer = computed(
-    () => players.value.find((player) => player.index === DEALER_ID) as Player,
+    () =>
+      players.value.find(
+        (player) => player.index === DEALER_ID.index,
+      ) as Player,
   );
 
   const activePlayers = computed(() => players.value.filter(isActivePlayer));
@@ -36,12 +45,12 @@ export const usePlayersStore = defineStore("players", () => {
     });
   }
 
-  function removePlayer(playerId: number) {
-    players.value[playerId].inGame = false;
+  function removePlayer({ index }: PlayerIdentifier) {
+    players.value[index].inGame = false;
   }
 
-  function getNextHand(playerId: number): boolean {
-    const targetPlayer = players.value[playerId];
+  function getNextHand({ index }: PlayerIdentifier): boolean {
+    const targetPlayer = players.value[index];
 
     const nextHand = targetPlayer.activeHandId + 1;
 
@@ -54,29 +63,24 @@ export const usePlayersStore = defineStore("players", () => {
   }
 
   function getPlayerHand(
-    playerId: number,
-    handId?: number,
-  ): PlayerHand | undefined {
-    const targetPlayer = players.value[playerId];
-
-    return targetPlayer.hands[handId ?? targetPlayer.activeHandId];
+    playerId: PlayerHandIdentifier,
+  ): Readonly<PlayerHand | undefined> {
+    return players.value[playerId.index].hands[playerId.activeHandId];
   }
 
   function setDealerPeekedCard(card: PlayingCard | null) {
-    players.value[DEALER_ID].peekedCard = card;
+    players.value[DEALER_ID.index].peekedCard = card;
   }
 
-  async function setCard(card: PlayingCard, playerId: number, handId?: number) {
+  // todo pass along an identifier, and put it as the first param everywhere. try to remove optionals?
+  async function setCard(playerId: PlayerHandIdentifier, card: PlayingCard) {
     await wait(AUTO_TIME_STANDARD);
-    const targetPlayer = players.value[playerId];
-    const targetHand = getPlayerHand(playerId, handId);
+    const targetPlayer = players.value[playerId.index];
+    const targetHand = getPlayerHand(playerId);
 
     if (!targetPlayer || !targetHand) return;
 
-    targetPlayer.hands[handId ?? targetPlayer.activeHandId] = updateHand(
-      targetHand,
-      card,
-    );
+    targetPlayer.hands[playerId.activeHandId] = updateHand(targetHand, card);
   }
 
   return {

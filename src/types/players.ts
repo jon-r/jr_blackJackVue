@@ -22,4 +22,13 @@ export type PlayerHand = {
   softAces: number;
 };
 
+export type PlayerIdentifier = Readonly<{
+  index: number;
+}>;
+
+export type PlayerHandIdentifier = Readonly<{
+  index: number;
+  activeHandId: number;
+}>;
+
 export type PlayerInputStub = Pick<Player, "name">;

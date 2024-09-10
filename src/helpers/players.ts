@@ -2,6 +2,8 @@ import { SpecialScores } from "~/constants/gamePlay.ts";
 import { DEALER_ID, DEFAULT_PLAYER_NAMES } from "~/constants/player.ts";
 import { Player, PlayerHand, PlayerInputStub } from "~/types/players.ts";
 
+import { hasBlackjack, hasBust } from "./gamePlay.ts";
+
 export function setupPlayerInput(players: Player[]): PlayerInputStub[] {
   if (!players.length) {
     return DEFAULT_PLAYER_NAMES.map((name) => ({ name }));
@@ -44,5 +46,14 @@ export function isActivePlayer(player: Player) {
 }
 
 export function isNotDealer(player: Player) {
-  return player.index !== DEALER_ID;
+  return player.index !== DEALER_ID.index;
+}
+
+export function mayPlayHand(player: Player) {
+  return (
+    isActivePlayer(player) &&
+    // todo multihand
+    !hasBust(player.hands[0]) &&
+    !hasBlackjack(player.hands[0])
+  );
 }

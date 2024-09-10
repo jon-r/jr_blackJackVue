@@ -1,9 +1,7 @@
 import { GameStages } from "~/constants/gamePlay.ts";
 import { DEALER_ID } from "~/constants/player.ts";
-import { hasBlackjack, hasBust } from "~/helpers/gamePlay.ts";
 import { formatDealerMessage } from "~/helpers/messages.ts";
-import { isActivePlayer, isNotDealer } from "~/helpers/players.ts";
-import { useCardsActions } from "~/stores/actions/cards.ts";
+import { isNotDealer, mayPlayHand } from "~/helpers/players.ts";
 import { GameConfig } from "~/types/config.ts";
 import { PlayerInputStub } from "~/types/players.ts";
 
@@ -11,6 +9,7 @@ import { useCoreStore } from "../coreStore.ts";
 import { useDeckStore } from "../deckStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
 import { useBetActions } from "./bets.ts";
+import { useCardsActions } from "./cards.ts";
 
 export function useGameActions() {
   const coreStore = useCoreStore();
@@ -40,11 +39,8 @@ export function useGameActions() {
   function goToNextPlayer() {
     const nextPlayer = playersStore.players.find(
       (player) =>
-        isActivePlayer(player) &&
-        player.index > coreStore.activePlayerId &&
-        // todo multihand
-        !hasBust(player.hands[0]) &&
-        !hasBlackjack(player.hands[0]),
+        // todo combine this all as a helper
+        player.index > coreStore.activePlayerId && mayPlayHand(player),
     );
 
     if (nextPlayer) {
@@ -88,7 +84,7 @@ export function useGameActions() {
 
     playersStore.activePlayers.forEach((player) => {
       if (player.money < coreStore.config.minBet) {
-        playersStore.removePlayer(player.index);
+        playersStore.removePlayer(player);
       }
     });
   }

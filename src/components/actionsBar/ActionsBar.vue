@@ -22,7 +22,7 @@ const currentPlayer = computed<Player | undefined>(() =>
 const tipsMessage = computed(() => {
   switch (coreStore.activeStage) {
     case GameStages.PlaceBets: {
-      const money = playersStore.currentPlayer?.money;
+      const money = currentPlayer.value?.money;
       return `Current money: £${money}. Min Bet: £${coreStore.config.minBet}.`;
     }
     case GameStages.EndRound:
