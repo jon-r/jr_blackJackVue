@@ -25,7 +25,7 @@ export function useGameActions() {
     isDemo: boolean,
   ) {
     coreStore.setConfig(config);
-    playersStore.resetPlayers(players);
+    playersStore.createPlayers(players);
     deckStore.rebuildDeck(config.deckCount);
 
     coreStore.toggleOptionsModal(false);
@@ -94,7 +94,7 @@ export function useGameActions() {
   }
 
   function endGame() {
-    playersStore.resetPlayers(playersStore.players.filter(isNotDealer));
+    playersStore.createPlayers(playersStore.players.filter(isNotDealer));
     coreStore.toggleOptionsModal(true);
     coreStore.jumpToStage(GameStages.Init);
   }
