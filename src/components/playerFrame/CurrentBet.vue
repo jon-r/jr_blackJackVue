@@ -8,7 +8,7 @@ import {
   hasMoneyLost,
   hasMoneyReturned,
   moneyToChips,
-} from "~/helpers/gamePlay.ts";
+} from "~/helpers/bets.ts";
 import { sum } from "~/helpers/math.ts";
 
 import BettingChip from "../common/BettingChip.vue";

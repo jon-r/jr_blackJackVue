@@ -1,28 +1,24 @@
 import { BLACKJACK_SCORE } from "~/constants/cards.ts";
-import {
-  CHIP_VALUES,
-  GameOutcomes,
-  SpecialScores,
-} from "~/constants/gamePlay.ts";
+import { GameOutcomes, SpecialScores } from "~/constants/gamePlay.ts";
 import { PlayingCard } from "~/types/card.ts";
 import { PlayerHand } from "~/types/players.ts";
 
 import { getCardScore, isAce, isBlankCard } from "./cards.ts";
 
-export function hasBlackjack(player: PlayerHand): boolean {
-  return player.special === SpecialScores.BlackJack;
+export function hasBlackjack(hand: PlayerHand): boolean {
+  return hand.special === SpecialScores.BlackJack;
 }
 
-export function hasBust(player: PlayerHand): boolean {
-  return player.special === SpecialScores.Bust;
+export function hasBust(hand: PlayerHand): boolean {
+  return hand.special === SpecialScores.Bust;
 }
 
 export function getGameOutcome(
-  player: PlayerHand[],
-  dealer: PlayerHand[],
+  playerHands: PlayerHand[],
+  dealerHands: PlayerHand[],
 ): GameOutcomes {
-  const playerHand = player[0]; // todo multihand
-  const dealerHand = dealer[0];
+  const playerHand = playerHands[0]; // todo multihand
+  const dealerHand = dealerHands[0];
 
   const dealerHasBlackjack = hasBlackjack(dealerHand);
   const playerHasBlackjack = hasBlackjack(playerHand);
@@ -48,17 +44,6 @@ export function getGameOutcome(
   }
 
   return GameOutcomes.Won;
-}
-
-export function hasMoneyReturned(outcome: GameOutcomes | null) {
-  return (
-    outcome === GameOutcomes.Blackjack ||
-    outcome === GameOutcomes.Won ||
-    outcome === GameOutcomes.Push
-  );
-}
-export function hasMoneyLost(outcome: GameOutcomes | null) {
-  return outcome === GameOutcomes.Lost || outcome === GameOutcomes.Surrendered;
 }
 
 function replaceLastBlankCard(
@@ -130,19 +115,4 @@ export function updateHand(hand: PlayerHand, newCard: PlayingCard): PlayerHand {
     special,
     ...handScore,
   };
-}
-
-export function moneyToChips(money: number): number[] {
-  let chipsRemainingValue = money;
-  const chips = [];
-  while (chipsRemainingValue > 0) {
-    const bestChip = CHIP_VALUES.find((value) => value <= chipsRemainingValue);
-
-    if (!bestChip) break;
-
-    chipsRemainingValue -= bestChip;
-    chips.push(bestChip);
-  }
-
-  return chips;
 }
