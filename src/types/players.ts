@@ -12,7 +12,7 @@ export type Player = {
   inGame: boolean;
   hands: PlayerHand[];
   activeHandId: number;
-  didPeek: PlayingCard | null;
+  peekedCard: PlayingCard | null;
 };
 
 export type PlayerHand = {

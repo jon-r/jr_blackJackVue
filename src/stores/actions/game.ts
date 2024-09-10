@@ -1,5 +1,5 @@
 import { GameStages } from "~/constants/gamePlay.ts";
-// import { DEALER_ID } from "~/constants/player.ts";
+import { DEALER_ID } from "~/constants/player.ts";
 import { hasBlackjack, hasBust } from "~/helpers/gamePlay.ts";
 import { formatDealerMessage } from "~/helpers/messages.ts";
 import { isActivePlayer, isNotDealer } from "~/helpers/players.ts";
@@ -63,11 +63,11 @@ export function useGameActions() {
     coreStore.sendMessage("All bets are in, dealing out first cards.");
     // deal one
     await cardsActions.dealAllPlayersCards();
-    // await cardsActions.dealCard(DEALER_ID);
+    await cardsActions.dealCard(DEALER_ID);
 
     // deal two
-    const peekedBlackjack = await cardsActions.dealAllPlayersCards(true);
-    // const peekedBlackjack = await playersStore.dealOrPeekDealerCard();
+    await cardsActions.dealAllPlayersCards();
+    const peekedBlackjack = await cardsActions.dealOrPeekDealerCard();
 
     if (peekedBlackjack) {
       coreStore.jumpToStage(GameStages.DealerActions);

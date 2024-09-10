@@ -1,30 +1,25 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-import {
-  BLACKJACK_SCORE, // DEALER_STAND_SCORE,
-  FACE_SCORE, // UNKNOWN_CARD,
-} from "~/constants/cards.ts";
 import { DEALER_ID, DEALER_STUB } from "~/constants/player.ts";
-// import { AUTO_TIME_STANDARD } from "~/constants/settings.ts";
-import { getCardScore } from "~/helpers/cards.ts";
-import { getHandScore, updateHand } from "~/helpers/gamePlay.ts";
+import { AUTO_TIME_STANDARD } from "~/constants/settings.ts";
+import { updateHand } from "~/helpers/gamePlay.ts";
 import {
   createEmptyHand,
   createPlayer,
   isActivePlayer,
 } from "~/helpers/players.ts";
-// import { wait } from "~/helpers/time.ts";
+import { wait } from "~/helpers/time.ts";
 import { PlayingCard } from "~/types/card.ts";
 import { Player, PlayerHand, PlayerInputStub } from "~/types/players.ts";
 
 import { useCoreStore } from "./coreStore.ts";
-import { useDeckStore } from "./deckStore.ts";
+
+// import { useDeckStore } from "./deckStore.ts";
 
 // todo reorganise actions/functions in better folders (after style merge)
 export const usePlayersStore = defineStore("players", () => {
   const coreStore = useCoreStore();
-  const deckStore = useDeckStore();
 
   const players = ref<Player[]>([]);
 
@@ -47,7 +42,7 @@ export const usePlayersStore = defineStore("players", () => {
       player.hands = [createEmptyHand()];
       player.outcome = null;
       player.activeHandId = 0;
-      player.didPeek = null;
+      player.peekedCard = null;
     });
   }
 
@@ -90,19 +85,23 @@ export const usePlayersStore = defineStore("players", () => {
     return targetPlayer.hands[handId ?? targetPlayer.activeHandId];
   }
 
-  function dealerPeekCard(): PlayingCard | undefined {
-    const currentCard = dealer.value.hands[0].cards[0];
-    const cardScore = getCardScore(currentCard);
-
-    if (cardScore < FACE_SCORE) return;
-
-    const newCard = deckStore.drawCard();
-    if (getHandScore([currentCard, newCard]).score === BLACKJACK_SCORE) {
-      return newCard;
-    }
-
-    players.value[DEALER_ID].didPeek = newCard;
+  function setDealerPeekedCard(card: PlayingCard | null) {
+    players.value[DEALER_ID].peekedCard = card;
   }
+
+  // function dealerPeekCard(): PlayingCard | undefined {
+  //   const currentCard = dealer.value.hands[0].cards[0];
+  //   const cardScore = getCardScore(currentCard);
+  //
+  //   if (cardScore < FACE_SCORE) return;
+  //
+  //   const newCard = deckStore.drawCard();
+  //   if (getHandScore([currentCard, newCard]).score === BLACKJACK_SCORE) {
+  //     return newCard;
+  //   }
+  //
+  //   players.value[DEALER_ID].peekedCard = newCard;
+  // }
 
   // async function dealOrPeekDealerCard() {
   //   return dealCard(DEALER_ID, 0, true);
@@ -141,7 +140,8 @@ export const usePlayersStore = defineStore("players", () => {
   //   return newCard;
   // }
 
-  function setCard(card: PlayingCard, playerId: number, handId?: number) {
+  async function setCard(card: PlayingCard, playerId: number, handId?: number) {
+    await wait(AUTO_TIME_STANDARD);
     const targetPlayer = players.value[playerId];
     const targetHand = getPlayerHand(playerId, handId);
 
@@ -204,6 +204,7 @@ export const usePlayersStore = defineStore("players", () => {
     checkPlayersBalance,
 
     setCard,
-    dealerPeekCard,
+    // dealerPeekCard,
+    setDealerPeekedCard,
   };
 });
