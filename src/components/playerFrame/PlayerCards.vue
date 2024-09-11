@@ -47,9 +47,9 @@ function onLeave(el: HTMLElement) {
 
 <template>
   <div
+    ref="frameRef"
     class="player-cards"
     :class="{ 'player-cards--active-hand': props.isActive }"
-    ref="frameRef"
   >
     <TransitionGroup
       appear

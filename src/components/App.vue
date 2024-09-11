@@ -17,15 +17,20 @@ watch(
   (stage: GameStages) => {
     switch (stage) {
       case GameStages.PlaceBets:
-        return gameActions.placeBets();
+        gameActions.placeBets();
+        break;
       case GameStages.DealCards:
-        return gameActions.dealInitialCards();
+        void gameActions.dealInitialCards();
+        break;
       case GameStages.PlayerActions:
-        return gameActions.goToNextPlayer();
+        gameActions.goToNextPlayer();
+        break;
       case GameStages.DealerActions:
-        return gameActions.dealFinalCards();
+        void gameActions.dealFinalCards();
+        break;
       case GameStages.EndRound:
-        return gameActions.finaliseRound();
+        void gameActions.finaliseRound();
+        break;
     }
   },
 );

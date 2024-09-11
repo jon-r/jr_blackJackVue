@@ -3,13 +3,16 @@ import { computed, ref } from "vue";
 
 import { DEALER_ID, DEALER_STUB } from "~/constants/player.ts";
 import { AUTO_TIME_STANDARD } from "~/constants/settings.ts";
-import { createEmptyHand, updateHand } from "~/helpers/playerHands.ts";
+import {
+  createEmptyHand,
+  getPlayerHand,
+  updateHand,
+} from "~/helpers/playerHands.ts";
 import { createPlayer, isActivePlayer } from "~/helpers/players.ts";
 import { wait } from "~/helpers/time.ts";
 import { PlayingCard } from "~/types/card.ts";
 import {
   Player,
-  PlayerHand,
   PlayerHandIdentifier,
   PlayerIdentifier,
   PlayerInputStub,
@@ -58,12 +61,6 @@ export const usePlayersStore = defineStore("players", () => {
     return false;
   }
 
-  function getPlayerHand(
-    playerId: PlayerHandIdentifier,
-  ): Readonly<PlayerHand | undefined> {
-    return players.value[playerId.index].hands[playerId.activeHandId];
-  }
-
   function setDealerPeekedCard(card: PlayingCard | null) {
     players.value[DEALER_ID.index].peekedCard = card;
   }
@@ -72,9 +69,9 @@ export const usePlayersStore = defineStore("players", () => {
   async function setCard(playerId: PlayerHandIdentifier, card: PlayingCard) {
     await wait(AUTO_TIME_STANDARD);
     const targetPlayer = players.value[playerId.index];
-    const targetHand = getPlayerHand(playerId);
+    const targetHand = getPlayerHand(players.value, playerId);
 
-    if (!targetPlayer || !targetHand) return;
+    if (!targetHand) return;
 
     targetPlayer.hands[playerId.activeHandId] = updateHand(targetHand, card);
   }
@@ -85,7 +82,6 @@ export const usePlayersStore = defineStore("players", () => {
     dealer,
 
     createPlayers,
-    getPlayerHand,
     getNextHand,
     resetCards,
     removePlayer,

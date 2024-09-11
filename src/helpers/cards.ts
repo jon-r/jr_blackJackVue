@@ -14,11 +14,11 @@ export function getCardScore(rawCard: PlayingCard): number {
 }
 
 export function isBlankCard([faceValue]: PlayingCard) {
-  return faceValue === FaceValues.Blank;
+  return faceValue === (FaceValues.Blank as number);
 }
 
 export function isAce([faceValue]: PlayingCard) {
-  return faceValue === FaceValues.Ace;
+  return faceValue === (FaceValues.Ace as number);
 }
 
 export function buildDeck(deckCount: number): PlayingCard[] {

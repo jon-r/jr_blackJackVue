@@ -16,10 +16,6 @@ export default [
   { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
-  {
-    files: ["**/*.js"],
-    ...tseslint.configs.disableTypeChecked,
-  },
   ...pluginVue.configs["flat/recommended"],
   {
     languageOptions: {
@@ -30,6 +26,22 @@ export default [
         tsconfigRootDir: import.meta.dirname,
       },
     },
+  },
+  {
+    rules: {
+      "@typescript-eslint/restrict-template-expressions": [
+        "error",
+        { allowNumber: true },
+      ],
+      "@typescript-eslint/no-confusing-void-expression": [
+        "error",
+        { ignoreArrowShorthand: true },
+      ],
+    },
+  },
+  {
+    files: ["**/*.js"],
+    ...tseslint.configs.disableTypeChecked,
   },
   eslintConfigPrettier,
 ];

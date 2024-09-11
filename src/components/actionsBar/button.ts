@@ -7,5 +7,5 @@ export type ButtonControl = {
   className?: string;
   disabled?: boolean;
 
-  onClick?: () => void;
+  onClick?: () => Promise<void> | void;
 };

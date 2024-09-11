@@ -52,8 +52,8 @@ watch(
 
       <Transition name="bet-diff">
         <span
-          :key="moneyUpdate.index"
           v-if="moneyUpdate.index"
+          :key="moneyUpdate.index"
           class="player-label__diff"
           :class="[moneyUpdate.diff > 0 && 'player-label__diff--returns']"
         >

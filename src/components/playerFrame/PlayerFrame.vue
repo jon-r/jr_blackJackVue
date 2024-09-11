@@ -32,7 +32,7 @@ const isPlayerTurn = computed(() => {
       :is-active="idx === player.activeHandId"
     />
 
-    <strong class="player-frame__alert" v-if="player.outcome">
+    <strong v-if="player.outcome" class="player-frame__alert">
       {{ player.outcome }}
     </strong>
 

@@ -13,7 +13,7 @@ export function setupPlayerInput(players: Player[]): PlayerInputStub[] {
     .map((player) => ({ name: player.name }));
 
   return Array.from({ ...playersWithoutDealer, length: 5 }, (player) => ({
-    name: player.name ?? "",
+    name: player.name,
   }));
 }
 

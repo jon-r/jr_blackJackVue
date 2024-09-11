@@ -6,9 +6,9 @@ const coreStore = useCoreStore();
 <template>
   <TransitionGroup class="list-base messages-output" name="messages" tag="ul">
     <li
-      class="messages-output__message"
       v-for="msg in coreStore.messages"
       :key="msg.id"
+      class="messages-output__message"
     >
       {{ msg.value }}
     </li>

@@ -1,6 +1,7 @@
 import { BLACKJACK_SCORE } from "~/constants/cards.ts";
-import { BET_MULTIPLIERS, GameOutcomes } from "~/constants/gamePlay.ts";
+import { GameOutcomes } from "~/constants/gamePlay.ts";
 import { formatPlayerMessage } from "~/helpers/messages.ts";
+import { getPlayerHand } from "~/helpers/playerHands.ts";
 import { Player } from "~/types/players.ts";
 
 import { useCoreStore } from "../coreStore.ts";
@@ -24,7 +25,7 @@ export function usePlayerActions() {
   }
 
   async function checkScore(player: Player) {
-    const targetHand = playersStore.getPlayerHand(player);
+    const targetHand = getPlayerHand(playersStore.players, player);
 
     if (!targetHand) return;
 
@@ -33,7 +34,8 @@ export function usePlayerActions() {
     }
 
     if (targetHand.score >= BLACKJACK_SCORE) {
-      return nextHandOrPlayer(player);
+      nextHandOrPlayer(player);
+      return;
     }
 
     // else continue
