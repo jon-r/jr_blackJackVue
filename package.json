@@ -21,6 +21,7 @@
     "@types/node": "^22.5.1",
     "@vitejs/plugin-vue": "^5.1.2",
     "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-vue": "^9.27.0",
     "globals": "^15.9.0",
     "postcss": "^8.4.45",
@@ -35,6 +36,7 @@
   },
   "dependencies": {
     "pinia": "^2.2.1",
-    "vue": "^3.4.35"
+    "vue": "^3.4.35",
+    "vue-eslint-parser": "^9.4.3"
   }
 }

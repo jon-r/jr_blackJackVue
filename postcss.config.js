@@ -4,6 +4,7 @@ import postcssNested from "postcss-nested";
 export default {
   plugins: [
     postcssNested,
+    // eslint-disable no-undef
     process.env.NODE_ENV === "production" &&
       purgecss({
         content: [`./src/**/*.vue`, `./src/index.html`, "./src/**/*.css"],
