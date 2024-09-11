@@ -9,7 +9,7 @@ type InputProps = {
 };
 
 const props = defineProps<InputProps>();
-const model = defineModel<string>();
+const model = defineModel<string | number>();
 </script>
 
 <template>
@@ -25,7 +25,7 @@ const model = defineModel<string>();
       v-model="model"
       :type="props.type"
       :required="props.required"
-      :min="props.min"
+      :min="props.min as number"
       class="input-field__input"
     />
   </div>

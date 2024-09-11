@@ -2,7 +2,7 @@ import { BLACKJACK_SCORE } from "~/constants/cards.ts";
 import { GameOutcomes } from "~/constants/gamePlay.ts";
 import { formatPlayerMessage } from "~/helpers/messages.ts";
 import { getPlayerHand } from "~/helpers/playerHands.ts";
-import { Player } from "~/types/players.ts";
+import type { Player } from "~/types/players.ts";
 
 import { useCoreStore } from "../coreStore.ts";
 import { usePlayersStore } from "../playersStore.ts";

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { nextTick, ref, watch } from "vue";
 
-import { Player } from "~/types/players.ts";
+import type { Player } from "~/types/players.ts";
 
 type PlayerLabelProps = {
   player: Player;

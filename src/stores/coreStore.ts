@@ -4,8 +4,8 @@ import { ref } from "vue";
 import { GameStages } from "~/constants/gamePlay.ts";
 import { DEALER_ID } from "~/constants/player.ts";
 import { DEFAULT_SETTINGS, MAX_MESSAGES } from "~/constants/settings.ts";
-import { Message } from "~/types/animations.ts";
-import { GameConfig } from "~/types/config.ts";
+import type { Message } from "~/types/animations.ts";
+import type { GameConfig } from "~/types/config.ts";
 
 export const useCoreStore = defineStore("core", () => {
   const config = ref<GameConfig>(DEFAULT_SETTINGS);

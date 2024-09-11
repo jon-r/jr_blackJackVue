@@ -3,8 +3,8 @@ import { DEALER_ID } from "~/constants/player.ts";
 import { mayPlayNext } from "~/helpers/gamePlay.ts";
 import { formatDealerMessage } from "~/helpers/messages.ts";
 import { isNotDealer } from "~/helpers/players.ts";
-import { GameConfig } from "~/types/config.ts";
-import { PlayerInputStub } from "~/types/players.ts";
+import type { GameConfig } from "~/types/config.ts";
+import type { PlayerInputStub } from "~/types/players.ts";
 
 import { useCoreStore } from "../coreStore.ts";
 import { useDeckStore } from "../deckStore.ts";

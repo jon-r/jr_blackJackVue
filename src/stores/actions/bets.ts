@@ -3,7 +3,7 @@ import { AUTO_TIME_LONG } from "~/constants/settings.ts";
 import { getGameOutcome } from "~/helpers/gamePlay.ts";
 import { getRandom } from "~/helpers/math.ts";
 import { wait } from "~/helpers/time.ts";
-import { PlayerIdentifier } from "~/types/players.ts";
+import type { PlayerIdentifier } from "~/types/players.ts";
 
 import { usePlayersStore } from "../playersStore.ts";
 

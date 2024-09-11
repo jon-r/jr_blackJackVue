@@ -1,7 +1,11 @@
 import { BLACKJACK_SCORE, DEALER_STAND_SCORE } from "~/constants/cards.ts";
 import { SpecialScores } from "~/constants/gamePlay.ts";
-import { HandRules, PlayingCard } from "~/types/card.ts";
-import { Player, PlayerHand, PlayerHandIdentifier } from "~/types/players.ts";
+import type { HandRules, PlayingCard } from "~/types/card.ts";
+import type {
+  Player,
+  PlayerHand,
+  PlayerHandIdentifier,
+} from "~/types/players.ts";
 
 import { getCardScore, isAce, isBlankCard } from "./cards.ts";
 

@@ -3,10 +3,10 @@ import { computed } from "vue";
 
 import { getHandRules } from "~/helpers/playerHands.ts";
 import { usePlayerActions } from "~/stores/actions/player.ts";
-import { Player } from "~/types/players.ts";
+import type { Player } from "~/types/players.ts";
 
 import ActionButton from "./ActionButton.vue";
-import { ButtonControl } from "./button.ts";
+import type { ButtonControl } from "./button.ts";
 
 type GamePlayActionsProps = {
   player: Player;

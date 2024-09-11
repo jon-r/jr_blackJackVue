@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ButtonControl } from "./button.ts";
+import type { ButtonControl } from "./button.ts";
 
 type ButtonControlProps = Omit<ButtonControl, "onClick" | "id">;
 

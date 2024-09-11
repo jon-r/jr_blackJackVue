@@ -1,4 +1,4 @@
-import { PlayingCard } from "~/types/card.ts";
+import type { PlayingCard } from "~/types/card.ts";
 
 export enum FaceValues {
   Blank = 0,

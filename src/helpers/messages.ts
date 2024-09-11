@@ -1,9 +1,9 @@
-import { DeepReadonly } from "vue";
+import type { DeepReadonly } from "vue";
 
 import { FaceValues } from "~/constants/cards.ts";
 import { SpecialScores } from "~/constants/gamePlay.ts";
-import { PlayingCard } from "~/types/card.ts";
-import { Player, PlayerHand } from "~/types/players.ts";
+import type { PlayingCard } from "~/types/card.ts";
+import type { Player, PlayerHand } from "~/types/players.ts";
 
 import { isBlankCard } from "./cards.ts";
 import { createEmptyHand } from "./playerHands.ts";

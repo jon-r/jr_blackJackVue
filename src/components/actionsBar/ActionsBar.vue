@@ -4,7 +4,7 @@ import { computed } from "vue";
 import { GameStages } from "~/constants/gamePlay.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
 import { usePlayersStore } from "~/stores/playersStore.ts";
-import { Player } from "~/types/players.ts";
+import type { Player } from "~/types/players.ts";
 
 import BettingActions from "./BettingActions.vue";
 import EndGameActions from "./EndGameActions.vue";

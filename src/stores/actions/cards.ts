@@ -6,8 +6,8 @@ import {
 import { DEALER_ID } from "~/constants/player.ts";
 import { getCardScore, isBlankCard } from "~/helpers/cards.ts";
 import { getPlayerHand, playerMustStand } from "~/helpers/playerHands.ts";
-import { PlayingCard } from "~/types/card.ts";
-import { PlayerHand, PlayerHandIdentifier } from "~/types/players.ts";
+import type { PlayingCard } from "~/types/card.ts";
+import type { PlayerHand, PlayerHandIdentifier } from "~/types/players.ts";
 
 import { useDeckStore } from "../deckStore.ts";
 import { usePlayersStore } from "../playersStore.ts";

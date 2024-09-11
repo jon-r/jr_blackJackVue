@@ -1,5 +1,5 @@
 import { DEALER_ID, DEFAULT_PLAYER_NAMES } from "~/constants/player.ts";
-import { Player, PlayerInputStub } from "~/types/players.ts";
+import type { Player, PlayerInputStub } from "~/types/players.ts";
 
 import { createEmptyHand } from "./playerHands.ts";
 

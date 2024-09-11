@@ -1,5 +1,5 @@
 import { GameOutcomes } from "~/constants/gamePlay.ts";
-import { Player, PlayerHand } from "~/types/players.ts";
+import type { Player, PlayerHand } from "~/types/players.ts";
 
 import { hasBlackjack, hasBust, playerMustStand } from "./playerHands.ts";
 import { isActivePlayer } from "./players.ts";

@@ -5,7 +5,7 @@ import { useGameActions } from "~/stores/actions/game.ts";
 import { usePlayersStore } from "~/stores/playersStore.ts";
 
 import ActionButton from "./ActionButton.vue";
-import { ButtonControl } from "./button.ts";
+import type { ButtonControl } from "./button.ts";
 
 const playersStore = usePlayersStore();
 const gameActions = useGameActions();

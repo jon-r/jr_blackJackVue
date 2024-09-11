@@ -4,7 +4,7 @@ import { onMounted, ref } from "vue";
 import { NIL_POSITION, SpecialScores } from "~/constants/gamePlay.ts";
 import { setElementPosition, transformJiggle } from "~/helpers/animation.ts";
 import { useDeckStore } from "~/stores/deckStore.ts";
-import { PlayerHand } from "~/types/players.ts";
+import type { PlayerHand } from "~/types/players.ts";
 
 import PlayingCard from "../common/PlayingCard.vue";
 
@@ -31,16 +31,17 @@ onMounted(() => {
   };
 });
 
-function onEnter(el: HTMLElement) {
+function onEnter(el: Element) {
   setElementPosition(el, enterPosition.value);
 }
-function onAfterEnter(el: HTMLElement) {
-  const offsetX = Number(el.dataset.index) * 30 + 40;
+
+function onAfterEnter(el: Element) {
+  const offsetX = Number((el as HTMLElement).dataset["index"]) * 30 + 40;
   const jiggle = transformJiggle({ offsetX, offsetY: 40 });
   setElementPosition(el, jiggle);
 }
 
-function onLeave(el: HTMLElement) {
+function onLeave(el: Element) {
   setElementPosition(el, leavePosition);
 }
 </script>

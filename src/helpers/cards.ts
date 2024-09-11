@@ -5,7 +5,7 @@ import {
   SUITS_COUNT,
   SUIT_LIST,
 } from "~/constants/cards.ts";
-import { PlayingCard } from "~/types/card.ts";
+import type { PlayingCard } from "~/types/card.ts";
 
 export function getCardScore(rawCard: PlayingCard): number {
   const [faceValue] = rawCard;

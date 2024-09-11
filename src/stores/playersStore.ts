@@ -10,8 +10,8 @@ import {
 } from "~/helpers/playerHands.ts";
 import { createPlayer, isActivePlayer } from "~/helpers/players.ts";
 import { wait } from "~/helpers/time.ts";
-import { PlayingCard } from "~/types/card.ts";
-import {
+import type { PlayingCard } from "~/types/card.ts";
+import type {
   Player,
   PlayerHandIdentifier,
   PlayerIdentifier,

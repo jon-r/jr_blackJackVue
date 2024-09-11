@@ -1,6 +1,6 @@
-import { GameOutcomes, SpecialScores } from "~/constants/gamePlay.ts";
+import type { GameOutcomes, SpecialScores } from "~/constants/gamePlay.ts";
 
-import { PlayingCard } from "./card.ts";
+import type { PlayingCard } from "./card.ts";
 
 export type Player = {
   index: number;

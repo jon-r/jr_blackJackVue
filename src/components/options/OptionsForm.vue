@@ -5,7 +5,7 @@ import { setupPlayerInput } from "~/helpers/players.ts";
 import { useGameActions } from "~/stores/actions/game.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
 import { usePlayersStore } from "~/stores/playersStore.ts";
-import { GameConfig } from "~/types/config.ts";
+import type { GameConfig } from "~/types/config.ts";
 
 import InputField from "./InputField.vue";
 
