@@ -12,7 +12,7 @@ export type Player = {
   inGame: boolean;
   hands: PlayerHand[];
   activeHandId: number;
-  didPeek: PlayingCard | null;
+  peekedCard: PlayingCard | null;
 };
 
 export type PlayerHand = {
@@ -21,5 +21,14 @@ export type PlayerHand = {
   score: number;
   softAces: number;
 };
+
+export type PlayerIdentifier = Readonly<{
+  index: number;
+}>;
+
+export type PlayerHandIdentifier = Readonly<{
+  index: number;
+  activeHandId: number;
+}>;
 
 export type PlayerInputStub = Pick<Player, "name">;

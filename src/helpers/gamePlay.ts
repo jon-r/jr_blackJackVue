@@ -1,28 +1,15 @@
-import { BLACKJACK_SCORE } from "~/constants/cards.ts";
-import {
-  CHIP_VALUES,
-  GameOutcomes,
-  SpecialScores,
-} from "~/constants/gamePlay.ts";
-import { PlayingCard } from "~/types/card.ts";
-import { PlayerHand } from "~/types/players.ts";
+import { GameOutcomes } from "~/constants/gamePlay.ts";
+import { Player, PlayerHand } from "~/types/players.ts";
 
-import { getCardScore, isAce, isBlankCard } from "./cards.ts";
-
-export function hasBlackjack(player: PlayerHand): boolean {
-  return player.special === SpecialScores.BlackJack;
-}
-
-export function hasBust(player: PlayerHand): boolean {
-  return player.special === SpecialScores.Bust;
-}
+import { hasBlackjack, hasBust, playerMustStand } from "./playerHands.ts";
+import { isActivePlayer } from "./players.ts";
 
 export function getGameOutcome(
-  player: PlayerHand[],
-  dealer: PlayerHand[],
+  playerHands: PlayerHand[],
+  dealerHands: PlayerHand[],
 ): GameOutcomes {
-  const playerHand = player[0]; // todo multihand
-  const dealerHand = dealer[0];
+  const playerHand = playerHands[0]; // todo multihand
+  const dealerHand = dealerHands[0];
 
   const dealerHasBlackjack = hasBlackjack(dealerHand);
   const playerHasBlackjack = hasBlackjack(playerHand);
@@ -50,99 +37,9 @@ export function getGameOutcome(
   return GameOutcomes.Won;
 }
 
-export function hasMoneyReturned(outcome: GameOutcomes | null) {
+export function mayPlayNext(player: Player) {
   return (
-    outcome === GameOutcomes.Blackjack ||
-    outcome === GameOutcomes.Won ||
-    outcome === GameOutcomes.Push
+    isActivePlayer(player) &&
+    !playerMustStand(player.hands[player.activeHandId])
   );
-}
-export function hasMoneyLost(outcome: GameOutcomes | null) {
-  return outcome === GameOutcomes.Lost || outcome === GameOutcomes.Surrendered;
-}
-
-function replaceLastBlankCard(
-  cards: PlayingCard[],
-  newCard: PlayingCard,
-): PlayingCard[] {
-  const newCardPosition = cards.findIndex(isBlankCard);
-
-  if (newCardPosition !== -1) {
-    return cards.toSpliced(newCardPosition, 1, newCard);
-  } else {
-    return [...cards, newCard];
-  }
-}
-
-function getHandSpecial(
-  { score, softAces }: HandCalculation,
-  cardCount: number,
-): SpecialScores {
-  if (score > BLACKJACK_SCORE) {
-    return SpecialScores.Bust;
-  }
-  if (score === BLACKJACK_SCORE && cardCount === 2) {
-    return SpecialScores.BlackJack;
-  }
-  if (softAces > 0) {
-    return SpecialScores.Soft;
-  }
-
-  return SpecialScores.None;
-}
-
-type HandCalculation = {
-  score: number;
-  softAces: number;
-};
-
-const nilScore = { score: 0, softAces: 0 };
-
-export function getHandScore(cards: PlayingCard[]): HandCalculation {
-  if (!cards) {
-    return nilScore;
-  }
-
-  // todo maybe cleaner way to do this?
-  return cards.reduce((prev: HandCalculation, card: PlayingCard) => {
-    let { score, softAces } = prev;
-
-    softAces += Number(isAce(card));
-    score += getCardScore(card);
-
-    while (score > BLACKJACK_SCORE && softAces > 0) {
-      // convert the ace to a 'hard' ace of 1 point
-      softAces -= 1;
-      score -= 10;
-    }
-
-    return { softAces, score };
-  }, nilScore);
-}
-
-export function updateHand(hand: PlayerHand, newCard: PlayingCard): PlayerHand {
-  const cards = replaceLastBlankCard(hand.cards, newCard);
-  const handScore = getHandScore(cards);
-  const special = getHandSpecial(handScore, cards.length);
-
-  return {
-    cards,
-    special,
-    ...handScore,
-  };
-}
-
-export function moneyToChips(money: number): number[] {
-  let chipsRemainingValue = money;
-  const chips = [];
-  while (chipsRemainingValue > 0) {
-    const bestChip = CHIP_VALUES.find((value) => value <= chipsRemainingValue);
-
-    if (!bestChip) break;
-
-    chipsRemainingValue -= bestChip;
-    chips.push(bestChip);
-  }
-
-  return chips;
 }

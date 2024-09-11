@@ -121,7 +121,6 @@ http://material-foundation.github.io?primary=%2386E307&secondary=%23D2B441&color
 
     --md-sys-color-disabled: rgb(226 227 216 / 12%);
     --md-sys-color-on-disabled: rgb(226 227 216 / 38%);
-
   }
 
   .light {
@@ -133,7 +132,6 @@ http://material-foundation.github.io?primary=%2386E307&secondary=%23D2B441&color
     --md-sys-color-primary-container-hover: rgb(203 238 165 / 50%);
     --md-sys-color-secondary-container-hover: rgb(252 225 134 / 50%);
     --md-sys-color-tertiary-container-hover: rgb(187 236 232 / 50%);
-
 
     --md-sys-color-disabled: rgb(26 28 22 / 12%);
     --md-sys-color-on-disabled: rgb(26 28 22 / 38%);
@@ -147,10 +145,10 @@ http://material-foundation.github.io?primary=%2386E307&secondary=%23D2B441&color
     --playing-card-side: rgb(152, 75, 75);
 
     --shadow-level-3: rgba(0, 0, 0, 0.2) 0px 3px 5px -1px,
-    rgba(0, 0, 0, 0.14) 0px 6px 10px 0px, rgba(0, 0, 0, 0.12) 0px 1px 18px 0px;
+      rgba(0, 0, 0, 0.14) 0px 6px 10px 0px, rgba(0, 0, 0, 0.12) 0px 1px 18px 0px;
     --shadow-level-2: rgba(0, 0, 0, 0.2) 0px 3px 3px -2px,
-    rgba(0, 0, 0, 0.14) 0px 3px 4px 0px, rgba(0, 0, 0, 0.12) 0px 1px 8px 0px;
+      rgba(0, 0, 0, 0.14) 0px 3px 4px 0px, rgba(0, 0, 0, 0.12) 0px 1px 8px 0px;
     --shadow-level-1: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px,
-    rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
+      rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
   }
 }

@@ -1,6 +1,7 @@
-import { SpecialScores } from "~/constants/gamePlay.ts";
 import { DEALER_ID, DEFAULT_PLAYER_NAMES } from "~/constants/player.ts";
-import { Player, PlayerHand, PlayerInputStub } from "~/types/players.ts";
+import { Player, PlayerInputStub } from "~/types/players.ts";
+
+import { createEmptyHand } from "./playerHands.ts";
 
 export function setupPlayerInput(players: Player[]): PlayerInputStub[] {
   if (!players.length) {
@@ -16,15 +17,6 @@ export function setupPlayerInput(players: Player[]): PlayerInputStub[] {
   }));
 }
 
-export function createEmptyHand(): PlayerHand {
-  return {
-    cards: [],
-    special: SpecialScores.None,
-    score: 0,
-    softAces: 0,
-  };
-}
-
 export function createPlayer({ name }: PlayerInputStub, index: number): Player {
   return {
     name,
@@ -35,7 +27,7 @@ export function createPlayer({ name }: PlayerInputStub, index: number): Player {
     hands: [createEmptyHand()],
     outcome: null,
     activeHandId: 0,
-    didPeek: null,
+    peekedCard: null,
   };
 }
 
@@ -44,5 +36,5 @@ export function isActivePlayer(player: Player) {
 }
 
 export function isNotDealer(player: Player) {
-  return player.index !== DEALER_ID;
+  return player.index !== DEALER_ID.index;
 }

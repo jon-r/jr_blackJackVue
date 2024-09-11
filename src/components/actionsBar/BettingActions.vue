@@ -3,8 +3,7 @@ import { computed, ref } from "vue";
 
 import { CHIP_VALUES } from "~/constants/gamePlay.ts";
 import { sum } from "~/helpers/math.ts";
-import { useBetActions } from "~/stores/actions/bets.ts";
-import { useGameActions } from "~/stores/actions/game.ts";
+import { usePlayerActions } from "~/stores/actions/player.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
 import { Player } from "~/types/players.ts";
 
@@ -18,8 +17,7 @@ type BettingActionsProps = {
 const props = defineProps<BettingActionsProps>();
 
 const coreStore = useCoreStore();
-const betActions = useBetActions();
-const gameActions = useGameActions();
+const playerActions = usePlayerActions();
 
 const chipsToPlace = ref<number[]>([]);
 const betToPlace = computed(() => sum(chipsToPlace.value));
@@ -67,9 +65,7 @@ function removeChip() {
 }
 
 function submitBet() {
-  coreStore.sendMessage(`${props.player.name} bets £${betToPlace.value}`);
-  betActions.placeBet(betToPlace.value);
-  gameActions.goToNextPlayer();
+  playerActions.submitBet(props.player, betToPlace.value);
 
   chipsToPlace.value = [];
 }

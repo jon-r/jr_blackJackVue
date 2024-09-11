@@ -1,11 +1,12 @@
 import { BLACKJACK_SCORE } from "~/constants/cards.ts";
-import { GameOutcomes } from "~/constants/gamePlay.ts";
+import { BET_MULTIPLIERS, GameOutcomes } from "~/constants/gamePlay.ts";
 import { formatPlayerMessage } from "~/helpers/messages.ts";
-import { useCoreStore } from "~/stores/coreStore.ts";
 import { Player } from "~/types/players.ts";
 
+import { useCoreStore } from "../coreStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
 import { useBetActions } from "./bets.ts";
+import { useCardsActions } from "./cards.ts";
 import { useGameActions } from "./game.ts";
 
 export function usePlayerActions() {
@@ -13,51 +14,55 @@ export function usePlayerActions() {
   const coreStore = useCoreStore();
   const betActions = useBetActions();
   const gameActions = useGameActions();
+  const cardsActions = useCardsActions();
 
-  function nextHandOrPlayer() {
-    const nextHand = playersStore.nextHand();
+  function nextHandOrPlayer(player: Player) {
+    const nextHand = playersStore.getNextHand(player);
     if (!nextHand) {
       gameActions.goToNextPlayer();
     }
   }
 
-  async function checkScore() {
-    const hand = playersStore.getPlayerHand();
+  async function checkScore(player: Player) {
+    const targetHand = playersStore.getPlayerHand(player);
 
-    if (!hand) return;
+    if (!targetHand) return;
 
-    if (hand.score > BLACKJACK_SCORE) {
-      await betActions.settleBet(GameOutcomes.Lost);
+    if (targetHand.score > BLACKJACK_SCORE) {
+      await betActions.settleBet(player, GameOutcomes.Lost);
     }
 
-    if (hand.score >= BLACKJACK_SCORE) {
-      return nextHandOrPlayer();
+    if (targetHand.score >= BLACKJACK_SCORE) {
+      return nextHandOrPlayer(player);
     }
 
     // else continue
   }
 
+  function submitBet(player: Player, value: number) {
+    coreStore.sendMessage(`${player.name} bets £${value}`);
+    betActions.placeBet(player, value);
+    gameActions.goToNextPlayer();
+  }
+
   async function hit(player: Player) {
-    const card = await playersStore.dealCard();
+    const card = await cardsActions.dealCard(player);
     coreStore.sendMessage(formatPlayerMessage(player, "hits", card));
 
-    await checkScore();
+    await checkScore(player);
   }
 
   function stand(player: Player) {
     coreStore.sendMessage(formatPlayerMessage(player, "stands"));
-    nextHandOrPlayer();
+    nextHandOrPlayer(player);
   }
 
   // todo multihand
   function split(player: Player) {
-    // const player = playersStore.currentPlayer;
-    // if (!player) return;
-
     coreStore.sendMessage(formatPlayerMessage(player, "splits"));
 
     // add second bet
-    betActions.updateBet(1);
+    betActions.updateBet(player, 1);
     // splice hand
 
     // https://www.onlineblackjackexplorer.com/how-to-play/blackjack-split/ use these 'common' rules
@@ -69,17 +74,17 @@ export function usePlayerActions() {
   async function surrender(player: Player) {
     coreStore.sendMessage(formatPlayerMessage(player, "surrenders"));
 
-    await betActions.settleBet(GameOutcomes.Surrendered);
+    await betActions.settleBet(player, GameOutcomes.Surrendered);
     gameActions.goToNextPlayer();
   }
 
-  function double(player: Player) {
+  async function double(player: Player) {
     coreStore.sendMessage(formatPlayerMessage(player, "doubles"));
 
-    betActions.updateBet(1);
-    playersStore.dealBlank();
+    betActions.updateBet(player, 1);
+    await cardsActions.dealBlank(player);
     gameActions.goToNextPlayer();
   }
 
-  return { hit, stand, split, surrender, double };
+  return { hit, stand, split, surrender, double, submitBet };
 }

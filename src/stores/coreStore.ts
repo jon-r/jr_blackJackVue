@@ -33,7 +33,7 @@ export const useCoreStore = defineStore("core", () => {
   }
 
   function jumpToStage(stage: GameStages) {
-    jumpToPlayer(DEALER_ID);
+    jumpToPlayer(DEALER_ID.index);
     activeStage.value = stage;
   }
 
@@ -41,13 +41,9 @@ export const useCoreStore = defineStore("core", () => {
     activePlayerId.value = playerId;
   }
 
-  function newRound() {
-    jumpToStage(GameStages.PlaceBets);
-  }
-
   function nextStage() {
     if (activeStage.value === GameStages.EndRound) {
-      newRound();
+      jumpToStage(GameStages.PlaceBets);
     } else {
       jumpToStage(activeStage.value + 1);
     }
@@ -63,7 +59,6 @@ export const useCoreStore = defineStore("core", () => {
     toggleOptionsModal,
     setConfig,
     sendMessage,
-    newRound,
     nextStage,
     jumpToStage,
     jumpToPlayer,

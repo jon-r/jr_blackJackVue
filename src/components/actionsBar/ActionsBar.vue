@@ -4,6 +4,7 @@ import { computed } from "vue";
 import { GameStages } from "~/constants/gamePlay.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
 import { usePlayersStore } from "~/stores/playersStore.ts";
+import { Player } from "~/types/players.ts";
 
 import BettingActions from "./BettingActions.vue";
 import EndGameActions from "./EndGameActions.vue";
@@ -12,10 +13,16 @@ import GamePlayActions from "./GamePlayActions.vue";
 const playersStore = usePlayersStore();
 const coreStore = useCoreStore();
 
+const currentPlayer = computed<Player | undefined>(() =>
+  playersStore.players.find(
+    (player) => player.index === coreStore.activePlayerId,
+  ),
+);
+
 const tipsMessage = computed(() => {
   switch (coreStore.activeStage) {
     case GameStages.PlaceBets: {
-      const money = playersStore.currentPlayer?.money;
+      const money = currentPlayer.value?.money;
       return `Current money: £${money}. Min Bet: £${coreStore.config.minBet}.`;
     }
     case GameStages.EndRound:
@@ -28,22 +35,22 @@ const tipsMessage = computed(() => {
 
 <template>
   <section class="actions-bar">
-    <template v-if="playersStore.currentPlayer">
+    <template v-if="currentPlayer">
       <aside class="actions-bar__player-info">
         <h2 class="actions-bar__player-name">
-          {{ playersStore.currentPlayer.name }}
+          {{ currentPlayer.name }}
         </h2>
         <p>{{ tipsMessage }}</p>
       </aside>
       <menu class="actions-bar__controls">
         <BettingActions
           v-if="coreStore.activeStage === GameStages.PlaceBets"
-          :player="playersStore.currentPlayer"
+          :player="currentPlayer"
         />
 
         <GamePlayActions
           v-else-if="coreStore.activeStage === GameStages.PlayerActions"
-          :player="playersStore.currentPlayer"
+          :player="currentPlayer"
         />
 
         <EndGameActions

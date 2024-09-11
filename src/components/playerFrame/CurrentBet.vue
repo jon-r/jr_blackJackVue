@@ -8,7 +8,7 @@ import {
   hasMoneyLost,
   hasMoneyReturned,
   moneyToChips,
-} from "~/helpers/gamePlay.ts";
+} from "~/helpers/bets.ts";
 import { sum } from "~/helpers/math.ts";
 
 import BettingChip from "../common/BettingChip.vue";
@@ -26,7 +26,8 @@ watch(
   () => props.bet,
   async function staggerChips() {
     if (props.bet === 0) {
-      return (betAsChips.value = []);
+      betAsChips.value = [];
+      return;
     }
 
     let betDiff = props.bet - sum(betAsChips.value);
