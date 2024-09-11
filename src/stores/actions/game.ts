@@ -40,7 +40,6 @@ export function useGameActions() {
   function goToNextPlayer() {
     const nextPlayer = playersStore.players.find(
       (player) =>
-        // todo combine this all as a helper
         player.index > coreStore.activePlayerId && mayPlayNext(player),
     );
 

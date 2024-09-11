@@ -31,7 +31,6 @@ function newGame(isDemo = false) {
 }
 
 // todo demo automatically (based on url query)
-// fixme - bug with bets if mid game
 function newDemo() {
   newGame(true);
 }

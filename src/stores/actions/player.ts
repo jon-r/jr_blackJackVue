@@ -1,7 +1,10 @@
-import { BLACKJACK_SCORE } from "~/constants/cards.ts";
 import { GameOutcomes } from "~/constants/gamePlay.ts";
 import { formatPlayerMessage } from "~/helpers/messages.ts";
-import { getPlayerHand } from "~/helpers/playerHands.ts";
+import {
+  getPlayerHand,
+  hasBust,
+  playerMustStand,
+} from "~/helpers/playerHands.ts";
 import type { Player } from "~/types/players.ts";
 
 import { useCoreStore } from "../coreStore.ts";
@@ -29,13 +32,12 @@ export function usePlayerActions() {
 
     if (!targetHand) return;
 
-    if (targetHand.score > BLACKJACK_SCORE) {
+    if (hasBust(targetHand)) {
       await betActions.settleBet(player, GameOutcomes.Lost);
     }
 
-    if (targetHand.score >= BLACKJACK_SCORE) {
+    if (playerMustStand(targetHand)) {
       nextHandOrPlayer(player);
-      return;
     }
 
     // else continue

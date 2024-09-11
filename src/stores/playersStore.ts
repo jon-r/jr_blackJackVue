@@ -18,7 +18,6 @@ import type {
   PlayerInputStub,
 } from "~/types/players.ts";
 
-// todo reorganise actions/functions in better folders (after style merge)
 export const usePlayersStore = defineStore("players", () => {
   const players = ref<Player[]>([]);
 
