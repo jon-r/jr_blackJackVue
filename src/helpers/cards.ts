@@ -5,7 +5,7 @@ import {
   SUITS_COUNT,
   SUIT_LIST,
 } from "~/constants/cards.ts";
-import { PlayingCard } from "~/types/card.ts";
+import type { PlayingCard } from "~/types/card.ts";
 
 export function getCardScore(rawCard: PlayingCard): number {
   const [faceValue] = rawCard;
@@ -14,11 +14,11 @@ export function getCardScore(rawCard: PlayingCard): number {
 }
 
 export function isBlankCard([faceValue]: PlayingCard) {
-  return faceValue === FaceValues.Blank;
+  return faceValue === (FaceValues.Blank as number);
 }
 
 export function isAce([faceValue]: PlayingCard) {
-  return faceValue === FaceValues.Ace;
+  return faceValue === (FaceValues.Ace as number);
 }
 
 export function buildDeck(deckCount: number): PlayingCard[] {

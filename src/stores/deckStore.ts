@@ -4,8 +4,8 @@ import { ref } from "vue";
 import { NIL_POSITION } from "~/constants/gamePlay.ts";
 import { buildDeck } from "~/helpers/cards.ts";
 import { getRandom } from "~/helpers/math.ts";
-import { Position } from "~/types/animations.ts";
-import { PlayingCard } from "~/types/card.ts";
+import type { Position } from "~/types/animations.ts";
+import type { PlayingCard } from "~/types/card.ts";
 
 export const useDeckStore = defineStore("deck", () => {
   const deck = ref<PlayingCard[]>([]);

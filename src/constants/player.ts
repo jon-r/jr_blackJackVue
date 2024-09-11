@@ -1,4 +1,4 @@
-import { PlayerInputStub } from "~/types/players.ts";
+import type { PlayerInputStub } from "~/types/players.ts";
 
 export const DEALER_ID = { index: 0, activeHandId: 0 } as const;
 export const DEALER_STUB: PlayerInputStub = { name: "Dealer" } as const;

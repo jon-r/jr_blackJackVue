@@ -1,4 +1,4 @@
-import { CardSuits } from "~/constants/cards.ts";
+import type { CardSuits } from "~/constants/cards.ts";
 
 export type PlayingCard = [faceValue: number, suit: CardSuits];
 

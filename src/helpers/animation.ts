@@ -1,4 +1,4 @@
-import { Position } from "~/types/animations.ts";
+import type { Position } from "~/types/animations.ts";
 
 import { getRandom } from "./math.ts";
 import { wait } from "./time.ts";
@@ -28,6 +28,7 @@ export async function staggeredPush<T>(
   }
 }
 
-export function setElementPosition(el: HTMLElement, { x, y, r = 0 }: Position) {
-  el.style.transform = `translate(${x}px,${y}px) rotate(${r}deg)`;
+export function setElementPosition(el: Element, { x, y, r = 0 }: Position) {
+  (el as HTMLElement).style.transform =
+    `translate(${x}px,${y}px) rotate(${r}deg)`;
 }

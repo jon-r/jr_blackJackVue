@@ -5,7 +5,7 @@ import { setupPlayerInput } from "~/helpers/players.ts";
 import { useGameActions } from "~/stores/actions/game.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
 import { usePlayersStore } from "~/stores/playersStore.ts";
-import { GameConfig } from "~/types/config.ts";
+import type { GameConfig } from "~/types/config.ts";
 
 import InputField from "./InputField.vue";
 
@@ -31,7 +31,6 @@ function newGame(isDemo = false) {
 }
 
 // todo demo automatically (based on url query)
-// fixme - bug with bets if mid game
 function newDemo() {
   newGame(true);
 }

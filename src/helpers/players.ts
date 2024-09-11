@@ -1,5 +1,5 @@
 import { DEALER_ID, DEFAULT_PLAYER_NAMES } from "~/constants/player.ts";
-import { Player, PlayerInputStub } from "~/types/players.ts";
+import type { Player, PlayerInputStub } from "~/types/players.ts";
 
 import { createEmptyHand } from "./playerHands.ts";
 
@@ -13,7 +13,7 @@ export function setupPlayerInput(players: Player[]): PlayerInputStub[] {
     .map((player) => ({ name: player.name }));
 
   return Array.from({ ...playersWithoutDealer, length: 5 }, (player) => ({
-    name: player.name ?? "",
+    name: player.name,
   }));
 }
 

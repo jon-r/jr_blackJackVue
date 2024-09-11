@@ -1,6 +1,6 @@
-import { Position } from "~/types/animations.ts";
+import type { Position } from "~/types/animations.ts";
 
-export enum GameStages {
+export const enum GameStages {
   Init = -1,
   PlaceBets = 0,
   DealCards = 1,
@@ -9,14 +9,14 @@ export enum GameStages {
   EndRound = 4,
 }
 
-export enum SpecialScores {
+export const enum SpecialScores {
   Bust = "Bust",
   BlackJack = "BlackJack",
   Soft = "Soft",
   None = "",
 }
 
-export enum GameOutcomes {
+export const enum GameOutcomes {
   Blackjack = "Blackjack",
   Won = "Won",
   Lost = "Lost",

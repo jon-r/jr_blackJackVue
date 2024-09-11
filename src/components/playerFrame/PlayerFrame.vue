@@ -4,7 +4,7 @@ import { computed } from "vue";
 import PlayerCards from "~/components/playerFrame/PlayerCards.vue";
 import { isNotDealer } from "~/helpers/players.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
-import { Player } from "~/types/players.ts";
+import type { Player } from "~/types/players.ts";
 
 import CurrentBet from "./CurrentBet.vue";
 import PlayerLabel from "./PlayerLabel.vue";
@@ -32,7 +32,7 @@ const isPlayerTurn = computed(() => {
       :is-active="idx === player.activeHandId"
     />
 
-    <strong class="player-frame__alert" v-if="player.outcome">
+    <strong v-if="player.outcome" class="player-frame__alert">
       {{ player.outcome }}
     </strong>
 

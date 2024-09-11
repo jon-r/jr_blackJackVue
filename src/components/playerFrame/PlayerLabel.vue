@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { nextTick, ref, watch } from "vue";
 
-import { Player } from "~/types/players.ts";
+import type { Player } from "~/types/players.ts";
 
 type PlayerLabelProps = {
   player: Player;
@@ -52,8 +52,8 @@ watch(
 
       <Transition name="bet-diff">
         <span
-          :key="moneyUpdate.index"
           v-if="moneyUpdate.index"
+          :key="moneyUpdate.index"
           class="player-label__diff"
           :class="[moneyUpdate.diff > 0 && 'player-label__diff--returns']"
         >

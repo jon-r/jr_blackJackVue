@@ -43,7 +43,7 @@ onMounted(() => {
       <i class="md-icon">menu</i>
     </button>
 
-    <section class="blackjack-table__deck" ref="deckRef">
+    <section ref="deckRef" class="blackjack-table__deck">
       <PlayingCard v-once :card="UNKNOWN_CARD" />
     </section>
 

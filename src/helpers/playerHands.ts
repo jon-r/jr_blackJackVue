@@ -1,21 +1,17 @@
 import { BLACKJACK_SCORE, DEALER_STAND_SCORE } from "~/constants/cards.ts";
 import { SpecialScores } from "~/constants/gamePlay.ts";
-import { HandRules, PlayingCard } from "~/types/card.ts";
-import { Player, PlayerHand } from "~/types/players.ts";
+import type { HandRules, PlayingCard } from "~/types/card.ts";
+import type {
+  Player,
+  PlayerHand,
+  PlayerHandIdentifier,
+} from "~/types/players.ts";
 
 import { getCardScore, isAce, isBlankCard } from "./cards.ts";
 
 export function getHandRules(player: Player): HandRules {
   const { activeHandId, hands, money, openBet } = player;
   const currentHand = hands[activeHandId];
-
-  if (!currentHand) {
-    return {
-      canSurrender: false,
-      canDouble: false,
-      canSplit: false,
-    };
-  }
 
   const { cards } = currentHand;
 
@@ -80,7 +76,7 @@ type HandCalculation = {
 };
 const nilScore = { score: 0, softAces: 0 };
 
-export function getHandScore(cards: PlayingCard[]): HandCalculation {
+export function getHandScore(cards?: PlayingCard[]): HandCalculation {
   if (!cards) {
     return nilScore;
   }
@@ -121,4 +117,11 @@ export function createEmptyHand(): PlayerHand {
     score: 0,
     softAces: 0,
   };
+}
+
+export function getPlayerHand(
+  players: Player[],
+  playerId: PlayerHandIdentifier,
+): Readonly<PlayerHand> | undefined {
+  return players[playerId.index]?.hands[playerId.activeHandId];
 }

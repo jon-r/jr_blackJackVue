@@ -1,4 +1,4 @@
-import { GameConfig } from "~/types/config.ts";
+import type { GameConfig } from "~/types/config.ts";
 
 export const DEFAULT_SETTINGS: GameConfig = {
   minBet: 100,

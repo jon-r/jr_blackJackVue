@@ -1,14 +1,13 @@
 import {
   BLACKJACK_SCORE,
-  DEALER_STAND_SCORE,
   FACE_SCORE,
   UNKNOWN_CARD,
 } from "~/constants/cards.ts";
 import { DEALER_ID } from "~/constants/player.ts";
 import { getCardScore, isBlankCard } from "~/helpers/cards.ts";
-import { playerMustStand } from "~/helpers/playerHands.ts";
-import { PlayingCard } from "~/types/card.ts";
-import { PlayerHandIdentifier } from "~/types/players.ts";
+import { getPlayerHand, playerMustStand } from "~/helpers/playerHands.ts";
+import type { PlayingCard } from "~/types/card.ts";
+import type { PlayerHand, PlayerHandIdentifier } from "~/types/players.ts";
 
 import { useDeckStore } from "../deckStore.ts";
 import { usePlayersStore } from "../playersStore.ts";
@@ -28,7 +27,9 @@ export function useCardsActions() {
   }
 
   async function dealOrPeekDealerCard(): Promise<PlayingCard | null> {
-    const dealerScore = playersStore.dealer.hands[0].score;
+    const dealerScore = (
+      getPlayerHand(playersStore.players, DEALER_ID) as PlayerHand
+    ).score;
 
     if (dealerScore < FACE_SCORE) {
       return dealBlank(DEALER_ID);
@@ -62,14 +63,17 @@ export function useCardsActions() {
     }
 
     while (
-      !playerMustStand(playersStore.dealer.hands[DEALER_ID.activeHandId], true)
+      !playerMustStand(
+        getPlayerHand(playersStore.players, DEALER_ID) as PlayerHand,
+        true,
+      )
     ) {
       await dealCard(DEALER_ID);
     }
   }
 
   async function revealPlayerBlanks(handId: PlayerHandIdentifier) {
-    const targetHand = playersStore.getPlayerHand(handId);
+    const targetHand = getPlayerHand(playersStore.players, handId);
 
     if (!targetHand) return; // shouldnt happen, maybe throw error?
 

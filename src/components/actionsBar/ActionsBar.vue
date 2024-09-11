@@ -4,7 +4,7 @@ import { computed } from "vue";
 import { GameStages } from "~/constants/gamePlay.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
 import { usePlayersStore } from "~/stores/playersStore.ts";
-import { Player } from "~/types/players.ts";
+import type { Player } from "~/types/players.ts";
 
 import BettingActions from "./BettingActions.vue";
 import EndGameActions from "./EndGameActions.vue";
@@ -22,7 +22,7 @@ const currentPlayer = computed<Player | undefined>(() =>
 const tipsMessage = computed(() => {
   switch (coreStore.activeStage) {
     case GameStages.PlaceBets: {
-      const money = currentPlayer.value?.money;
+      const money = currentPlayer.value?.money ?? 0;
       return `Current money: £${money}. Min Bet: £${coreStore.config.minBet}.`;
     }
     case GameStages.EndRound:

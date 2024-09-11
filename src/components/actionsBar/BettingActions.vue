@@ -5,11 +5,11 @@ import { CHIP_VALUES } from "~/constants/gamePlay.ts";
 import { sum } from "~/helpers/math.ts";
 import { usePlayerActions } from "~/stores/actions/player.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
-import { Player } from "~/types/players.ts";
+import type { Player } from "~/types/players.ts";
 
 import BettingChip from "../common/BettingChip.vue";
 import ActionButton from "./ActionButton.vue";
-import { ButtonControl } from "./button.ts";
+import type { ButtonControl } from "./button.ts";
 
 type BettingActionsProps = {
   player: Player;

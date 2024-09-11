@@ -2,7 +2,7 @@
 import { computed } from "vue";
 
 import { CARD_FACES } from "~/constants/cards.ts";
-import { PlayingCard } from "~/types/card.ts";
+import type { PlayingCard } from "~/types/card.ts";
 
 type PlayingCardProps = {
   card: PlayingCard;

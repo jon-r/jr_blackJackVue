@@ -64,7 +64,7 @@ watch(
       </li>
     </TransitionGroup>
 
-    <small class="current-bet__value" v-show="bet > 0">
+    <small v-show="bet > 0" class="current-bet__value">
       Placed Bet: £{{ bet }} <br />
     </small>
   </div>
