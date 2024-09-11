@@ -1,7 +1,8 @@
 import { GameStages } from "~/constants/gamePlay.ts";
 import { DEALER_ID } from "~/constants/player.ts";
+import { mayPlayNext } from "~/helpers/gamePlay.ts";
 import { formatDealerMessage } from "~/helpers/messages.ts";
-import { isNotDealer, mayPlayHand } from "~/helpers/players.ts";
+import { isNotDealer } from "~/helpers/players.ts";
 import { GameConfig } from "~/types/config.ts";
 import { PlayerInputStub } from "~/types/players.ts";
 
@@ -40,7 +41,7 @@ export function useGameActions() {
     const nextPlayer = playersStore.players.find(
       (player) =>
         // todo combine this all as a helper
-        player.index > coreStore.activePlayerId && mayPlayHand(player),
+        player.index > coreStore.activePlayerId && mayPlayNext(player),
     );
 
     if (nextPlayer) {

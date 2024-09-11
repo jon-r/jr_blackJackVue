@@ -1,5 +1,5 @@
 import { BLACKJACK_SCORE } from "~/constants/cards.ts";
-import { GameOutcomes } from "~/constants/gamePlay.ts";
+import { BET_MULTIPLIERS, GameOutcomes } from "~/constants/gamePlay.ts";
 import { formatPlayerMessage } from "~/helpers/messages.ts";
 import { Player } from "~/types/players.ts";
 

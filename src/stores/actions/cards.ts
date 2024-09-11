@@ -6,6 +6,7 @@ import {
 } from "~/constants/cards.ts";
 import { DEALER_ID } from "~/constants/player.ts";
 import { getCardScore, isBlankCard } from "~/helpers/cards.ts";
+import { playerMustStand } from "~/helpers/playerHands.ts";
 import { PlayingCard } from "~/types/card.ts";
 import { PlayerHandIdentifier } from "~/types/players.ts";
 
@@ -59,14 +60,11 @@ export function useCardsActions() {
     if (playersStore.dealer.peekedCard) {
       await playersStore.setCard(DEALER_ID, playersStore.dealer.peekedCard);
     }
-    let dealerMayContinue = true;
-    while (dealerMayContinue) {
-      dealerMayContinue =
-        playersStore.dealer.hands[DEALER_ID.activeHandId].score <
-        DEALER_STAND_SCORE;
-      if (dealerMayContinue) {
-        await dealCard(DEALER_ID);
-      }
+
+    while (
+      !playerMustStand(playersStore.dealer.hands[DEALER_ID.activeHandId], true)
+    ) {
+      await dealCard(DEALER_ID);
     }
   }
 

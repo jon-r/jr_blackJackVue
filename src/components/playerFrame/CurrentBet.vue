@@ -26,7 +26,8 @@ watch(
   () => props.bet,
   async function staggerChips() {
     if (props.bet === 0) {
-      return (betAsChips.value = []);
+      betAsChips.value = [];
+      return;
     }
 
     let betDiff = props.bet - sum(betAsChips.value);

@@ -3,12 +3,8 @@ import { computed, ref } from "vue";
 
 import { DEALER_ID, DEALER_STUB } from "~/constants/player.ts";
 import { AUTO_TIME_STANDARD } from "~/constants/settings.ts";
-import { updateHand } from "~/helpers/gamePlay.ts";
-import {
-  createEmptyHand,
-  createPlayer,
-  isActivePlayer,
-} from "~/helpers/players.ts";
+import { createEmptyHand, updateHand } from "~/helpers/playerHands.ts";
+import { createPlayer, isActivePlayer } from "~/helpers/players.ts";
 import { wait } from "~/helpers/time.ts";
 import { PlayingCard } from "~/types/card.ts";
 import {

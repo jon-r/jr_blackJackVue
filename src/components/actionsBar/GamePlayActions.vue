@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { getHandRules } from "~/helpers/cards.ts";
+import { getHandRules } from "~/helpers/playerHands.ts";
 import { usePlayerActions } from "~/stores/actions/player.ts";
 import { Player } from "~/types/players.ts";
 

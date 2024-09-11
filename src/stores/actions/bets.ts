@@ -1,4 +1,4 @@
-import { GameOutcomes, OUTCOME_MULTIPLIER } from "~/constants/gamePlay.ts";
+import { BET_MULTIPLIERS, GameOutcomes } from "~/constants/gamePlay.ts";
 import { AUTO_TIME_LONG } from "~/constants/settings.ts";
 import { getGameOutcome } from "~/helpers/gamePlay.ts";
 import { getRandom } from "~/helpers/math.ts";
@@ -27,7 +27,7 @@ export function useBetActions() {
 
   function placeRandomBets() {
     playersStore.activePlayers.forEach((player) => {
-      const rngBet = (getRandom(10) + 1) * 100;
+      const rngBet = (getRandom(40) + 1) * 25;
 
       placeBet(player, rngBet);
     });
@@ -36,7 +36,7 @@ export function useBetActions() {
   async function settleBet(playerId: PlayerIdentifier, outcome: GameOutcomes) {
     const targetPlayer = playersStore.players[playerId.index];
 
-    targetPlayer.openBet += targetPlayer.openBet * OUTCOME_MULTIPLIER[outcome];
+    targetPlayer.openBet = targetPlayer.openBet * BET_MULTIPLIERS[outcome];
     targetPlayer.outcome = outcome;
 
     await wait(AUTO_TIME_LONG);

@@ -19,6 +19,7 @@
     "noUnusedLocals": false, // FIXME
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+
     "baseUrl": "./",
     "paths": {
       "~/*": ["./src/*"]
