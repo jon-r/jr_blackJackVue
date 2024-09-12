@@ -4,8 +4,10 @@ import Unfonts from "unplugin-fonts/vite";
 import { defineConfig } from "vite";
 import vueDevTools from "vite-plugin-vue-devtools";
 
+import { purgeCssVariables, removeTempFiles } from "./scripts/purgeVariables";
+
 // https://vitejs.dev/config/
-export default defineConfig(() => ({
+export default defineConfig(({ command }) => ({
   plugins: [
     vue(),
     vueDevTools(),
@@ -18,6 +20,26 @@ export default defineConfig(() => ({
         ],
       },
     }),
+    {
+      name: "purge-css-variables",
+      async buildStart() {
+        if (command === "serve") return;
+        await purgeCssVariables("./src");
+      },
+      async buildEnd() {
+        if (command === "serve") return;
+        await removeTempFiles("./src");
+      },
+    },
   ],
-  resolve: { alias: { "~": path.resolve("src") } },
+  resolve: {
+    alias: {
+      "~": path.resolve("src"),
+
+      variables: path.resolve(
+        "src/styles",
+        command === "serve" ? "variables" : "_variables",
+      ),
+    },
+  },
 }));

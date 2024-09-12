@@ -3,7 +3,6 @@ import postcssNested from "postcss-nested";
 
 export default {
   plugins: [
-    postcssNested,
     // eslint-disable-next-line no-undef
     process.env.NODE_ENV === "production" &&
       purgecss({
@@ -16,6 +15,21 @@ export default {
           /data-v-.*/,
           /--\d+$/,
         ],
+
+        defaultExtractor(content) {
+          const contentWithoutStyleBlocks = content.replace(
+            /<style[^]+?<\/style>/gi,
+            "",
+          );
+
+          return (
+            contentWithoutStyleBlocks.match(
+              /[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g,
+            ) || []
+          );
+        },
       }),
+
+    postcssNested,
   ],
 };
