@@ -42,7 +42,7 @@ watch(
   { immediate: true },
 );
 </script>
-<!-- fixme seems a bug on red tokens z-index -->
+
 <!-- fixme tokens arent cleared for demo game -->
 <template>
   <div class="current-bet">

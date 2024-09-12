@@ -27,7 +27,7 @@ export function useBetActions() {
 
   function placeRandomBets() {
     playersStore.activePlayers.forEach((player) => {
-      const rngBet = (getRandom(40) + 1) * 25;
+      const rngBet = (getRandom(200) + 1) * 5;
 
       placeBet(player, rngBet);
     });
