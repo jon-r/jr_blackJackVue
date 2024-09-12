@@ -36,6 +36,7 @@ export default defineConfig(({ command }) => ({
     alias: {
       "~": path.resolve("src"),
 
+      // this pairs with the 'purge-css-variables' plugin above
       variables: path.resolve(
         "src/styles",
         command === "serve" ? "variables" : "_variables",
