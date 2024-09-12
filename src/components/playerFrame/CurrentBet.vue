@@ -43,7 +43,6 @@ watch(
 );
 </script>
 
-<!-- fixme tokens arent cleared for demo game -->
 <template>
   <div class="current-bet">
     <TransitionGroup

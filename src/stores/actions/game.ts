@@ -1,3 +1,5 @@
+import { nextTick } from "vue";
+
 import { GameStages } from "~/constants/gamePlay.ts";
 import { DEALER_ID } from "~/constants/player.ts";
 import { mayPlayNext } from "~/helpers/gamePlay.ts";
@@ -19,7 +21,7 @@ export function useGameActions() {
   const betActions = useBetActions();
   const cardsActions = useCardsActions();
 
-  function startGame(
+  async function startGame(
     players: PlayerInputStub[],
     config: GameConfig,
     isDemo: boolean,
@@ -32,6 +34,7 @@ export function useGameActions() {
     coreStore.jumpToStage(GameStages.PlaceBets);
 
     if (isDemo) {
+      await nextTick(); // next tick to make sure the players are fully reset before placing new random bets
       betActions.placeRandomBets();
       coreStore.jumpToStage(GameStages.DealCards);
     }
