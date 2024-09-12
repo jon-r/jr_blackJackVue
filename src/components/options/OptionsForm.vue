@@ -27,7 +27,7 @@ function newGame(isDemo = false) {
     playerCount: playerInput.value.length,
   };
 
-  gameActions.startGame(playerInput.value, newConfig, isDemo);
+  void gameActions.startGame(playerInput.value, newConfig, isDemo);
 }
 
 // todo demo automatically (based on url query)

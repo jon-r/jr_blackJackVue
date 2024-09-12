@@ -20,6 +20,9 @@ const href = computed(() => (props.isStacked ? "#chip-tilt" : "#chip"));
 </template>
 <style>
 .betting-chip {
+  &--5 {
+    filter: url(#red);
+  }
   &--10 {
     filter: url(#blue);
   }

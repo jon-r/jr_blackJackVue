@@ -22,16 +22,20 @@ const visualCard = computed(() => {
 
 <template>
   <div class="playing-card" :class="visualCard.suit">
-    <strong v-if="visualCard.face">{{ visualCard.face }}</strong>
-    <!--    todo need to revert the back as inline it breaks animation -->
-    <svg class="playing-card__face" viewBox="0 0 100 140">
-      <use :xlink:href="visualCard.suitId" />
-    </svg>
+    <template v-if="visualCard.face">
+      <strong>{{ visualCard.face }}</strong>
+      <svg class="playing-card__face" viewBox="0 0 100 140">
+        <use :xlink:href="visualCard.suitId" />
+      </svg>
+    </template>
   </div>
 </template>
 
 <style>
 .playing-card {
+  --card-back-bg: url(src/assets/card-back.svg) center/cover,
+    var(--playing-card-back);
+
   width: 50px;
   height: 70px;
 
@@ -52,30 +56,34 @@ const visualCard = computed(() => {
     color: var(--md-sys-color-error);
   }
 
+  &--blank {
+    background: var(--card-back-bg);
+  }
+
   &:not(&--blank) {
-    background-color: var(--md-sys-color-surface);
+    background: var(--md-sys-color-surface);
     animation: flip-card var(--transition-standard)
-      var(--transition-duration-short) both;
+      var(--transition-duration-standard) both;
 
     & svg,
     & strong {
       animation: reveal-card var(--transition-standard)
-        var(--transition-duration-short) both;
+        var(--transition-duration-standard) both;
     }
   }
 }
 
 @keyframes flip-card {
   from {
-    background-color: var(--playing-card-back);
+    background: var(--card-back-bg);
   }
   50% {
-    background-color: var(--playing-card-back);
+    background: var(--card-back-bg);
     transform: rotateY(90deg);
   }
   51%,
   to {
-    background-color: var(--md-sys-color-surface);
+    background: var(--md-sys-color-surface);
   }
 }
 
