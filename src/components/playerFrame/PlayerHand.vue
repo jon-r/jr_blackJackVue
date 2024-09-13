@@ -17,7 +17,6 @@ const deckStore = useDeckStore();
 const props = defineProps<PlayerCardsProps>();
 
 const enterPosition = ref(NIL_POSITION);
-const leavePosition = { x: 0, y: 1000 };
 
 const frameRef = ref<HTMLDivElement>();
 
@@ -42,7 +41,7 @@ function onAfterEnter(el: Element) {
 }
 
 function onLeave(el: Element) {
-  setElementPosition(el, leavePosition);
+  (el as HTMLElement).style.opacity = "0";
 }
 </script>
 
@@ -84,13 +83,15 @@ function onLeave(el: Element) {
 </template>
 <style>
 .player-cards {
-  flex: 1;
-  transition: 300ms;
+  transition: var(--transition-standard);
+  position: absolute;
+  inset: 0;
 
   &:not(&--active-hand) {
-    opacity: 0.75;
+    opacity: 0.5;
     filter: grayscale(0.5);
-    transform: translateY(-10px);
+    transform: translateY(70px);
+    z-index: -1;
   }
 
   &__hand-score {
@@ -116,7 +117,9 @@ function onLeave(el: Element) {
     top: 0;
     left: 0;
 
-    transition: transform var(--transition-long);
+    transition:
+      transform var(--transition-long),
+      opacity var(--transition-short);
   }
 }
 </style>
