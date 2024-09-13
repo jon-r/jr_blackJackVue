@@ -1,4 +1,5 @@
 import { GameOutcomes } from "~/constants/gamePlay.ts";
+import { isAce } from "~/helpers/cards.ts";
 import { formatPlayerMessage } from "~/helpers/messages.ts";
 import {
   getPlayerHand,
@@ -21,9 +22,12 @@ export function usePlayerActions() {
   const cardsActions = useCardsActions();
 
   function nextHandOrPlayer(player: Player) {
-    const nextHand = playersStore.getNextHand(player);
+    const nextHand = playersStore.nextHand(player);
+
     if (!nextHand) {
       gameActions.goToNextPlayer();
+    } else if (playerMustStand(nextHand)) {
+      nextHandOrPlayer(player);
     }
   }
 
@@ -61,24 +65,26 @@ export function usePlayerActions() {
     nextHandOrPlayer(player);
   }
 
-  // todo multihand
   async function split(player: Player) {
     coreStore.sendMessage(formatPlayerMessage(player, "splits"));
 
-    // add second bet
-    betActions.updateBet(player, 1);
+    betActions.placeSideBet(player, "split");
+
+    const originalHand = player.hands[player.activeHandId];
 
     await playersStore.splitHand(player);
 
-    const secondToLastHandId = player.hands.length - 2;
-    for (let i = secondToLastHandId; i < player.hands.length; i++) {
-      await cardsActions.dealCard({ index: player.index, activeHandId: i });
+    // deal/reveal second card to each hand
+    for (let i = 0; i < player.hands.length; i++) {
+      if (player.hands[i].cards.length === 1) {
+        await cardsActions.dealCard({ index: player.index, activeHandId: i });
+      }
     }
 
-    // https://www.onlineblackjackexplorer.com/how-to-play/blackjack-split/ use these 'common' rules
-
-    // deal/reveal second card to each hand
-    // check for outcome?
+    // if the hands were aces, no more actions can be made so go to next person
+    if (isAce(originalHand.cards[0])) {
+      gameActions.goToNextPlayer();
+    }
   }
 
   async function surrender(player: Player) {
@@ -91,7 +97,7 @@ export function usePlayerActions() {
   async function double(player: Player) {
     coreStore.sendMessage(formatPlayerMessage(player, "doubles"));
 
-    betActions.updateBet(player, 1);
+    betActions.placeSideBet(player, "double");
     await cardsActions.dealBlank(player);
     gameActions.goToNextPlayer();
   }

@@ -6,6 +6,7 @@ export type Player = {
   index: number;
   name: string;
   money: number;
+  originalBet: number;
   openBet: number;
 
   outcome: GameOutcomes | null;

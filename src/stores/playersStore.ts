@@ -14,6 +14,7 @@ import { wait } from "~/helpers/time.ts";
 import type { PlayingCard } from "~/types/card.ts";
 import type {
   Player,
+  PlayerHand,
   PlayerHandIdentifier,
   PlayerIdentifier,
   PlayerInputStub,
@@ -48,14 +49,14 @@ export const usePlayersStore = defineStore("players", () => {
     players.value[index].inGame = false;
   }
 
-  function getNextHand({ index }: PlayerIdentifier): boolean {
+  function nextHand({ index }: PlayerIdentifier): PlayerHand | false {
     const targetPlayer = players.value[index];
 
     const nextHand = targetPlayer.activeHandId + 1;
 
     if (targetPlayer.hands[nextHand]) {
       targetPlayer.activeHandId = nextHand;
-      return true;
+      return targetPlayer.hands[nextHand];
     }
 
     return false;
@@ -75,15 +76,18 @@ export const usePlayersStore = defineStore("players", () => {
     targetPlayer.hands[handId.activeHandId] = addToHand(targetHand, card);
   }
 
-  async function splitHand({ index }: PlayerIdentifier) {
+  async function splitHand(handId: PlayerHandIdentifier) {
     await wait(AUTO_TIME_SHORT);
-    const targetPlayer = players.value[index];
+    const targetPlayer = players.value[handId.index];
+    const targetHand = getPlayerHand(players.value, handId);
 
-    const originalHand = targetPlayer.hands.at(-1);
+    if (!targetHand) return;
 
-    if (!originalHand) return;
-
-    targetPlayer.hands = divideHand(originalHand);
+    targetPlayer.hands.splice(
+      handId.activeHandId,
+      1,
+      ...divideHand(targetHand),
+    );
   }
 
   return {
@@ -93,7 +97,7 @@ export const usePlayersStore = defineStore("players", () => {
 
     splitHand,
     createPlayers,
-    getNextHand,
+    nextHand,
     resetCards,
     removePlayer,
     setCard,

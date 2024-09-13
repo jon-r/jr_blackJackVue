@@ -1,4 +1,8 @@
-import { BET_MULTIPLIERS, GameOutcomes } from "~/constants/gamePlay.ts";
+import {
+  BET_MULTIPLIERS,
+  GameOutcomes,
+  SIDE_BETS,
+} from "~/constants/gamePlay.ts";
 import { AUTO_TIME_LONG } from "~/constants/settings.ts";
 import { getGameOutcome } from "~/helpers/gamePlay.ts";
 import { getRandom } from "~/helpers/math.ts";
@@ -15,12 +19,18 @@ export function useBetActions() {
 
     targetPlayer.money -= value;
     targetPlayer.openBet += value;
+    if (targetPlayer.originalBet === 0) {
+      targetPlayer.originalBet = value;
+    }
   }
 
-  function updateBet(playerId: PlayerIdentifier, multiplier: number) {
+  function placeSideBet(
+    playerId: PlayerIdentifier,
+    multiplier: keyof typeof SIDE_BETS,
+  ) {
     const targetPlayer = playersStore.players[playerId.index];
 
-    const extraBet = targetPlayer.openBet * multiplier;
+    const extraBet = targetPlayer.originalBet * SIDE_BETS[multiplier];
 
     placeBet(playerId, extraBet);
   }
@@ -31,7 +41,7 @@ export function useBetActions() {
       const rngBet = Math.min(
         // todo TEMP Math.min
         getRandom(180) * 5 + 100,
-        500,
+        250,
       );
 
       placeBet(player, rngBet);
@@ -48,6 +58,7 @@ export function useBetActions() {
 
     targetPlayer.money += targetPlayer.openBet;
     targetPlayer.openBet = 0;
+    targetPlayer.originalBet = 0;
   }
 
   async function settleAllBets() {
@@ -62,5 +73,5 @@ export function useBetActions() {
     await Promise.all(promises);
   }
 
-  return { placeBet, placeRandomBets, updateBet, settleBet, settleAllBets };
+  return { placeBet, placeRandomBets, placeSideBet, settleBet, settleAllBets };
 }
