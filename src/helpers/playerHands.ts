@@ -17,12 +17,13 @@ export function getHandRules(player: Player): HandRules {
 
   const isFirstPlay = cards.length === 2;
   const canAfford = money >= openBet;
+  const hasSplitTwice = hands.length > 2;
   const hasMatchingCards = getCardScore(cards[0]) === getCardScore(cards[1]);
 
   return {
     canSurrender: isFirstPlay,
     canDouble: isFirstPlay && canAfford,
-    canSplit: isFirstPlay && canAfford && hasMatchingCards,
+    canSplit: isFirstPlay && canAfford && hasMatchingCards && !hasSplitTwice,
   };
 }
 

@@ -37,12 +37,8 @@ export function useBetActions() {
 
   function placeRandomBets() {
     playersStore.activePlayers.forEach((player) => {
-      // random bet of at least £100
-      const rngBet = Math.min(
-        // todo TEMP Math.min
-        getRandom(180) * 5 + 100,
-        250,
-      );
+      // random bet of at least 100
+      const rngBet = getRandom(180) * 5 + 100;
 
       placeBet(player, rngBet);
     });
