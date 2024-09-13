@@ -98,8 +98,7 @@ export function getHandScore(cards?: PlayingCard[]): HandCalculation {
   }, nilScore);
 }
 
-export function updateHand(hand: PlayerHand, newCard: PlayingCard): PlayerHand {
-  const cards = replaceLastBlankCard(hand.cards, newCard);
+function calculateHand(cards: PlayingCard[]): PlayerHand {
   const handScore = getHandScore(cards);
   const special = getHandSpecial(handScore, cards.length);
 
@@ -108,6 +107,16 @@ export function updateHand(hand: PlayerHand, newCard: PlayingCard): PlayerHand {
     special,
     ...handScore,
   };
+}
+
+export function addToHand(hand: PlayerHand, newCard: PlayingCard): PlayerHand {
+  const cards = replaceLastBlankCard(hand.cards, newCard);
+
+  return calculateHand(cards);
+}
+
+export function divideHand(hand: PlayerHand): PlayerHand[] {
+  return hand.cards.map((card) => calculateHand([card]));
 }
 
 export function createEmptyHand(): PlayerHand {

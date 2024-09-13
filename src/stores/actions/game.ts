@@ -76,7 +76,9 @@ export function useGameActions() {
   }
 
   async function dealFinalCards() {
-    await cardsActions.revealAllBlankCards();
+    await cardsActions.revealAllPlayerBlanks();
+    await cardsActions.revealDealerBlanks();
+
     coreStore.sendMessage(formatDealerMessage(playersStore.dealer.hands[0]));
     coreStore.jumpToStage(GameStages.EndRound);
   }

@@ -62,12 +62,18 @@ export function usePlayerActions() {
   }
 
   // todo multihand
-  function split(player: Player) {
+  async function split(player: Player) {
     coreStore.sendMessage(formatPlayerMessage(player, "splits"));
 
     // add second bet
     betActions.updateBet(player, 1);
-    // splice hand
+
+    await playersStore.splitHand(player);
+
+    const secondToLastHandId = player.hands.length - 2;
+    for (let i = secondToLastHandId; i < player.hands.length; i++) {
+      await cardsActions.dealCard({ index: player.index, activeHandId: i });
+    }
 
     // https://www.onlineblackjackexplorer.com/how-to-play/blackjack-split/ use these 'common' rules
 

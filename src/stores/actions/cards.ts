@@ -84,9 +84,7 @@ export function useCardsActions() {
     }
   }
 
-  async function revealAllBlankCards() {
-    await revealDealerBlanks();
-
+  async function revealAllPlayerBlanks() {
     for (let i = 0; i < playersStore.activePlayers.length; i++) {
       await revealPlayerBlanks(playersStore.activePlayers[i]);
     }
@@ -98,6 +96,7 @@ export function useCardsActions() {
 
     dealAllPlayersCards,
     dealOrPeekDealerCard,
-    revealAllBlankCards,
+    revealAllPlayerBlanks,
+    revealDealerBlanks,
   };
 }

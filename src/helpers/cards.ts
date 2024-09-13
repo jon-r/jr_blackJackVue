@@ -7,7 +7,9 @@ import {
 } from "~/constants/cards.ts";
 import type { PlayingCard } from "~/types/card.ts";
 
-export function getCardScore(rawCard: PlayingCard): number {
+export function getCardScore(rawCard?: PlayingCard): number {
+  if (!rawCard) return 0;
+
   const [faceValue] = rawCard;
 
   return CARD_VALUES[faceValue] || faceValue;
