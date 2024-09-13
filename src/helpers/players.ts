@@ -23,6 +23,7 @@ export function createPlayer({ name }: PlayerInputStub, index: number): Player {
     index,
     money: 1000,
     openBet: 0,
+    originalBet: 0,
     inGame: true,
     hands: [createEmptyHand()],
     outcome: null,

@@ -63,11 +63,11 @@ function closeModal() {
   &__close {
     width: var(--button-size);
     height: var(--button-size);
-    padding: vaR(--padding-xs);
+    padding: var(--padding-xs);
     color: var(--md-sys-color-primary);
 
     border-radius: var(--border-radius-xl);
-    transition: background-color 300ms;
+    transition: background-color var(--transition-standard);
 
     &:hover {
       background-color: var(--md-sys-color-primary-hover-opacity);

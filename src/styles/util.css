@@ -6,7 +6,7 @@
   cursor: pointer;
   font-weight: var(--font-weight-medium);
 
-  transition: background-color 300ms;
+  transition: background-color var(--transition-standard);
 }
 
 .list-base {

@@ -83,7 +83,6 @@ async function trimColorVars(stylesDir: string, usedVariables: string[]) {
 }
 
 export async function purgeCssVariables(srcDir: string) {
-  // todo delete this dir after build
   await mkdir(path.resolve(srcDir, "styles/_variables"), { recursive: true });
 
   const usedVariables = await findAllVariables(srcDir);

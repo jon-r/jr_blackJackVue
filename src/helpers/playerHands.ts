@@ -17,12 +17,13 @@ export function getHandRules(player: Player): HandRules {
 
   const isFirstPlay = cards.length === 2;
   const canAfford = money >= openBet;
+  const hasSplitTwice = hands.length > 2;
   const hasMatchingCards = getCardScore(cards[0]) === getCardScore(cards[1]);
 
   return {
     canSurrender: isFirstPlay,
     canDouble: isFirstPlay && canAfford,
-    canSplit: isFirstPlay && canAfford && hasMatchingCards,
+    canSplit: isFirstPlay && canAfford && hasMatchingCards && !hasSplitTwice,
   };
 }
 
@@ -98,8 +99,7 @@ export function getHandScore(cards?: PlayingCard[]): HandCalculation {
   }, nilScore);
 }
 
-export function updateHand(hand: PlayerHand, newCard: PlayingCard): PlayerHand {
-  const cards = replaceLastBlankCard(hand.cards, newCard);
+function calculateHand(cards: PlayingCard[]): PlayerHand {
   const handScore = getHandScore(cards);
   const special = getHandSpecial(handScore, cards.length);
 
@@ -108,6 +108,16 @@ export function updateHand(hand: PlayerHand, newCard: PlayingCard): PlayerHand {
     special,
     ...handScore,
   };
+}
+
+export function addToHand(hand: PlayerHand, newCard: PlayingCard): PlayerHand {
+  const cards = replaceLastBlankCard(hand.cards, newCard);
+
+  return calculateHand(cards);
+}
+
+export function divideHand(hand: PlayerHand): PlayerHand[] {
+  return hand.cards.map((card) => calculateHand([card]));
 }
 
 export function createEmptyHand(): PlayerHand {

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import PlayerCards from "~/components/playerFrame/PlayerCards.vue";
 import { isNotDealer } from "~/helpers/players.ts";
 import { useCoreStore } from "~/stores/coreStore.ts";
 import type { Player } from "~/types/players.ts";
 
 import CurrentBet from "./CurrentBet.vue";
+import PlayerHand from "./PlayerHand.vue";
 import PlayerLabel from "./PlayerLabel.vue";
 
 type PlayerFrameProps = {
@@ -25,7 +25,7 @@ const isPlayerTurn = computed(() => {
 
 <template>
   <section class="player-frame" :class="'player-frame--' + props.player.index">
-    <PlayerCards
+    <PlayerHand
       v-for="(hand, idx) in player.hands"
       :key="idx"
       :hand="hand"
@@ -59,6 +59,7 @@ const isPlayerTurn = computed(() => {
 
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
 
   &--1 {
     transform: translate(6px, 190px);

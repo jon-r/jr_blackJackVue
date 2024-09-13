@@ -32,6 +32,12 @@ export const BET_MULTIPLIERS = {
   [GameOutcomes.Lost]: 0,
 } as const;
 
+export const SIDE_BETS = {
+  double: 1,
+  split: 1,
+  // other future bets?
+} as const;
+
 export const CHIP_VALUES = [1000, 500, 100, 25, 10, 5] as const;
 
 export const NIL_POSITION: Position = { x: 0, y: 0 };
