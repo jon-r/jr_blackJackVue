@@ -7,3 +7,8 @@ export type HandRules = {
   canSplit: boolean;
   canSurrender: boolean;
 };
+
+export type HandCalculation = {
+  score: number;
+  softAces: number;
+};

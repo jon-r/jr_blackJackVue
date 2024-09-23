@@ -1,7 +1,7 @@
 import { nextTick } from "vue";
 
 import { GameStages } from "~/constants/gamePlay.ts";
-import { DEALER_ID } from "~/constants/player.ts";
+import { DEALER } from "~/constants/player.ts";
 import { mayPlayNext } from "~/helpers/gamePlay.ts";
 import { formatDealerMessage } from "~/helpers/messages.ts";
 import { isNotDealer } from "~/helpers/players.ts";
@@ -58,7 +58,7 @@ export function useGameActions() {
     coreStore.sendMessage("All bets are in, dealing out first cards.");
     // deal one
     await cardsActions.dealAllPlayersCards();
-    await cardsActions.dealCard(DEALER_ID);
+    await cardsActions.dealCard(DEALER);
 
     // deal two
     await cardsActions.dealAllPlayersCards();

@@ -39,6 +39,9 @@ watch(
 );
 
 onMounted(() => {
+  // dont trigger automatic demo mode in dev
+  if (import.meta.env.DEV) return;
+
   const isDemoMode = window.location.search.includes("demo=true");
 
   if (isDemoMode) {

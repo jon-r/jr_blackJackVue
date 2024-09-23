@@ -3,7 +3,7 @@ import {
   FACE_SCORE,
   UNKNOWN_CARD,
 } from "~/constants/cards.ts";
-import { DEALER_ID } from "~/constants/player.ts";
+import { DEALER } from "~/constants/player.ts";
 import { getCardScore, isBlankCard } from "~/helpers/cards.ts";
 import { getPlayerHand, playerMustStand } from "~/helpers/playerHands.ts";
 import type { PlayingCard } from "~/types/card.ts";
@@ -28,21 +28,21 @@ export function useCardsActions() {
 
   async function dealOrPeekDealerCard(): Promise<PlayingCard | null> {
     const dealerScore = (
-      getPlayerHand(playersStore.players, DEALER_ID) as PlayerHand
+      getPlayerHand(playersStore.players, DEALER) as PlayerHand
     ).score;
 
     if (dealerScore < FACE_SCORE) {
-      return dealBlank(DEALER_ID);
+      return dealBlank(DEALER);
     }
 
     const newCard = deckStore.drawCard();
 
     if (getCardScore(newCard) + dealerScore !== BLACKJACK_SCORE) {
       playersStore.setDealerPeekedCard(newCard);
-      return dealBlank(DEALER_ID);
+      return dealBlank(DEALER);
     }
 
-    await playersStore.setCard(DEALER_ID, newCard);
+    await playersStore.setCard(DEALER, newCard);
     return newCard;
   }
 
@@ -59,16 +59,16 @@ export function useCardsActions() {
 
   async function revealDealerBlanks() {
     if (playersStore.dealer.peekedCard) {
-      await playersStore.setCard(DEALER_ID, playersStore.dealer.peekedCard);
+      await playersStore.setCard(DEALER, playersStore.dealer.peekedCard);
     }
 
     while (
       !playerMustStand(
-        getPlayerHand(playersStore.players, DEALER_ID) as PlayerHand,
+        getPlayerHand(playersStore.players, DEALER) as PlayerHand,
         true,
       )
     ) {
-      await dealCard(DEALER_ID);
+      await dealCard(DEALER);
     }
   }
 

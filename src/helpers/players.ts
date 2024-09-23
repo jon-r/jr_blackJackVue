@@ -1,4 +1,4 @@
-import { DEALER_ID, DEFAULT_PLAYER_NAMES } from "~/constants/player.ts";
+import { DEALER, DEFAULT_PLAYER_NAMES } from "~/constants/player.ts";
 import type { Player, PlayerInputStub } from "~/types/players.ts";
 
 import { createEmptyHand } from "./playerHands.ts";
@@ -37,5 +37,5 @@ export function isActivePlayer(player: Player) {
 }
 
 export function isNotDealer(player: Player) {
-  return player.index !== DEALER_ID.index;
+  return player.index !== DEALER.index;
 }

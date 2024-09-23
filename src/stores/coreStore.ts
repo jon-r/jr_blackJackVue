@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 import { GameStages } from "~/constants/gamePlay.ts";
-import { DEALER_ID, DEFAULT_PLAYER_NAMES } from "~/constants/player.ts";
+import { DEALER, DEFAULT_PLAYER_NAMES } from "~/constants/player.ts";
 import {
   DEFAULT_DECK_COUNT,
   DEFAULT_MIN_BET,
@@ -55,7 +55,7 @@ export const useCoreStore = defineStore("core", () => {
   }
 
   function jumpToStage(stage: GameStages) {
-    jumpToPlayer(DEALER_ID.index);
+    jumpToPlayer(DEALER.index);
     activeStage.value = stage;
   }
 
