@@ -61,7 +61,7 @@ const visualCard = computed(() => {
   }
 
   &:not(&--blank) {
-    background: var(--md-sys-color-surface-container-low);
+    background: var(--md-sys-color-surface-container);
     animation: flip-card var(--transition-standard)
       var(--transition-duration-standard) both;
 
@@ -83,7 +83,7 @@ const visualCard = computed(() => {
   }
   51%,
   to {
-    background: var(--md-sys-color-surface);
+    background: var(--md-sys-color-surface-container);
   }
 }
 
