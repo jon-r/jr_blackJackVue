@@ -13,14 +13,17 @@ export const useCoreStore = defineStore("core", () => {
   const activeStage = ref(GameStages.Init);
   const activePlayerId = ref(-1);
 
-  // todo css listener?
-  const isDarkMode = ref(getIsDarkModePreferred());
+  const isDarkMode = ref(getIsDarkModePreferred().matches);
   const isOptionsModalOpen = ref(activeStage.value === GameStages.Init);
   const messages = ref<Message[]>([]);
 
-  function toggleDarkMode() {
-    isDarkMode.value = !isDarkMode.value;
+  function toggleDarkMode(isDark = !isDarkMode.value) {
+    isDarkMode.value = isDark;
   }
+
+  getIsDarkModePreferred().addEventListener("change", ({ matches }) => {
+    toggleDarkMode(matches);
+  });
 
   function toggleOptionsModal(isOpen: boolean) {
     isOptionsModalOpen.value = isOpen;

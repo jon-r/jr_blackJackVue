@@ -34,5 +34,5 @@ export function setElementPosition(el: Element, { x, y, r = 0 }: Position) {
 }
 
 export function getIsDarkModePreferred() {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return window.matchMedia("(prefers-color-scheme: dark)");
 }
