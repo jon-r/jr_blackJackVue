@@ -25,7 +25,7 @@ const coreStore = useCoreStore();
     opacity: 1;
 
     &:first-of-type {
-      color: var(--md-sys-color-secondary-container);
+      color: var(--md-sys-color-secondary-fixed);
     }
   }
 }

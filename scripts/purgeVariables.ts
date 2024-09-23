@@ -19,7 +19,7 @@ async function findVariablesInFile(filePath: string): Promise<string[]> {
 
   const cssVars = [];
 
-  for (let match of file.matchAll(usedVariableRegex)) {
+  for (const match of file.matchAll(usedVariableRegex)) {
     const [, input] = match;
     cssVars.push(input);
   }
@@ -30,7 +30,6 @@ async function findVariablesInFile(filePath: string): Promise<string[]> {
 async function findAllVariables(srcDir: string): Promise<string[]> {
   const files = await readdir(srcDir, {
     recursive: true,
-    // withFileTypes: true,
   });
 
   const promises = files

@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 
 import { NIL_POSITION, SpecialScores } from "~/constants/gamePlay.ts";
-import { setElementPosition, transformJiggle } from "~/helpers/animation.ts";
+import { setElementPosition, transformJiggle } from "~/helpers/style.ts";
 import { useDeckStore } from "~/stores/deckStore.ts";
 import type { PlayerHand } from "~/types/players.ts";
 

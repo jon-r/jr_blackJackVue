@@ -37,8 +37,7 @@ watch(
 </script>
 
 <template>
-  <!-- todo light vs dark modes toggle -->
-  <main class="app-container light">
+  <main class="app-container" :class="coreStore.isDarkMode ? 'dark' : 'light'">
     <BlackjackTable />
     <ActionsBar />
     <OptionsModal />
@@ -57,7 +56,7 @@ watch(
   display: flex;
   flex-direction: column;
 
-  border: solid 1px var(--md-sys-color-outline-variant);
+  border: solid 1px var(--md-sys-color-surface-dim);
   border-radius: var(--border-radius-xl);
   overflow: hidden;
 }

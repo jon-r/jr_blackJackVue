@@ -61,7 +61,7 @@ const visualCard = computed(() => {
   }
 
   &:not(&--blank) {
-    background: var(--md-sys-color-surface);
+    background: var(--md-sys-color-surface-container-low);
     animation: flip-card var(--transition-standard)
       var(--transition-duration-standard) both;
 

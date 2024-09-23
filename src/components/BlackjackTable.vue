@@ -57,8 +57,8 @@ onMounted(() => {
 <style>
 .blackjack-table {
   flex: 1;
-  background-color: var(--md-sys-color-primary);
-  color: var(--md-sys-color-on-primary);
+  background-color: var(--md-sys-color-on-primary-fixed-variant);
+  color: var(--md-sys-color-primary-fixed-dim);
   position: relative;
 
   &__tabletop {

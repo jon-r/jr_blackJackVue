@@ -149,3 +149,8 @@ http://material-foundation.github.io?primary=%2386E307&secondary=%23D2B441&color
   --shadow-level-1: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px,
     rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
 }
+
+/* dark mode toggle + variables are within the app, so cant use them */
+body:has(.dark) {
+  background-color: rgb(12 15 9);
+}
