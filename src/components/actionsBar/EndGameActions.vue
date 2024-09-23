@@ -10,24 +10,22 @@ import type { ButtonControl } from "./button.ts";
 const playersStore = usePlayersStore();
 const gameActions = useGameActions();
 
-const actionButtons = computed<ButtonControl[]>(() => {
-  return [
-    {
-      id: "end-new",
-      label: "End Game",
-      icon: "skip_previous",
-      onClick: gameActions.endGame,
-    },
-    {
-      id: "end-next",
-      label: "Next Round",
-      className: "action-button--emphasis",
-      disabled: playersStore.activePlayers.length === 0,
-      icon: "skip_next",
-      onClick: gameActions.nextRound,
-    },
-  ];
-});
+const actionButtons = computed<ButtonControl[]>(() => [
+  {
+    id: "end-new",
+    label: "End Game",
+    icon: "skip_previous",
+    onClick: gameActions.endGame,
+  },
+  {
+    id: "end-next",
+    label: "Next Round",
+    className: "action-button--emphasis",
+    disabled: playersStore.activePlayers.length === 0,
+    icon: "skip_next",
+    onClick: gameActions.nextRound,
+  },
+]);
 </script>
 
 <template>

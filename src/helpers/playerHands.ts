@@ -1,6 +1,6 @@
 import { BLACKJACK_SCORE, DEALER_STAND_SCORE } from "~/constants/cards.ts";
 import { SpecialScores } from "~/constants/gamePlay.ts";
-import type { HandRules, PlayingCard } from "~/types/card.ts";
+import type { HandCalculation, HandRules, PlayingCard } from "~/types/card.ts";
 import type {
   Player,
   PlayerHand,
@@ -54,6 +54,8 @@ function replaceLastBlankCard(
   }
 }
 
+const nilScore: HandCalculation = { score: 0, softAces: 0 };
+
 function getHandSpecial(
   { score, softAces }: HandCalculation,
   cardCount: number,
@@ -71,18 +73,11 @@ function getHandSpecial(
   return SpecialScores.None;
 }
 
-type HandCalculation = {
-  score: number;
-  softAces: number;
-};
-const nilScore = { score: 0, softAces: 0 };
-
 export function getHandScore(cards?: PlayingCard[]): HandCalculation {
   if (!cards) {
     return nilScore;
   }
 
-  // todo maybe cleaner way to do this?
   return cards.reduce((prev: HandCalculation, card: PlayingCard) => {
     let { score, softAces } = prev;
 

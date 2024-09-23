@@ -2,14 +2,20 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 import { GameStages } from "~/constants/gamePlay.ts";
-import { DEALER_ID } from "~/constants/player.ts";
-import { DEFAULT_SETTINGS, MAX_MESSAGES } from "~/constants/settings.ts";
+import { DEALER, DEFAULT_PLAYER_NAMES } from "~/constants/player.ts";
+import {
+  DEFAULT_DECK_COUNT,
+  DEFAULT_MIN_BET,
+  MAX_MESSAGES,
+} from "~/constants/settings.ts";
 import { getIsDarkModePreferred } from "~/helpers/style.ts";
 import type { Message } from "~/types/animations.ts";
 import type { GameConfig } from "~/types/config.ts";
 
 export const useCoreStore = defineStore("core", () => {
-  const config = ref<GameConfig>(DEFAULT_SETTINGS);
+  const minBet = ref(DEFAULT_MIN_BET);
+  const deckCount = ref(DEFAULT_DECK_COUNT);
+  const playerCount = ref<number>(DEFAULT_PLAYER_NAMES.length);
   const activeStage = ref(GameStages.Init);
   const activePlayerId = ref(-1);
 
@@ -43,11 +49,13 @@ export const useCoreStore = defineStore("core", () => {
   }
 
   function setConfig(newConfig: GameConfig) {
-    config.value = newConfig;
+    minBet.value = newConfig.minBet;
+    deckCount.value = newConfig.deckCount;
+    playerCount.value = newConfig.playerCount;
   }
 
   function jumpToStage(stage: GameStages) {
-    jumpToPlayer(DEALER_ID.index);
+    jumpToPlayer(DEALER.index);
     activeStage.value = stage;
   }
 
@@ -64,7 +72,9 @@ export const useCoreStore = defineStore("core", () => {
   }
 
   return {
-    config,
+    minBet,
+    deckCount,
+    playerCount,
     activeStage,
     activePlayerId,
     messages,

@@ -23,7 +23,7 @@ const tipsMessage = computed(() => {
   switch (coreStore.activeStage) {
     case GameStages.PlaceBets: {
       const money = currentPlayer.value?.money ?? 0;
-      return `Current money: £${money}. Min Bet: £${coreStore.config.minBet}.`;
+      return `Current money: £${money}. Min Bet: £${coreStore.minBet}.`;
     }
     case GameStages.EndRound:
       return "Round Over. Keep on playing?";

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-import { DEALER_ID, DEALER_STUB } from "~/constants/player.ts";
+import { DEALER } from "~/constants/player.ts";
 import { AUTO_TIME_SHORT, AUTO_TIME_STANDARD } from "~/constants/settings.ts";
 import {
   addToHand,
@@ -25,15 +25,13 @@ export const usePlayersStore = defineStore("players", () => {
 
   const dealer = computed(
     () =>
-      players.value.find(
-        (player) => player.index === DEALER_ID.index,
-      ) as Player,
+      players.value.find((player) => player.index === DEALER.index) as Player,
   );
 
   const activePlayers = computed(() => players.value.filter(isActivePlayer));
 
   function createPlayers(stubs: PlayerInputStub[]) {
-    players.value = [DEALER_STUB, ...stubs].map(createPlayer);
+    players.value = [DEALER, ...stubs].map(createPlayer);
   }
 
   function resetCards() {
@@ -63,7 +61,7 @@ export const usePlayersStore = defineStore("players", () => {
   }
 
   function setDealerPeekedCard(card: PlayingCard | null) {
-    players.value[DEALER_ID.index].peekedCard = card;
+    players.value[DEALER.index].peekedCard = card;
   }
 
   async function setCard(handId: PlayerHandIdentifier, card: PlayingCard) {

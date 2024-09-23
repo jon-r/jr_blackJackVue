@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 import { setupPlayerInput } from "~/helpers/players.ts";
 import { useGameActions } from "~/stores/actions/game.ts";
@@ -15,8 +15,8 @@ const gameActions = useGameActions();
 
 const playerInput = ref(setupPlayerInput(playersStore.players));
 
-const deckCount = ref(coreStore.config.deckCount);
-const minBet = ref(coreStore.config.minBet);
+const deckCount = ref(coreStore.deckCount);
+const minBet = ref(coreStore.minBet);
 
 const isMoreOptionsOpen = ref(false);
 
@@ -25,12 +25,12 @@ function newGame(isDemo = false) {
     deckCount: deckCount.value,
     minBet: minBet.value,
     playerCount: playerInput.value.length,
+    isDemo,
   };
 
-  void gameActions.startGame(playerInput.value, newConfig, isDemo);
+  void gameActions.startGame(playerInput.value, newConfig);
 }
 
-// todo demo automatically (based on url query)
 function newDemo() {
   newGame(true);
 }

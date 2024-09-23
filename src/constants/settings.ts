@@ -1,10 +1,5 @@
-import type { GameConfig } from "~/types/config.ts";
-
-export const DEFAULT_SETTINGS: GameConfig = {
-  minBet: 100,
-  deckCount: 6,
-  playerCount: 5,
-};
+export const DEFAULT_MIN_BET = 100;
+export const DEFAULT_DECK_COUNT = 6;
 
 export const MAX_MESSAGES = 5;
 
