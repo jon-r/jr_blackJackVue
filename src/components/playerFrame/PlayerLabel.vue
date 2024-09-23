@@ -7,6 +7,7 @@ type PlayerLabelProps = {
   player: Player;
   isFocused: boolean;
 };
+
 const props = defineProps<PlayerLabelProps>();
 
 const moneyUpdate = ref({
@@ -76,7 +77,7 @@ watch(
 
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
 
   &--focussed {
     opacity: 1;

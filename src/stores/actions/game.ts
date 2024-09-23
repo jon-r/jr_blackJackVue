@@ -21,11 +21,7 @@ export function useGameActions() {
   const betActions = useBetActions();
   const cardsActions = useCardsActions();
 
-  async function startGame(
-    players: PlayerInputStub[],
-    config: GameConfig,
-    isDemo: boolean,
-  ) {
+  async function startGame(players: PlayerInputStub[], config: GameConfig) {
     coreStore.setConfig(config);
     playersStore.createPlayers(players);
     deckStore.rebuildDeck(config.deckCount);
@@ -33,7 +29,7 @@ export function useGameActions() {
     coreStore.toggleOptionsModal(false);
     coreStore.jumpToStage(GameStages.PlaceBets);
 
-    if (isDemo) {
+    if (config.isDemo) {
       await nextTick(); // next tick to make sure the players are fully reset before placing new random bets
       betActions.placeRandomBets();
       coreStore.jumpToStage(GameStages.DealCards);
@@ -88,7 +84,7 @@ export function useGameActions() {
     await betActions.settleAllBets();
 
     playersStore.activePlayers.forEach((player) => {
-      if (player.money < coreStore.config.minBet) {
+      if (player.money < coreStore.minBet) {
         playersStore.removePlayer(player);
       }
     });

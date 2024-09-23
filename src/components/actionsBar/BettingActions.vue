@@ -33,29 +33,25 @@ const chipButtons = computed<ButtonControl[]>(() => {
   }));
 });
 
-const actionButtons = computed<ButtonControl[]>(() => {
-  const { minBet } = coreStore.config;
-
-  return [
-    {
-      id: "bet-place",
-      label: `Place Bet: £${betToPlace.value}`,
-      className: "action-button--wider action-button--emphasis",
-      icon: "publish",
-      disabled: betToPlace.value < minBet,
-      onClick: submitBet,
-      alert: `Min: £${minBet}`,
-    },
-    {
-      id: "bet-undo",
-      label: "Undo",
-      className: "action-button--warn",
-      icon: "undo",
-      disabled: betToPlace.value === 0,
-      onClick: removeChip,
-    },
-  ];
-});
+const actionButtons = computed<ButtonControl[]>(() => [
+  {
+    id: "bet-place",
+    label: `Place Bet: £${betToPlace.value}`,
+    className: "action-button--wider action-button--emphasis",
+    icon: "publish",
+    disabled: betToPlace.value < coreStore.minBet,
+    onClick: submitBet,
+    alert: `Min: £${coreStore.minBet}`,
+  },
+  {
+    id: "bet-undo",
+    label: "Undo",
+    className: "action-button--warn",
+    icon: "undo",
+    disabled: betToPlace.value === 0,
+    onClick: removeChip,
+  },
+]);
 
 function addChip(value: number) {
   chipsToPlace.value.push(value);
