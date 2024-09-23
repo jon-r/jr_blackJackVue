@@ -37,8 +37,7 @@ watch(
 </script>
 
 <template>
-  <!-- todo light vs dark modes toggle -->
-  <main class="app-container light">
+  <main class="app-container" :class="coreStore.isDarkMode ? 'dark' : 'light'">
     <BlackjackTable />
     <ActionsBar />
     <OptionsModal />

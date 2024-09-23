@@ -3,13 +3,13 @@ import { ref, watch } from "vue";
 
 import { GameOutcomes } from "~/constants/gamePlay.ts";
 import { AUTO_TIME_SHORT } from "~/constants/settings.ts";
-import { staggeredPush } from "~/helpers/animation.ts";
 import {
   hasMoneyLost,
   hasMoneyReturned,
   moneyToChips,
 } from "~/helpers/bets.ts";
 import { sum } from "~/helpers/math.ts";
+import { staggeredPush } from "~/helpers/style.ts";
 
 import BettingChip from "../common/BettingChip.vue";
 

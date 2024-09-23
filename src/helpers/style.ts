@@ -32,3 +32,7 @@ export function setElementPosition(el: Element, { x, y, r = 0 }: Position) {
   (el as HTMLElement).style.transform =
     `translate(${x}px,${y}px) rotate(${r}deg)`;
 }
+
+export function getIsDarkModePreferred() {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}

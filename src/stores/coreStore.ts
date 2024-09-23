@@ -4,6 +4,7 @@ import { ref } from "vue";
 import { GameStages } from "~/constants/gamePlay.ts";
 import { DEALER_ID } from "~/constants/player.ts";
 import { DEFAULT_SETTINGS, MAX_MESSAGES } from "~/constants/settings.ts";
+import { getIsDarkModePreferred } from "~/helpers/style.ts";
 import type { Message } from "~/types/animations.ts";
 import type { GameConfig } from "~/types/config.ts";
 
@@ -11,9 +12,13 @@ export const useCoreStore = defineStore("core", () => {
   const config = ref<GameConfig>(DEFAULT_SETTINGS);
   const activeStage = ref(GameStages.Init);
   const activePlayerId = ref(-1);
-
-  const messages = ref<Message[]>([]);
+  const isDarkMode = ref(getIsDarkModePreferred());
   const isOptionsModalOpen = ref(activeStage.value === GameStages.Init);
+  const messages = ref<Message[]>([]);
+
+  function toggleDarkMode() {
+    isDarkMode.value = !isDarkMode.value;
+  }
 
   function toggleOptionsModal(isOpen: boolean) {
     isOptionsModalOpen.value = isOpen;
@@ -55,8 +60,10 @@ export const useCoreStore = defineStore("core", () => {
     activePlayerId,
     messages,
     isOptionsModalOpen,
+    isDarkMode,
 
     toggleOptionsModal,
+    toggleDarkMode,
     setConfig,
     sendMessage,
     nextStage,
