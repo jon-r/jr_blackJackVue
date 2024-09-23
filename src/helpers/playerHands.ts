@@ -82,7 +82,6 @@ export function getHandScore(cards?: PlayingCard[]): HandCalculation {
     return nilScore;
   }
 
-  // todo maybe cleaner way to do this?
   return cards.reduce((prev: HandCalculation, card: PlayingCard) => {
     let { score, softAces } = prev;
 

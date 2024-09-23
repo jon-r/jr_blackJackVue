@@ -89,7 +89,7 @@ const isPlayerTurn = computed(() => {
     text-align: center;
     font-size: var(--font-size-heading-small);
     text-shadow: 0 0 10px var(--md-sys-color-shadow);
-    color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-secondary-fixed);
   }
 }
 </style>
