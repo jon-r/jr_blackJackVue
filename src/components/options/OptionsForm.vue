@@ -90,7 +90,7 @@ function newDemo() {
         New Demo (Skip Bets)
       </button>
       <button
-        class="button-base options-form__footer-button options-form__footer-button--filled"
+        class="button-base options-form__footer-button options-form__footer-button--emphasis"
         type="submit"
       >
         New Game
@@ -143,9 +143,15 @@ function newDemo() {
       background-color: var(--md-sys-color-primary-hover-opacity);
     }
 
-    &--filled {
+    &--emphasis {
       background-color: var(--md-sys-color-primary);
       color: var(--md-sys-color-on-primary);
+
+      .dark & {
+        background: none;
+        color: var(--md-sys-color-primary);
+        border: solid 1px;
+      }
 
       &:hover {
         background-color: var(--md-sys-color-primary-hover);
