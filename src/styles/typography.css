@@ -12,20 +12,21 @@ p {
   margin: 0;
 }
 
-h1 {
+h1,h2,h3 {
   font-family: var(--font-family-heading);
+}
+
+h1 {
   font-size: var(--font-size-heading-large);
   font-weight: var(--font-weight-bold);
 }
 
 h2 {
-  font-family: var(--font-family-heading);
   font-size: var(--font-size-heading-medium);
   font-weight: var(--font-weight-bold);
 }
 
 h3 {
-  font-family: var(--font-family-heading);
   font-size: var(--font-size-heading-small);
   font-weight: var(--font-weight-medium);
 }

@@ -14,15 +14,19 @@ export const useCoreStore = defineStore("core", () => {
   const activePlayerId = ref(-1);
 
   const isDarkMode = ref(getIsDarkModePreferred().matches);
+  const isDarkModeForced = ref(false);
   const isOptionsModalOpen = ref(activeStage.value === GameStages.Init);
   const messages = ref<Message[]>([]);
 
   function toggleDarkMode(isDark = !isDarkMode.value) {
     isDarkMode.value = isDark;
+    isDarkModeForced.value = true;
   }
 
   getIsDarkModePreferred().addEventListener("change", ({ matches }) => {
-    toggleDarkMode(matches);
+    if (!isDarkModeForced.value) {
+      isDarkMode.value = matches;
+    }
   });
 
   function toggleOptionsModal(isOpen: boolean) {
@@ -65,6 +69,7 @@ export const useCoreStore = defineStore("core", () => {
     activePlayerId,
     messages,
     isOptionsModalOpen,
+    isDarkModeForced,
     isDarkMode,
 
     toggleOptionsModal,

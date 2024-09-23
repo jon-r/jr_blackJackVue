@@ -39,6 +39,19 @@ function newDemo() {
 <template>
   <form class="options-form" @submit.prevent="() => newGame()">
     <fieldset class="options-form__group">
+      <label
+        class="options-form__group-title options-form__group-title--toggleable"
+        @click.prevent="() => coreStore.toggleDarkMode()"
+      >
+        <span>Force Light/Dark Mode</span>
+
+        <i class="md-icon">
+          {{ coreStore.isDarkMode ? "dark_mode" : "light_mode" }}
+        </i>
+      </label>
+    </fieldset>
+
+    <fieldset class="options-form__group">
       <h4 class="options-form__group-title">Player Names</h4>
 
       <InputField
@@ -53,16 +66,16 @@ function newDemo() {
     </fieldset>
 
     <fieldset class="options-form__group">
-      <h4
+      <label
         class="options-form__group-title options-form__group-title--toggleable"
         @click.prevent="isMoreOptionsOpen = !isMoreOptionsOpen"
       >
-        <span>In Game Options</span>
+        <span>In-Game Options</span>
 
-        <i class="md-icon">{{
-          isMoreOptionsOpen ? "expand_less" : "expand_more"
-        }}</i>
-      </h4>
+        <i class="md-icon">
+          {{ isMoreOptionsOpen ? "expand_less" : "expand_more" }}
+        </i>
+      </label>
       <template v-if="isMoreOptionsOpen">
         <InputField
           v-model.number="deckCount"
@@ -122,6 +135,8 @@ function newDemo() {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: var(--font-size-body-large);
+      font-weight: var(--font-weight-medium);
     }
   }
 
