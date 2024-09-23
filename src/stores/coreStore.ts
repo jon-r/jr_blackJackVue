@@ -12,6 +12,8 @@ export const useCoreStore = defineStore("core", () => {
   const config = ref<GameConfig>(DEFAULT_SETTINGS);
   const activeStage = ref(GameStages.Init);
   const activePlayerId = ref(-1);
+
+  // todo css listener?
   const isDarkMode = ref(getIsDarkModePreferred());
   const isOptionsModalOpen = ref(activeStage.value === GameStages.Init);
   const messages = ref<Message[]>([]);
