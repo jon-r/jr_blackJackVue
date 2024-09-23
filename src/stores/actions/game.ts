@@ -92,6 +92,7 @@ export function useGameActions() {
 
   function nextRound() {
     playersStore.resetCards();
+    deckStore.rebuildDeck(coreStore.deckCount);
     coreStore.jumpToStage(GameStages.PlaceBets);
   }
 

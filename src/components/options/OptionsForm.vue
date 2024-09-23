@@ -34,12 +34,6 @@ function newGame(isDemo = false) {
 function newDemo() {
   newGame(true);
 }
-
-onMounted(() => {
-  const isDemoMode = window.location.search.includes("demo=true");
-
-  if (isDemoMode) newDemo();
-});
 </script>
 
 <template>
